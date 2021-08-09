@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<Authors>Gary</Authors>
+		<Description>A simple tool library for converting the Expression to sql where clause. Welcome to open issue in https://github.com/zhurongbo111/ExpressionToWhereClause/issues</Description>
+		<PackageProjectUrl>https://github.com/zhurongbo111/ExpressionToWhereClause</PackageProjectUrl>
+		<PackageLicenseUrl>https://github.com/zhurongbo111/ExpressionToWhereClause/blob/master/LICENSE</PackageLicenseUrl>
+		<Copyright>Copyright (c) 2019-2021 Gary</Copyright>
+		<PackageTags>Expression,sql,netcore,whereclause,expression2sql</PackageTags>
+		<Company>Gary</Company>
+		<PackageReleaseNotes></PackageReleaseNotes>
+		<Version>2.0.0</Version>
+		<LangVersion>9</LangVersion>
+		<DocumentationFile>$(SolutionDir)ExpressionToWhereClause.Standard\ExpressionToWhereClause.Standard.xml</DocumentationFile>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <NoWarn>1701;1702;1591;</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CSharp" Version="4.6.0" />
+	</ItemGroup>
+
+</Project>
