@@ -6,6 +6,7 @@ namespace PredicateBuilder.Standard.Test
     {
         public static WhereLambda<Route, RoutePageInput> GetWhereLambda()
         {
+            var time = System.DateTime.Parse("2021-8-8");
             var searchModel = new RoutePageInput()
             {
                 //Id = 1,
@@ -13,8 +14,8 @@ namespace PredicateBuilder.Standard.Test
                 Sex = "1",
                 IsDel = true,
                 Url = "123",
-                DataCreatedAtStart = System.DateTime.Now.AddHours(-1),
-                DataCreatedAtEnd = System.DateTime.Now,
+                DataCreatedAtStart = time.AddHours(-1),
+                DataCreatedAtEnd = time,
             };
 
             var whereLambda = new WhereLambda<Route, RoutePageInput>();
