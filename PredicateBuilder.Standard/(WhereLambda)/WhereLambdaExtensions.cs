@@ -7,31 +7,34 @@ namespace PredicateBuilder.Standard
     internal static class WhereLambdaExtensions
     {
         public static List<Expression<Func<TEntity, bool>>> AddRange<TEntity, TSearchModel>(
-            this List<Expression<Func<TEntity, bool>>> whereLambdas, 
+            this List<Expression<Func<TEntity, bool>>> whereLambdas,
             TSearchModel searchModel, SearchType searchType, List<string> props)
         {
+            List<Expression<Func<TEntity, bool>>> expressionList = null;
             switch (searchType)
             {
                 case SearchType.None:
                     throw new Exception("未指定" + nameof(searchType));
                 case SearchType.Like:
-                    whereLambdas.AddRange(WhereLambdaHelper.AddLike<TEntity, TSearchModel>(searchModel, props));
+                    expressionList = WhereLambdaHelper.AddLike<TEntity, TSearchModel>(searchModel, props);
                     break;
                 case SearchType.Equal:
-                    whereLambdas.AddRange(WhereLambdaHelper.AddEqual<TEntity, TSearchModel>(searchModel, props));
+                    expressionList = WhereLambdaHelper.AddEqual<TEntity, TSearchModel>(searchModel, props);
                     break;
                 case SearchType.In:
-                    whereLambdas.AddRange(WhereLambdaHelper.AddIn<TEntity, TSearchModel>(searchModel, props));
+                    expressionList = WhereLambdaHelper.AddIn<TEntity, TSearchModel>(searchModel, props);
                     break;
                 case SearchType.DateTimeRange:
-                    whereLambdas.AddRange(WhereLambdaHelper.AddDateTimeRange<TEntity, TSearchModel>(searchModel, props));
+                    expressionList = WhereLambdaHelper.AddDateTimeRange<TEntity, TSearchModel>(searchModel, props);
                     break;
                 case SearchType.NumberRange:
-                    whereLambdas.AddRange(WhereLambdaHelper.AddNumberRange<TEntity, TSearchModel>(searchModel, props));
+                    expressionList = WhereLambdaHelper.AddNumberRange<TEntity, TSearchModel>(searchModel, props);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(searchType), searchType, null);
             }
+
+            whereLambdas.AddRange(expressionList);
 
             return whereLambdas;
         }
