@@ -12,7 +12,7 @@ namespace PredicateBuilder.Standard.Test
                 //Id = 1,
                 Id = "1,2",
                 Sex = "1",
-                IsDel = true,
+                IsDel = true,//todo://计划:添加当其他值为xx时,当前值才生效
                 Url = "123",
                 DataCreatedAtStart = time.AddHours(-1),
                 DataCreatedAtEnd = time,
