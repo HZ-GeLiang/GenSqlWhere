@@ -26,6 +26,21 @@ namespace ExpressionToWhereClause.Standard
             var body = expression.Body;
             var parseResult = WhereClauseParser.Parse(body, alias, sqlAdapter);
 
+            #region 处理 parseResult.WhereClause
+
+            //去掉 关系条件的 ()
+            //只能去掉全是 and 语句的 ()
+            if (!parseResult.WhereClause.Contains(SqlKeys.or))
+            {
+                parseResult.WhereClause = parseResult.WhereClause
+                    .Replace("(", string.Empty)
+                    .Replace(")", string.Empty);
+            }
+             
+            #endregion
+
+            #region 处理 parseResult.Parameters
+
             foreach (var key in parseResult.Parameters.Keys)
             {
                 var parseValue = ConstantExtractor.ConstantExpressionValueToString(parseResult.Parameters[key], out var isParse);
@@ -34,6 +49,8 @@ namespace ExpressionToWhereClause.Standard
                     parseResult.Parameters[key] = parseValue;
                 }
             }
+
+            #endregion
 
             return (parseResult.WhereClause, parseResult.Parameters);
         }

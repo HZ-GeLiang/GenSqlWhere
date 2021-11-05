@@ -46,20 +46,20 @@ namespace ExpressionToWhereClause.Standard
             switch (methodCallExpression.Method.Name)
             {
                 case "Equals":
-                    symbol = "= {0}";
-                    valueSymbol = "{0}";
+                    symbol = SqlKeys.Equals_symbol;
+                    valueSymbol = SqlKeys.Equals_valueSymbol;
                     break;
                 case "StartsWith":
-                    symbol = "like {0}";
-                    valueSymbol = "{0}%";
+                    symbol = SqlKeys.StartsWith_symbol;
+                    valueSymbol = SqlKeys.StartsWith_valueSymbol;
                     break;
                 case "EndsWith":
-                    symbol = "like {0}";
-                    valueSymbol = "%{0}";
+                    symbol = SqlKeys.EndsWith_symbol;
+                    valueSymbol = SqlKeys.EndsWith_valueSymbol;
                     break;
                 case "Contains":
-                    symbol = "like {0}";
-                    valueSymbol = "%{0}%";
+                    symbol = SqlKeys.Contains_symbol;
+                    valueSymbol = SqlKeys.Contains_valueSymbol;
                     break;
                 default:
                     throw new NotSupportedException($"Not support method name:{methodCallExpression.Method.Name}");
@@ -87,7 +87,10 @@ namespace ExpressionToWhereClause.Standard
             string parameterName = EnsureParameter(memberInfo, adhesive);
             object value = ConstantExtractor.ParseConstant(valueExpression);
             adhesive.Parameters.Add($"@{parameterName}", value);
-            return new StringBuilder(string.Format("{0} in {1}", fieldName, $"@{parameterName}"));
+            //return new StringBuilder($"{fieldName} {SqlKeys.@in} {parameterName}");
+            var sb = new StringBuilder(32);
+            sb.Append(fieldName).Append(" ").Append(SqlKeys.@in).Append(" @").Append(parameterName);
+            return sb;
         }
 
         internal static string EnsureParameter(MemberInfo memberInfo, WhereClauseAdhesive adhesive)
@@ -115,15 +118,14 @@ namespace ExpressionToWhereClause.Standard
             }
             return expressionType switch
             {
-                ExpressionType.Equal => "=",
-                ExpressionType.LessThan => "<",
-                ExpressionType.GreaterThan => ">",
-                ExpressionType.GreaterThanOrEqual => ">=",
-                ExpressionType.LessThanOrEqual => "<=",
-                ExpressionType.NotEqual => "<>",
+                ExpressionType.Equal => SqlKeys.Equal,
+                ExpressionType.LessThan => SqlKeys.LessThan,
+                ExpressionType.GreaterThan => SqlKeys.GreaterThan,
+                ExpressionType.GreaterThanOrEqual => SqlKeys.GreaterThanOrEqual,
+                ExpressionType.LessThanOrEqual => SqlKeys.LessThanOrEqual,
+                ExpressionType.NotEqual => SqlKeys.NotEqual,
                 //case ExpressionType.AndAlso:
                 //    throw new Exception("***");
-
                 _ => throw new NotSupportedException($"Unknown ExpressionType {expressionType}")
             };
         }
