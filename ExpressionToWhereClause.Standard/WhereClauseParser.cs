@@ -296,12 +296,12 @@ namespace ExpressionToWhereClause.Standard
                 var parseRight = false;
                 if (binaryExpression.NodeType == ExpressionType.OrElse) // {((a.Id == 1) OrElse (a.Id == 2))}
                 {
-                    sqlBuilder.Append(" Or ");
+                    sqlBuilder.Append(SqlKeys.or);
                     parseRight = true;
                 }
                 else if (binaryExpression.NodeType == ExpressionType.AndAlso) //{(((a.Id == 1) OrElse (a.Id == 2)) AndAlso a.IsDel == true )}
                 {
-                    sqlBuilder.Append(" And ");
+                    sqlBuilder.Append(SqlKeys.and);
                     parseRight = true;
                 }
 
