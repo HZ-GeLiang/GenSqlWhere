@@ -1,19 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFrameworks>
+			netstandard2.0;
+		</TargetFrameworks>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-		<Authors>Gary</Authors>
-		<Description>A simple tool library for converting the Expression to sql where clause. Welcome to open issue in https://github.com/zhurongbo111/ExpressionToWhereClause/issues</Description>
-		<PackageProjectUrl>https://github.com/zhurongbo111/ExpressionToWhereClause</PackageProjectUrl>
+		<Authors>GeLiang</Authors>
+		<Description>convert Expression to sql where clause</Description>
+		<PackageProjectUrl>https://gitee.com/hzgel/GenSqlWhere</PackageProjectUrl>
 		<PackageLicenseUrl>https://github.com/zhurongbo111/ExpressionToWhereClause/blob/master/LICENSE</PackageLicenseUrl>
-		<Copyright>Copyright (c) 2019-2021 Gary</Copyright>
-		<PackageTags>Expression,sql,netcore,whereclause,expression2sql</PackageTags>
-		<Company>Gary</Company>
+		<Copyright>Copyright (c) GeLiang</Copyright>
+		<PackageTags>Expression,sql,whereclause,expression2sql, convert2sql,where2sql</PackageTags>
+		<Company>GeLiang</Company>
 		<PackageReleaseNotes></PackageReleaseNotes>
-		<Version>2.0.0</Version>
+		<Version>1.0.0</Version>
 		<LangVersion>9</LangVersion>
 		<DocumentationFile>$(SolutionDir)ExpressionToWhereClause.Standard\ExpressionToWhereClause.Standard.xml</DocumentationFile>
+		<PackageId>ExpressionToWhereClause.Standard</PackageId>
+		<Product>ExpressionToWhereClause.Standard</Product>
+		<RepositoryType>Gitee</RepositoryType>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -4,7 +4,7 @@ using System.Collections;
 namespace ExpressionToWhereClause.Standard
 {
 
-    public static class TypeExtensions
+    internal static class TypeExtensions
     {
         #region IsObjectCollection
 
