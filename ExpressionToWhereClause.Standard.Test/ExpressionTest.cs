@@ -367,7 +367,7 @@ namespace ExpressionToWhereClause.Standard.Test
             (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause(null, new TestSqlAdapter());
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             //Assert.AreEqual("(Name in @Name)", whereClause);
-            Assert.AreEqual("Name in @Name", whereClause);
+            Assert.AreEqual("Name In @Name", whereClause);
             Assert.IsTrue(parameters["@Name"] is List<string>);
             Assert.AreEqual(string.Join(',', values), string.Join(',', (List<string>)parameters["@Name"]));
         }
