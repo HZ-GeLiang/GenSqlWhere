@@ -2,12 +2,12 @@
 
 namespace PredicateBuilder.Standard.Test
 {
-    class Test
+    class TestData
     {
-        public static WhereLambda<Route, RoutePageInput> GetWhereLambda()
+        public static WhereLambda<People, PeoplePageInput> GetWhereLambda()
         {
             var time = System.DateTime.Parse("2021-8-8");
-            var searchModel = new RoutePageInput()
+            var searchModel = new PeoplePageInput()
             {
                 //Id = 1,
                 Id = "1,2",
@@ -18,7 +18,7 @@ namespace PredicateBuilder.Standard.Test
                 DataCreatedAtEnd = time,
             };
 
-            var whereLambda = new WhereLambda<Route, RoutePageInput>();
+            var whereLambda = new WhereLambda<People, PeoplePageInput>();
             whereLambda.SearchModel = searchModel;
 
             whereLambda[SearchType.Like] = new List<string>
@@ -48,6 +48,47 @@ namespace PredicateBuilder.Standard.Test
             whereLambda[SearchType.NumberRange] = new List<string>
             {
             };
+
+            return whereLambda;
+        }
+
+        public static WhereLambda<People, PeoplePageInput2> GetWhereLambda2()
+        {
+            var time = System.DateTime.Parse("2021-8-8");
+            var searchModel = new PeoplePageInput2()
+            {
+                DataCreatedAt = time,
+            };
+
+            var whereLambda = new WhereLambda<People, PeoplePageInput2>();
+            whereLambda.SearchModel = searchModel;
+
+            whereLambda[SearchType.DateTimeRange] = new List<string>
+            {
+                nameof(searchModel.DataCreatedAt)
+            };
+
+         
+            return whereLambda;
+        }
+
+        public static WhereLambda<People, PeoplePageInput2> GetWhereLambda3()
+        {
+            var time = System.DateTime.Parse("2021-8-8");
+            var searchModel = new PeoplePageInput2()
+            {
+                DataCreatedAt = time,
+            };
+
+            var whereLambda = new WhereLambda<People, PeoplePageInput2>();
+            whereLambda.SearchModel = searchModel;
+
+            //todo:一个日期符号是可配置的.  如 createAt＞＝　
+            whereLambda[SearchType.DateTimeRange] = new List<string>
+            {
+                nameof(searchModel.DataCreatedAt)
+            };
+
 
             return whereLambda;
         }

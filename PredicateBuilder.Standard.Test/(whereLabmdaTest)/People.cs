@@ -2,7 +2,7 @@
 
 namespace PredicateBuilder.Standard.Test
 {
-    public partial class Route
+    public partial class People
     {
         public int Id { get; set; }
 
