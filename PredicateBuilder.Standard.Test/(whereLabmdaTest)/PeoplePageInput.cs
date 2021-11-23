@@ -2,7 +2,7 @@
 
 namespace PredicateBuilder.Standard.Test
 {
-    public class RoutePageInput 
+    public class PeoplePageInput 
     {
         //public int? Id { get; set; }
         public string Id { get; set; }
@@ -14,5 +14,10 @@ namespace PredicateBuilder.Standard.Test
         public DateTime? DataCreatedAtEnd { get; set; }
         public DateTime? DataUpdatedAtStart { get; set; }
         public DateTime? DataUpdatedAtEnd { get; set; }
+    }
+
+    public class PeoplePageInput2
+    {
+        public DateTime? DataCreatedAt  { get; set; }  
     }
 }

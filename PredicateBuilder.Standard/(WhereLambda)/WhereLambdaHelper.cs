@@ -401,14 +401,14 @@ namespace PredicateBuilder.Standard
                     throw new Exception("当前值不是 datetime 类型");
                 }
 
-                var key = prop.RemoveSuffix("Start").RemoveSuffix("End");
-                if (!timeDict.ContainsKey(key))
-                {
-                    timeDict.Add(key, new TimeSearch() { Prop = key, TimeRange = new DateTime?[2] });
-                }
-
                 if (prop.EndsWith("Start"))
                 {
+                    var key = prop.RemoveSuffix("Start");
+                    if (!timeDict.ContainsKey(key))
+                    {
+                        timeDict.Add(key, new TimeSearch() { Prop = key, TimeRange = new DateTime?[2] });
+                    }
+
                     timeDict[key].TimeRange[0] = (DateTime?)value;
                     if (timeDict[key].IsPair == null)
                     {
@@ -424,6 +424,12 @@ namespace PredicateBuilder.Standard
                 }
                 else if (prop.EndsWith("End"))
                 {
+                    var key = prop.RemoveSuffix("End");
+                    if (!timeDict.ContainsKey(key))
+                    {
+                        timeDict.Add(key, new TimeSearch() { Prop = key, TimeRange = new DateTime?[2] });
+                    }
+
                     timeDict[key].TimeRange[1] = (DateTime?)value;
                     if (timeDict[key].IsPair == null)
                     {
@@ -439,6 +445,11 @@ namespace PredicateBuilder.Standard
                 }
                 else
                 {
+                    var key = prop;
+                    if (!timeDict.ContainsKey(key))
+                    {
+                        timeDict.Add(key, new TimeSearch() { Prop = key, TimeRange = new DateTime?[2] });
+                    }
                     timeDict[key].TimeRange[0] = (DateTime?)value;
                     if (timeDict[key].IsPair == null)
                     {
