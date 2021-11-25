@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>
+			netstandard2.0;
+		</TargetFrameworks>
+		<DocumentationFile>$(SolutionDir)PredicateBuilder.Standard\$(AssemblyName).xml</DocumentationFile>
+		<Authors>GeLiang</Authors>
+		<Company>GeLiang</Company>
+		<Description>The current class library can 
+1.convert Expression to sql where clause
+2.config model to generate sql where clause</Description>
+		<PackageProjectUrl>https://gitee.com/hzgel/GenSqlWhere</PackageProjectUrl>
+		<Copyright>Copyright (c) GeLiang</Copyright>
+		<RepositoryType>Gitee</RepositoryType>
+		<PackageTags>Expression,sql,whereclause,expression2sql, convert2sql,where2sql,model2sql,model2sqlWhereClause</PackageTags>
+		<AssemblyName>GenerateSqlWhereClause.Standard</AssemblyName>
+		<PackageId>GenerateSqlWhereClause.Standard</PackageId>
+		<Product>GenerateSqlWhereClause.Standard</Product>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\ExpressionToWhereClause.Standard\ExpressionToWhereClause.Standard.csproj" />
+	  <ProjectReference Include="..\PredicateBuilder.Standard\PredicateBuilder.Standard.csproj" />
+	</ItemGroup>
+
+
+</Project>
