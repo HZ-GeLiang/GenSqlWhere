@@ -30,6 +30,9 @@ namespace PredicateBuilder.Standard
                 case SearchType.numberRange:
                     expressionList = WhereLambdaHelper.AddNumberRange<TEntity, TSearchModel>(searchModel, props);
                     break;
+                case SearchType.gt:
+                    expressionList = WhereLambdaHelper.AddGt<TEntity, TSearchModel>(searchModel, props);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(searchType), searchType, null);
             }

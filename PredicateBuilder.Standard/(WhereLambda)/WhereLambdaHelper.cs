@@ -13,6 +13,10 @@ namespace PredicateBuilder.Standard
         private static bool HaveCount(List<string> props) => props != null && props.Count > 0;
         private static bool HaveCount(string[] props) => props != null && props.Length > 0;
 
+        private static List<Expression<Func<TEntity, bool>>> Default<TEntity>() => new List<Expression<Func<TEntity, bool>>>();
+
+        #region AddLike
+
         // t.SomeProperty.Contains("stringValue");
         private static Expression<Func<TEntity, bool>> GetExpression_Contains<TEntity>(string propertyName, string propertyValue)
         {
@@ -84,8 +88,7 @@ namespace PredicateBuilder.Standard
             return whereLambdas;
 
         }
-
-        private static List<Expression<Func<TEntity, bool>>> Default<TEntity>() => new List<Expression<Func<TEntity, bool>>>();
+        #endregion
 
         #region AddEqual版本1 (最开始的代码) 后来根据 AddInOrEuqal 衍生出 AddEqual版本2
         /*
@@ -143,6 +146,74 @@ namespace PredicateBuilder.Standard
 
         #endregion
 
+        #region AddEqual版本2
+
+        public static List<Expression<Func<TEntity, bool>>> AddEqual<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
+        {
+            return HaveCount(props)
+                ? AddEqual<TEntity, TSearchModel>(searchModel, props.ToArray())
+                : Default<TEntity>();
+        }
+
+        public static List<Expression<Func<TEntity, bool>>> AddEqual<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
+        {
+            if (!HaveCount(props))
+            {
+                return Default<TEntity>();
+            }
+
+            List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            foreach (var prop in props)
+            {
+                var propertyValue = new PropertyValue<TSearchModel>(searchModel);
+                object value = propertyValue.Get(prop, out var valuePropType);
+                if (value == null)
+                {
+                    continue;
+                }
+
+                AddEqualCore<TEntity, TSearchModel>(prop, valuePropType, value, whereLambdas);
+            }
+            return whereLambdas;
+        }
+
+        private static void AddEqualCore<TEntity, TSearchModel>(string prop, Type valuePropType, object propertyValue, List<Expression<Func<TEntity, bool>>> whereLambdas)
+        {
+            if (typeof(TEntity).GetProperty(prop) == null)
+            {
+                return;
+            }
+            // AddEqual 的代码
+            var parameterExp = Expression.Parameter(typeof(TEntity), "a");
+            var propertyExp = Expression.Property(parameterExp, prop); //a.AuditStateId
+            Type propType_TEntity = propertyExp.Type; //a.AuditStateId 的type(Dto中定义的属性类型)
+            var left = Expression.Convert(propertyExp, propType_TEntity);
+            //var right = Expression.Constant(propertyValue, propertyValue.GetType());//ids这种情况就有问题
+            //前半个if 是为了支持ids的查询: 当id需要支持多个值查询时, 前端模型只能是string类型, 然后这里就会因为类型不一致而发生异常
+            if (valuePropType != propType_TEntity || propType_TEntity != typeof(string))
+            {
+                //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
+                if (propType_TEntity.IsNullableType())
+                {
+                    propertyValue = Convert.ChangeType(propertyValue, propType_TEntity.GetNullableTType());
+                }
+                else
+                {
+                    propertyValue = Convert.ChangeType(propertyValue, propType_TEntity);
+                }
+            }
+
+            var right = Expression.Constant(propertyValue, propType_TEntity);
+
+            var body = Expression.Equal(left, right);
+            var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
+            whereLambdas.Add(lambda);
+        }
+
+        #endregion
+
+        #region AddNumberRange
+
         internal class NumberSearch
         {
             public string Prop { get; set; }
@@ -152,18 +223,6 @@ namespace PredicateBuilder.Standard
             public bool? IsPair { get; set; }
 
         }
-
-        internal class TimeSearch
-        {
-            public string Prop { get; set; }
-
-            public DateTime?[] TimeRange { get; set; }
-
-            public bool? IsPair { get; set; }
-
-        }
-
-        #region AddDateTimeRange
 
         public static List<Expression<Func<TEntity, bool>>> AddNumberRange<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
         {
@@ -365,8 +424,17 @@ namespace PredicateBuilder.Standard
 
         #endregion
 
-
         #region AddDateTimeRange
+
+        internal class TimeSearch
+        {
+            public string Prop { get; set; }
+
+            public DateTime?[] TimeRange { get; set; }
+
+            public bool? IsPair { get; set; }
+
+        }
 
         public static List<Expression<Func<TEntity, bool>>> AddDateTimeRange<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
         {
@@ -607,8 +675,6 @@ namespace PredicateBuilder.Standard
             return whereLambdas;
         }
 
-        #endregion
-
         /// <summary>
         /// 根据 range  获得结束时间
         /// </summary>
@@ -641,8 +707,7 @@ namespace PredicateBuilder.Standard
             return endTime;
         }
 
-
-        public enum TimeRange
+        private enum TimeRange
         {
             //None,
             Day = 1,
@@ -678,73 +743,7 @@ namespace PredicateBuilder.Standard
             return range;
         }
 
-
-        #region AddEqual 版本2
-
-        public static List<Expression<Func<TEntity, bool>>> AddEqual<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
-        {
-            return HaveCount(props)
-                ? AddEqual<TEntity, TSearchModel>(searchModel, props.ToArray())
-                : Default<TEntity>();
-        }
-
-        public static List<Expression<Func<TEntity, bool>>> AddEqual<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
-        {
-            if (!HaveCount(props))
-            {
-                return Default<TEntity>();
-            }
-
-            List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
-            foreach (var prop in props)
-            {
-                var propertyValue = new PropertyValue<TSearchModel>(searchModel);
-                object value = propertyValue.Get(prop, out var valuePropType);
-                if (value == null)
-                {
-                    continue;
-                }
-
-                AddEqualCore<TEntity, TSearchModel>(prop, valuePropType, value, whereLambdas);
-            }
-            return whereLambdas;
-        }
-
-        private static void AddEqualCore<TEntity, TSearchModel>(string prop, Type valuePropType, object value, List<Expression<Func<TEntity, bool>>> whereLambdas)
-        {
-            if (typeof(TEntity).GetProperty(prop) == null)
-            {
-                return;
-            }
-            // AddEqual 的代码
-            var parameterExp = Expression.Parameter(typeof(TEntity), "a");
-            var propertyExp = Expression.Property(parameterExp, prop); //a.AuditStateId
-            Type propType_TEntity = propertyExp.Type; //a.AuditStateId 的type(Dto中定义的属性类型)
-            var left = Expression.Convert(propertyExp, propType_TEntity);
-            //var right = Expression.Constant(value, value.GetType());//ids这种情况就有问题
-            //前半个if 是为了支持ids的查询: 当id需要支持多个值查询时, 前端模型只能是string类型, 然后这里就会因为类型不一致而发生异常
-            if (valuePropType != propType_TEntity || propType_TEntity != typeof(string))
-            {
-                //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
-                if (propType_TEntity.IsNullableType())
-                {
-                    value = Convert.ChangeType(value, propType_TEntity.GetNullableTType());
-                }
-                else
-                {
-                    value = Convert.ChangeType(value, propType_TEntity);
-                }
-            }
-
-            var right = Expression.Constant(value, propType_TEntity);
-
-            var body = Expression.Equal(left, right);
-            var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
-            whereLambdas.Add(lambda);
-        }
-
         #endregion
-
 
         #region AddIn
 
@@ -984,8 +983,6 @@ namespace PredicateBuilder.Standard
             return whereLambdas;
         }
 
-        #endregion
-
         private static Expression<Func<TEntity, bool>> GetExpression_In<TEntity>(ParameterExpression parameterExp, MemberExpression propertyExp, object listObj)
         {
             //参考 https://stackoverflow.com/questions/18491610/dynamic-linq-expression-for-ienumerableint-containsmemberexpression
@@ -1017,6 +1014,78 @@ namespace PredicateBuilder.Standard
             // var lambda = Expression.Lambda<Func<TEntity, bool>>(Expression.Not(call), pe); 
             return lambda;
         }
+
+        #endregion
+
+        #region AddGt
+
+        public static List<Expression<Func<TEntity, bool>>> AddGt<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
+        {
+            return HaveCount(props)
+                ? AddGt<TEntity, TSearchModel>(searchModel, props.ToArray())
+                : Default<TEntity>();
+        }
+
+        public static List<Expression<Func<TEntity, bool>>> AddGt<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
+        {
+            if (!HaveCount(props))
+            {
+                return Default<TEntity>();
+            }
+
+            List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            foreach (string prop in props)
+            {
+                var propertyValue = new PropertyValue<TSearchModel>(searchModel);
+                object value = propertyValue.Get(prop, out var valuePropType);
+                if (value == null || typeof(TEntity).GetProperty(prop) == null)
+                {
+                    continue;
+                }
+                if (!valuePropType.IsClass)
+                {
+                    var exp = WhereLambdaHelper.GetExpression_gt<TEntity>(prop, value);
+                    if (exp != null)
+                    {
+                        whereLambdas.Add(exp);
+                    }
+                }
+            }
+
+            return whereLambdas;
+        }
+
+        // t.SomeProperty > 5
+        private static Expression<Func<TEntity, bool>> GetExpression_gt<TEntity>(string propertyName, object propertyValue)
+        {
+            if (typeof(TEntity).GetProperty(propertyName) == null)
+            {
+                return null;
+            }
+
+            var parameterExp = Expression.Parameter(typeof(TEntity), "a");
+            var propertyExp = Expression.Property(parameterExp, propertyName); //a.Id
+            Type propType_TEntity = propertyExp.Type; // domain(typeof(TEntity)) 中的Id属性的类型
+            var left = Expression.Convert(propertyExp, propType_TEntity);
+
+            //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
+            if (propType_TEntity.IsNullableType())
+            {
+                propertyValue = Convert.ChangeType(propertyValue, propType_TEntity.GetNullableTType());
+            }
+            else
+            {
+                propertyValue = Convert.ChangeType(propertyValue, propType_TEntity);
+            }
+
+            
+            var right = Expression.Constant(propertyValue, propType_TEntity);
+            var body = Expression.GreaterThan(left, right);
+            var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
+            return lambda;
+        }
+
+        #endregion
     }
 
 }
