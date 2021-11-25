@@ -21,23 +21,23 @@ namespace ExpressionToWhereClause.Standard.Test
             var whereLambda = new WhereLambda<Route, RoutePageInput>();
             whereLambda.SearchModel = searchModel;
 
-            whereLambda[SearchType.Like] = new List<string>
+            whereLambda[SearchType.like] = new List<string>
             {
                 nameof(searchModel.Url),
                 nameof(searchModel.Data_Remark),
             };
 
-            whereLambda[SearchType.Equal] = new List<string>
+            whereLambda[SearchType.eq] = new List<string>
             {
                 nameof(searchModel.IsDel),
             };
-            whereLambda[SearchType.In] = new List<string>
+            whereLambda[SearchType.@in] = new List<string>
             {
                 nameof(searchModel.Id),
                 nameof(searchModel.Sex),
             };
 
-            whereLambda[SearchType.DateTimeRange] = new List<string>
+            whereLambda[SearchType.datetimeRange] = new List<string>
             {
                 nameof(searchModel.DataCreatedAtStart),
                 nameof(searchModel.DataCreatedAtEnd),
@@ -45,7 +45,7 @@ namespace ExpressionToWhereClause.Standard.Test
                 nameof(searchModel.DataUpdatedAtEnd),
             };
 
-            whereLambda[SearchType.NumberRange] = new List<string>
+            whereLambda[SearchType.numberRange] = new List<string>
             {
             };
 

@@ -1,39 +1,83 @@
+using System;
+
 namespace PredicateBuilder.Standard
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public enum SearchType
     {
         /// <summary>
-        /// 
+        /// 未配置
         /// </summary>
-        None = 0,
+        none = 0,
 
         /// <summary>
-        /// 
+        /// like %%
         /// </summary>
-        Like = 1,
+        like,
 
         /// <summary>
         /// 只会翻译成 Equal(=号) 当数据库的值包含,号时且用Equal查询时, 就只能用这个
         /// </summary>
-        Equal = 2,
+        eq,
 
         /// <summary>
         /// 实际翻译成 in 还是 Equal , 根据 split() 后的个数而定
         /// </summary>
-        In = 3,
+        @in,
 
         /// <summary>
         /// 日期的区间
         /// 包含开始值,不包含结束值
         /// [xxxStart, xxxEnd)
         /// </summary>
-        DateTimeRange = 4,
+        datetimeRange,
 
         /// <summary>
         /// 数值的范围
         /// 包含开始值与结束值
         /// [xxxLeft, xxxRight]
         /// </summary>
-        NumberRange = 5,
+        numberRange,
+
+        #region 还未实现
+
+        /// <summary>
+        ///  greater than
+        /// </summary>
+        [Obsolete("还未实现")] gt,
+        /// <summary>
+        /// 大于或等于(LE)
+        /// </summary>
+        [Obsolete("还未实现")] ge,
+
+        /// <summary>
+        ///  less Than
+        /// </summary>
+        [Obsolete("还未实现")] lt,
+
+        /// <summary>
+        /// 小于或等于(LE)
+        /// </summary>
+        [Obsolete("还未实现")] le,
+
+        /// <summary>
+        /// not equal
+        /// </summary>
+        [Obsolete("还未实现")] neq,
+
+        /// <summary>
+        /// 翻译成 like '%xxx'
+        /// </summary>
+        [Obsolete("还未实现")] likeLeft,
+
+        /// <summary>
+        /// 翻译成 like 'xxx%'
+        /// </summary>
+        [Obsolete("还未实现")] likeRight
+
+        #endregion
+
     }
 }
