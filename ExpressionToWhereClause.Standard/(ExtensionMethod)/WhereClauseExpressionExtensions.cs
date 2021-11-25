@@ -32,9 +32,14 @@ namespace ExpressionToWhereClause.Standard
             //只能去掉全是 and 语句的 ()
             if (!parseResult.WhereClause.Contains(SqlKeys.or))
             {
-                parseResult.WhereClause = parseResult.WhereClause
-                    .Replace("(", string.Empty)
-                    .Replace(")", string.Empty);
+                if (parseResult.WhereClause.Contains("("))
+                {
+                    parseResult.WhereClause = parseResult.WhereClause.Replace("(", string.Empty);
+                }
+                if (parseResult.WhereClause.Contains(")"))
+                {
+                    parseResult.WhereClause = parseResult.WhereClause.Replace(")", string.Empty);
+                }
             }
              
             #endregion

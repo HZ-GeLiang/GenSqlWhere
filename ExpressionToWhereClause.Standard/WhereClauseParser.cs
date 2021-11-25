@@ -34,7 +34,6 @@ namespace ExpressionToWhereClause.Standard
                 var whereClause = ParseMethodCallExpression(adhesive, methodCallExpression);
                 return ($"({whereClause})", parameters);
                 throw new NotSupportedException("暂不支持MethodCallExpression,修改程序");
-
             }
             else if (body is MemberExpression)
             {
@@ -165,6 +164,12 @@ namespace ExpressionToWhereClause.Standard
             throw new NotSupportedException($"Unknow expression {expression.GetType()}");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="adhesive">粘合剂</param>
+        /// <param name="methodCallExpression"></param>
+        /// <returns></returns>
         private static StringBuilder ParseMethodCallExpression(WhereClauseAdhesive adhesive, MethodCallExpression methodCallExpression)
         {
             var method = methodCallExpression.Method;

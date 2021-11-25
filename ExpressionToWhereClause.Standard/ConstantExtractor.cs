@@ -140,7 +140,10 @@ namespace ExpressionToWhereClause.Standard
 
             if (memberExpression.NodeType == System.Linq.Expressions.ExpressionType.Constant)
             {
-                int a = 33;
+#if DEBUG
+                //进来看看
+                System.Diagnostics.Debugger.Break();
+#endif 
                 //官方获得值的方法: https://docs.microsoft.com/zh-cn/dotnet/api/system.linq.expressions.expression.field?redirectedfrom=MSDN&view=netframework-4.8
                 //    dynamic rightValue = Expression.Lambda(memberExpression).Compile()();
                 //    return rightValue;
