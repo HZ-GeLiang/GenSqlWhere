@@ -29,14 +29,21 @@ namespace PredicateBuilder.Standard
             set { Dict[searchType] = value; }
         }
 
-        //添加where的排序顺序: 目的是尽可能的让索引生效
+        //添加where的排序顺序: 目的是尽可能的让索引生效(也就是like必须是最后的,其他只能随意)
         private static readonly SearchType[] _addOrder = {
-            SearchType.None,
-            SearchType.In,
-            SearchType.Equal,
-            SearchType.DateTimeRange,
-            SearchType.NumberRange,
-            SearchType.Like,
+            SearchType.none,
+            SearchType.@in,
+            SearchType.eq,
+            SearchType.datetimeRange,
+            SearchType.numberRange,
+            SearchType.gt,
+            SearchType.ge,
+            SearchType.lt,
+            SearchType.le,
+            SearchType.neq,
+            SearchType.likeRight,
+            SearchType.likeLeft,
+            SearchType.like,
         };
 
         #region ToExpressionList
@@ -50,7 +57,7 @@ namespace PredicateBuilder.Standard
 
             foreach (var searchType in addOrder)
             {
-                if (searchType == SearchType.None || !dict.ContainsKey(searchType))
+                if (searchType == SearchType.none || !dict.ContainsKey(searchType))
                 {
                     //throw new Exception($"参数{nameof(dict)}不包含{nameof(searchType)}值:{searchType}");
                     continue;
