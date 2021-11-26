@@ -70,12 +70,12 @@ namespace PredicateBuilder.Standard
         /// <summary>
         /// 翻译成 like '%xxx'
         /// </summary>
-        [Obsolete("还未实现")] likeLeft,
+        likeLeft,
 
         /// <summary>
         /// 翻译成 like 'xxx%'
         /// </summary>
-        [Obsolete("还未实现")] likeRight,
+        likeRight,
 
     }
 }

@@ -16,28 +16,14 @@ namespace PredicateBuilder.Standard
         private static List<Expression<Func<TEntity, bool>>> Default<TEntity>() => new List<Expression<Func<TEntity, bool>>>();
 
         #region AddLike
-
-        // t.SomeProperty.Contains("stringValue");
-        private static Expression<Func<TEntity, bool>> GetExpression_Contains<TEntity>(string propertyName, string propertyValue)
-        {
-            if (typeof(TEntity).GetProperty(propertyName) == null)
-            {
-                return null;
-            }
-            var parameterExp = Expression.Parameter(typeof(TEntity), "a");
-            var propertyExp = Expression.Property(parameterExp, propertyName);//a.UserNickName
-            var method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
-            var someValue = Expression.Constant(propertyValue, typeof(string));
-            var containsMethodExp = Expression.Call(propertyExp, method, someValue);//a.UserNickName.Contains(xx);
-            return Expression.Lambda<Func<TEntity, bool>>(containsMethodExp, parameterExp);
-        }
-
+      
         public static List<Expression<Func<TEntity, bool>>> AddLike<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
         {
             return HaveCount(props)
                 ? AddLike<TEntity, TSearchModel>(searchModel, props.ToArray())
                 : Default<TEntity>();
         }
+
         public static List<Expression<Func<TEntity, bool>>> AddLike<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
         {
             if (!HaveCount(props))
@@ -88,7 +74,135 @@ namespace PredicateBuilder.Standard
             return whereLambdas;
 
         }
+
+        // t.SomeProperty.Contains("stringValue");
+        private static Expression<Func<TEntity, bool>> GetExpression_Contains<TEntity>(string propertyName, string propertyValue)
+        {
+            if (typeof(TEntity).GetProperty(propertyName) == null)
+            {
+                return null;
+            }
+            var parameterExp = Expression.Parameter(typeof(TEntity), "a");
+            var propertyExp = Expression.Property(parameterExp, propertyName);//a.UserNickName
+            var method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+            var someValue = Expression.Constant(propertyValue, typeof(string));
+            var containsMethodExp = Expression.Call(propertyExp, method, someValue);//a.UserNickName.Contains(xx);
+            return Expression.Lambda<Func<TEntity, bool>>(containsMethodExp, parameterExp);
+        }
+
         #endregion
+
+        #region AddLikeLeft
+
+        public static List<Expression<Func<TEntity, bool>>> AddLikeLeft<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
+        {
+            return HaveCount(props)
+                ? AddLikeLeft<TEntity, TSearchModel>(searchModel, props.ToArray())
+                : Default<TEntity>();
+        }
+
+        public static List<Expression<Func<TEntity, bool>>> AddLikeLeft<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
+        {
+            if (!HaveCount(props))
+            {
+                return Default<TEntity>();
+            }
+
+            List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            foreach (var prop in props)
+            {
+                var propertyValue = new PropertyValue<TSearchModel>(searchModel);
+                object value = propertyValue.Get(prop, out _);
+                if (value == null)
+                {
+                    continue;
+                }
+                if (value is string && !string.IsNullOrWhiteSpace((string)value))
+                {
+                    var exp = WhereLambdaHelper.GetExpression_StartsWith<TEntity>(prop, (string)value);
+                    if (exp != null)
+                    {
+                        whereLambdas.Add(exp);
+                    }
+                }
+            }
+            return whereLambdas;
+        }
+
+
+        // t.SomeProperty.StartsWith("stringValue");
+        private static Expression<Func<TEntity, bool>> GetExpression_StartsWith<TEntity>(string propertyName, string propertyValue)
+        {
+            if (typeof(TEntity).GetProperty(propertyName) == null)
+            {
+                return null;
+            }
+       
+            var parameterExp = Expression.Parameter(typeof(TEntity), "a");
+            var propertyExp = Expression.Property(parameterExp, propertyName);//a.UserNickName
+            var method = typeof(string).GetMethod("StartsWith", new[] { typeof(string) });
+            var someValue = Expression.Constant(propertyValue, typeof(string));
+            var containsMethodExp = Expression.Call(propertyExp, method, someValue);//a.UserNickName.StartsWith(xx);
+            return Expression.Lambda<Func<TEntity, bool>>(containsMethodExp, parameterExp);
+        }
+
+        #endregion
+
+        #region AddLikeRight
+
+        public static List<Expression<Func<TEntity, bool>>> AddLikeRight<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
+        {
+            return HaveCount(props)
+                ? AddLikeRight<TEntity, TSearchModel>(searchModel, props.ToArray())
+                : Default<TEntity>();
+        }
+
+        public static List<Expression<Func<TEntity, bool>>> AddLikeRight<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
+        {
+            if (!HaveCount(props))
+            {
+                return Default<TEntity>();
+            }
+
+            List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            foreach (var prop in props)
+            {
+                var propertyValue = new PropertyValue<TSearchModel>(searchModel);
+                object value = propertyValue.Get(prop, out _);
+                if (value == null)
+                {
+                    continue;
+                }
+                if (value is string && !string.IsNullOrWhiteSpace((string)value))
+                {
+                    var exp = WhereLambdaHelper.GetExpression_EndsWith<TEntity>(prop, (string)value);
+                    if (exp != null)
+                    {
+                        whereLambdas.Add(exp);
+                    }
+                }
+            }
+            return whereLambdas;
+        }
+
+
+        // t.SomeProperty.EndsWith("stringValue");
+        private static Expression<Func<TEntity, bool>> GetExpression_EndsWith<TEntity>(string propertyName, string propertyValue)
+        {
+            if (typeof(TEntity).GetProperty(propertyName) == null)
+            {
+                return null;
+            }
+            var parameterExp = Expression.Parameter(typeof(TEntity), "a");
+            var propertyExp = Expression.Property(parameterExp, propertyName);//a.UserNickName
+            var method = typeof(string).GetMethod("EndsWith", new[] { typeof(string) });
+            var someValue = Expression.Constant(propertyValue, typeof(string));
+            var containsMethodExp = Expression.Call(propertyExp, method, someValue);//a.UserNickName.EndsWith(xx);
+            return Expression.Lambda<Func<TEntity, bool>>(containsMethodExp, parameterExp);
+        }
+
+        #endregion
+
 
         #region AddEqual版本1 (最开始的代码) 后来根据 AddInOrEuqal 衍生出 AddEqual版本2
         /*
@@ -1353,7 +1467,6 @@ namespace PredicateBuilder.Standard
             {
                 propertyValue = Convert.ChangeType(propertyValue, propType_TEntity);
             }
-
 
             var right = Expression.Constant(propertyValue, propType_TEntity);
             var body = Expression.LessThanOrEqual(left, right);

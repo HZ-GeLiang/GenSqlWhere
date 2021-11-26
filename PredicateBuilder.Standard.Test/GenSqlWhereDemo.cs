@@ -25,9 +25,7 @@ namespace PredicateBuilder.Standard.Test
                 nameof(searchModel.Data_Remark),
             };
 
-            Expression<Func<People, bool>> exp = whereLambda.ToExpression();
-
-            (string sql, Dictionary<string, object> param) = exp.ToWhereClause();
+            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
             Assert.AreEqual(sql, "Url Like @Url");
             var dict = new Dictionary<string, object>
@@ -37,6 +35,61 @@ namespace PredicateBuilder.Standard.Test
 
             DictionaryAssert.AreEqual(param, dict);
         }
+
+        [TestMethod]
+        public void Test_likeLeft()
+        {
+            var searchModel = new Input_likeLeft()
+            {
+                Url = "123",
+            };
+            var whereLambda = new WhereLambda<People, Input_likeLeft>();
+            whereLambda.SearchModel = searchModel;
+
+            whereLambda[SearchType.likeLeft] = new List<string>
+            {
+                nameof(searchModel.Url),
+                nameof(searchModel.Data_Remark),
+            };
+
+            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+
+            Assert.AreEqual(sql, "Url Like @Url");
+            var dict = new Dictionary<string, object>
+            {
+                { "@Url", "123%" }
+            };
+
+            DictionaryAssert.AreEqual(param, dict);
+        }
+
+        [TestMethod]
+        public void Test_likeRight()
+        {
+            var searchModel = new Input_likeRight()
+            {
+                Url = "123",
+            };
+            var whereLambda = new WhereLambda<People, Input_likeRight>();
+            whereLambda.SearchModel = searchModel;
+
+            whereLambda[SearchType.likeRight] = new List<string>
+            {
+                nameof(searchModel.Url),
+                nameof(searchModel.Data_Remark),
+            };
+
+            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+
+            Assert.AreEqual(sql, "Url Like @Url");
+            var dict = new Dictionary<string, object>
+            {
+                { "@Url", "%123" }
+            };
+
+            DictionaryAssert.AreEqual(param, dict);
+        }
+
 
         [TestMethod]
         public void Test_eq()
@@ -52,9 +105,8 @@ namespace PredicateBuilder.Standard.Test
             whereLambda[SearchType.eq] = new List<string>
             {
                 nameof(searchModel.IsDel),
-            };
-            Expression<Func<People, bool>> exp = whereLambda.ToExpression();
-            (string sql, Dictionary<string, object> param) = exp.ToWhereClause();
+            }; 
+            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
             Assert.AreEqual(sql, "IsDel = @IsDel");
             var dict = new Dictionary<string, object>
@@ -79,9 +131,8 @@ namespace PredicateBuilder.Standard.Test
             whereLambda[SearchType.neq] = new List<string>
             {
                 nameof(searchModel.IsDel),
-            };
-            Expression<Func<People, bool>> exp = whereLambda.ToExpression();
-            (string sql, Dictionary<string, object> param) = exp.ToWhereClause();
+            }; 
+            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
             Assert.AreEqual(sql, "IsDel <> @IsDel");
             var dict = new Dictionary<string, object>
@@ -109,8 +160,8 @@ namespace PredicateBuilder.Standard.Test
                 nameof(searchModel.Id),
                 nameof(searchModel.Sex),
             };
-            Expression<Func<People, bool>> exp = whereLambda.ToExpression();
-            (string sql, Dictionary<string, object> param) = exp.ToWhereClause();
+      
+            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
             Assert.AreEqual(sql, "Id In @Id And Sex In @Sex");
             var dict = new Dictionary<string, object>
@@ -137,8 +188,8 @@ namespace PredicateBuilder.Standard.Test
             {
                 nameof(searchModel.Id),
             };
-            Expression<Func<People, bool>> exp = whereLambda.ToExpression();
-            (string sql, Dictionary<string, object> param) = exp.ToWhereClause();
+      
+            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
             Assert.AreEqual(sql, "Id In @Id");
             var dict = new Dictionary<string, object>
@@ -168,8 +219,8 @@ namespace PredicateBuilder.Standard.Test
                 nameof(searchModel.DataUpdatedAtStart),
                 nameof(searchModel.DataUpdatedAtEnd),
             };
-            Expression<Func<People, bool>> exp = whereLambda.ToExpression();
-            (string sql, Dictionary<string, object> param) = exp.ToWhereClause();
+      
+            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
             Assert.AreEqual(sql, "DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1");
             var dict = new Dictionary<string, object>
@@ -196,8 +247,8 @@ namespace PredicateBuilder.Standard.Test
                 nameof(searchModel.IdLeft),
                 nameof(searchModel.IdRight),
             };
-            Expression<Func<People, bool>> exp = whereLambda.ToExpression();
-            (string sql, Dictionary<string, object> param) = exp.ToWhereClause();
+      
+            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
             Assert.AreEqual(sql, "Id >= @Id And Id <= @Id1");
             var dict = new Dictionary<string, object>
