@@ -212,6 +212,72 @@ namespace PredicateBuilder.Standard
 
         #endregion
 
+        #region AddNotEqual-基于Equal的版本2
+
+        public static List<Expression<Func<TEntity, bool>>> AddNotEqual<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
+        {
+            return HaveCount(props)
+                ? AddNotEqual<TEntity, TSearchModel>(searchModel, props.ToArray())
+                : Default<TEntity>();
+        }
+
+        public static List<Expression<Func<TEntity, bool>>> AddNotEqual<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
+        {
+            if (!HaveCount(props))
+            {
+                return Default<TEntity>();
+            }
+
+            List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            foreach (var prop in props)
+            {
+                var propertyValue = new PropertyValue<TSearchModel>(searchModel);
+                object value = propertyValue.Get(prop, out var valuePropType);
+                if (value == null)
+                {
+                    continue;
+                }
+
+                AddNotEqualCore<TEntity, TSearchModel>(prop, valuePropType, value, whereLambdas);
+            }
+            return whereLambdas;
+        }
+
+        private static void AddNotEqualCore<TEntity, TSearchModel>(string prop, Type valuePropType, object propertyValue, List<Expression<Func<TEntity, bool>>> whereLambdas)
+        {
+            if (typeof(TEntity).GetProperty(prop) == null)
+            {
+                return;
+            }
+            // AddEqual 的代码
+            var parameterExp = Expression.Parameter(typeof(TEntity), "a");
+            var propertyExp = Expression.Property(parameterExp, prop); //a.AuditStateId
+            Type propType_TEntity = propertyExp.Type; //a.AuditStateId 的type(Dto中定义的属性类型)
+            var left = Expression.Convert(propertyExp, propType_TEntity);
+            //var right = Expression.Constant(propertyValue, propertyValue.GetType());//ids这种情况就有问题
+            //前半个if 是为了支持ids的查询: 当id需要支持多个值查询时, 前端模型只能是string类型, 然后这里就会因为类型不一致而发生异常
+            if (valuePropType != propType_TEntity || propType_TEntity != typeof(string))
+            {
+                //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
+                if (propType_TEntity.IsNullableType())
+                {
+                    propertyValue = Convert.ChangeType(propertyValue, propType_TEntity.GetNullableTType());
+                }
+                else
+                {
+                    propertyValue = Convert.ChangeType(propertyValue, propType_TEntity);
+                }
+            }
+
+            var right = Expression.Constant(propertyValue, propType_TEntity);
+
+            var body = Expression.NotEqual(left, right);
+            var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
+            whereLambdas.Add(lambda);
+        }
+
+        #endregion
+
         #region AddNumberRange
 
         internal class NumberSearch

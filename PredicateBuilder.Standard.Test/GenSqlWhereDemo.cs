@@ -66,6 +66,33 @@ namespace PredicateBuilder.Standard.Test
         }
 
         [TestMethod]
+        public void Test_neq()
+        {
+            var searchModel = new Input_neq()
+            {
+                IsDel = true,//todo://计划:添加当其他值为xx时,当前值才生效
+            };
+
+            var whereLambda = new WhereLambda<People, Input_neq>();
+            whereLambda.SearchModel = searchModel;
+
+            whereLambda[SearchType.neq] = new List<string>
+            {
+                nameof(searchModel.IsDel),
+            };
+            Expression<Func<People, bool>> exp = whereLambda.ToExpression();
+            (string sql, Dictionary<string, object> param) = exp.ToWhereClause();
+
+            Assert.AreEqual(sql, "IsDel <> @IsDel");
+            var dict = new Dictionary<string, object>
+            {
+                { "@IsDel", searchModel.IsDel }
+            };
+
+            DictionaryAssert.AreEqual(param, dict);
+        }
+
+        [TestMethod]
         public void Test_in()
         {
             var searchModel = new Input_in()

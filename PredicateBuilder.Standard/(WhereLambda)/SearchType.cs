@@ -65,7 +65,7 @@ namespace PredicateBuilder.Standard
         /// <summary>
         /// not equal
         /// </summary>
-        [Obsolete("还未实现")] neq,
+        neq,
 
         /// <summary>
         /// 翻译成 like '%xxx'
