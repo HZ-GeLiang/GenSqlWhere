@@ -256,7 +256,7 @@ namespace ExpressionToWhereClause.Standard
                 }
             }
 
-            if (binaryExpression.NodeType is 
+            if (binaryExpression.NodeType is
                  ExpressionType.OrElse or
                  ExpressionType.AndAlso or
                  ExpressionType.Equal or
@@ -264,8 +264,7 @@ namespace ExpressionToWhereClause.Standard
                  ExpressionType.GreaterThan or
                  ExpressionType.GreaterThanOrEqual or
                  ExpressionType.LessThan or
-                 ExpressionType.LessThanOrEqual
-                )
+                 ExpressionType.LessThanOrEqual)
             {
                 var sqlBuilder = new StringBuilder();
 
@@ -356,26 +355,27 @@ namespace ExpressionToWhereClause.Standard
                 return ConditionBuilder.BuildCondition(memberExpression.Member, adhesive, binaryExpression.NodeType,
                     ConstantExtractor.ParseConstant(binaryExpression.Right));
             }
-
-            var msg = $"Unknow Left:{binaryExpression.Left.GetType()}, Right:{binaryExpression.Right.GetType()},  NodeType:{binaryExpression.NodeType}";
-            throw new NotSupportedException(msg);
-
+            else
+            {
+                var msg = $"Unknow Left:{binaryExpression.Left.GetType()}, Right:{binaryExpression.Right.GetType()},  NodeType:{binaryExpression.NodeType}";
+                throw new NotSupportedException(msg);
+            }
         }
 
         private static bool IsDataComparator(ExpressionType expressionType)
         {
-            switch (expressionType)
+            if (expressionType is
+               ExpressionType.Equal or
+               ExpressionType.LessThan or
+               ExpressionType.LessThanOrEqual or
+               ExpressionType.GreaterThan or
+               ExpressionType.GreaterThanOrEqual or
+               ExpressionType.NotEqual)
             {
-                case ExpressionType.Equal:
-                case ExpressionType.LessThan:
-                case ExpressionType.LessThanOrEqual:
-                case ExpressionType.GreaterThan:
-                case ExpressionType.GreaterThanOrEqual:
-                case ExpressionType.NotEqual:
-                    return true;
-                default:
-                    return false;
+                return true;
             }
+            return false;
+
         }
 
 

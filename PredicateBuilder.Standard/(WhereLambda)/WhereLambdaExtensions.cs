@@ -18,6 +18,12 @@ namespace PredicateBuilder.Standard
                 case SearchType.like:
                     expressionList = WhereLambdaHelper.AddLike<TEntity, TSearchModel>(searchModel, props);
                     break;
+                case SearchType.likeLeft:
+                    expressionList = WhereLambdaHelper.AddLikeLeft<TEntity, TSearchModel>(searchModel, props);
+                    break;
+                case SearchType.likeRight:
+                    expressionList = WhereLambdaHelper.AddLikeRight<TEntity, TSearchModel>(searchModel, props);
+                    break;
                 case SearchType.eq:
                     expressionList = WhereLambdaHelper.AddEqual<TEntity, TSearchModel>(searchModel, props);
                     break;
