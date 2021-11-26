@@ -12,7 +12,7 @@ namespace PredicateBuilder.Standard
     /// <typeparam name="TSearchModel">不要使用多态,会报错的</typeparam>
     public class WhereLambda<TEntity, TSearchModel>
     {
-        //public WhereLambda(){}
+        //public WhereLambda() { }
 
         //public WhereLambda(TSearchModel searchModel)
         //{
@@ -99,4 +99,5 @@ namespace PredicateBuilder.Standard
         }
         #endregion
     }
+    
 }
