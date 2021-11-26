@@ -46,22 +46,21 @@ namespace PredicateBuilder.Standard
         /// </summary>
         gt,
 
-        #region 还未实现
-        //todo: 还未实现
+
         /// <summary>
         /// 大于或等于(LE)
         /// </summary>
-        [Obsolete("还未实现")] ge,
+        ge,
 
         /// <summary>
         ///  less Than
         /// </summary>
-        [Obsolete("还未实现")] lt,
+        lt,
 
         /// <summary>
         /// 小于或等于(LE)
         /// </summary>
-        [Obsolete("还未实现")] le,
+        le,
 
         /// <summary>
         /// not equal
@@ -77,8 +76,6 @@ namespace PredicateBuilder.Standard
         /// 翻译成 like 'xxx%'
         /// </summary>
         [Obsolete("还未实现")] likeRight,
-
-        #endregion
 
     }
 }

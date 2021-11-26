@@ -1086,6 +1086,216 @@ namespace PredicateBuilder.Standard
         }
 
         #endregion
+
+        #region AddGe
+
+        public static List<Expression<Func<TEntity, bool>>> AddGe<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
+        {
+            return HaveCount(props)
+                ? AddGe<TEntity, TSearchModel>(searchModel, props.ToArray())
+                : Default<TEntity>();
+        }
+
+        public static List<Expression<Func<TEntity, bool>>> AddGe<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
+        {
+            if (!HaveCount(props))
+            {
+                return Default<TEntity>();
+            }
+
+            List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            foreach (string prop in props)
+            {
+                var propertyValue = new PropertyValue<TSearchModel>(searchModel);
+                object value = propertyValue.Get(prop, out var valuePropType);
+                if (value == null || typeof(TEntity).GetProperty(prop) == null)
+                {
+                    continue;
+                }
+                if (!valuePropType.IsClass)
+                {
+                    var exp = WhereLambdaHelper.GetExpression_ge<TEntity>(prop, value);
+                    if (exp != null)
+                    {
+                        whereLambdas.Add(exp);
+                    }
+                }
+            }
+
+            return whereLambdas;
+        }
+
+        // t.SomeProperty >= 5
+        private static Expression<Func<TEntity, bool>> GetExpression_ge<TEntity>(string propertyName, object propertyValue)
+        {
+            if (typeof(TEntity).GetProperty(propertyName) == null)
+            {
+                return null;
+            }
+
+            var parameterExp = Expression.Parameter(typeof(TEntity), "a");
+            var propertyExp = Expression.Property(parameterExp, propertyName); //a.Id
+            Type propType_TEntity = propertyExp.Type; // domain(typeof(TEntity)) 中的Id属性的类型
+            var left = Expression.Convert(propertyExp, propType_TEntity);
+
+            //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
+            if (propType_TEntity.IsNullableType())
+            {
+                propertyValue = Convert.ChangeType(propertyValue, propType_TEntity.GetNullableTType());
+            }
+            else
+            {
+                propertyValue = Convert.ChangeType(propertyValue, propType_TEntity);
+            }
+
+
+            var right = Expression.Constant(propertyValue, propType_TEntity);
+            var body = Expression.GreaterThanOrEqual(left, right);
+            var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
+            return lambda;
+        }
+
+        #endregion
+
+        #region AddLt
+
+        public static List<Expression<Func<TEntity, bool>>> AddLt<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
+        {
+            return HaveCount(props)
+                ? AddLt<TEntity, TSearchModel>(searchModel, props.ToArray())
+                : Default<TEntity>();
+        }
+
+        public static List<Expression<Func<TEntity, bool>>> AddLt<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
+        {
+            if (!HaveCount(props))
+            {
+                return Default<TEntity>();
+            }
+
+            List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            foreach (string prop in props)
+            {
+                var propertyValue = new PropertyValue<TSearchModel>(searchModel);
+                object value = propertyValue.Get(prop, out var valuePropType);
+                if (value == null || typeof(TEntity).GetProperty(prop) == null)
+                {
+                    continue;
+                }
+                if (!valuePropType.IsClass)
+                {
+                    var exp = WhereLambdaHelper.GetExpression_lt<TEntity>(prop, value);
+                    if (exp != null)
+                    {
+                        whereLambdas.Add(exp);
+                    }
+                }
+            }
+
+            return whereLambdas;
+        }
+
+        // t.SomeProperty < 5
+        private static Expression<Func<TEntity, bool>> GetExpression_lt<TEntity>(string propertyName, object propertyValue)
+        {
+            if (typeof(TEntity).GetProperty(propertyName) == null)
+            {
+                return null;
+            }
+
+            var parameterExp = Expression.Parameter(typeof(TEntity), "a");
+            var propertyExp = Expression.Property(parameterExp, propertyName); //a.Id
+            Type propType_TEntity = propertyExp.Type; // domain(typeof(TEntity)) 中的Id属性的类型
+            var left = Expression.Convert(propertyExp, propType_TEntity);
+
+            //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
+            if (propType_TEntity.IsNullableType())
+            {
+                propertyValue = Convert.ChangeType(propertyValue, propType_TEntity.GetNullableTType());
+            }
+            else
+            {
+                propertyValue = Convert.ChangeType(propertyValue, propType_TEntity);
+            }
+
+
+            var right = Expression.Constant(propertyValue, propType_TEntity);
+            var body = Expression.LessThan(left, right);
+            var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
+            return lambda;
+        }
+
+        #endregion
+
+        #region AddLe
+
+        public static List<Expression<Func<TEntity, bool>>> AddLe<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
+        {
+            return HaveCount(props)
+                ? AddLe<TEntity, TSearchModel>(searchModel, props.ToArray())
+                : Default<TEntity>();
+        }
+
+        public static List<Expression<Func<TEntity, bool>>> AddLe<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
+        {
+            if (!HaveCount(props))
+            {
+                return Default<TEntity>();
+            }
+
+            List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            foreach (string prop in props)
+            {
+                var propertyValue = new PropertyValue<TSearchModel>(searchModel);
+                object value = propertyValue.Get(prop, out var valuePropType);
+                if (value == null || typeof(TEntity).GetProperty(prop) == null)
+                {
+                    continue;
+                }
+                if (!valuePropType.IsClass)
+                {
+                    var exp = WhereLambdaHelper.GetExpression_le<TEntity>(prop, value);
+                    if (exp != null)
+                    {
+                        whereLambdas.Add(exp);
+                    }
+                }
+            }
+
+            return whereLambdas;
+        }
+
+        // t.SomeProperty <= 5
+        private static Expression<Func<TEntity, bool>> GetExpression_le<TEntity>(string propertyName, object propertyValue)
+        {
+            if (typeof(TEntity).GetProperty(propertyName) == null)
+            {
+                return null;
+            }
+
+            var parameterExp = Expression.Parameter(typeof(TEntity), "a");
+            var propertyExp = Expression.Property(parameterExp, propertyName); //a.Id
+            Type propType_TEntity = propertyExp.Type; // domain(typeof(TEntity)) 中的Id属性的类型
+            var left = Expression.Convert(propertyExp, propType_TEntity);
+
+            //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
+            if (propType_TEntity.IsNullableType())
+            {
+                propertyValue = Convert.ChangeType(propertyValue, propType_TEntity.GetNullableTType());
+            }
+            else
+            {
+                propertyValue = Convert.ChangeType(propertyValue, propType_TEntity);
+            }
+
+
+            var right = Expression.Constant(propertyValue, propType_TEntity);
+            var body = Expression.LessThanOrEqual(left, right);
+            var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
+            return lambda;
+        }
+
+        #endregion
     }
 
 }
