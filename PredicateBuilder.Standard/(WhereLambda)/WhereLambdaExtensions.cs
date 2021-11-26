@@ -21,6 +21,9 @@ namespace PredicateBuilder.Standard
                 case SearchType.eq:
                     expressionList = WhereLambdaHelper.AddEqual<TEntity, TSearchModel>(searchModel, props);
                     break;
+                case SearchType.neq:
+                    expressionList = WhereLambdaHelper.AddNotEqual<TEntity, TSearchModel>(searchModel, props);
+                    break;
                 case SearchType.@in:
                     expressionList = WhereLambdaHelper.AddIn<TEntity, TSearchModel>(searchModel, props);
                     break;

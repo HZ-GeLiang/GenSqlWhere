@@ -256,13 +256,15 @@ namespace ExpressionToWhereClause.Standard
                 }
             }
 
-            if (binaryExpression.NodeType == ExpressionType.OrElse ||
-                binaryExpression.NodeType == ExpressionType.AndAlso ||
-                binaryExpression.NodeType == ExpressionType.Equal ||
-                binaryExpression.NodeType == ExpressionType.GreaterThan ||
-                binaryExpression.NodeType == ExpressionType.GreaterThanOrEqual ||
-                binaryExpression.NodeType == ExpressionType.LessThan ||
-                binaryExpression.NodeType == ExpressionType.LessThanOrEqual
+            if (binaryExpression.NodeType is 
+                 ExpressionType.OrElse or
+                 ExpressionType.AndAlso or
+                 ExpressionType.Equal or
+                 ExpressionType.NotEqual or
+                 ExpressionType.GreaterThan or
+                 ExpressionType.GreaterThanOrEqual or
+                 ExpressionType.LessThan or
+                 ExpressionType.LessThanOrEqual
                 )
             {
                 var sqlBuilder = new StringBuilder();
@@ -354,11 +356,10 @@ namespace ExpressionToWhereClause.Standard
                 return ConditionBuilder.BuildCondition(memberExpression.Member, adhesive, binaryExpression.NodeType,
                     ConstantExtractor.ParseConstant(binaryExpression.Right));
             }
-            else
-            {
-                throw new NotSupportedException(
-                    $"Unknow Left:{binaryExpression.Left.GetType()} Right:{binaryExpression.Right.GetType()} NodeType:{binaryExpression.NodeType}");
-            }
+
+            var msg = $"Unknow Left:{binaryExpression.Left.GetType()}, Right:{binaryExpression.Right.GetType()},  NodeType:{binaryExpression.NodeType}";
+            throw new NotSupportedException(msg);
+
         }
 
         private static bool IsDataComparator(ExpressionType expressionType)
