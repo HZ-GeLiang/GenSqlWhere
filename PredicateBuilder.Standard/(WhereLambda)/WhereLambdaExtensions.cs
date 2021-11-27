@@ -4,9 +4,9 @@ using System.Linq.Expressions;
 
 namespace PredicateBuilder.Standard
 {
-    internal static class WhereLambdaExtensions
+    public static class WhereLambdaExtensions
     {
-        public static List<Expression<Func<TEntity, bool>>> AddRange<TEntity, TSearchModel>(
+        internal static List<Expression<Func<TEntity, bool>>> AddRange<TEntity, TSearchModel>(
             this List<Expression<Func<TEntity, bool>>> whereLambdas,
             TSearchModel searchModel, SearchType searchType, List<string> props)
         {
@@ -58,6 +58,11 @@ namespace PredicateBuilder.Standard
             whereLambdas.AddRange(expressionList);
 
             return whereLambdas;
+        }
+
+        public static WhereLambda<TEntity, TSearchModel> CrateWhereLambda<TSearchModel, TEntity>(this TSearchModel searchModel, Action<TEntity> _)
+        {
+            return new WhereLambda<TEntity, TSearchModel>(searchModel);
         }
     }
 }

@@ -6,6 +6,7 @@ using ExpressionToWhereClause.Standard;
 
 namespace PredicateBuilder.Standard.Test
 {
+    [TestClass]
     public class UseDemo
     {
         [TestMethod]
@@ -17,7 +18,7 @@ namespace PredicateBuilder.Standard.Test
                 //Id = 1,
                 Id = "1,2",
                 Sex = "1",
-                IsDel = true, 
+                IsDel = true,
                 Url = "123",
                 DataCreatedAtStart = time.AddHours(-1),
                 DataCreatedAtEnd = time,
@@ -60,7 +61,49 @@ namespace PredicateBuilder.Standard.Test
             //List<Expression<Func<Route, bool>>> listExp = whereLambda;
             //Expression<Func<Route, bool>> exp = whereLambda;
 
-            (string sql, Dictionary<string, object> param)   = exp.ToWhereClause();
+            (string sql, Dictionary<string, object> param) = exp.ToWhereClause();
+
+            Assert.AreEqual(sql, "Id In @Id And Sex In @Sex And IsDel = @IsDel And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
+        }
+
+        [TestMethod]
+        public void UseDynamic()
+        {
+            var searchModel = new
+            {
+                //Id = 1,
+                Id = "1,2",
+                Sex = "1",
+                IsDel = true,
+                Url = "123",
+                DataCreatedAtStart = DateTime.Parse("2021-8-8").AddHours(-1),
+                DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
+            };
+
+            var whereLambda = searchModel.CrateWhereLambda((People p) => { });
+
+            whereLambda[SearchType.like] = new List<string>
+            {
+                nameof(searchModel.Url),
+            };
+
+            whereLambda[SearchType.eq] = new List<string>
+            {
+                nameof(searchModel.IsDel),
+            };
+            whereLambda[SearchType.@in] = new List<string>
+            {
+                nameof(searchModel.Id),
+                nameof(searchModel.Sex),
+            };
+
+            whereLambda[SearchType.datetimeRange] = new List<string>
+            {
+                nameof(searchModel.DataCreatedAtStart),
+                nameof(searchModel.DataCreatedAtEnd),
+            };
+
+            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
             Assert.AreEqual(sql, "Id In @Id And Sex In @Sex And IsDel = @IsDel And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
         }

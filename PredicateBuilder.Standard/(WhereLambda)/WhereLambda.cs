@@ -5,6 +5,7 @@ using PredicateBuilder.Standard.ExtensionMethod;
 
 namespace PredicateBuilder.Standard
 {
+
     /// <summary>
     /// 
     /// </summary>
@@ -12,21 +13,24 @@ namespace PredicateBuilder.Standard
     /// <typeparam name="TSearchModel">不要使用多态,会报错的</typeparam>
     public class WhereLambda<TEntity, TSearchModel>
     {
-        //public WhereLambda() { }
+        /// <summary>
+        /// 构造器创建,需要 赋值 SearchModel 属性才能使用
+        /// </summary>
+        public WhereLambda() { }
 
-        //public WhereLambda(TSearchModel searchModel)
-        //{
-        //    this.SearchModel = searchModel;
-        //}
+        public WhereLambda(TSearchModel searchModel)
+        {
+            this.SearchModel = searchModel;
+        }
 
         public TSearchModel SearchModel { get; set; }
 
-        internal Dictionary<SearchType, List<string>> Dict = new Dictionary<SearchType, List<string>>();
+        internal Dictionary<SearchType, List<string>> _dictSearhType = new Dictionary<SearchType, List<string>>();
 
         public List<string> this[SearchType searchType]
         {
-            get { return Dict[searchType]; }
-            set { Dict[searchType] = value; }
+            get { return _dictSearhType[searchType]; }
+            set { _dictSearhType[searchType] = value; }
         }
 
         //添加where的排序顺序: 目的是尽可能的让索引生效(也就是like必须是最后的,其他只能随意)
@@ -47,9 +51,9 @@ namespace PredicateBuilder.Standard
         };
 
         #region ToExpressionList
-        public List<Expression<Func<TEntity, bool>>> ToExpressionList() => ToExpressionList(_addOrder, this.SearchModel, this.Dict);
+        public List<Expression<Func<TEntity, bool>>> ToExpressionList() => ToExpressionList(_addOrder, this.SearchModel, this._dictSearhType);
 
-        public static implicit operator List<Expression<Func<TEntity, bool>>>(WhereLambda<TEntity, TSearchModel> that) => ToExpressionList(_addOrder, that.SearchModel, that.Dict);
+        public static implicit operator List<Expression<Func<TEntity, bool>>>(WhereLambda<TEntity, TSearchModel> that) => ToExpressionList(_addOrder, that.SearchModel, that._dictSearhType);
 
         private static List<Expression<Func<TEntity, bool>>> ToExpressionList(SearchType[] addOrder, TSearchModel searchModel, Dictionary<SearchType, List<string>> dict)
         {
@@ -74,7 +78,7 @@ namespace PredicateBuilder.Standard
 
         public Expression<Func<TEntity, bool>> ToExpression() => ToExpression(ToExpressionList());
 
-        public static implicit operator Expression<Func<TEntity, bool>>(WhereLambda<TEntity, TSearchModel> that) => ToExpression(ToExpressionList(_addOrder, that.SearchModel, that.Dict));
+        public static implicit operator Expression<Func<TEntity, bool>>(WhereLambda<TEntity, TSearchModel> that) => ToExpression(ToExpressionList(_addOrder, that.SearchModel, that._dictSearhType));
 
         private static Expression<Func<TEntity, bool>> ToExpression(List<Expression<Func<TEntity, bool>>> whereLambdas)
         {
@@ -99,5 +103,6 @@ namespace PredicateBuilder.Standard
         }
         #endregion
     }
-    
+
+
 }
