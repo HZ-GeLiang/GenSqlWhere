@@ -105,7 +105,7 @@ namespace PredicateBuilder.Standard.Test
             whereLambda[SearchType.eq] = new List<string>
             {
                 nameof(searchModel.IsDel),
-            }; 
+            };
             (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
             Assert.AreEqual(sql, "IsDel = @IsDel");
@@ -131,7 +131,7 @@ namespace PredicateBuilder.Standard.Test
             whereLambda[SearchType.neq] = new List<string>
             {
                 nameof(searchModel.IsDel),
-            }; 
+            };
             (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
             Assert.AreEqual(sql, "IsDel <> @IsDel");
@@ -160,7 +160,7 @@ namespace PredicateBuilder.Standard.Test
                 nameof(searchModel.Id),
                 nameof(searchModel.Sex),
             };
-      
+
             (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
             Assert.AreEqual(sql, "Id In @Id And Sex In @Sex");
@@ -188,7 +188,7 @@ namespace PredicateBuilder.Standard.Test
             {
                 nameof(searchModel.Id),
             };
-      
+
             (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
             Assert.AreEqual(sql, "Id In @Id");
@@ -219,7 +219,7 @@ namespace PredicateBuilder.Standard.Test
                 nameof(searchModel.DataUpdatedAtStart),
                 nameof(searchModel.DataUpdatedAtEnd),
             };
-      
+
             (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
             Assert.AreEqual(sql, "DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1");
@@ -247,7 +247,7 @@ namespace PredicateBuilder.Standard.Test
                 nameof(searchModel.IdLeft),
                 nameof(searchModel.IdRight),
             };
-      
+
             (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
             Assert.AreEqual(sql, "Id >= @Id And Id <= @Id1");
@@ -391,6 +391,35 @@ namespace PredicateBuilder.Standard.Test
 
             var whereLambda = new WhereLambda<People, Input_le>();
             whereLambda.SearchModel = searchModel;
+
+            whereLambda[SearchType.le] = new List<string>
+            {
+                nameof(searchModel.Id),
+                nameof(searchModel.DataCreatedAt),
+            };
+
+            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+
+            Assert.AreEqual(sql, "Id <= @Id And DataCreatedAt <= @DataCreatedAt");
+            var dict = new Dictionary<string, object>
+            {
+                { "@Id", 5 },//取 domain 的类型
+                { "@DataCreatedAt", searchModel.DataCreatedAt }
+            };
+
+            DictionaryAssert.AreEqual(param, dict);
+        }
+
+        [TestMethod]
+        public void Test_le_dynamic()
+        {
+            var searchModel = new
+            {
+                Id = 5,
+                DataCreatedAt = DateTime.Parse("2021-8-8"),
+            };
+
+            var whereLambda = searchModel.CrateWhereLambda((People _) => { });
 
             whereLambda[SearchType.le] = new List<string>
             {
