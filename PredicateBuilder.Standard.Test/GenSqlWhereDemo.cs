@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using ExpressionToWhereClause;
+using EntityToSqlWhereCaluseConfig;
+using ExpressionToSqlWhereClause.Test.input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PredicateBuilder.Test.input;
 
-namespace PredicateBuilder.Test
+namespace ExpressionToSqlWhereClause.Test
 {
     [TestClass]
     public class GenSqlWhereDemo
@@ -96,7 +96,7 @@ namespace PredicateBuilder.Test
         {
             var searchModel = new Input_eq()
             {
-                IsDel = true,//todo://¼Æ»®:Ìí¼Óµ±ÆäËûÖµÎªxxÊ±,µ±Ç°Öµ²ÅÉúÐ§
+                IsDel = true,//todo://ï¿½Æ»ï¿½:ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½ÖµÎªxxÊ±,ï¿½ï¿½Ç°Öµï¿½ï¿½ï¿½ï¿½Ð§
             };
 
             var whereLambda = new WhereLambda<People, Input_eq>();
@@ -122,7 +122,7 @@ namespace PredicateBuilder.Test
         {
             var searchModel = new Input_neq()
             {
-                IsDel = true,//todo://¼Æ»®:Ìí¼Óµ±ÆäËûÖµÎªxxÊ±,µ±Ç°Öµ²ÅÉúÐ§
+                IsDel = true,//todo://ï¿½Æ»ï¿½:ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½ÖµÎªxxÊ±,ï¿½ï¿½Ç°Öµï¿½ï¿½ï¿½ï¿½Ð§
             };
 
             var whereLambda = new WhereLambda<People, Input_neq>();
@@ -194,7 +194,7 @@ namespace PredicateBuilder.Test
             Assert.AreEqual(sql, "Id In @Id");
             var dict = new Dictionary<string, object>
             {
-                { "@Id", "1"},//in ¿ÉÒÔÓÐ¶à¸öÖµ,ËùÒÔÕâ¸öÖµ¾ÍÊÇstirngÀàÐÍµÄ
+                { "@Id", "1"},//in ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½Öµ,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½stirngï¿½ï¿½ï¿½Íµï¿½
             };
 
             DictionaryAssert.AreEqual(param, dict);
@@ -203,7 +203,7 @@ namespace PredicateBuilder.Test
         [TestMethod]
         public void Test_datetimeRange()
         {
-            //2¸öÊ±¼äµÄ½ø¶È²»Ò»Ñù,Ö»²âÊÔÁËÒ»ÖÖÇé¿ö
+            //2ï¿½ï¿½Ê±ï¿½ï¿½Ä½ï¿½ï¿½È²ï¿½Ò»ï¿½ï¿½,Ö»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½
             var searchModel = new Input_datetimeRange()
             {
                 DataCreatedAtStart = DateTime.Parse("2021-8-8").AddHours(-1),
@@ -313,7 +313,7 @@ namespace PredicateBuilder.Test
             Assert.AreEqual(sql, "Id > @Id And DataCreatedAt > @DataCreatedAt");
             var dict = new Dictionary<string, object>
             {
-                { "@Id", 5 },//È¡ domain µÄÀàÐÍ
+                { "@Id", 5 },//È¡ domain ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 { "@DataCreatedAt", searchModel.DataCreatedAt }
             };
 
@@ -343,7 +343,7 @@ namespace PredicateBuilder.Test
             Assert.AreEqual(sql, "Id >= @Id And DataCreatedAt >= @DataCreatedAt");
             var dict = new Dictionary<string, object>
             {
-                { "@Id", 5 },//È¡ domain µÄÀàÐÍ
+                { "@Id", 5 },//È¡ domain ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 { "@DataCreatedAt", searchModel.DataCreatedAt }
             };
 
@@ -373,7 +373,7 @@ namespace PredicateBuilder.Test
             Assert.AreEqual(sql, "Id < @Id And DataCreatedAt < @DataCreatedAt");
             var dict = new Dictionary<string, object>
             {
-                { "@Id", 5 },//È¡ domain µÄÀàÐÍ
+                { "@Id", 5 },//È¡ domain ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 { "@DataCreatedAt", searchModel.DataCreatedAt }
             };
 
@@ -403,7 +403,7 @@ namespace PredicateBuilder.Test
             Assert.AreEqual(sql, "Id <= @Id And DataCreatedAt <= @DataCreatedAt");
             var dict = new Dictionary<string, object>
             {
-                { "@Id", 5 },//È¡ domain µÄÀàÐÍ
+                { "@Id", 5 },//È¡ domain ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 { "@DataCreatedAt", searchModel.DataCreatedAt }
             };
 
@@ -432,7 +432,7 @@ namespace PredicateBuilder.Test
             Assert.AreEqual(sql, "Id <= @Id And DataCreatedAt <= @DataCreatedAt");
             var dict = new Dictionary<string, object>
             {
-                { "@Id", 5 },//È¡ domain µÄÀàÐÍ
+                { "@Id", 5 },//È¡ domain ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 { "@DataCreatedAt", searchModel.DataCreatedAt }
             };
 

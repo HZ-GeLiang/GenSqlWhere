@@ -2,12 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-
     <IsPackable>false</IsPackable>
-
-    <AssemblyName>ExpressionToWhereClause.Test</AssemblyName>
-
-    <RootNamespace>ExpressionToWhereClause.Test</RootNamespace>
+    <AssemblyName>ExpressionToSqlWhereClause.Test</AssemblyName>
+    <RootNamespace>ExpressionToSqlWhereClause.Test</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,8 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ExpressionToWhereClause.Standard\ExpressionToWhereClause.Standard.csproj" />
-    <ProjectReference Include="..\PredicateBuilder.Standard\PredicateBuilder.Standard.csproj" />
+    <ProjectReference Include="..\ExpressionToWhereClause.Standard\ExpressionToSqlWhereClause.csproj" />
+    <ProjectReference Include="..\PredicateBuilder.Standard\EntityToSqlWhereCaluseConfig.csproj" />
   </ItemGroup>
+
+ 
 
 </Project>

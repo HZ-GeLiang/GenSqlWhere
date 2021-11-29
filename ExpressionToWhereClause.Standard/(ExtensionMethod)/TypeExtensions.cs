@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace ExpressionToWhereClause
+namespace ExpressionToSqlWhereClause
 {
 
     internal static class TypeExtensions

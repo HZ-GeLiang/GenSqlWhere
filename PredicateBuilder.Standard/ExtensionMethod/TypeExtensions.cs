@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace PredicateBuilder.ExtensionMethod
+namespace EntityToSqlWhereCaluseConfig.ExtensionMethod
 {
     internal static class TypeExtensions
     {

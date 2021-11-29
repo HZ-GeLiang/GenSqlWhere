@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using PredicateBuilder.ExtensionMethod;
+using EntityToSqlWhereCaluseConfig.ExtensionMethod;
 
-namespace PredicateBuilder
+namespace EntityToSqlWhereCaluseConfig
 {
 
     /// <summary>

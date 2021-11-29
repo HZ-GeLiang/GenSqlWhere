@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PredicateBuilder.Test
+namespace ExpressionToSqlWhereClause.Test
 {
     public partial class People
     {

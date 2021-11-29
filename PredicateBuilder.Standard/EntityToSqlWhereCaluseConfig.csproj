@@ -11,15 +11,15 @@
 		<PackageTags>configModel2sql</PackageTags>
 		<Version>1.0.0</Version>
 		<LangVersion>9</LangVersion>
-		<PackageId>PredicateBuilder</PackageId>
-		<Product>PredicateBuilder</Product>
 		<RepositoryType>Gitee</RepositoryType>
-		<AssemblyName>PredicateBuilder</AssemblyName>
-		<RootNamespace>PredicateBuilder</RootNamespace>
+		<PackageId>EntityToSqlWhereCaluseConfig</PackageId>
+		<Product>EntityToSqlWhereCaluseConfig</Product>
+		<AssemblyName>EntityToSqlWhereCaluseConfig</AssemblyName>
+		<RootNamespace>EntityToSqlWhereCaluseConfig</RootNamespace>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(SolutionDir)' == 'Release'">
-		<DocumentationFile>$(SolutionDir)PredicateBuilder.Standard\$(AssemblyName).xml</DocumentationFile>
+		<DocumentationFile>$(SolutionDir)$(AssemblyName)\$(AssemblyName).xml</DocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>

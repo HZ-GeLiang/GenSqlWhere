@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Text;
 
-namespace ExpressionToWhereClause
+namespace ExpressionToSqlWhereClause
 {
     internal class ParseResult
     {

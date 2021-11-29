@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ExpressionToWhereClause.Test._whereLabmdaTest_
+namespace EntityToSqlWhereCaluseConfig.Test
 {
     public partial class Route
     {

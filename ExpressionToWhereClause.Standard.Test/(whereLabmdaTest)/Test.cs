@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using PredicateBuilder;
+﻿using EntityToSqlWhereCaluseConfig;
+using System.Collections.Generic;
 
-namespace ExpressionToWhereClause.Test._whereLabmdaTest_
+namespace EntityToSqlWhereCaluseConfig.Test
 {
     class Test
     {

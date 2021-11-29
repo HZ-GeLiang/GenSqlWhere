@@ -19,7 +19,13 @@
 		<DocumentationFile>$(SolutionDir)PredicateBuilder.Standard\$(AssemblyName).xml</DocumentationFile>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+	  <DefineConstants>DEBUG;TRACE</DefineConstants>
+	</PropertyGroup>
+
 	<ItemGroup>
+	  <PackageReference Include="EntityToSqlWhereCaluseConfig" Version="1.0.0" />
+	  <PackageReference Include="ExpressionToSqlWhereClause" Version="1.0.0" />
 	  <PackageReference Include="ExpressionToWhereClause" Version="1.0.0" />
 	  <PackageReference Include="PredicateBuilder" Version="1.0.0" />
 	</ItemGroup>
