@@ -4,18 +4,18 @@
 		<TargetFrameworks>
 			netstandard2.0;
 		</TargetFrameworks>
-		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<Authors>GeLiang</Authors>
 		<Description>convert Expression to sql where clause</Description>
 		<PackageProjectUrl>https://gitee.com/hzgel/GenSqlWhere</PackageProjectUrl>
 		<Copyright>Copyright (c) GeLiang</Copyright>
 		<PackageTags>sql,whereclause,expression,expression2sql,convert2sql</PackageTags>
-		<PackageReleaseNotes></PackageReleaseNotes>
 		<Version>1.0.0</Version>
 		<LangVersion>9</LangVersion>
-		<PackageId>ExpressionToWhereClause.Standard</PackageId>
-		<Product>ExpressionToWhereClause.Standard</Product>
+		<PackageId>ExpressionToWhereClause</PackageId>
+		<Product>ExpressionToWhereClause</Product>
 		<RepositoryType>Gitee</RepositoryType>
+		<RootNamespace>ExpressionToWhereClause</RootNamespace>
+		<AssemblyName>ExpressionToWhereClause</AssemblyName>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(SolutionDir)' == 'Release'">
