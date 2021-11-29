@@ -4,11 +4,11 @@
 			netstandard2.0;
 		</TargetFrameworks>
 		<Authors>GeLiang</Authors>
-		<Description>convert Expression or model to sql where clause		</Description>
+		<Description>Expression or model can conver to sql where clause</Description>
 		<PackageProjectUrl>https://gitee.com/hzgel/GenSqlWhere</PackageProjectUrl>
 		<Copyright>Copyright (c) GeLiang</Copyright>
 		<PackageTags>sql,whereclause,expression,expression2sql,convert2sql,model2sql</PackageTags>
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 		<LangVersion>9</LangVersion>
 		<PackageId>GenerateSqlWhereClause</PackageId>
 		<Product>GenerateSqlWhereClause</Product>
@@ -16,7 +16,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(SolutionDir)' == 'Release'">
-		<DocumentationFile>$(SolutionDir)PredicateBuilder.Standard\$(AssemblyName).xml</DocumentationFile>
+		<DocumentationFile>$(SolutionDir)$(AssemblyName)\$(AssemblyName).xml</DocumentationFile>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
@@ -26,7 +26,7 @@
 	<ItemGroup>
 	  <PackageReference Include="EntityToSqlWhereCaluseConfig" Version="1.0.0" />
 	  <PackageReference Include="ExpressionToSqlWhereClause" Version="1.0.0" />
-	  <PackageReference Include="ExpressionToWhereClause" Version="1.0.0" />
-	  <PackageReference Include="PredicateBuilder" Version="1.0.0" />
 	</ItemGroup>
+
+ 
 </Project>
