@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using PredicateBuilder._WhereLambda_;
+using PredicateBuilder;
 
 namespace ExpressionToWhereClause.Test._whereLabmdaTest_
 {

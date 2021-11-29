@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using ExpressionToWhereClause._ExtensionMethod_;
+using ExpressionToWhereClause;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PredicateBuilder._WhereLambda_;
+using PredicateBuilder;
 using PredicateBuilder.Test.input;
 
 namespace PredicateBuilder.Test
