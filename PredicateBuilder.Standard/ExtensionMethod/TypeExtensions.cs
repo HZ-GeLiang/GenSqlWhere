@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace PredicateBuilder.Standard.ExtensionMethod
+namespace PredicateBuilder.ExtensionMethod
 {
     internal static class TypeExtensions
     {

@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using PredicateBuilder.Standard.ExtensionMethod;
+using PredicateBuilder.ExtensionMethod;
 
-namespace PredicateBuilder.Standard
+namespace PredicateBuilder._WhereLambda_
 {
 
     /// <summary>

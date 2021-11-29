@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ExpressionToWhereClause.Standard.Test
+namespace ExpressionToWhereClause.Test._whereLabmdaTest_
 {
     public class RoutePageInput 
     {

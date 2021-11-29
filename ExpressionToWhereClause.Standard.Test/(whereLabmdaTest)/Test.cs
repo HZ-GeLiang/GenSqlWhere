@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using PredicateBuilder.Standard;
+using PredicateBuilder._WhereLambda_;
 
-namespace ExpressionToWhereClause.Standard.Test
+namespace ExpressionToWhereClause.Test._whereLabmdaTest_
 {
     class Test
     {

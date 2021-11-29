@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
-namespace ExpressionToWhereClause.Standard
+namespace ExpressionToWhereClause
 {
     public static class ConditionBuilder
     {

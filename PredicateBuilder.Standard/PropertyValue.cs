@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.Reflection;
-using PredicateBuilder.Standard.Exceptions;
+using PredicateBuilder.Exceptions;
 
-namespace PredicateBuilder.Standard
+namespace PredicateBuilder
 {
 
     //使用

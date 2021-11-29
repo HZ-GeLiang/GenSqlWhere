@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace PredicateBuilder.Standard
+namespace PredicateBuilder._WhereLambda_
 {
     public static class WhereLambdaExtensions
     {

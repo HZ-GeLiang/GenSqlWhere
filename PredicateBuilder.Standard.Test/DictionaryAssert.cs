@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace PredicateBuilder.Standard.Test
+namespace PredicateBuilder.Test
 {
     public class DictionaryAssert
     {

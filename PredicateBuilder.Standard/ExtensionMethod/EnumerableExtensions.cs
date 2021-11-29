@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace PredicateBuilder.Standard.ExtensionMethod
+namespace PredicateBuilder.ExtensionMethod
 {
     /// <summary>
     /// 特定的类型
