@@ -1,4 +1,3 @@
-using EntityToSqlWhereCaluseConfig.Exceptions;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -35,7 +34,7 @@ namespace EntityToSqlWhereCaluseConfig.Helper
 
             if (string.IsNullOrEmpty(leftMemberName))
             {
-                throw new EntityToSqlWhereCaluseConfigException("解析表达式的代码有问题,请修改程序");
+                throw new Exceptions.EntityToSqlWhereCaluseConfigException("解析表达式的代码有问题,请修改程序");
             }
             return leftMemberName;
         }
@@ -81,7 +80,7 @@ namespace EntityToSqlWhereCaluseConfig.Helper
             //object value = Expression.Lambda<Func<object>>(Expression.Convert(node, typeof(object))).Compile().Invoke();
             #endregion
 
-            throw new EntityToSqlWhereCaluseConfigException("解析表达式的代码有问题,请修改程序");
+            throw new Exceptions.EntityToSqlWhereCaluseConfigException("解析表达式的代码有问题,请修改程序");
         }
     }
 }
