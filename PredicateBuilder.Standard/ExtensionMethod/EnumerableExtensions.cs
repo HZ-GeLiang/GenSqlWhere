@@ -2,14 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace PredicateBuilder.ExtensionMethod
+namespace EntityToSqlWhereCaluseConfig.ExtensionMethod
 {
     /// <summary>
     /// 特定的类型
     /// </summary>
     internal static partial class EnumerableExtensions
     {
-
         public static IEnumerable<bool> ToBool(this IEnumerable<string> splits)
             => splits.Select(split => bool.Parse(split));
         public static IEnumerable<byte> ToInt8(this IEnumerable<string> splits)

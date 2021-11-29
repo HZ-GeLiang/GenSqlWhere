@@ -1,8 +1,8 @@
+using EntityToSqlWhereCaluseConfig.Exceptions;
 using System.Linq.Expressions;
 using System.Reflection;
-using PredicateBuilder.Exceptions;
 
-namespace PredicateBuilder.Helper._Expression_
+namespace EntityToSqlWhereCaluseConfig.Helper
 {
     internal static class ExpressionHelper
     {
@@ -35,7 +35,7 @@ namespace PredicateBuilder.Helper._Expression_
 
             if (string.IsNullOrEmpty(leftMemberName))
             {
-                throw new PredicateBuilderException("解析表达式的代码有问题,请修改程序");
+                throw new EntityToSqlWhereCaluseConfigException("解析表达式的代码有问题,请修改程序");
             }
             return leftMemberName;
         }
@@ -81,7 +81,7 @@ namespace PredicateBuilder.Helper._Expression_
             //object value = Expression.Lambda<Func<object>>(Expression.Convert(node, typeof(object))).Compile().Invoke();
             #endregion
 
-            throw new PredicateBuilderException("解析表达式的代码有问题,请修改程序");
+            throw new EntityToSqlWhereCaluseConfigException("解析表达式的代码有问题,请修改程序");
         }
     }
 }

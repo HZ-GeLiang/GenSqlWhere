@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.Reflection;
-using PredicateBuilder.Exceptions;
+using EntityToSqlWhereCaluseConfig.Exceptions;
 
-namespace PredicateBuilder
+namespace EntityToSqlWhereCaluseConfig
 {
 
     //使用
@@ -29,7 +29,7 @@ namespace PredicateBuilder
         {
             if (typeof(T) != Target.GetType())
             {
-                throw new PredicateBuilderException("当前类不能使用多态这个特性");
+                throw new EntityToSqlWhereCaluseConfigException("当前类不能使用多态这个特性");
             }
             Type type = typeof(T);
             //Type type = Target.GetType();//多态, 取实际类型

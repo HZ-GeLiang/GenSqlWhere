@@ -1,12 +1,12 @@
+using EntityToSqlWhereCaluseConfig.Exceptions;
+using EntityToSqlWhereCaluseConfig.ExtensionMethod;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text.RegularExpressions;
-using PredicateBuilder.Exceptions;
-using PredicateBuilder.ExtensionMethod;
+using System.Text.RegularExpressions; 
 
-namespace PredicateBuilder
+namespace EntityToSqlWhereCaluseConfig
 {
     public static class WhereLambdaHelper
     {
@@ -917,7 +917,7 @@ namespace PredicateBuilder
             }
             else
             {
-                throw new PredicateBuilderException("此片段逻辑有误,需要修改代码");
+                throw new EntityToSqlWhereCaluseConfigException("此片段逻辑有误,需要修改代码");
             }
 
             return range;
@@ -1155,7 +1155,7 @@ namespace PredicateBuilder
 
                     if (lambda == null)
                     {
-                        throw new PredicateBuilderException($"WhereLambdaHelper.cs发生异常,原因: 不支持的属性类型:{propType_TEntity}");
+                        throw new EntityToSqlWhereCaluseConfigException($"WhereLambdaHelper.cs发生异常,原因: 不支持的属性类型:{propType_TEntity}");
                     }
                     whereLambdas.Add(lambda);
                 }

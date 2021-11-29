@@ -11,15 +11,15 @@
 		<PackageTags>sql,whereclause,expression,expression2sql,convert2sql</PackageTags>
 		<Version>1.0.0</Version>
 		<LangVersion>9</LangVersion>
-		<PackageId>ExpressionToWhereClause</PackageId>
-		<Product>ExpressionToWhereClause</Product>
 		<RepositoryType>Gitee</RepositoryType>
-		<RootNamespace>ExpressionToWhereClause</RootNamespace>
-		<AssemblyName>ExpressionToWhereClause</AssemblyName>
+		<PackageId>ExpressionToSqlWhereClause</PackageId>
+		<Product>ExpressionToSqlWhereClause</Product>
+		<RootNamespace>ExpressionToSqlWhereClause</RootNamespace>
+		<AssemblyName>ExpressionToSqlWhereClause</AssemblyName>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(SolutionDir)' == 'Release'">
-		<DocumentationFile>$(SolutionDir)ExpressionToWhereClause.Standard\ExpressionToWhereClause.Standard.xml</DocumentationFile>
+		<DocumentationFile>$(SolutionDir)$(AssemblyName)\$(AssemblyName).xml</DocumentationFile>
 	</PropertyGroup>
 	
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

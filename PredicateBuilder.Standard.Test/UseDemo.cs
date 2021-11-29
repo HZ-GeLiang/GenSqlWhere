@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using ExpressionToWhereClause;
+using EntityToSqlWhereCaluseConfig;
+using ExpressionToSqlWhereClause.Test.input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PredicateBuilder;
-using PredicateBuilder.Test.input;
 
-namespace PredicateBuilder.Test
+namespace ExpressionToSqlWhereClause.Test
 {
     [TestClass]
     public class UseDemo
@@ -57,9 +56,9 @@ namespace PredicateBuilder.Test
             {
             };
 
-            //List<Expression<Func<Route, bool>>> listExp = whereLambda.ToExpressionList(); //¿ÉÒÔ¸øefÓÃ
+            //List<Expression<Func<Route, bool>>> listExp = whereLambda.ToExpressionList(); //ï¿½ï¿½ï¿½Ô¸ï¿½efï¿½ï¿½
             Expression<Func<People, bool>> exp = whereLambda.ToExpression();
-            //µÈ¼Û
+            //ï¿½È¼ï¿½
             //List<Expression<Func<Route, bool>>> listExp = whereLambda;
             //Expression<Func<Route, bool>> exp = whereLambda;
 

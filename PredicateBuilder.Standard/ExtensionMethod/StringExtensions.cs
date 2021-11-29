@@ -1,4 +1,4 @@
-﻿namespace PredicateBuilder.ExtensionMethod
+﻿namespace EntityToSqlWhereCaluseConfig.ExtensionMethod
 {
     internal static class StringExtensions
     {

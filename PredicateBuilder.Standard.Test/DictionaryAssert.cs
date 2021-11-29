@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace PredicateBuilder.Test
+namespace ExpressionToSqlWhereClause.Test
 {
     public class DictionaryAssert
     {

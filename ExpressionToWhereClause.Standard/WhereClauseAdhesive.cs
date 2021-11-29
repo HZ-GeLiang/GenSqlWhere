@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ExpressionToWhereClause
+namespace ExpressionToSqlWhereClause
 {
     /// <summary>
     /// Where子句胶粘剂

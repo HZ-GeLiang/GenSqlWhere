@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PredicateBuilder.Test.input
+namespace ExpressionToSqlWhereClause.Test.input
 {
     public class Input_ge
     {
