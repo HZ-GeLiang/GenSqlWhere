@@ -3,6 +3,8 @@
 		<TargetFrameworks>
 			netstandard2.0;
 		</TargetFrameworks>
+		<DefineConstants>DEBUG;TRACE</DefineConstants>
+		<NoWarn>1701;1702;1591;</NoWarn>
 		<Authors>GeLiang</Authors>
 		<Description>Expression or model can conver to sql where clause</Description>
 		<PackageProjectUrl>https://gitee.com/hzgel/GenSqlWhere</PackageProjectUrl>
@@ -19,14 +21,9 @@
 		<DocumentationFile>$(SolutionDir)$(AssemblyName)\$(AssemblyName).xml</DocumentationFile>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
-	  <DefineConstants>DEBUG;TRACE</DefineConstants>
-	</PropertyGroup>
-
 	<ItemGroup>
 	  <PackageReference Include="EntityToSqlWhereCaluseConfig" Version="1.0.0" />
 	  <PackageReference Include="ExpressionToSqlWhereClause" Version="1.0.0" />
 	</ItemGroup>
-
  
 </Project>

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Concurrent;
-using System.Reflection;
-using EntityToSqlWhereCaluseConfig.Exceptions;
+using System.Reflection; 
 
 namespace EntityToSqlWhereCaluseConfig
 {
@@ -29,7 +28,7 @@ namespace EntityToSqlWhereCaluseConfig
         {
             if (typeof(T) != Target.GetType())
             {
-                throw new EntityToSqlWhereCaluseConfigException("当前类不能使用多态这个特性");
+                throw new Exceptions.EntityToSqlWhereCaluseConfigException("当前类不能使用多态这个特性");
             }
             Type type = typeof(T);
             //Type type = Target.GetType();//多态, 取实际类型

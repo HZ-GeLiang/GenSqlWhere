@@ -1,4 +1,4 @@
-using EntityToSqlWhereCaluseConfig.Exceptions;
+ 
 using EntityToSqlWhereCaluseConfig.ExtensionMethod;
 using System;
 using System.Collections.Generic;
@@ -917,7 +917,7 @@ namespace EntityToSqlWhereCaluseConfig
             }
             else
             {
-                throw new EntityToSqlWhereCaluseConfigException("此片段逻辑有误,需要修改代码");
+                throw new Exceptions.EntityToSqlWhereCaluseConfigException("此片段逻辑有误,需要修改代码");
             }
 
             return range;
@@ -1155,7 +1155,7 @@ namespace EntityToSqlWhereCaluseConfig
 
                     if (lambda == null)
                     {
-                        throw new EntityToSqlWhereCaluseConfigException($"WhereLambdaHelper.cs发生异常,原因: 不支持的属性类型:{propType_TEntity}");
+                        throw new Exceptions.EntityToSqlWhereCaluseConfigException($"WhereLambdaHelper.cs发生异常,原因: 不支持的属性类型:{propType_TEntity}");
                     }
                     whereLambdas.Add(lambda);
                 }
