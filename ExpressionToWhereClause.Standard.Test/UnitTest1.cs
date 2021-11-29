@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using ExpressionToWhereClause._ExtensionMethod_;
+using ExpressionToWhereClause;
 using ExpressionToWhereClause.Test._whereLabmdaTest_;
 using ExpressionToWhereClause.Test.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

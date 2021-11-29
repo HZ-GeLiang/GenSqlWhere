@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using PredicateBuilder.Exceptions;
 using PredicateBuilder.ExtensionMethod;
 
-namespace PredicateBuilder._WhereLambda_
+namespace PredicateBuilder
 {
     public static class WhereLambdaHelper
     {

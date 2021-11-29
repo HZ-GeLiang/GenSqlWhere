@@ -1,9 +1,5 @@
-﻿using ExpressionToWhereClause;
-using PredicateBuilder;
-using System;
-using System.Collections.Generic;
-using ExpressionToWhereClause.Standard;
-using PredicateBuilder.Standard;
+﻿using System;
+using System.Collections.Generic; 
 
 namespace ConsoleApp1
 {
@@ -25,23 +21,23 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            var searchModel = new
-            {
-                Id = 5,
-                DataCreatedAt = DateTime.Parse("2021-8-8"),
-            };
+            //var searchModel = new
+            //{
+            //    Id = 5,
+            //    DataCreatedAt = DateTime.Parse("2021-8-8"),
+            //};
 
-            var whereLambda = searchModel.CrateWhereLambda((People _) => { });
+            //var whereLambda = searchModel.CrateWhereLambda((People _) => { });
 
-            whereLambda[SearchType.le] = new List<string>
-            {
-                nameof(searchModel.Id),
-                nameof(searchModel.DataCreatedAt),
-            };
+            //whereLambda[SearchType.le] = new List<string>
+            //{
+            //    nameof(searchModel.Id),
+            //    nameof(searchModel.DataCreatedAt),
+            //};
 
-            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+            //(string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
-            var a = (sql == "Id <= @Id And DataCreatedAt <= @DataCreatedAt");
+            //var a = sql == "Id <= @Id And DataCreatedAt <= @DataCreatedAt";
 
         }
     }

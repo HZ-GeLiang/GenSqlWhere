@@ -1,4 +1,4 @@
-namespace PredicateBuilder._WhereLambda_
+namespace PredicateBuilder
 {
     /// <summary>
     /// 

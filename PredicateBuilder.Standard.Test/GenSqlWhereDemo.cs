@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using ExpressionToWhereClause._ExtensionMethod_;
+using ExpressionToWhereClause;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PredicateBuilder._WhereLambda_;
 using PredicateBuilder.Test.input;
 
 namespace PredicateBuilder.Test

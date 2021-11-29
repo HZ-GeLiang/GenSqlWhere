@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using PredicateBuilder.ExtensionMethod;
 
-namespace PredicateBuilder._WhereLambda_
+namespace PredicateBuilder
 {
 
     /// <summary>
