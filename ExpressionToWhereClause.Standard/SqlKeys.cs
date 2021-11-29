@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ExpressionToWhereClause.Standard
+﻿namespace ExpressionToWhereClause
 {
 
     internal class SqlKeys

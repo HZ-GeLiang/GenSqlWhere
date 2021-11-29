@@ -1,6 +1,4 @@
-using System;
-
-namespace PredicateBuilder.Standard
+namespace PredicateBuilder._WhereLambda_
 {
     /// <summary>
     /// 

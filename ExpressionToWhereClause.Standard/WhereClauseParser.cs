@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
-namespace ExpressionToWhereClause.Standard
+namespace ExpressionToWhereClause
 {
     /// <summary>
     /// Where子句解析器

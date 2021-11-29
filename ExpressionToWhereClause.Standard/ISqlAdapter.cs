@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace ExpressionToWhereClause.Standard
+namespace ExpressionToWhereClause
 {
     public interface ISqlAdapter
     {

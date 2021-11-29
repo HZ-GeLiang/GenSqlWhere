@@ -1,4 +1,4 @@
-namespace PredicateBuilder.Standard.Exceptions
+namespace PredicateBuilder.Exceptions
 {
     public class PredicateBuilderException : System.Exception
     {

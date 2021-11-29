@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using ExpressionToWhereClause._ExtensionMethod_;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ExpressionToWhereClause.Standard;
+using PredicateBuilder._WhereLambda_;
+using PredicateBuilder.Test.input;
 
-namespace PredicateBuilder.Standard.Test
+namespace PredicateBuilder.Test
 {
     [TestClass]
     public class UseDemo

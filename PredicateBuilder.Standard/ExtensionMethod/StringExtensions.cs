@@ -1,4 +1,4 @@
-﻿namespace PredicateBuilder.Standard.ExtensionMethod
+﻿namespace PredicateBuilder.ExtensionMethod
 {
     internal static class StringExtensions
     {

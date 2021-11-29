@@ -1,8 +1,8 @@
 using System.Linq.Expressions;
 using System.Reflection;
-using PredicateBuilder.Standard.Exceptions;
+using PredicateBuilder.Exceptions;
 
-namespace PredicateBuilder.Standard.Helper
+namespace PredicateBuilder.Helper._Expression_
 {
     internal static class ExpressionHelper
     {

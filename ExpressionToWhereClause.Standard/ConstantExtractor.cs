@@ -3,9 +3,8 @@ using System.Collections;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using System.Threading;
 
-namespace ExpressionToWhereClause.Standard
+namespace ExpressionToWhereClause
 {
     public static class ConstantExtractor
     {

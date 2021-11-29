@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <IsPackable>false</IsPackable>
+    <AssemblyName>PredicateBuilder.Test</AssemblyName>
+    <RootNamespace>PredicateBuilder.Test</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

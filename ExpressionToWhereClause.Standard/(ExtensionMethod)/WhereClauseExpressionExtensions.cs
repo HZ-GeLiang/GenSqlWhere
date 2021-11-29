@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace ExpressionToWhereClause.Standard
+namespace ExpressionToWhereClause._ExtensionMethod_
 {
     public static class WhereClauseExpressionExtensions
     {

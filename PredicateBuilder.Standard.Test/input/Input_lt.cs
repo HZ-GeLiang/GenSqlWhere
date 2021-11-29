@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PredicateBuilder.Standard.Test
+namespace PredicateBuilder.Test.input
 {
     public class Input_lt
     {

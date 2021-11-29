@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
-using PredicateBuilder.Standard.Exceptions;
-using PredicateBuilder.Standard.ExtensionMethod;
+using PredicateBuilder.Exceptions;
+using PredicateBuilder.ExtensionMethod;
 
-namespace PredicateBuilder.Standard
+namespace PredicateBuilder._WhereLambda_
 {
     public static class WhereLambdaHelper
     {

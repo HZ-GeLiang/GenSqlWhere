@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using ExpressionToWhereClause.Standard.Test.ExtensionMethod;
+using ExpressionToWhereClause._ExtensionMethod_;
+using ExpressionToWhereClause.Test._whereLabmdaTest_;
+using ExpressionToWhereClause.Test.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PredicateBuilder.Standard.ExtensionMethod;
 
-namespace ExpressionToWhereClause.Standard.Test
+namespace ExpressionToWhereClause.Test
 {
     [TestClass]
     public class UnitTest1
