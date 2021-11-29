@@ -1,7 +1,6 @@
-﻿
-#if DEBUG
+﻿#if DEBUG
+
 using EntityToSqlWhereCaluseConfig;
-using ExpressionToSqlWhereClause;
 using ExpressionToSqlWhereClause;
 using System;
 using System.Collections.Generic;
@@ -9,8 +8,6 @@ using System.Text;
 
 namespace GenerateSqlWhereClause
 {
-
-
     public partial class People
     {
         public int Id { get; set; }
