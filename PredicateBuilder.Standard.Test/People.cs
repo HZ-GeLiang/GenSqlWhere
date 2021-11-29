@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PredicateBuilder.Standard.Test
+namespace PredicateBuilder.Test
 {
     public partial class People
     {
