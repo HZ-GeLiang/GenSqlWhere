@@ -3,7 +3,6 @@ using System.Collections;
 
 namespace ExpressionToSqlWhereClause
 {
-
     internal static class TypeExtensions
     {
         #region IsObjectCollection
@@ -63,7 +62,6 @@ namespace ExpressionToSqlWhereClause
             IsObjectCollection(type, out _, objectTypeEqual);
 
         #endregion
-
 
         //原文链接：https://blog.csdn.net/WPwalter/article/details/82859267
 #if net45

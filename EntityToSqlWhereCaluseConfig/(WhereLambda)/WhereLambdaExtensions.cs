@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace EntityToSqlWhereCaluseConfig
+namespace EntityToSqlWhereClauseConfig
 {
     public static class WhereLambdaExtensions
     {

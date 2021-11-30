@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace EntityToSqlWhereCaluseConfig.Helper
+namespace EntityToSqlWhereClauseConfig.Helper
 {
     public class WhereClauseHelper
     {

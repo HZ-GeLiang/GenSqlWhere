@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace EntityToSqlWhereCaluseConfig.ExtensionMethod
+namespace EntityToSqlWhereClauseConfig.ExtensionMethod
 {
     internal static class TypeExtensions
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace EntityToSqlWhereCaluseConfig.Exceptions
+namespace EntityToSqlWhereClauseConfig.Exceptions
 {
     public class EntityToSqlWhereCaluseConfigException : Exception
     {

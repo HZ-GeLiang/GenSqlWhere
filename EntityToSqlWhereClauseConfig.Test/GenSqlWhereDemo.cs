@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using EntityToSqlWhereCaluseConfig;
-using EntityToSqlWhereCaluseConfig;
-using EntityToSqlWhereCaluseConfig;
+using EntityToSqlWhereClauseConfig;
+using EntityToSqlWhereClauseConfig;
+using EntityToSqlWhereClauseConfig;
 using EntityToSqlWhereClauseConfig.Test.input;
 using ExpressionToSqlWhereClause;
 using ExpressionToSqlWhereClause;

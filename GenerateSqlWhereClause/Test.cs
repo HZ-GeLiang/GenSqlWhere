@@ -1,5 +1,4 @@
-﻿#if DEBUG
-
+﻿#if DEBUG 
 using EntityToSqlWhereCaluseConfig;
 using ExpressionToSqlWhereClause;
 using System;
