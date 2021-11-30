@@ -10,20 +10,20 @@
 		<PackageProjectUrl>https://gitee.com/hzgel/GenSqlWhere</PackageProjectUrl>
 		<Copyright>Copyright (c) GeLiang</Copyright>
 		<PackageTags>gensqlwhere,sql,whereclause,expression,expression2sql,convert2sql,model2sql</PackageTags>
-		<Version>1.0.1</Version>
+		<Version>1.1.0</Version>
 		<LangVersion>9</LangVersion>
 		<PackageId>GenerateSqlWhereClause</PackageId>
 		<Product>GenerateSqlWhereClause</Product>
 		<RepositoryType>Gitee</RepositoryType>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(SolutionDir)' == 'Release'">
+	<PropertyGroup>
 		<DocumentationFile>$(SolutionDir)$(AssemblyName)\$(AssemblyName).xml</DocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="EntityToSqlWhereCaluseConfig" Version="1.0.0" />
-	  <PackageReference Include="ExpressionToSqlWhereClause" Version="1.0.0" />
+	  <PackageReference Include="EntityToSqlWhereClauseConfig" Version="1.1.0" />
+	  <PackageReference Include="ExpressionToSqlWhereClause" Version="1.1.0" />
 	</ItemGroup>
  
 </Project>

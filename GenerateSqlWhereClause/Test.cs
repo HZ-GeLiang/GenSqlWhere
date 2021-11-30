@@ -1,5 +1,5 @@
 ﻿#if DEBUG 
-using EntityToSqlWhereCaluseConfig;
+using EntityToSqlWhereClauseConfig;
 using ExpressionToSqlWhereClause;
 using System;
 using System.Collections.Generic;
