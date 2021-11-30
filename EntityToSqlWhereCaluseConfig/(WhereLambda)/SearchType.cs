@@ -26,16 +26,16 @@ namespace EntityToSqlWhereCaluseConfig
         @in,
 
         /// <summary>
-        /// 日期的区间
+        /// 日期的区间(只接受日期)
         /// 1:有区间范围 [xxxStart, xxxEnd]=> 包含开始值,包含结束值
         /// 2:没有区间范围  xxx =>(取当前时间精度: 如 当前这天, 当前这一小时, 当前这一分钟, 当前这一秒)
         /// </summary>
         datetimeRange,
 
         /// <summary>
-        /// 数值的范围
+        /// 数值的范围(只接受数字)
         /// 1:有区间范围 [xxxLeft, xxxRight]=> 包含开始值,包含结束值
-        /// 2:没有区间范围  xxx => (取当前数字的精度)
+        /// 2:没有区间范围  xxx => 还是上面的规则, 即: >=? And <= ?
         /// </summary>
         numberRange,
 
