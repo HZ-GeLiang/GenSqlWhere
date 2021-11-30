@@ -17,7 +17,4 @@ bin-release/
 # should NOT be excluded as they contain compiler settings and other important
 # information for Eclipse / Flash Builder.
 /.vs
-/PredicateBuilder.Standard/GenerateSqlWhereClause.Standard.xml
-
-/PredicateBuilder.Standard/PredicateBuilder.Standard.xml
-/ExpressionToWhereClause.Standard/ExpressionToWhereClause.Standard.xml
+/*/*.xml
