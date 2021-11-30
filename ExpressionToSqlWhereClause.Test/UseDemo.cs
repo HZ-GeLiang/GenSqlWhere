@@ -56,9 +56,9 @@ namespace ExpressionToSqlWhereClause.Test
             {
             };
 
-            //List<Expression<Func<Route, bool>>> listExp = whereLambda.ToExpressionList(); //���Ը�ef��
+            //List<Expression<Func<Route, bool>>> listExp = whereLambda.ToExpressionList(); //可以给ef用
             Expression<Func<People, bool>> exp = whereLambda.ToExpression();
-            //�ȼ�
+            //等价
             //List<Expression<Func<Route, bool>>> listExp = whereLambda;
             //Expression<Func<Route, bool>> exp = whereLambda;
 

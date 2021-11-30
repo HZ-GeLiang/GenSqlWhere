@@ -96,7 +96,7 @@ namespace ExpressionToSqlWhereClause.Test
         {
             var searchModel = new Input_eq()
             {
-                IsDel = true,//todo://�ƻ�:��ӵ�����ֵΪxxʱ,��ǰֵ����Ч
+                IsDel = true,//todo://计划:添加当其他值为xx时,当前值才生效
             };
 
             var whereLambda = new WhereLambda<People, Input_eq>();
@@ -122,7 +122,7 @@ namespace ExpressionToSqlWhereClause.Test
         {
             var searchModel = new Input_neq()
             {
-                IsDel = true,//todo://�ƻ�:��ӵ�����ֵΪxxʱ,��ǰֵ����Ч
+                IsDel = true,//todo://计划:添加当其他值为xx时,当前值才生效
             };
 
             var whereLambda = new WhereLambda<People, Input_neq>();
@@ -194,7 +194,7 @@ namespace ExpressionToSqlWhereClause.Test
             Assert.AreEqual(sql, "Id In @Id");
             var dict = new Dictionary<string, object>
             {
-                { "@Id", "1"},//in �����ж��ֵ,�������ֵ����stirng���͵�
+                { "@Id", "1"},//in 可以有多个值,所以这个值就是stirng类型的
             };
 
             DictionaryAssert.AreEqual(param, dict);
@@ -203,7 +203,7 @@ namespace ExpressionToSqlWhereClause.Test
         [TestMethod]
         public void Test_datetimeRange()
         {
-            //2��ʱ��Ľ��Ȳ�һ��,ֻ������һ�����
+            //2个时间的进度不一样,只测试了一种情况
             var searchModel = new Input_datetimeRange()
             {
                 DataCreatedAtStart = DateTime.Parse("2021-8-8").AddHours(-1),
@@ -313,7 +313,7 @@ namespace ExpressionToSqlWhereClause.Test
             Assert.AreEqual(sql, "Id > @Id And DataCreatedAt > @DataCreatedAt");
             var dict = new Dictionary<string, object>
             {
-                { "@Id", 5 },//ȡ domain ������
+                { "@Id", 5 },//取 domain 的类型
                 { "@DataCreatedAt", searchModel.DataCreatedAt }
             };
 
@@ -343,7 +343,7 @@ namespace ExpressionToSqlWhereClause.Test
             Assert.AreEqual(sql, "Id >= @Id And DataCreatedAt >= @DataCreatedAt");
             var dict = new Dictionary<string, object>
             {
-                { "@Id", 5 },//ȡ domain ������
+                { "@Id", 5 },//取 domain 的类型
                 { "@DataCreatedAt", searchModel.DataCreatedAt }
             };
 
@@ -373,7 +373,7 @@ namespace ExpressionToSqlWhereClause.Test
             Assert.AreEqual(sql, "Id < @Id And DataCreatedAt < @DataCreatedAt");
             var dict = new Dictionary<string, object>
             {
-                { "@Id", 5 },//ȡ domain ������
+                { "@Id", 5 },//取 domain 的类型
                 { "@DataCreatedAt", searchModel.DataCreatedAt }
             };
 
@@ -403,7 +403,7 @@ namespace ExpressionToSqlWhereClause.Test
             Assert.AreEqual(sql, "Id <= @Id And DataCreatedAt <= @DataCreatedAt");
             var dict = new Dictionary<string, object>
             {
-                { "@Id", 5 },//ȡ domain ������
+                { "@Id", 5 },//取 domain 的类型
                 { "@DataCreatedAt", searchModel.DataCreatedAt }
             };
 
@@ -432,7 +432,7 @@ namespace ExpressionToSqlWhereClause.Test
             Assert.AreEqual(sql, "Id <= @Id And DataCreatedAt <= @DataCreatedAt");
             var dict = new Dictionary<string, object>
             {
-                { "@Id", 5 },//ȡ domain ������
+                { "@Id", 5 },//取 domain 的类型
                 { "@DataCreatedAt", searchModel.DataCreatedAt }
             };
 
