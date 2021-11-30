@@ -28,7 +28,7 @@ namespace EntityToSqlWhereCaluseConfig
         /// <summary>
         /// 日期的区间
         /// 1:有区间范围 [xxxStart, xxxEnd]=> 包含开始值,包含结束值
-        /// 2:没有区间范围  xxx =>(取当前时间精度: 如 当前 当前小时, 当前这一分钟, 当前这秒)
+        /// 2:没有区间范围  xxx =>(取当前时间精度: 如 当前这天, 当前这一小时, 当前这一分钟, 当前这一秒)
         /// </summary>
         datetimeRange,
 
