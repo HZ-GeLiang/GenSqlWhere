@@ -27,15 +27,15 @@ namespace EntityToSqlWhereCaluseConfig
 
         /// <summary>
         /// 日期的区间
-        /// 包含开始值,不包含结束值
-        /// [xxxStart, xxxEnd)
+        /// 1:有区间范围 [xxxStart, xxxEnd]=> 包含开始值,包含结束值
+        /// 2:没有区间范围  xxx =>(取当前时间精度: 如 当前 当前小时, 当前这一分钟, 当前这秒)
         /// </summary>
         datetimeRange,
 
         /// <summary>
         /// 数值的范围
-        /// 包含开始值与结束值
-        /// [xxxLeft, xxxRight]
+        /// 1:有区间范围 [xxxLeft, xxxRight]=> 包含开始值,包含结束值
+        /// 2:没有区间范围  xxx =>程序异常
         /// </summary>
         numberRange,
 

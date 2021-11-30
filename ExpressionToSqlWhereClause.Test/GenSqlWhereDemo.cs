@@ -203,92 +203,123 @@ namespace ExpressionToSqlWhereClause.Test
         [TestMethod]
         public void Test_datetimeRange()
         {
-            //2个时间的进度不一样,只测试了一种情况
-            var searchModel = new Input_datetimeRange()
             {
-                DataCreatedAtStart = DateTime.Parse("2021-8-8").AddHours(-1),
-                DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
-            };
-            var whereLambda = new WhereLambda<People, Input_datetimeRange>();
-            whereLambda.SearchModel = searchModel;
+                //DataCreatedAtStart != DataCreatedAtEnd 
+                var searchModel = new Input_datetimeRange()
+                {
+                    DataCreatedAtStart = DateTime.Parse("2021-8-7 23:00:00"),
+                    DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
+                };
+                var whereLambda = new WhereLambda<People, Input_datetimeRange>();
+                whereLambda.SearchModel = searchModel;
 
-            whereLambda[SearchType.datetimeRange] = new List<string>
+                whereLambda[SearchType.datetimeRange] = new List<string>
+                {
+                    nameof(searchModel.DataCreatedAtStart),
+                    nameof(searchModel.DataCreatedAtEnd),
+                    nameof(searchModel.DataUpdatedAtStart),
+                    nameof(searchModel.DataUpdatedAtEnd),
+                };
+
+                (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+
+                Assert.AreEqual(sql, "DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1");
+                var dict = new Dictionary<string, object>
+                {
+                    { "@DataCreatedAt", searchModel.DataCreatedAtStart},
+                    { "@DataCreatedAt1", DateTime.Parse("2021-8-9")},
+                };
+
+                DictionaryAssert.AreEqual(param, dict);
+            }
+
             {
-                nameof(searchModel.DataCreatedAtStart),
-                nameof(searchModel.DataCreatedAtEnd),
-                nameof(searchModel.DataUpdatedAtStart),
-                nameof(searchModel.DataUpdatedAtEnd),
-            };
+                //没有区间范围 (取当前时间精度: 如 当前 当前小时, 当前这一分钟, 当前这秒)
+                var searchModel = new Input_datetimeRange2()
+                {
+                    DataCreatedAt = DateTime.Parse("2021-8-8")
+                };
 
-            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+                var whereLambda = new WhereLambda<People, Input_datetimeRange2>();
+                whereLambda.SearchModel = searchModel;
 
-            Assert.AreEqual(sql, "DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1");
-            var dict = new Dictionary<string, object>
-            {
-                { "@DataCreatedAt", searchModel.DataCreatedAtStart},
-                { "@DataCreatedAt1", DateTime.Parse("2021-8-9")},
-            };
+                whereLambda[SearchType.datetimeRange] = new List<string>
+                {
+                    nameof(searchModel.DataCreatedAt)
+                };
 
-            DictionaryAssert.AreEqual(param, dict);
+                (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+
+                Assert.AreEqual(sql, "DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1");
+
+                var dict = new Dictionary<string, object>
+                {
+                    { "@DataCreatedAt", DateTime.Parse("2021-8-8") },
+                    { "@DataCreatedAt1", DateTime.Parse("2021-8-9") }
+                };
+
+                DictionaryAssert.AreEqual(param, dict);
+
+            }
+
 
         }
+
+
         [TestMethod]
         public void Test_numberRange()
         {
-            var searchModel = new Input_numberRange()
             {
-                IdLeft = 3,
-                IdRight = 9
-            };
-            var whereLambda = new WhereLambda<People, Input_numberRange>();
-            whereLambda.SearchModel = searchModel;
-            whereLambda[SearchType.numberRange] = new List<string>
+                var searchModel = new Input_numberRange()
+                {
+                    IdLeft = 3,
+                    IdRight = 9
+                };
+                var whereLambda = new WhereLambda<People, Input_numberRange>();
+                whereLambda.SearchModel = searchModel;
+                whereLambda[SearchType.numberRange] = new List<string>
+                {
+                    nameof(searchModel.IdLeft),
+                    nameof(searchModel.IdRight),
+                };
+
+                (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+
+                Assert.AreEqual(sql, "Id >= @Id And Id <= @Id1");
+                var dict = new Dictionary<string, object>
+                {
+                    { "@Id",searchModel.IdLeft},
+                    { "@Id1",searchModel.IdRight},
+                };
+
+                DictionaryAssert.AreEqual(param, dict);
+            }
+
             {
-                nameof(searchModel.IdLeft),
-                nameof(searchModel.IdRight),
-            };
+                //程序异常
+                //var searchModel = new Input_numberRange2()
+                //{
+                //    Id  = 5
+                //};
+                //var whereLambda = new WhereLambda<People, Input_numberRange2>();
+                //whereLambda.SearchModel = searchModel;
+                //whereLambda[SearchType.numberRange] = new List<string>
+                //{
+                //    nameof(searchModel.Id),
+                //};
 
-            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+                //(string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
-            Assert.AreEqual(sql, "Id >= @Id And Id <= @Id1");
-            var dict = new Dictionary<string, object>
-            {
-                { "@Id",searchModel.IdLeft},
-                { "@Id1",searchModel.IdRight},
-            };
+                //Assert.AreEqual(sql, "Id >= @Id And Id <= @Id1");
+                //var dict = new Dictionary<string, object>
+                //{
+                //    { "@Id",searchModel.Id},
+                //};
 
-            DictionaryAssert.AreEqual(param, dict);
+                //DictionaryAssert.AreEqual(param, dict);
+            }
         }
 
-        [TestMethod]
-        public void Test_datetimeRange2()
-        {
-            var searchModel = new Input_datetimeRange2()
-            {
-                DataCreatedAt = DateTime.Parse("2021-8-8")
-            };
-
-            var whereLambda = new WhereLambda<People, Input_datetimeRange2>();
-            whereLambda.SearchModel = searchModel;
-
-            whereLambda[SearchType.datetimeRange] = new List<string>
-            {
-                nameof(searchModel.DataCreatedAt)
-            };
-
-            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
-
-            Assert.AreEqual(sql, "DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1");
-
-            var dict = new Dictionary<string, object>
-            {
-                { "@DataCreatedAt", DateTime.Parse("2021-8-8") },
-                { "@DataCreatedAt1", DateTime.Parse("2021-8-9") }
-            };
-
-            DictionaryAssert.AreEqual(param, dict);
-
-        }
 
         [TestMethod]
         public void Test_gt()
