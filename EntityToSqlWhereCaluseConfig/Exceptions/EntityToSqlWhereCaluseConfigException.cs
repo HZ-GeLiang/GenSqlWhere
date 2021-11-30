@@ -4,7 +4,7 @@ namespace EntityToSqlWhereCaluseConfig.Exceptions
 {
     public class EntityToSqlWhereCaluseConfigException : Exception
     {
-        public string ErrorNo { get; } // ??????????????????
+        public string ErrorNo { get; } // “µŒÒ“Ï≥£±‡∫≈
 
 
         public EntityToSqlWhereCaluseConfigException(string errorNo, string message) : base(message)
