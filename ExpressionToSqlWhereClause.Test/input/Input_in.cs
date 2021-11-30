@@ -1,4 +1,4 @@
-﻿namespace ExpressionToSqlWhereClause.Test.input
+﻿namespace EntityToSqlWhereClauseConfig.Test.input
 {
     public class Input_in
     {

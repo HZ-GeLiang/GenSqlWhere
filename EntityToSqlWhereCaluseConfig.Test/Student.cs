@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace EntityToSqlWhereCaluseConfig.Test
+namespace ExpressionToSqlWhereClause.Test
 {
-    public partial class Route
+    public   class Student
     {
         public int Id { get; set; }
 

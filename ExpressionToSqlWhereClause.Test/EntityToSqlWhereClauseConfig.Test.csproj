@@ -2,12 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-
     <IsPackable>false</IsPackable>
-
-    <AssemblyName>EntityToSqlWhereCaluseConfig.Test</AssemblyName>
-
-    <RootNamespace>EntityToSqlWhereCaluseConfig.Test</RootNamespace>
+    <AssemblyName>EntityToSqlWhereClauseConfig.Test</AssemblyName>
+    <RootNamespace>EntityToSqlWhereClauseConfig.Test</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,5 +18,7 @@
     <ProjectReference Include="..\EntityToSqlWhereCaluseConfig\EntityToSqlWhereCaluseConfig.csproj" />
     <ProjectReference Include="..\ExpressionToSqlWhereClause\ExpressionToSqlWhereClause.csproj" />
   </ItemGroup>
+
+ 
 
 </Project>

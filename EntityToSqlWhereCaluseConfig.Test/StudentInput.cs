@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace EntityToSqlWhereCaluseConfig.Test
+namespace ExpressionToSqlWhereClause.Test
 {
-    public class RoutePageInput 
+    public class StudentInput 
     {
         //public int? Id { get; set; }
         public string Id { get; set; }
