@@ -525,19 +525,26 @@ namespace EntityToSqlWhereCaluseConfig
             foreach (var key in numberDict.Keys)
             {
                 var numbers = numberDict[key];
-                if (numbers.IsPair == true &&
-                    numbers.NumberRange[0] != null && numbers.NumberRange[1] != null
-                    )
+                if (numbers.IsPair == false)
                 {
-                    bool needSwap = (dynamic)numbers.NumberRange[0] > (dynamic)numbers.NumberRange[1]; //比较大小,小在放前面 
-                    if (needSwap)
+                    if (numbers.NumberRange[0] != null)
                     {
-                        object t = numbers.NumberRange[0];
-                        numbers.NumberRange[0] = numbers.NumberRange[1];
-                        numbers.NumberRange[1] = t;
+                        numbers.NumberRange[1] = numbers.NumberRange[0];
                     }
                 }
-
+                else
+                {
+                    if (numbers.NumberRange[0] != null && numbers.NumberRange[1] != null)
+                    {
+                        bool needSwap = (dynamic)numbers.NumberRange[0] > (dynamic)numbers.NumberRange[1]; //比较大小,小在放前面 
+                        if (needSwap)
+                        {
+                            object t = numbers.NumberRange[0];
+                            numbers.NumberRange[0] = numbers.NumberRange[1];
+                            numbers.NumberRange[1] = t;
+                        }
+                    }
+                }
             }
 
 
@@ -754,7 +761,6 @@ namespace EntityToSqlWhereCaluseConfig
                         var range = 获得查询的时间精度(time);
                         times.TimeRange[1] = GetTimeByTimeRange(range, time);
                     }
-
                 }
                 else
                 {

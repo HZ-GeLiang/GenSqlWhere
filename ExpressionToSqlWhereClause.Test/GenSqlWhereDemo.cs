@@ -266,31 +266,31 @@ namespace ExpressionToSqlWhereClause.Test
         [TestMethod]
         public void Test_numberRange()
         {
-            //{
-            //    var searchModel = new Input_numberRange()
-            //    {
-            //        IdLeft = 3,
-            //        IdRight = 9
-            //    };
-            //    var whereLambda = new WhereLambda<People, Input_numberRange>();
-            //    whereLambda.SearchModel = searchModel;
-            //    whereLambda[SearchType.numberRange] = new List<string>
-            //    {
-            //        nameof(searchModel.IdLeft),
-            //        nameof(searchModel.IdRight),
-            //    };
+            {
+                var searchModel = new Input_numberRange()
+                {
+                    IdLeft = 3,
+                    IdRight = 9
+                };
+                var whereLambda = new WhereLambda<People, Input_numberRange>();
+                whereLambda.SearchModel = searchModel;
+                whereLambda[SearchType.numberRange] = new List<string>
+                {
+                    nameof(searchModel.IdLeft),
+                    nameof(searchModel.IdRight),
+                };
 
-            //    (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+                (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
-            //    Assert.AreEqual(sql, "Id >= @Id And Id <= @Id1");
-            //    var dict = new Dictionary<string, object>
-            //    {
-            //        { "@Id",searchModel.IdLeft},
-            //        { "@Id1",searchModel.IdRight},
-            //    };
+                Assert.AreEqual(sql, "Id >= @Id And Id <= @Id1");
+                var dict = new Dictionary<string, object>
+                {
+                    { "@Id",searchModel.IdLeft},
+                    { "@Id1",searchModel.IdRight},
+                };
 
-            //    DictionaryAssert.AreEqual(param, dict);
-            //}
+                DictionaryAssert.AreEqual(param, dict);
+            }
 
             {
                 var searchModel = new Input_numberRange2()
