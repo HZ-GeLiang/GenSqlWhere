@@ -454,7 +454,8 @@ namespace ExpressionToWhereClause.Test
     }
     public class User
     {
-        [Column("Username")]
+        [Column("Username")]  //todo:未实现
+
         public string Name { get; set; }
 
         public bool Sex { get; set; }
@@ -464,6 +465,7 @@ namespace ExpressionToWhereClause.Test
         public int Age { get; set; }
     }
 
+    //todo:未实现
     public class ColumnAttribute : Attribute
     {
         public ColumnAttribute(string name)
