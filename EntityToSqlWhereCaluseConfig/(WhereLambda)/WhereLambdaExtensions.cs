@@ -6,6 +6,14 @@ namespace EntityToSqlWhereCaluseConfig
 {
     public static class WhereLambdaExtensions
     {
+        ////todo:转换为Where子句
+        //public static (string WhereClause, Dictionary<string, object> Parameters) ToWhereClause<TEntity, TSearchModel>(this WhereLambda<TEntity, TSearchModel> whereLambda)
+        //    where TEntity : class
+        //    where TSearchModel : class
+        //{
+        //    return whereLambda.ToExpression().ToWhereClause();
+        //}
+
         internal static List<Expression<Func<TEntity, bool>>> AddRange<TEntity, TSearchModel>(
             this List<Expression<Func<TEntity, bool>>> whereLambdas,
             TSearchModel searchModel, SearchType searchType, List<string> props)
