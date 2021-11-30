@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace EntityToSqlWhereCaluseConfig.Helper
+namespace EntityToSqlWhereCaluseConfig.Helper._Expression_
 {
     internal static class ExpressionHelper
     {

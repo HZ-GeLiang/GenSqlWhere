@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityToSqlWhereCaluseConfig", "EntityToSqlWhereCaluseConfig\EntityToSqlWhereCaluseConfig.csproj", "{3E4C4037-B2B2-406B-977E-2AC7596660EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityToSqlWherecClauseConfig", "EntityToSqlWhereCaluseConfig\EntityToSqlWherecClauseConfig.csproj", "{3E4C4037-B2B2-406B-977E-2AC7596660EF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpressionToSqlWhereClause", "ExpressionToSqlWhereClause\ExpressionToSqlWhereClause.csproj", "{62CF305C-AAAE-4B33-9203-05386BD9C64D}"
 EndProject

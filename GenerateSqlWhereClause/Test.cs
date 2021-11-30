@@ -8,7 +8,7 @@ using System.Text;
 
 namespace GenerateSqlWhereClause
 {
-    public partial class People
+    public class People
     {
         public int Id { get; set; }
 
