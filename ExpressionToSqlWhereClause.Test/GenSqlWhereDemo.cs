@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using EntityToSqlWhereCaluseConfig;
-using ExpressionToSqlWhereClause.Test.input;
+using EntityToSqlWhereClauseConfig.Test.input;
+using ExpressionToSqlWhereClause;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ExpressionToSqlWhereClause.Test
+namespace EntityToSqlWhereClauseConfig.Test
 {
     [TestClass]
     public class GenSqlWhereDemo
@@ -466,7 +467,5 @@ namespace ExpressionToSqlWhereClause.Test
 
             DictionaryAssert.AreEqual(param, dict);
         }
-
     }
-
 }

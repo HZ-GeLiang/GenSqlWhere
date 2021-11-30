@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ExpressionToSqlWhereClause.Test.input
+namespace EntityToSqlWhereClauseConfig.Test.input
 {
     public class Input_ge
     {

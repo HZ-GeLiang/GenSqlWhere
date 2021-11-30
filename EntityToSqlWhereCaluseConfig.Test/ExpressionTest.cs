@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using ExpressionToSqlWhereClause;
+using ExpressionToSqlWhereClause.Test.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ExpressionToWhereClause.Test
+namespace ExpressionToSqlWhereClause.Test
 {
 
     public class TestSqlAdapter : DefaultSqlAdapter
@@ -16,6 +16,113 @@ namespace ExpressionToWhereClause.Test
     [TestClass]
     public class ExpressionTest
     {
+        [TestMethod]
+        public void TestMethod1()
+        {
+            Expression<Func<Student, bool>> expOr = a => a.Id == 1 || a.Id == 2;
+            expOr = expOr.AndIf(true, () => { return x => x.IsDel; });
+            (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause();
+
+
+            Assert.AreEqual(WhereClause, "((((Id = @Id)) Or ((Id = @Id1))) And (IsDel = @IsDel))");
+
+            var para = new Dictionary<string, object>()
+            {
+                {"@Id", 1},
+                {"@Id1", 2},
+                {"@IsDel", true},
+            };
+            CollectionAssert.AreEqual(Parameters, para);
+        }
+
+        [TestMethod]
+        public void TestMethod2()
+        {
+            Expression<Func<Student, bool>> expOr = a => a.Id == 1 || a.Id == 2;
+            expOr = expOr.AndIf(true, () => { return x => x.IsDel == true; }); // 和  () => { return x => x.IsDel; } 不一样
+
+            (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause();
+
+            Assert.AreEqual(WhereClause, "((((Id = @Id)) Or ((Id = @Id1))) And ((IsDel = @IsDel)))");
+
+            var para = new Dictionary<string, object>()
+            {
+                {"@Id", 1},
+                {"@Id1", 2},
+                {"@IsDel", true},
+            };
+            CollectionAssert.AreEqual(Parameters, para);
+
+        }
+
+        [TestMethod]
+        public void 测试别名()
+        {
+            Expression<Func<Student, bool>> expOr = a => a.Id == 1 || a.Id == 2;
+
+            var dict = new Dictionary<string, string>()
+            {
+                { "Id", "RouteId" }
+            };
+            (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause(dict);
+
+            Assert.AreEqual(WhereClause, "(((RouteId = @Id)) Or ((RouteId = @Id1)))");
+
+            var para = new Dictionary<string, object>()
+            {
+                {"@Id", 1},
+                {"@Id1", 2},
+            };
+            CollectionAssert.AreEqual(Parameters, para);
+        }
+
+        [TestMethod]
+        public void 测试别名2()
+        {
+            Expression<Func<Student, bool>> expOr = a => a.Id == 1 || a.Id == 2;
+            expOr = expOr.AndIf(true, () => { return x => x.IsDel == true; }); // 和  () => { return x => x.IsDel; } 不一样
+
+            var dict = new Dictionary<string, string>()
+            {
+                { "Id", "RouteId" }
+            };
+            (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause(dict);
+
+            Assert.AreEqual(WhereClause, "((((RouteId = @Id)) Or ((RouteId = @Id1))) And ((IsDel = @IsDel)))");
+
+            var para = new Dictionary<string, object>()
+            {
+                {"@Id", 1},
+                {"@Id1", 2},
+                {"@IsDel", true},
+            };
+            CollectionAssert.AreEqual(Parameters, para);
+        }
+
+        [TestMethod]
+        public void 测试别名3()
+        {
+            Expression<Func<Student, bool>> expOr = a => a.Id == 1 || a.Id == 2;
+            expOr = expOr.AndIf(true, () => { return x => x.IsDel == true; }); // 和  () => { return x => x.IsDel; } 不一样
+
+            var dict = new Dictionary<string, string>()
+            {
+                { "Id", "RouteId" },
+                { "IsDel", "b.IsDel" }
+            };
+            (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause(dict);
+
+            Assert.AreEqual(WhereClause, "((((RouteId = @Id)) Or ((RouteId = @Id1))) And ((b.IsDel = @IsDel)))");
+
+            var para = new Dictionary<string, object>()
+            {
+                {"@Id", 1},
+                {"@Id1", 2},
+                {"@IsDel", true},
+            };
+            CollectionAssert.AreEqual(Parameters, para);
+        }
+
         [TestMethod]
         public void ValidateString()
         {
@@ -454,7 +561,7 @@ namespace ExpressionToWhereClause.Test
     }
     public class User
     {
-        [Column("Username")]  //todo:δʵ��
+        [Column("Username")]  //todo:δʵ��
 
         public string Name { get; set; }
 
@@ -465,7 +572,7 @@ namespace ExpressionToWhereClause.Test
         public int Age { get; set; }
     }
 
-    //todo:δʵ��
+    //todo:δʵ��
     public class ColumnAttribute : Attribute
     {
         public ColumnAttribute(string name)
