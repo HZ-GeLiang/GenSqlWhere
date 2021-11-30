@@ -9,7 +9,7 @@
 		<Description>Expression or model can conver to sql where clause</Description>
 		<PackageProjectUrl>https://gitee.com/hzgel/GenSqlWhere</PackageProjectUrl>
 		<Copyright>Copyright (c) GeLiang</Copyright>
-		<PackageTags>sql,whereclause,expression,expression2sql,convert2sql,model2sql</PackageTags>
+		<PackageTags>gensqlwhere,sql,whereclause,expression,expression2sql,convert2sql,model2sql</PackageTags>
 		<Version>1.0.1</Version>
 		<LangVersion>9</LangVersion>
 		<PackageId>GenerateSqlWhereClause</PackageId>
