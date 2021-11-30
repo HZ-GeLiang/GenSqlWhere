@@ -232,14 +232,14 @@ namespace EntityToSqlWhereCaluseConfig
                 {
                     if (!(value is string) || string.IsNullOrWhiteSpace((string)value))
                     {
-                        throw new Exception("不支持的引用类型");
+                        throw new Exceptions.EntityToSqlWhereCaluseConfigException("不支持的引用类型");
                     }
                 }
                 else
                 {
                     if (value is DateTime)
                     {
-                        throw new Exception("不支持DateTime类型");
+                        throw new Exceptions.EntityToSqlWhereCaluseConfigException("不支持DateTime类型");
                     }
                 }
                 //值类型(DateTime) + 非string的引用类型 不给翻译.直接报错
@@ -436,10 +436,8 @@ namespace EntityToSqlWhereCaluseConfig
                 // ReSharper disable once AssignNullToNotNullAttribute
                 if (!Regex.IsMatch(value.ToString(), @"^(-?\d+)(\.\d+)?$")) //是否是数字(整数+浮点数)
                 {
-                    throw new Exception($"当前值({value})不是数字类型.");
+                    throw new Exceptions.EntityToSqlWhereCaluseConfigException($"当前值({value})不是数字类型.");
                 }
-
-
 
                 if (prop != "Left" && prop.EndsWith("Left"))
                 {
@@ -458,7 +456,7 @@ namespace EntityToSqlWhereCaluseConfig
                     {
                         if (numberDict[key].IsPair != true)
                         {
-                            throw new Exception("重复赋值");
+                            throw new Exceptions.EntityToSqlWhereCaluseConfigException("重复赋值");
                         }
                     }
                 }
@@ -478,7 +476,7 @@ namespace EntityToSqlWhereCaluseConfig
                     {
                         if (numberDict[key].IsPair != true)
                         {
-                            throw new Exception("重复赋值");
+                            throw new Exceptions.EntityToSqlWhereCaluseConfigException("重复赋值");
                         }
                     }
                 }
@@ -498,7 +496,7 @@ namespace EntityToSqlWhereCaluseConfig
                     }
                     else
                     {
-                        throw new Exception("重复赋值");
+                        throw new Exceptions.EntityToSqlWhereCaluseConfigException("重复赋值");
                     }
                 }
 
@@ -660,10 +658,9 @@ namespace EntityToSqlWhereCaluseConfig
                 }
                 if (!(value is DateTime))
                 {
-                    throw new Exception("当前值不是 datetime 类型");
+                    throw new Exceptions.EntityToSqlWhereCaluseConfigException("当前值不是 datetime 类型");
                 }
-
-
+                 
                 if (prop != "Start" && prop.EndsWith("Start"))
                 {
                     var key = prop.RemoveSuffix("Start");
@@ -681,7 +678,7 @@ namespace EntityToSqlWhereCaluseConfig
                     {
                         if (timeDict[key].IsPair != true)
                         {
-                            throw new Exception("重复赋值");
+                            throw new Exceptions.EntityToSqlWhereCaluseConfigException("重复赋值");
                         }
                     }
                 }
@@ -702,7 +699,7 @@ namespace EntityToSqlWhereCaluseConfig
                     {
                         if (timeDict[key].IsPair != true)
                         {
-                            throw new Exception("重复赋值");
+                            throw new Exceptions.EntityToSqlWhereCaluseConfigException("重复赋值");
                         }
                     }
                 }
@@ -720,7 +717,7 @@ namespace EntityToSqlWhereCaluseConfig
                     }
                     else
                     {
-                        throw new Exception("重复赋值");
+                        throw new Exceptions.EntityToSqlWhereCaluseConfigException("重复赋值");
                     }
                 }
 
@@ -836,7 +833,7 @@ namespace EntityToSqlWhereCaluseConfig
                 }
                 else
                 {
-                    throw new Exception("代码逻辑有问题, 不应该进入这个分支");
+                    throw new Exceptions.EntityToSqlWhereCaluseConfigException("代码逻辑有问题, 不应该进入这个分支");
                 }
 
                 if (d1 != null) //>=
@@ -896,7 +893,7 @@ namespace EntityToSqlWhereCaluseConfig
             }
             else
             {
-                throw new Exception("后续开发修改过代码逻辑, 但是此处却未修改,需要修改代码");
+                throw new Exceptions.EntityToSqlWhereCaluseConfigException("后续开发修改过代码逻辑, 但是此处却未修改,需要修改代码");
             }
 
             return endTime;

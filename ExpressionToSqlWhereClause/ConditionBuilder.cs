@@ -125,7 +125,7 @@ namespace ExpressionToSqlWhereClause
                 ExpressionType.LessThanOrEqual => SqlKeys.LessThanOrEqual,
                 ExpressionType.NotEqual => SqlKeys.NotEqual,
                 //case ExpressionType.AndAlso:
-                //    throw new Exception("***");
+                //    throw new Exceptions.EntityToSqlWhereCaluseConfigException("***");
                 _ => throw new NotSupportedException($"Unknown ExpressionType {expressionType}")
             };
         }

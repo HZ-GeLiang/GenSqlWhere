@@ -22,7 +22,7 @@ namespace EntityToSqlWhereCaluseConfig
             switch (searchType)
             {
                 case SearchType.none:
-                    throw new Exception("未指定" + nameof(searchType));
+                    throw new Exceptions.EntityToSqlWhereCaluseConfigException("未指定" + nameof(searchType));
                 case SearchType.like:
                     expressionList = WhereLambdaHelper.AddLike<TEntity, TSearchModel>(searchModel, props);
                     break;

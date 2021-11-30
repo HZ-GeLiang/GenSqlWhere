@@ -35,7 +35,7 @@ namespace EntityToSqlWhereCaluseConfig
         /// <summary>
         /// 数值的范围
         /// 1:有区间范围 [xxxLeft, xxxRight]=> 包含开始值,包含结束值
-        /// 2:没有区间范围  xxx =>程序异常
+        /// 2:没有区间范围  xxx => (取当前数字的精度)
         /// </summary>
         numberRange,
 

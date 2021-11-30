@@ -259,28 +259,49 @@ namespace ExpressionToSqlWhereClause.Test
                 };
 
                 DictionaryAssert.AreEqual(param, dict);
-
             }
-
-
         }
 
 
         [TestMethod]
         public void Test_numberRange()
         {
+            //{
+            //    var searchModel = new Input_numberRange()
+            //    {
+            //        IdLeft = 3,
+            //        IdRight = 9
+            //    };
+            //    var whereLambda = new WhereLambda<People, Input_numberRange>();
+            //    whereLambda.SearchModel = searchModel;
+            //    whereLambda[SearchType.numberRange] = new List<string>
+            //    {
+            //        nameof(searchModel.IdLeft),
+            //        nameof(searchModel.IdRight),
+            //    };
+
+            //    (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+
+            //    Assert.AreEqual(sql, "Id >= @Id And Id <= @Id1");
+            //    var dict = new Dictionary<string, object>
+            //    {
+            //        { "@Id",searchModel.IdLeft},
+            //        { "@Id1",searchModel.IdRight},
+            //    };
+
+            //    DictionaryAssert.AreEqual(param, dict);
+            //}
+
             {
-                var searchModel = new Input_numberRange()
+                var searchModel = new Input_numberRange2()
                 {
-                    IdLeft = 3,
-                    IdRight = 9
+                    Id = 5
                 };
-                var whereLambda = new WhereLambda<People, Input_numberRange>();
+                var whereLambda = new WhereLambda<People, Input_numberRange2>();
                 whereLambda.SearchModel = searchModel;
                 whereLambda[SearchType.numberRange] = new List<string>
                 {
-                    nameof(searchModel.IdLeft),
-                    nameof(searchModel.IdRight),
+                    nameof(searchModel.Id),
                 };
 
                 (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
@@ -288,35 +309,11 @@ namespace ExpressionToSqlWhereClause.Test
                 Assert.AreEqual(sql, "Id >= @Id And Id <= @Id1");
                 var dict = new Dictionary<string, object>
                 {
-                    { "@Id",searchModel.IdLeft},
-                    { "@Id1",searchModel.IdRight},
+                    { "@Id",searchModel.Id},
+                    { "@Id1",searchModel.Id},
                 };
 
                 DictionaryAssert.AreEqual(param, dict);
-            }
-
-            {
-                //程序异常
-                //var searchModel = new Input_numberRange2()
-                //{
-                //    Id  = 5
-                //};
-                //var whereLambda = new WhereLambda<People, Input_numberRange2>();
-                //whereLambda.SearchModel = searchModel;
-                //whereLambda[SearchType.numberRange] = new List<string>
-                //{
-                //    nameof(searchModel.Id),
-                //};
-
-                //(string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
-
-                //Assert.AreEqual(sql, "Id >= @Id And Id <= @Id1");
-                //var dict = new Dictionary<string, object>
-                //{
-                //    { "@Id",searchModel.Id},
-                //};
-
-                //DictionaryAssert.AreEqual(param, dict);
             }
         }
 

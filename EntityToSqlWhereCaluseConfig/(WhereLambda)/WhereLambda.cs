@@ -63,7 +63,7 @@ namespace EntityToSqlWhereCaluseConfig
             {
                 if (searchType == SearchType.none || !dict.ContainsKey(searchType))
                 {
-                    //throw new Exception($"参数{nameof(dict)}不包含{nameof(searchType)}值:{searchType}");
+                    //throw new Exceptions.EntityToSqlWhereCaluseConfigException($"参数{nameof(dict)}不包含{nameof(searchType)}值:{searchType}");
                     continue;
                 }
                 var list = dict[searchType];
