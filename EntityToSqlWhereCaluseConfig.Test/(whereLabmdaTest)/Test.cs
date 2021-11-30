@@ -45,10 +45,6 @@ namespace EntityToSqlWhereCaluseConfig.Test
                 nameof(searchModel.DataUpdatedAtEnd),
             };
 
-            whereLambda[SearchType.numberRange] = new List<string>
-            {
-            };
-
             return whereLambda;
         }
     }
