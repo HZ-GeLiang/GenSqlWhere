@@ -16,9 +16,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenerateSqlWhereClause", "G
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget包", "nuget包", "{7F405AD9-2593-4025-90B2-A424AECBDFEF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpressionToSqlWhereClause.Test", "EntityToSqlWhereCaluseConfig.Test\ExpressionToSqlWhereClause.Test.csproj", "{F7085441-0D02-41E9-A33F-EEBEAC73659C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpressionToSqlWhereClause.Test", "ExpressionToSqlWhereClause.Test\ExpressionToSqlWhereClause.Test.csproj", "{F7085441-0D02-41E9-A33F-EEBEAC73659C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityToSqlWhereClauseConfig.Test", "ExpressionToSqlWhereClause.Test\EntityToSqlWhereClauseConfig.Test.csproj", "{340C9D2E-FDC6-4A09-890E-AD7ADFDA66FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityToSqlWhereClauseConfig.Test", "EntityToSqlWhereClauseConfig.Test\EntityToSqlWhereClauseConfig.Test.csproj", "{340C9D2E-FDC6-4A09-890E-AD7ADFDA66FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

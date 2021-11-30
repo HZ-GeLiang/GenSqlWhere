@@ -1,4 +1,4 @@
-namespace EntityToSqlWhereCaluseConfig
+namespace EntityToSqlWhereClauseConfig
 {
     /// <summary>
     /// 

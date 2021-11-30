@@ -1,4 +1,4 @@
-﻿namespace EntityToSqlWhereCaluseConfig.ExtensionMethod
+﻿namespace EntityToSqlWhereClauseConfig.ExtensionMethod
 {
     internal static class StringExtensions
     {

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Reflection; 
 
-namespace EntityToSqlWhereCaluseConfig
+namespace EntityToSqlWhereClauseConfig
 {
 
     //使用

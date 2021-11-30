@@ -1,15 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using EntityToSqlWhereCaluseConfig;
-using EntityToSqlWhereCaluseConfig;
-using EntityToSqlWhereCaluseConfig;
-using EntityToSqlWhereClauseConfig.Test.input;
-using ExpressionToSqlWhereClause;
+using EntityToSqlWhereClauseConfig;
+using EntityToSqlWhereClauseConfig;
+using EntityToSqlWhereClauseConfig;
 using ExpressionToSqlWhereClause;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace EntityToSqlWhereClauseConfig.Test
+namespace ExpressionToSqlWhereClause.Test
 {
     [TestClass]
     public class UseDemo
@@ -18,7 +16,7 @@ namespace EntityToSqlWhereClauseConfig.Test
         public void Use()
         {
             var time = System.DateTime.Parse("2021-8-8");
-            var searchModel = new Input_Demo()
+            var searchModel = new StudentInput()
             {
                 //Id = 1,
                 Id = "1,2",
@@ -29,7 +27,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 DataCreatedAtEnd = time,
             };
 
-            var whereLambda = new WhereLambda<People, Input_Demo>();
+            var whereLambda = new WhereLambda<Student, StudentInput>();
             whereLambda.SearchModel = searchModel;
 
             whereLambda[SearchType.like] = new List<string>
@@ -55,13 +53,10 @@ namespace EntityToSqlWhereClauseConfig.Test
                 nameof(searchModel.DataUpdatedAtStart),
                 nameof(searchModel.DataUpdatedAtEnd),
             };
-
-            whereLambda[SearchType.numberRange] = new List<string>
-            {
-            };
+ 
 
             //List<Expression<Func<Route, bool>>> listExp = whereLambda.ToExpressionList(); //可以给ef用
-            Expression<Func<People, bool>> exp = whereLambda.ToExpression();
+            Expression<Func<Student, bool>> exp = whereLambda.ToExpression();
             //等价
             //List<Expression<Func<Route, bool>>> listExp = whereLambda;
             //Expression<Func<Route, bool>> exp = whereLambda;
@@ -85,7 +80,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
             };
 
-            var whereLambda = searchModel.CrateWhereLambda((People p) => { });
+            var whereLambda = searchModel.CrateWhereLambda((Student _) => { });
 
             whereLambda[SearchType.like] = new List<string>
             {

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace EntityToSqlWhereCaluseConfig.ExtensionMethod
+namespace EntityToSqlWhereClauseConfig.ExtensionMethod
 {
     /// <summary>
     /// 特定的类型
