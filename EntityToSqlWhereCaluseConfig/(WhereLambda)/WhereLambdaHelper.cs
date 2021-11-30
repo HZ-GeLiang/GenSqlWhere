@@ -1,10 +1,10 @@
- 
+
 using EntityToSqlWhereCaluseConfig.ExtensionMethod;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text.RegularExpressions; 
+using System.Text.RegularExpressions;
 
 namespace EntityToSqlWhereCaluseConfig
 {
@@ -16,7 +16,7 @@ namespace EntityToSqlWhereCaluseConfig
         private static List<Expression<Func<TEntity, bool>>> Default<TEntity>() => new List<Expression<Func<TEntity, bool>>>();
 
         #region AddLike
-      
+
         public static List<Expression<Func<TEntity, bool>>> AddLike<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
         {
             return HaveCount(props)
@@ -137,7 +137,7 @@ namespace EntityToSqlWhereCaluseConfig
             {
                 return null;
             }
-       
+
             var parameterExp = Expression.Parameter(typeof(TEntity), "a");
             var propertyExp = Expression.Property(parameterExp, propertyName);//a.UserNickName
             var method = typeof(string).GetMethod("StartsWith", new[] { typeof(string) });
@@ -439,14 +439,16 @@ namespace EntityToSqlWhereCaluseConfig
                     throw new Exception($"当前值({value})不是数字类型.");
                 }
 
-                var key = prop.RemoveSuffix("Left").RemoveSuffix("Right");
-                if (!numberDict.ContainsKey(key))
-                {
-                    numberDict.Add(key, new NumberSearch() { Prop = key, NumberRange = new Object[2] });
-                }
 
-                if (prop.EndsWith("Left"))
+
+                if (prop != "Left" && prop.EndsWith("Left"))
                 {
+                    var key = prop.RemoveSuffix("Left");
+                    if (!numberDict.ContainsKey(key))
+                    {
+                        numberDict.Add(key, new NumberSearch() { Prop = key, NumberRange = new Object[2] });
+                    }
+
                     numberDict[key].NumberRange[0] = value;
                     if (numberDict[key].IsPair == null)
                     {
@@ -460,8 +462,13 @@ namespace EntityToSqlWhereCaluseConfig
                         }
                     }
                 }
-                else if (prop.EndsWith("Right"))
+                else if (prop != "Right" && prop.EndsWith("Right"))
                 {
+                    var key = prop.RemoveSuffix("Right");
+                    if (!numberDict.ContainsKey(key))
+                    {
+                        numberDict.Add(key, new NumberSearch() { Prop = key, NumberRange = new Object[2] });
+                    }
                     numberDict[key].NumberRange[1] = value;
                     if (numberDict[key].IsPair == null)
                     {
@@ -477,7 +484,14 @@ namespace EntityToSqlWhereCaluseConfig
                 }
                 else
                 {
-                    numberDict[key].NumberRange[0] = (DateTime?)value;
+                    var key = prop;
+                    if (!numberDict.ContainsKey(key))
+                    {
+                        numberDict.Add(key, new NumberSearch() { Prop = key, NumberRange = new Object[2] });
+                    }
+
+                    numberDict[key].NumberRange[0] = value;
+
                     if (numberDict[key].IsPair == null)
                     {
                         numberDict[key].IsPair = false;
@@ -565,7 +579,7 @@ namespace EntityToSqlWhereCaluseConfig
                 }
                 else
                 {
-                    throw new Exception("代码逻辑有问题, 不应该进入这个分支");
+                    throw new Exceptions.EntityToSqlWhereCaluseConfigException("代码逻辑有问题, 不应该进入这个分支");
                 }
 
                 if (d1 != null) //>=
@@ -649,7 +663,8 @@ namespace EntityToSqlWhereCaluseConfig
                     throw new Exception("当前值不是 datetime 类型");
                 }
 
-                if (prop.EndsWith("Start"))
+
+                if (prop != "Start" && prop.EndsWith("Start"))
                 {
                     var key = prop.RemoveSuffix("Start");
                     if (!timeDict.ContainsKey(key))
@@ -670,7 +685,7 @@ namespace EntityToSqlWhereCaluseConfig
                         }
                     }
                 }
-                else if (prop.EndsWith("End"))
+                else if (prop != "End" && prop.EndsWith("End"))
                 {
                     var key = prop.RemoveSuffix("End");
                     if (!timeDict.ContainsKey(key))
@@ -1258,7 +1273,7 @@ namespace EntityToSqlWhereCaluseConfig
                 propertyValue = Convert.ChangeType(propertyValue, propType_TEntity);
             }
 
-            
+
             var right = Expression.Constant(propertyValue, propType_TEntity);
             var body = Expression.GreaterThan(left, right);
             var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
