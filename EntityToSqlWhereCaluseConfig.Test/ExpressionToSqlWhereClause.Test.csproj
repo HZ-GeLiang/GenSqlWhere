@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EntityToSqlWhereCaluseConfig\EntityToSqlWhereCaluseConfig.csproj" />
+    <ProjectReference Include="..\EntityToSqlWhereCaluseConfig\EntityToSqlWherecClauseConfig.csproj" />
     <ProjectReference Include="..\ExpressionToSqlWhereClause\ExpressionToSqlWhereClause.csproj" />
   </ItemGroup>
 
