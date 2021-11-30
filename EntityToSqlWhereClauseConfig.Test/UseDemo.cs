@@ -1,11 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using EntityToSqlWhereClauseConfig;
-using EntityToSqlWhereClauseConfig;
-using EntityToSqlWhereClauseConfig;
 using EntityToSqlWhereClauseConfig.Test.input;
-using ExpressionToSqlWhereClause;
 using ExpressionToSqlWhereClause;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
