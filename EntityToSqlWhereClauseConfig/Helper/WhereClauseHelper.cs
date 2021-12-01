@@ -14,6 +14,11 @@ namespace EntityToSqlWhereClauseConfig.Helper
         /// <returns></returns>
         public static string ParamNameToNumber(string whereclause)
         {
+            if (whereclause == null)
+            {
+                return null;
+            }
+
             string pattern = "@[a-zA-Z0-9_]*";
             var matches = Regex.Matches(whereclause, pattern);
             //要倒序替换
