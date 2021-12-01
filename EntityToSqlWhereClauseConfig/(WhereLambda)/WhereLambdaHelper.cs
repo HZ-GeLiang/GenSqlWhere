@@ -292,10 +292,11 @@ namespace EntityToSqlWhereClauseConfig
 
         private static void AddEqualCore<TEntity, TSearchModel>(string prop, Type valuePropType, object propertyValue, List<Expression<Func<TEntity, bool>>> whereLambdas)
         {
-            if (typeof(TEntity).GetProperty(prop) == null)
+            if (typeof(TEntity).GetProperty(prop) == null)//domain 没有prop属性
             {
                 return;
             }
+
             // AddEqual 的代码
             var parameterExp = Expression.Parameter(typeof(TEntity), "a");
             var propertyExp = Expression.Property(parameterExp, prop); //a.AuditStateId
@@ -305,6 +306,12 @@ namespace EntityToSqlWhereClauseConfig
             //前半个if 是为了支持ids的查询: 当id需要支持多个值查询时, 前端模型只能是string类型, 然后这里就会因为类型不一致而发生异常
             if (valuePropType != propType_TEntity || propType_TEntity != typeof(string))
             {
+                //解决 "" 转成 值类型抛出转换失败异常
+                if (propertyValue.GetType() == typeof(string) && (string)propertyValue == "" && propType_TEntity.IsStructType())
+                {
+                    return;
+                }
+
                 //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
                 if (propType_TEntity.IsNullableType())
                 {
@@ -371,6 +378,12 @@ namespace EntityToSqlWhereClauseConfig
             //前半个if 是为了支持ids的查询: 当id需要支持多个值查询时, 前端模型只能是string类型, 然后这里就会因为类型不一致而发生异常
             if (valuePropType != propType_TEntity || propType_TEntity != typeof(string))
             {
+                //解决 "" 转成 值类型抛出转换失败异常
+                if (propertyValue.GetType() == typeof(string) && (string)propertyValue == "" && propType_TEntity.IsStructType())
+                {
+                    return;
+                }
+
                 //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
                 if (propType_TEntity.IsNullableType())
                 {
@@ -666,7 +679,7 @@ namespace EntityToSqlWhereClauseConfig
                 {
                     throw new Exceptions.EntityToSqlWhereCaluseConfigException("当前值不是 datetime 类型");
                 }
-                 
+
                 if (prop != "Start" && prop.EndsWith("Start"))
                 {
                     var key = prop.RemoveSuffix("Start");
@@ -1022,6 +1035,11 @@ namespace EntityToSqlWhereClauseConfig
                 //    ////前半个if 是为了支持ids的查询: 当id需要支持多个值查询时, 前端模型只能是string类型, 然后这里就会因为类型不一致而发生异常
                 //    //if (valuePropType != propType_TEntity || propType_TEntity != typeof(string))
                 //    //{
+                //    //    //解决 "" 转成 值类型抛出转换失败异常
+                //    //    if (propertyValue.GetType() == typeof(string) && (string)propertyValue == "" && propT ype_TEntity.I sStructType())
+                //    //    {
+                //    //        return null;
+                //    //    }
                 //    //    //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
                 //    //    if (propType_TEntity.IsNullableType())
                 //    //    {
@@ -1265,6 +1283,12 @@ namespace EntityToSqlWhereClauseConfig
             Type propType_TEntity = propertyExp.Type; // domain(typeof(TEntity)) 中的Id属性的类型
             var left = Expression.Convert(propertyExp, propType_TEntity);
 
+            //解决 "" 转成 值类型抛出转换失败异常
+            if (propertyValue.GetType() == typeof(string) && (string)propertyValue == "" && propType_TEntity.IsStructType())
+            {
+                return null;
+            }
+
             //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
             if (propType_TEntity.IsNullableType())
             {
@@ -1274,7 +1298,6 @@ namespace EntityToSqlWhereClauseConfig
             {
                 propertyValue = Convert.ChangeType(propertyValue, propType_TEntity);
             }
-
 
             var right = Expression.Constant(propertyValue, propType_TEntity);
             var body = Expression.GreaterThan(left, right);
@@ -1335,6 +1358,12 @@ namespace EntityToSqlWhereClauseConfig
             Type propType_TEntity = propertyExp.Type; // domain(typeof(TEntity)) 中的Id属性的类型
             var left = Expression.Convert(propertyExp, propType_TEntity);
 
+            //解决 "" 转成 值类型抛出转换失败异常
+            if (propertyValue.GetType() == typeof(string) && (string)propertyValue == "" && propType_TEntity.IsStructType())
+            {
+                return null;
+            }
+
             //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
             if (propType_TEntity.IsNullableType())
             {
@@ -1344,7 +1373,6 @@ namespace EntityToSqlWhereClauseConfig
             {
                 propertyValue = Convert.ChangeType(propertyValue, propType_TEntity);
             }
-
 
             var right = Expression.Constant(propertyValue, propType_TEntity);
             var body = Expression.GreaterThanOrEqual(left, right);
@@ -1405,6 +1433,12 @@ namespace EntityToSqlWhereClauseConfig
             Type propType_TEntity = propertyExp.Type; // domain(typeof(TEntity)) 中的Id属性的类型
             var left = Expression.Convert(propertyExp, propType_TEntity);
 
+            //解决 "" 转成 值类型抛出转换失败异常
+            if (propertyValue.GetType() == typeof(string) && (string)propertyValue == "" && propType_TEntity.IsStructType())
+            {
+                return null;
+            }
+
             //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
             if (propType_TEntity.IsNullableType())
             {
@@ -1414,7 +1448,6 @@ namespace EntityToSqlWhereClauseConfig
             {
                 propertyValue = Convert.ChangeType(propertyValue, propType_TEntity);
             }
-
 
             var right = Expression.Constant(propertyValue, propType_TEntity);
             var body = Expression.LessThan(left, right);
@@ -1474,6 +1507,12 @@ namespace EntityToSqlWhereClauseConfig
             var propertyExp = Expression.Property(parameterExp, propertyName); //a.Id
             Type propType_TEntity = propertyExp.Type; // domain(typeof(TEntity)) 中的Id属性的类型
             var left = Expression.Convert(propertyExp, propType_TEntity);
+
+            //解决 "" 转成 值类型抛出转换失败异常
+            if (propertyValue.GetType() == typeof(string) && (string)propertyValue == "" && propType_TEntity.IsStructType())
+            {
+                return null;
+            }
 
             //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
             if (propType_TEntity.IsNullableType())

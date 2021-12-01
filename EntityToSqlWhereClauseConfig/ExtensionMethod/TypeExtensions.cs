@@ -22,7 +22,25 @@ namespace EntityToSqlWhereClauseConfig.ExtensionMethod
                 throw new ArgumentNullException(nameof(type));
             }
             return type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
-           
+        }
+
+        public static bool IsStructType(this Type type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+            var isStructType = !type.IsClass;
+            if (isStructType)
+            {
+                return true;
+            }
+
+            if (type.IsNullableType() && !type.GetNullableTType().IsClass)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

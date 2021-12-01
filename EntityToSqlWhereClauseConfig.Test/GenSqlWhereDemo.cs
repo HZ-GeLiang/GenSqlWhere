@@ -497,9 +497,7 @@ namespace EntityToSqlWhereClauseConfig.Test
             }
 
             {
-                //string的"" 转 int
-                //会抛异常
-                //todo:计划解决
+                //解决  "" 转 值类型(如int) 抛异常的问题
                 var searchModel = new
                 {
                     Id = string.Empty,
