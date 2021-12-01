@@ -470,5 +470,54 @@ namespace EntityToSqlWhereClauseConfig.Test
 
             DictionaryAssert.AreEqual(param, dict);
         }
+
+
+        [TestMethod]
+        public void Test_expection1()
+        {
+            {
+                //string的null 转 int
+                var searchModel = new
+                {
+                    Id = (string)null,
+                };
+
+                var whereLambda = searchModel.CrateWhereLambda((Input_expection1 _) => { });
+
+                whereLambda[SearchType.eq] = new List<string>
+                {
+                    nameof(searchModel.Id),
+                };
+
+                (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+
+                Assert.AreEqual(sql, null);
+
+                DictionaryAssert.AreEqual(param, null);
+            }
+
+            {
+                //string的"" 转 int
+                //会抛异常
+                //todo:计划解决
+                var searchModel = new
+                {
+                    Id = string.Empty,
+                };
+
+                var whereLambda = searchModel.CrateWhereLambda((Input_expection1 _) => { });
+
+                whereLambda[SearchType.eq] = new List<string>
+                {
+                    nameof(searchModel.Id),
+                };
+
+                (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+
+                Assert.AreEqual(sql, null);
+
+                DictionaryAssert.AreEqual(param, null);
+            }
+        }
     }
 }
