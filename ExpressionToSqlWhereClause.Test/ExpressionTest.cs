@@ -272,7 +272,6 @@ namespace ExpressionToSqlWhereClause.Test
         }
 
 
-
         [TestMethod]
         public void ValidateDeepMemberConstant()
         {
@@ -562,7 +561,7 @@ namespace ExpressionToSqlWhereClause.Test
     }
     public class User
     {
-        [Column("Username")]  //todo:δʵ��
+        [Column("Username")]  //todo:未实现
 
         public string Name { get; set; }
 
@@ -573,14 +572,13 @@ namespace ExpressionToSqlWhereClause.Test
         public int Age { get; set; }
     }
 
-    //todo:δʵ��
+    //todo:未实现
     public class ColumnAttribute : Attribute
     {
         public ColumnAttribute(string name)
         {
             this.Name = name;
         }
-
 
         public string Name { get; set; }
     }
