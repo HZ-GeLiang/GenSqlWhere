@@ -14,7 +14,7 @@ namespace EntityToSqlWhereClauseConfig.Test
             }
             if (dict == null)
             {
-                Assert.Fail(nameof(dict) + "为null");
+                Assert.Fail(nameof(dict) + "不能为空");
                 return;
             }
 
