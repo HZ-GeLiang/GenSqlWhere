@@ -1200,7 +1200,8 @@ namespace EntityToSqlWhereClauseConfig
 
         private static Expression<Func<TEntity, bool>> GetExpression_In<TEntity>(ParameterExpression parameterExp, MemberExpression propertyExp, object listObj)
         {
-            //参考 https://stackoverflow.com/questions/18491610/dynamic-linq-expression-for-ienumerableint-containsmemberexpression
+            //参考
+            //https://stackoverflow.com/questions/18491610/dynamic-linq-expression-for-ienumerableint-containsmemberexpression
             //https://stackoverflow.com/questions/26659824/create-a-predicate-builder-for-x-listofints-containsx-listofintstocheck
 
             //ParameterExpression parameterExp = Expression.Parameter(typeof(TEntity), "a");//pe
@@ -1211,7 +1212,7 @@ namespace EntityToSqlWhereClauseConfig
 
             var call = Expression.Call(typeof(Enumerable), "Contains", new[] { propertyExp.Type }, someValue, propertyExp);
 
-            //会生产 sql  CAST( `t`.`audit_state_id` AS int ) , 但是mysql(5.7.32)  int 要翻译成改成 signed 不让提示sql语法有误
+            //会生产 sql  CAST( `t`.`audit_state_id` AS int ) , 但是 mysql(5.7.32)  int 要翻译成改成 signed 不然提示sql语法有误
             //var convertExpression = Expression.Convert(propertyExp, typeof(Int32));
             //var call = Expression.Call(someValue, "Contains", new Type[] { }, convertExpression);  
 
