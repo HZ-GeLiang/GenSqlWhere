@@ -41,7 +41,7 @@ namespace ExpressionToSqlWhereClause
                     parseResult.WhereClause = parseResult.WhereClause.Replace(")", string.Empty);
                 }
             }
-             
+
             #endregion
 
             #region 处理 parseResult.Parameters
@@ -57,7 +57,8 @@ namespace ExpressionToSqlWhereClause
 
             #endregion
 
-            return (parseResult.WhereClause, parseResult.Parameters);
+            var result = (parseResult.WhereClause, parseResult.Parameters);
+            return result;
         }
 
         /// <summary>
@@ -65,12 +66,14 @@ namespace ExpressionToSqlWhereClause
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="expression"></param>
+        /// <param name="alias"></param>
         /// <param name="sqlAdapter"></param>
         /// <returns></returns>
         public static Task<(string WhereClause, Dictionary<string, object> Parameters)> ToWhereClauseAsync<T>(this Expression<Func<T, bool>> expression, Dictionary<string, string> alias = null, ISqlAdapter sqlAdapter = default)
             where T : class
         {
-            return Task.FromResult(expression.ToWhereClause(alias, sqlAdapter));
+            var result = Task.FromResult(expression.ToWhereClause(alias, sqlAdapter));
+            return result;
         }
     }
 }
