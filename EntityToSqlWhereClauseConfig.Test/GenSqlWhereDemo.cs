@@ -487,9 +487,9 @@ namespace EntityToSqlWhereClauseConfig.Test
 
                 (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
-                Assert.AreEqual(sql, null);
+                Assert.AreEqual(sql, String.Empty);
 
-                DictionaryAssert.AreEqual(param, null);
+                DictionaryAssert.AreEqual(param, new Dictionary<string, object>());
             }
 
             {
@@ -508,9 +508,9 @@ namespace EntityToSqlWhereClauseConfig.Test
 
                 (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
-                Assert.AreEqual(sql, null);
+                Assert.AreEqual(sql, "");
 
-                DictionaryAssert.AreEqual(param, null);
+                DictionaryAssert.AreEqual(param, new Dictionary<string, object>());
 
             }
 
@@ -530,11 +530,9 @@ namespace EntityToSqlWhereClauseConfig.Test
 
                 (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
-                Assert.AreEqual(sql, null);
+                Assert.AreEqual(sql, "");
 
-                DictionaryAssert.AreEqual(param, null);
-
-
+                DictionaryAssert.AreEqual(param, new Dictionary<string, object>());
             }
         }
 
@@ -560,6 +558,26 @@ namespace EntityToSqlWhereClauseConfig.Test
 
             Assert.AreEqual(sql, String.Empty);
             DictionaryAssert.AreEqual(param, new Dictionary<string, object>(0));
+
+        }
+
+        [TestMethod]
+        public void Test_sqlFun_Month()
+        {
+            var searchModel = new Input_sqlFun_Month()
+            {
+                DataCreatedAt = DateTime.Now
+            };
+
+            var whereLambda = new WhereLambda<People, Input_sqlFun_Month>();
+            whereLambda.SearchModel = searchModel;
+
+            whereLambda[SearchType.eq] = new List<string>
+            {
+                nameof(searchModel.DataCreatedAt),
+            };
+
+            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
         }
     }

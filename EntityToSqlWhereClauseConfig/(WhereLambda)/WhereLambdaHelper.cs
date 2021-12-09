@@ -276,6 +276,7 @@ namespace EntityToSqlWhereClauseConfig
             }
 
             List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            //todo:这里可以获得 TSearchModel 的属性的 Attribute
             foreach (var prop in props)
             {
                 var propertyValue = new PropertyValue<TSearchModel>(searchModel);
