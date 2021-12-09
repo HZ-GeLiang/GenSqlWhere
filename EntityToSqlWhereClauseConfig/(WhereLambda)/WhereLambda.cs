@@ -67,7 +67,10 @@ namespace EntityToSqlWhereClauseConfig
                     continue;
                 }
                 var list = dict[searchType];
-                whereLambdas.AddRange(searchModel, searchType, list);
+                if (list != null && list.Count > 0)
+                {
+                    whereLambdas.AddRange(searchModel, searchType, list);
+                }
             }
 
             return whereLambdas;

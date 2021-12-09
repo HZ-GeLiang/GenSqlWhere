@@ -106,6 +106,14 @@ namespace ExpressionToSqlWhereClause
             return tempKey;
         }
 
+
+        /// <summary>
+        /// 获得比较符号
+        /// </summary>
+        /// <param name="expressionType"></param>
+        /// <param name="memberInfo"></param>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException"></exception>
         internal static string ToComparisonSymbol(ExpressionType expressionType, MemberInfo memberInfo)
         {
             if (expressionType == ExpressionType.Not)
@@ -113,7 +121,8 @@ namespace ExpressionToSqlWhereClause
                 //not 只对bool类型做支持
                 if (memberInfo is PropertyInfo pi && pi.PropertyType == typeof(bool))
                 {
-                    return "!=";  //和 NotEqual 等价  , 
+                    //return "!=";  //和 NotEqual 等价  , 
+                    return SqlKeys.NotEqual;   
                 }
             }
             return expressionType switch

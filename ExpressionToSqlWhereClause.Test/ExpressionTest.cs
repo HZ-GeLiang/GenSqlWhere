@@ -143,7 +143,7 @@ namespace ExpressionToSqlWhereClause.Test
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Sex", false);
             //Assert.AreEqual("(Sex != @Sex)", sql);
-            Assert.AreEqual("Sex != @Sex", sql);
+            Assert.AreEqual("Sex <> @Sex", sql);
             AssertParameters(expectedParameters, parameters);
         }
 
@@ -157,7 +157,7 @@ namespace ExpressionToSqlWhereClause.Test
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Sex", true);
             //Assert.AreEqual("(Sex != @Sex)", sql);
-            Assert.AreEqual("Sex != @Sex", sql);
+            Assert.AreEqual("Sex <> @Sex", sql);
             AssertParameters(expectedParameters, parameters);
         }
 
@@ -170,7 +170,7 @@ namespace ExpressionToSqlWhereClause.Test
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Sex", false);
             //Assert.AreEqual("(Sex != @Sex)", sql);
-            Assert.AreEqual("Sex != @Sex", sql);
+            Assert.AreEqual("Sex <> @Sex", sql);
             AssertParameters(expectedParameters, parameters);
         }
 
