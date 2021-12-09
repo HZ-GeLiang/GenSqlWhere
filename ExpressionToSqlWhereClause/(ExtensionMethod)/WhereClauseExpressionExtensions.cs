@@ -20,7 +20,8 @@ namespace ExpressionToSqlWhereClause
         {
             if (expression == null)
             {
-                return (default, default);
+                //return (default, default);
+                return (string.Empty, new Dictionary<string, object>(0));
             }
 
             var body = expression.Body;
@@ -57,7 +58,7 @@ namespace ExpressionToSqlWhereClause
 
             #endregion
 
-            var result = (parseResult.WhereClause, parseResult.Parameters);
+            var result = (parseResult.WhereClause , parseResult.Parameters ?? new Dictionary<string, object>(0));
             return result;
         }
 

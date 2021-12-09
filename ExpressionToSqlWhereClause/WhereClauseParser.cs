@@ -14,16 +14,12 @@ namespace ExpressionToSqlWhereClause
 
         public static (string WhereClause, Dictionary<string, object> Parameters) Parse(Expression body, Dictionary<string, string> aliasDict, ISqlAdapter sqlAdapter = default)
         {
-            aliasDict ??= new Dictionary<string, string>();
+            aliasDict ??= new Dictionary<string, string>(0);
             sqlAdapter ??= new DefaultSqlAdapter();
-            var parameters = new Dictionary<string, object>();
+            var parameters = new Dictionary<string, object>(0);
             var adhesive = new WhereClauseAdhesive(sqlAdapter, parameters);
 
-            //var a1 = body is BinaryExpression;
-            //var a2 = body is MethodCallExpression;
-            //var a3 = body is MemberExpression;
-            //var a4 = body is UnaryExpression;
-
+         
             if (body is BinaryExpression binaryExpression)
             {
                 var whereClause = ParseBinaryExpression(adhesive, binaryExpression, aliasDict).ToString();
@@ -72,7 +68,7 @@ namespace ExpressionToSqlWhereClause
                     return ($"({pageResult.WhereClause})", adhesive.Parameters);
                 }
             }
-            else if (body is System.Linq.Expressions.Expression)
+            else if (body is Expression)
             {
                 throw new NotSupportedException("暂不支持Expression,修改程序");
             }
@@ -88,6 +84,7 @@ namespace ExpressionToSqlWhereClause
         /// <param name="comparison"></param>
         /// <param name="expression">表达式</param>
         /// <param name="adhesive">胶粘剂</param>
+        /// <param name="aliasDict"></param>
         /// <returns> </returns>
         public static ParseResult Parse(ExpressionType comparison, Expression expression, WhereClauseAdhesive adhesive, Dictionary<string, string> aliasDict)
         {
