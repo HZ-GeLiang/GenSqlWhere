@@ -4,7 +4,7 @@ namespace ExpressionToSqlWhereClause
 {
     public interface ISqlAdapter
     {
-        string FormatColumnName(MemberInfo memberInfo);
+         string FormatColumnName(MemberInfo memberInfo);
     }
 }
 

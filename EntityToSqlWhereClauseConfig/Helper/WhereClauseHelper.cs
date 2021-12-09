@@ -14,7 +14,7 @@ namespace EntityToSqlWhereClauseConfig.Helper
         /// <returns></returns>
         public static string ParamNameToNumber(string whereclause)
         {
-            if (whereclause == null)
+            if (string.IsNullOrWhiteSpace(whereclause))
             {
                 return null;
             }
