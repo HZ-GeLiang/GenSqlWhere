@@ -537,5 +537,30 @@ namespace EntityToSqlWhereClauseConfig.Test
 
             }
         }
+
+        [TestMethod]
+        public void Test_sqlShouldBeEmpty()
+        {
+            var searchModel = new Input_lt()
+            {
+
+            };
+
+            var whereLambda = new WhereLambda<People, Input_lt>();
+            whereLambda.SearchModel = searchModel;
+
+            whereLambda[SearchType.lt] = new List<string>
+            {
+                nameof(searchModel.Id),
+                nameof(searchModel.DataCreatedAt),
+            };
+
+
+            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+
+            Assert.AreEqual(sql, String.Empty);
+            DictionaryAssert.AreEqual(param, new Dictionary<string, object>(0));
+
+        }
     }
 }
