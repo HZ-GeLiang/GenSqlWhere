@@ -29,7 +29,7 @@ namespace ExpressionToSqlWhereClause
             {
                 var whereClause = ParseMethodCallExpression(adhesive, methodCallExpression);
                 return ($"({whereClause})", parameters);
-                throw new NotSupportedException("暂不支持MethodCallExpression,修改程序");
+                //throw new NotSupportedException("暂不支持MethodCallExpression,修改程序");
             }
             else if (body is MemberExpression)
             {
