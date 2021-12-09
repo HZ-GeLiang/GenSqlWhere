@@ -18,50 +18,23 @@ namespace EntityToSqlWhereClauseConfig
             this List<Expression<Func<TEntity, bool>>> whereLambdas,
             TSearchModel searchModel, SearchType searchType, List<string> props)
         {
-            List<Expression<Func<TEntity, bool>>> expressionList = null;
-            switch (searchType)
+            List<Expression<Func<TEntity, bool>>> expressionList = searchType switch
             {
-                case SearchType.none:
-                    throw new Exceptions.EntityToSqlWhereCaluseConfigException("未指定" + nameof(searchType));
-                case SearchType.like:
-                    expressionList = WhereLambdaHelper.AddLike<TEntity, TSearchModel>(searchModel, props);
-                    break;
-                case SearchType.likeLeft:
-                    expressionList = WhereLambdaHelper.AddLikeLeft<TEntity, TSearchModel>(searchModel, props);
-                    break;
-                case SearchType.likeRight:
-                    expressionList = WhereLambdaHelper.AddLikeRight<TEntity, TSearchModel>(searchModel, props);
-                    break;
-                case SearchType.eq:
-                    expressionList = WhereLambdaHelper.AddEqual<TEntity, TSearchModel>(searchModel, props);
-                    break;
-                case SearchType.neq:
-                    expressionList = WhereLambdaHelper.AddNotEqual<TEntity, TSearchModel>(searchModel, props);
-                    break;
-                case SearchType.@in:
-                    expressionList = WhereLambdaHelper.AddIn<TEntity, TSearchModel>(searchModel, props);
-                    break;
-                case SearchType.datetimeRange:
-                    expressionList = WhereLambdaHelper.AddDateTimeRange<TEntity, TSearchModel>(searchModel, props);
-                    break;
-                case SearchType.numberRange:
-                    expressionList = WhereLambdaHelper.AddNumberRange<TEntity, TSearchModel>(searchModel, props);
-                    break;
-                case SearchType.gt:
-                    expressionList = WhereLambdaHelper.AddGt<TEntity, TSearchModel>(searchModel, props);
-                    break;
-                case SearchType.ge:
-                    expressionList = WhereLambdaHelper.AddGe<TEntity, TSearchModel>(searchModel, props);
-                    break;
-                case SearchType.lt:
-                    expressionList = WhereLambdaHelper.AddLt<TEntity, TSearchModel>(searchModel, props);
-                    break;
-                case SearchType.le:
-                    expressionList = WhereLambdaHelper.AddLe<TEntity, TSearchModel>(searchModel, props);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(searchType), searchType, null);
-            }
+                SearchType.none => throw new Exceptions.EntityToSqlWhereCaluseConfigException($"未指定{nameof(searchType)}", new ArgumentException()),
+                SearchType.like => WhereLambdaHelper.AddLike<TEntity, TSearchModel>(searchModel, props),
+                SearchType.likeLeft => WhereLambdaHelper.AddLikeLeft<TEntity, TSearchModel>(searchModel, props),
+                SearchType.likeRight => WhereLambdaHelper.AddLikeRight<TEntity, TSearchModel>(searchModel, props),
+                SearchType.eq => WhereLambdaHelper.AddEqual<TEntity, TSearchModel>(searchModel, props),
+                SearchType.neq => WhereLambdaHelper.AddNotEqual<TEntity, TSearchModel>(searchModel, props),
+                SearchType.@in => WhereLambdaHelper.AddIn<TEntity, TSearchModel>(searchModel, props),
+                SearchType.datetimeRange => WhereLambdaHelper.AddDateTimeRange<TEntity, TSearchModel>(searchModel, props),
+                SearchType.numberRange => WhereLambdaHelper.AddNumberRange<TEntity, TSearchModel>(searchModel, props),
+                SearchType.gt => WhereLambdaHelper.AddGt<TEntity, TSearchModel>(searchModel, props),
+                SearchType.ge => WhereLambdaHelper.AddGe<TEntity, TSearchModel>(searchModel, props),
+                SearchType.lt => WhereLambdaHelper.AddLt<TEntity, TSearchModel>(searchModel, props),
+                SearchType.le => WhereLambdaHelper.AddLe<TEntity, TSearchModel>(searchModel, props),
+                _ => throw new ArgumentOutOfRangeException(nameof(searchType), searchType, null),
+            };
 
             whereLambdas.AddRange(expressionList);
 

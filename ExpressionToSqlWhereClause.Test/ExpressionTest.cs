@@ -9,10 +9,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace ExpressionToSqlWhereClause.Test
 {
 
-    public class TestSqlAdapter : DefaultSqlAdapter
-    {
-
-    }
 
     [TestClass]
     public class ExpressionTest
@@ -65,7 +61,7 @@ namespace ExpressionToSqlWhereClause.Test
             {
                 { "Id", "RouteId" }
             };
-            (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause(dict);
+            (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause(alias: dict);
 
             Assert.AreEqual(WhereClause, "(((RouteId = @Id)) Or ((RouteId = @Id1)))");
 
@@ -87,7 +83,7 @@ namespace ExpressionToSqlWhereClause.Test
             {
                 { "Id", "RouteId" }
             };
-            (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause(dict);
+            (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause(alias: dict);
 
             Assert.AreEqual(WhereClause, "((((RouteId = @Id)) Or ((RouteId = @Id1))) And ((IsDel = @IsDel)))");
 
@@ -111,7 +107,7 @@ namespace ExpressionToSqlWhereClause.Test
                 { "Id", "RouteId" },
                 { "IsDel", "b.IsDel" }
             };
-            (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause(dict);
+            (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause(alias: dict);
 
             Assert.AreEqual(WhereClause, "((((RouteId = @Id)) Or ((RouteId = @Id1))) And ((b.IsDel = @IsDel)))");
 
@@ -278,11 +274,12 @@ namespace ExpressionToSqlWhereClause.Test
             UserFilter userFilter = new UserFilter();
             userFilter.Internal.Age = 20;
             Expression<Func<User, bool>> expression = u => u.Age < userFilter.Internal.Age;
-            (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause(null, new TestSqlAdapter());
+            //(string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause(null, new TestSqlAdapter());
+            (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause(sqlAdapter: new ToLowerSqlAdapter());
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Age", 20);
             //Assert.AreEqual("((Age < @Age))", whereClause);
-            Assert.AreEqual("Age < @Age", whereClause);
+            Assert.AreEqual("age < @Age", whereClause);
             AssertParameters(expectedParameters, parameters);
         }
 

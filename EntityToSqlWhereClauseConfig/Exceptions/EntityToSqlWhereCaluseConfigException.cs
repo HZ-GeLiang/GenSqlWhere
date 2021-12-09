@@ -1,8 +1,6 @@
-using System;
-
 namespace EntityToSqlWhereClauseConfig.Exceptions
 {
-    public class EntityToSqlWhereCaluseConfigException : Exception
+    public class EntityToSqlWhereCaluseConfigException : System.Exception
     {
         public string ErrorNo { get; } // “µŒÒ“Ï≥£±‡∫≈
 
