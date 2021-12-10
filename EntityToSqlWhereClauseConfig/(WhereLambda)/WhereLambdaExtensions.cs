@@ -33,9 +33,10 @@ namespace EntityToSqlWhereClauseConfig
             return whereLambdas;
         }
 
-        public static WhereLambda<TEntity, TSearchModel> CrateWhereLambda<TSearchModel, TEntity>(this TSearchModel searchModel, Action<TEntity> _)
+        public static WhereLambda<TEntity, TSearchModel> CrateWhereLambda<TEntity, TSearchModel>(this TSearchModel searchModel, Action<TEntity> _) where TSearchModel : class
         {
             return new WhereLambda<TEntity, TSearchModel>(searchModel);
         }
+
     }
 }

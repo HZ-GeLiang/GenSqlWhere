@@ -117,18 +117,17 @@ namespace EntityToSqlWhereClauseConfig.Test
             DictionaryAssert.AreEqual(param, dict);
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void Test_eq_Attr()
         {
             var searchModel = new Input_eq_Attr()
             {
-                IsDel = true,//todo://计划:添加当其他值为xx时,当前值才生效
+                IsDel = true,
             };
 
-            var whereLambda = new WhereLambda<People, Input_eq>();
- 
- 
-            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+            var whereLambda = searchModel.CrateWhereLambda((People _) => { });
+            var expression = whereLambda.ToExpression();
+            (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
 
             Assert.AreEqual(sql, "IsDel = @IsDel");
             var dict = new Dictionary<string, object>
@@ -302,7 +301,8 @@ namespace EntityToSqlWhereClauseConfig.Test
                     nameof(searchModel.IdRight),
                 };
 
-                (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+                var expression = whereLambda.ToExpression();
+                (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
 
                 Assert.AreEqual(sql, "Id >= @Id And Id <= @Id1");
                 var dict = new Dictionary<string, object>
