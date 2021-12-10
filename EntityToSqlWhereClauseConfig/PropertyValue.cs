@@ -24,7 +24,7 @@ namespace EntityToSqlWhereClauseConfig
             Target = target;
         }
         public T Target { get; private set; }
-        public (PropertyInfo property_info, object property_value, Type property_type) Get(string name)
+        public (PropertyInfo property_info, object value, Type valuePropType) Get(string name)
         {
             if (typeof(T) != Target.GetType())
             {

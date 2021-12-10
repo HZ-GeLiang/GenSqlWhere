@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using EntityToSqlWhereClauseConfig.ExtensionMethod;
 
@@ -56,7 +57,7 @@ namespace EntityToSqlWhereClauseConfig
             foreach (var prop in props)
             {
                 var propertyValue = new PropertyValue<TSearchModel>(searchModel);
-                object value = propertyValue.Get(prop, out _);
+                (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
                 if (value == null)
                 {
                     continue;
@@ -111,7 +112,7 @@ namespace EntityToSqlWhereClauseConfig
             foreach (var prop in props)
             {
                 var propertyValue = new PropertyValue<TSearchModel>(searchModel);
-                object value = propertyValue.Get(prop, out _);
+                (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
                 if (value == null)
                 {
                     continue;
@@ -167,7 +168,7 @@ namespace EntityToSqlWhereClauseConfig
             foreach (var prop in props)
             {
                 var propertyValue = new PropertyValue<TSearchModel>(searchModel);
-                object value = propertyValue.Get(prop, out _);
+                (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
                 if (value == null)
                 {
                     continue;
@@ -280,7 +281,7 @@ namespace EntityToSqlWhereClauseConfig
             foreach (var prop in props)
             {
                 var propertyValue = new PropertyValue<TSearchModel>(searchModel);
-                object value = propertyValue.Get(prop, out var valuePropType);
+                (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
                 if (value == null)
                 {
                     continue;
@@ -353,7 +354,7 @@ namespace EntityToSqlWhereClauseConfig
             foreach (var prop in props)
             {
                 var propertyValue = new PropertyValue<TSearchModel>(searchModel);
-                object value = propertyValue.Get(prop, out var valuePropType);
+                (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
                 if (value == null)
                 {
                     continue;
@@ -439,7 +440,7 @@ namespace EntityToSqlWhereClauseConfig
             foreach (var prop in props)
             {
                 var propertyValue = new PropertyValue<TSearchModel>(searchModel);
-                object value = propertyValue.Get(prop, out var propType);
+                (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
 
                 if (value == null)
                 {
@@ -670,7 +671,7 @@ namespace EntityToSqlWhereClauseConfig
             foreach (var prop in props)
             {
                 var propertyValue = new PropertyValue<TSearchModel>(searchModel);
-                object value = propertyValue.Get(prop, out var propType);
+                (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
 
                 if (value == null)
                 {
@@ -991,7 +992,7 @@ namespace EntityToSqlWhereClauseConfig
             foreach (var prop in props)
             {
                 var propertyValue = new PropertyValue<TSearchModel>(searchModel);
-                object value = propertyValue.Get(prop, out var valuePropType);
+                (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
                 if (value == null)
                 {
                     continue;
@@ -1254,7 +1255,7 @@ namespace EntityToSqlWhereClauseConfig
             foreach (string prop in props)
             {
                 var propertyValue = new PropertyValue<TSearchModel>(searchModel);
-                object value = propertyValue.Get(prop, out var valuePropType);
+                (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
                 if (value == null || typeof(TEntity).GetProperty(prop) == null)
                 {
                     continue;
@@ -1329,7 +1330,7 @@ namespace EntityToSqlWhereClauseConfig
             foreach (string prop in props)
             {
                 var propertyValue = new PropertyValue<TSearchModel>(searchModel);
-                object value = propertyValue.Get(prop, out var valuePropType);
+                (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
                 if (value == null || typeof(TEntity).GetProperty(prop) == null)
                 {
                     continue;
@@ -1404,7 +1405,7 @@ namespace EntityToSqlWhereClauseConfig
             foreach (string prop in props)
             {
                 var propertyValue = new PropertyValue<TSearchModel>(searchModel);
-                object value = propertyValue.Get(prop, out var valuePropType);
+                (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
                 if (value == null || typeof(TEntity).GetProperty(prop) == null)
                 {
                     continue;
@@ -1479,7 +1480,7 @@ namespace EntityToSqlWhereClauseConfig
             foreach (string prop in props)
             {
                 var propertyValue = new PropertyValue<TSearchModel>(searchModel);
-                object value = propertyValue.Get(prop, out var valuePropType);
+                (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
                 if (value == null || typeof(TEntity).GetProperty(prop) == null)
                 {
                     continue;

@@ -1,15 +1,34 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using EntityToSqlWhereClauseConfig.ExtensionMethod;
 
 namespace EntityToSqlWhereClauseConfig
 {
+    public class WhereLambda
+    {
+        /// <summary>
+        /// 静态方法,用来支持打Attribute的
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <typeparam name="TSearchModel"></typeparam>
+        /// <param name="_searchModel"></param>
+        /// <returns></returns>
+        public static Expression<Func<TEntity, bool>> ToExpression<TEntity, TSearchModel>(TSearchModel _searchModel)
+        {
+            var whereLambdas = WhereLambda<TEntity, TSearchModel>.ToExpressionList(_searchModel, null);
+            var expression = WhereLambda<TEntity, TSearchModel>.ToExpression(whereLambdas);
+            return expression;
+        }
+
+    }
+
 
     /// <summary>
-    /// 
+    /// SearchModel 转 Entity的表达式树的配置
     /// </summary>
-    /// <typeparam name="TEntity"></typeparam>
+    /// <typeparam name="TEntity">数据表实体类型</typeparam>
     /// <typeparam name="TSearchModel">不要使用多态,会报错的</typeparam>
     public class WhereLambda<TEntity, TSearchModel>
     {
@@ -65,7 +84,7 @@ namespace EntityToSqlWhereClauseConfig
         /// <param name="searchModel">input对象</param>
         /// <param name="searchCondition">input对象的搜索条件配置</param>
         /// <returns></returns>
-        private static List<Expression<Func<TEntity, bool>>> ToExpressionList(TSearchModel searchModel, Dictionary<SearchType, List<string>> searchCondition)
+        internal static List<Expression<Func<TEntity, bool>>> ToExpressionList(TSearchModel searchModel, Dictionary<SearchType, List<string>> searchCondition)
         {
             var whereLambdas = new List<Expression<Func<TEntity, bool>>>();
 
@@ -89,39 +108,45 @@ namespace EntityToSqlWhereClauseConfig
 
         #region ToExpression
 
+        /// <summary>
+        /// 转表达式树
+        /// </summary>
+        /// <returns></returns>
         public Expression<Func<TEntity, bool>> ToExpression()
         {
-            var whereLambdas = ToExpressionList(this.SearchModel, this._dictSearhType);
-            return ToExpression(whereLambdas);
+            var whereLambdas = WhereLambda<TEntity, TSearchModel>.ToExpressionList(this.SearchModel, this._dictSearhType);
+            var expression = WhereLambda<TEntity, TSearchModel>.ToExpression(whereLambdas);
+            return expression;
         }
+
 
         public static implicit operator Expression<Func<TEntity, bool>>(WhereLambda<TEntity, TSearchModel> that)
         {
             List<Expression<Func<TEntity, bool>>> whereLambdas =
-                ToExpressionList(that.SearchModel, that._dictSearhType);
-            return ToExpression(whereLambdas);
+               WhereLambda<TEntity, TSearchModel>.ToExpressionList(that.SearchModel, that._dictSearhType);
+            var expression = WhereLambda<TEntity, TSearchModel>.ToExpression(whereLambdas);
+            return expression;
         }
 
-        private static Expression<Func<TEntity, bool>> ToExpression(List<Expression<Func<TEntity, bool>>> whereLambdas)
+        internal static Expression<Func<TEntity, bool>> ToExpression(List<Expression<Func<TEntity, bool>>> whereLambdas)
         {
-            Expression<Func<TEntity, bool>> exp = null;
-            if (whereLambdas == null || whereLambdas.Count <= 0)
+            if (!whereLambdas.Any())
             {
-                return exp;
+                return null;
             }
-            exp = whereLambdas[0];
+
             if (whereLambdas.Count == 1)
             {
-                return exp;
+                return whereLambdas[0];
             }
-            else
+
+            Expression<Func<TEntity, bool>> exp = whereLambdas[0];
+            for (int i = 1; i < whereLambdas.Count; i++)
             {
-                for (int i = 1; i < whereLambdas.Count; i++)
-                {
-                    exp = exp.And(whereLambdas[i]);
-                }
-                return exp;
+                exp = exp.And(whereLambdas[i]);
             }
+            return exp;
+
         }
         #endregion
     }
