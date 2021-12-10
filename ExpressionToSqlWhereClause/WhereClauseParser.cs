@@ -266,13 +266,9 @@ namespace ExpressionToSqlWhereClause
                 var sqlBuilder = new StringBuilder();
 
                 //处理left
-                //todo: 生成的sql 多 () 问题..
-                //if (binaryExpression.ToString().StartsWith("((u.Sex == False) AndAlso (u.Age > value"))
-                //{
-                //    int a = 3;
-                //}
                 var leftParseResult = Parse(binaryExpression.NodeType, binaryExpression.Left, adhesive, aliasDict); //调用自身
 
+                //record: 生成的sql 有 () 问题  , 在最外层返回结果时, 在只有and 的时候把 () 全部替换掉了.
                 var leftClause = $"({DealiWhereClause(leftParseResult)})";
                 sqlBuilder.Append(leftClause);
 

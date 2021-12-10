@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Concurrent;
-using System.Reflection; 
+using System.Reflection;
 
 namespace EntityToSqlWhereClauseConfig
 {
@@ -24,27 +24,28 @@ namespace EntityToSqlWhereClauseConfig
             Target = target;
         }
         public T Target { get; private set; }
-        public object Get(string name, out Type propType)
+        public (PropertyInfo property_info, object property_value, Type property_type) Get(string name)
         {
             if (typeof(T) != Target.GetType())
             {
                 throw new Exceptions.EntityToSqlWhereCaluseConfigException("当前类不能使用多态这个特性");
             }
+
             Type type = typeof(T);
-            //Type type = Target.GetType();//多态, 取实际类型
+            //Type type = Target.GetType();//如使用多态,这里获得的是实际类型
             PropertyInfo property = type.GetProperty(name);
-            propType = property.PropertyType;
             if (property.PropertyType.IsClass)
             {
                 //用了多态, 这里会报错: Cannot bind to the target method because its signature is not compatible with that of the delegate type.
                 var memberGet = (MemberGetDelegate)Delegate.CreateDelegate(typeof(MemberGetDelegate), property.GetGetMethod());
-                return memberGet(Target);
+                return (property, memberGet(Target), property.PropertyType);
             }
             else
             {
-                return property.GetValue(Target);
+                return (property, property.GetValue(Target), property.PropertyType);
             }
 
+            //原本的代码
             //MemberGetDelegate memberGet = _memberGetDelegate.GetOrAdd(name, BuildDelegate);
             //return memberGet(Target);
         }
@@ -52,14 +53,12 @@ namespace EntityToSqlWhereClauseConfig
         {
             Type type = typeof(T);
             PropertyInfo property = type.GetProperty(name);
-            //if (property.GetType().IsClass)
-            //{
-            //    return (MemberGetDelegate)Delegate.CreateDelegate(typeof(MemberGetDelegate), property.GetGetMethod());
-            //}
             return (MemberGetDelegate)Delegate.CreateDelegate(typeof(MemberGetDelegate), property.GetGetMethod());
 
         }
 
+
+        /*
         //http://www.cocoachina.com/articles/103961
         //根据语言规范,协变不支持值类型.
 
@@ -74,6 +73,6 @@ namespace EntityToSqlWhereClauseConfig
             //如果您想返回Func< object>它将在每次调用时获取值,只需在该反射调用周围创建一个lambda即可
             return () => GetType().GetProperty(name).GetValue(Target);
         }
-
+        */
     }
 }
