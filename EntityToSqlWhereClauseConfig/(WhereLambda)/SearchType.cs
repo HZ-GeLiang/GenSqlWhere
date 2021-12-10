@@ -1,7 +1,17 @@
 namespace EntityToSqlWhereClauseConfig
 {
+    public class SearchTypeAttribute : System.Attribute
+    {
+        public SearchType SearchType { get; private set; }
+
+        public SearchTypeAttribute(SearchType searchType)
+        {
+            this.SearchType = searchType;
+        }
+    }
+
     /// <summary>
-    /// 
+    /// ËÑË÷ÀàÐÍ
     /// </summary>
     public enum SearchType
     {
