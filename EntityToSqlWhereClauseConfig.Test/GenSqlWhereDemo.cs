@@ -118,6 +118,28 @@ namespace EntityToSqlWhereClauseConfig.Test
         }
 
         [TestMethod]
+        public void Test_eq_Attr()
+        {
+            var searchModel = new Input_eq_Attr()
+            {
+                IsDel = true,//todo://计划:添加当其他值为xx时,当前值才生效
+            };
+
+            var whereLambda = new WhereLambda<People, Input_eq>();
+ 
+ 
+            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+
+            Assert.AreEqual(sql, "IsDel = @IsDel");
+            var dict = new Dictionary<string, object>
+            {
+                { "@IsDel", searchModel.IsDel }
+            };
+
+            DictionaryAssert.AreEqual(param, dict);
+        }
+
+        [TestMethod]
         public void Test_neq()
         {
             var searchModel = new Input_neq()
