@@ -9,4 +9,5 @@ namespace EntityToSqlWhereClauseConfig.Test.input
         public DateTime DataCreatedAt { get; set; }
     }
 
+   
 }

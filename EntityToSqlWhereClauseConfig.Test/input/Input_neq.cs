@@ -5,4 +5,8 @@
         public bool IsDel { get; set; }
     }
     
+    public class Input_neq_Attr
+    {
+        [SearchType(SearchType.neq)] public bool IsDel { get; set; }
+    }
 }
