@@ -1,11 +1,12 @@
 ﻿using EntityToSqlWhereClauseConfig.SqlFun;
+using ExpressionToSqlWhereClause.SqlFun;
 using System;
 
 namespace EntityToSqlWhereClauseConfig.Test.input
 {
     public class Input_sqlFun_Month
     {
-        [MonthAttribute]
+   //     [MonthAttribute]
         public DateTime DataCreatedAt { get; set; }
     }
 
