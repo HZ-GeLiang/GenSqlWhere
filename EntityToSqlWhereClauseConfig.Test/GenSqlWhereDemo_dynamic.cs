@@ -38,4 +38,4 @@ namespace EntityToSqlWhereClauseConfig.Test
             DictionaryAssert.AreEqual(param, dict);
         }
     }
-    }
+}

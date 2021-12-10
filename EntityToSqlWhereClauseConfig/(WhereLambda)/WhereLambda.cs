@@ -130,13 +130,15 @@ namespace EntityToSqlWhereClauseConfig
         }
 
         /// <summary>
-        /// 获得表达式树的写法
+        /// 获得表达式树的写法,可以给ef用(不含sql内置函数的那种)
         /// </summary>
         /// <param name="searchModel">input对象</param>
         /// <param name="searchCondition">input对象的搜索条件配置</param>
         /// <returns></returns>
         internal static List<Expression<Func<TEntity, bool>>> ToExpressionList(TSearchModel searchModel, Dictionary<SearchType, List<string>> searchCondition)
         {
+            searchCondition = GetSearchCondition(searchModel, searchCondition);
+
             var whereLambdas = new List<Expression<Func<TEntity, bool>>>();
 
             foreach (var searchType in _addOrder)
@@ -155,6 +157,13 @@ namespace EntityToSqlWhereClauseConfig
 
             return whereLambdas;
         }
+
+        public List<Expression<Func<TEntity, bool>>> ToExpressionListForEf()
+        {
+            return ToExpressionList(this.SearchModel, this._dictSearhType);
+        }
+
+
         #endregion
     }
 }

@@ -108,5 +108,56 @@ namespace EntityToSqlWhereClauseConfig.Test
 
             Assert.AreEqual(sql, "Id In @Id And Sex In @Sex And IsDel = @IsDel And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
         }
+
+        [TestMethod]
+        public void UseExampleForEf()
+        {
+            var time = System.DateTime.Parse("2021-8-8");
+            var searchModel = new Input_Demo()
+            {
+                //Id = 1,
+                Id = "1,2",
+                Sex = "1",
+                IsDel = true,
+                Url = "123",
+                DataCreatedAtStart = time.AddHours(-1),
+                DataCreatedAtEnd = time,
+            };
+
+            var whereLambda = new WhereLambda<People, Input_Demo>();
+            whereLambda.SearchModel = searchModel;
+
+            whereLambda[SearchType.like] = new List<string>
+            {
+                nameof(searchModel.Url),
+                nameof(searchModel.Data_Remark),
+            };
+
+            whereLambda[SearchType.eq] = new List<string>
+            {
+                nameof(searchModel.IsDel),
+            };
+            whereLambda[SearchType.@in] = new List<string>
+            {
+                nameof(searchModel.Id),
+                nameof(searchModel.Sex),
+            };
+
+            whereLambda[SearchType.datetimeRange] = new List<string>
+            {
+                nameof(searchModel.DataCreatedAtStart),
+                nameof(searchModel.DataCreatedAtEnd),
+                nameof(searchModel.DataUpdatedAtStart),
+                nameof(searchModel.DataUpdatedAtEnd),
+            };
+
+            whereLambda[SearchType.numberRange] = new List<string>
+            {
+            };
+
+            var listExp = whereLambda.ToExpressionListForEf(); //可以给ef用
+
+        }
+
     }
 }
