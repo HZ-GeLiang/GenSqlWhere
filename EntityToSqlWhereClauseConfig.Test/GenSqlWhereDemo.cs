@@ -117,7 +117,7 @@ namespace EntityToSqlWhereClauseConfig.Test
             DictionaryAssert.AreEqual(param, dict);
         }
 
-        //[TestMethod]
+        [TestMethod]
         public void Test_eq_Attr()
         {
             var searchModel = new Input_eq_Attr()
