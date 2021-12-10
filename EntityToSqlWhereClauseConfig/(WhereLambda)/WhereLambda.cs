@@ -51,22 +51,32 @@ namespace EntityToSqlWhereClauseConfig
         };
 
         #region ToExpressionList
-        public List<Expression<Func<TEntity, bool>>> ToExpressionList() => ToExpressionList(_addOrder, this.SearchModel, this._dictSearhType);
 
-        public static implicit operator List<Expression<Func<TEntity, bool>>>(WhereLambda<TEntity, TSearchModel> that) => ToExpressionList(_addOrder, that.SearchModel, that._dictSearhType);
 
-        private static List<Expression<Func<TEntity, bool>>> ToExpressionList(SearchType[] addOrder, TSearchModel searchModel, Dictionary<SearchType, List<string>> dict)
+        public static implicit operator List<Expression<Func<TEntity, bool>>>(WhereLambda<TEntity, TSearchModel> that)
+        {
+            var whereLambdas = ToExpressionList(that.SearchModel, that._dictSearhType);
+            return whereLambdas;
+        }
+
+        /// <summary>
+        /// 获得表达式树的写法
+        /// </summary>
+        /// <param name="searchModel">input对象</param>
+        /// <param name="searchCondition">input对象的搜索条件配置</param>
+        /// <returns></returns>
+        private static List<Expression<Func<TEntity, bool>>> ToExpressionList(TSearchModel searchModel, Dictionary<SearchType, List<string>> searchCondition)
         {
             var whereLambdas = new List<Expression<Func<TEntity, bool>>>();
 
-            foreach (var searchType in addOrder)
+            foreach (var searchType in _addOrder)
             {
-                if (searchType == SearchType.none || !dict.ContainsKey(searchType))
+                if (searchType == SearchType.none || !searchCondition.ContainsKey(searchType))
                 {
                     //throw new Exceptions.EntityToSqlWhereCaluseConfigException($"参数{nameof(dict)}不包含{nameof(searchType)}值:{searchType}");
                     continue;
                 }
-                var list = dict[searchType];
+                var list = searchCondition[searchType];
                 if (list != null && list.Count > 0)
                 {
                     whereLambdas.AddRange(searchModel, searchType, list);
@@ -79,9 +89,18 @@ namespace EntityToSqlWhereClauseConfig
 
         #region ToExpression
 
-        public Expression<Func<TEntity, bool>> ToExpression() => ToExpression(ToExpressionList());
+        public Expression<Func<TEntity, bool>> ToExpression()
+        {
+            var whereLambdas = ToExpressionList(this.SearchModel, this._dictSearhType);
+            return ToExpression(whereLambdas);
+        }
 
-        public static implicit operator Expression<Func<TEntity, bool>>(WhereLambda<TEntity, TSearchModel> that) => ToExpression(ToExpressionList(_addOrder, that.SearchModel, that._dictSearhType));
+        public static implicit operator Expression<Func<TEntity, bool>>(WhereLambda<TEntity, TSearchModel> that)
+        {
+            List<Expression<Func<TEntity, bool>>> whereLambdas =
+                ToExpressionList(that.SearchModel, that._dictSearhType);
+            return ToExpression(whereLambdas);
+        }
 
         private static Expression<Func<TEntity, bool>> ToExpression(List<Expression<Func<TEntity, bool>>> whereLambdas)
         {
