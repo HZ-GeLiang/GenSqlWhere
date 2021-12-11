@@ -33,9 +33,24 @@ namespace EntityToSqlWhereClauseConfig
             return whereLambdas;
         }
 
-        public static WhereLambda<TEntity, TSearchModel> CrateWhereLambda<TEntity, TSearchModel>(this TSearchModel searchModel, Action<TEntity> _) where TSearchModel : class
+        public static WhereLambda<TEntity, TSearchModel> CrateWhereLambda<TEntity, TSearchModel>(this TSearchModel searchModel, Action<TEntity> _)
+            where TSearchModel : class
+            where TEntity : class
         {
             return new WhereLambda<TEntity, TSearchModel>(searchModel);
+        }
+
+
+        /// <summary>
+        /// 适合TEntity ==  TSearchModel,
+        /// 这种方式的, 没法用dataRange 和 timeRange
+        /// </summary>
+        /// <typeparam name="TSearchModel"></typeparam>
+        /// <param name="searchModel"></param>
+        /// <returns></returns>
+        public static WhereLambda<TSearchModel, TSearchModel> CrateWhereLambda<TSearchModel>(this TSearchModel searchModel) where TSearchModel : class
+        {
+            return new WhereLambda<TSearchModel, TSearchModel>(searchModel);
         }
 
     }

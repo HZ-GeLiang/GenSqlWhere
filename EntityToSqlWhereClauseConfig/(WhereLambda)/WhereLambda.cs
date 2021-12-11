@@ -7,6 +7,17 @@ using EntityToSqlWhereClauseConfig.ExtensionMethod;
 namespace EntityToSqlWhereClauseConfig
 {
     /// <summary>
+    /// 适合TEntity ==  TSearchModel,
+    /// 这种方式的, 没法用dataRange 和 timeRange
+    /// </summary>
+    /// <typeparam name="TSearchModel"></typeparam>
+    public class WhereLambda<TSearchModel> : WhereLambda<TSearchModel, TSearchModel>
+    {
+
+    }
+
+
+    /// <summary>
     /// SearchModel 转 Entity的表达式树的配置
     /// </summary>
     /// <typeparam name="TEntity">数据表实体类型</typeparam>
