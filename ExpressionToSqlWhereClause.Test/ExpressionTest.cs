@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using ExpressionToSqlWhereClause;
 using ExpressionToSqlWhereClause.Test.ExtensionMethod;
+using ExpressionToSqlWhereClause.Test.InputOrModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ExpressionToSqlWhereClause.Test
@@ -546,35 +547,5 @@ namespace ExpressionToSqlWhereClause.Test
             Assert.AreEqual("UserAge <> @Age", whereClause);
             AssertParameters(expectedParameters, parameters);
         }
-
-    }
-
-    public class UserFilter
-    {
-        public string Name { get; set; }
-
-        public bool Sex { get; set; }
-
-        public int Age { get; set; }
-
-        public Internal Internal { get; set; } = new Internal();
-
-        public static int GetInt(int i)
-        {
-            return i;
-        }
-    }
-
-    public class Internal
-    {
-        public int Age { get; set; }
-    }
-
-
-
-    public enum Sex
-    {
-        Male = 1,
-        Female = 2
     }
 }
