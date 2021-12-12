@@ -19,7 +19,6 @@ namespace ExpressionToSqlWhereClause
             var parameters = new Dictionary<string, object>(0);
             var adhesive = new WhereClauseAdhesive(sqlAdapter, parameters);
 
-         
             if (body is BinaryExpression binaryExpression)
             {
                 var whereClause = ParseBinaryExpression(adhesive, binaryExpression, aliasDict).ToString();
@@ -230,7 +229,8 @@ namespace ExpressionToSqlWhereClause
                 _adhesive.Parameters.Add($"@{parameterName}", _value);
             }
 
-            StringBuilder DealiWhereClause(ParseResult parseResult)
+            //处理别名
+            StringBuilder ReplaceAlias(ParseResult parseResult)
             {
                 string alias = null;
 
@@ -247,10 +247,16 @@ namespace ExpressionToSqlWhereClause
                 {
                     return parseResult.WhereClause;
                 }
-                else
+
+                var index = parseResult.WhereClause.IndexOf(' ');
+                if (index==-1)
                 {
-                    return parseResult.WhereClause.Replace(parseResult.MemberInfo.Name + " =", alias + " =");
+                    return parseResult.WhereClause;
                 }
+                parseResult.WhereClause.Remove(0, index);
+                parseResult.WhereClause.Insert(0, alias);
+                return parseResult.WhereClause;
+
             }
 
             if (binaryExpression.NodeType is
@@ -269,7 +275,7 @@ namespace ExpressionToSqlWhereClause
                 var leftParseResult = Parse(binaryExpression.NodeType, binaryExpression.Left, adhesive, aliasDict); //调用自身
 
                 //record: 生成的sql 有 () 问题  , 在最外层返回结果时, 在只有and 的时候把 () 全部替换掉了.
-                var leftClause = $"({DealiWhereClause(leftParseResult)})";
+                var leftClause = $"({ReplaceAlias(leftParseResult)})";
                 sqlBuilder.Append(leftClause);
 
                 if (leftParseResult.NeedAddPara)
@@ -321,7 +327,7 @@ namespace ExpressionToSqlWhereClause
                             break;
                     }
 
-                    var rightClause = $"({DealiWhereClause(rightParseResult)})";
+                    var rightClause = $"({ReplaceAlias(rightParseResult)})";
                     sqlBuilder.Append(rightClause);
 
                     if (rightParseResult.NeedAddPara)

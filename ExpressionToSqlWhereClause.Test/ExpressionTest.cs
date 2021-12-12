@@ -55,7 +55,7 @@ namespace ExpressionToSqlWhereClause.Test
         [TestMethod]
         public void 测试别名()
         {
-            Expression<Func<Student, bool>> expOr = a => a.Id == 1 || a.Id == 2;
+            Expression<Func<Student_Alias, bool>> expOr = a => a.Id == 1 || a.Id == 2;
 
             var dict = new Dictionary<string, string>()
             {
@@ -534,6 +534,19 @@ namespace ExpressionToSqlWhereClause.Test
                 Assert.IsTrue(expectedParameters[key].Equals(actualParameters[key]), $"The expected value is {expectedParameters[key]}, the actual value is {actualParameters[key]}");
             }
         }
+
+        [TestMethod]
+        public void ValidateColumnAttr()
+        {
+            Expression<Func<User_columnAttr, bool>> expression = u => u.Age != 20;
+            //优先级:方法参数的 alias > Column
+            (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
+            Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
+            expectedParameters.Add("@Age", 20); 
+            Assert.AreEqual("UserAge <> @Age", whereClause);
+            AssertParameters(expectedParameters, parameters);
+        }
+
     }
 
     public class UserFilter
@@ -556,29 +569,8 @@ namespace ExpressionToSqlWhereClause.Test
     {
         public int Age { get; set; }
     }
-    public class User
-    {
-        [Column("Username")]  //todo:未实现
 
-        public string Name { get; set; }
 
-        public bool Sex { get; set; }
-
-        public Sex Sex2 { get; set; }
-
-        public int Age { get; set; }
-    }
-
-    //todo:未实现
-    public class ColumnAttribute : Attribute
-    {
-        public ColumnAttribute(string name)
-        {
-            this.Name = name;
-        }
-
-        public string Name { get; set; }
-    }
 
     public enum Sex
     {
