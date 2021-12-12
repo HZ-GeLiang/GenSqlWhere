@@ -61,7 +61,6 @@ namespace ExpressionToSqlWhereClause
 
         }
 
-
         /// <summary>
         /// 获得Expression的值
         /// </summary>
@@ -71,7 +70,7 @@ namespace ExpressionToSqlWhereClause
         {
             if (expression is ConstantExpression constantExpression)
             {
-                return ParseConstantExpression(constantExpression);
+                return ConstantExtractor.ParseConstantExpression(constantExpression);
             }
             else if (expression is MemberExpression memberExpression)
             {
@@ -79,31 +78,30 @@ namespace ExpressionToSqlWhereClause
             }
             else if (expression is MethodCallExpression methodCallExpression)
             {
-                return ParseMethodCallConstantExpression(methodCallExpression);
+                return ConstantExtractor.ParseMethodCallConstantExpression(methodCallExpression);
             }
             else if (expression is ConditionalExpression conditionalExpression)
             {
-                return ParseConditionalExpression(conditionalExpression);
+                return ConstantExtractor.ParseConditionalExpression(conditionalExpression);
             }
             else if (expression is BinaryExpression binaryExpression)
             {
                 if (expression.GetType().Name == "MethodBinaryExpression")
                 {
-                    return ParseMethodBinaryExpression(binaryExpression);
+                    return ConstantExtractor.ParseMethodBinaryExpression(binaryExpression);
                 }
                 else if (binaryExpression.GetType().Name == "SimpleBinaryExpression")
                 {
-                    return ParseSimpleBinaryExpression(binaryExpression);
+                    return ConstantExtractor.ParseSimpleBinaryExpression(binaryExpression);
                 }
                 else if (binaryExpression.GetType().Name == "LogicalBinaryExpression")
                 {
-                    return ParseConstant(binaryExpression.Right);
+                    return ConstantExtractor.ParseConstant(binaryExpression.Right);
                 }
                 else
                 {
                     throw new NotSupportedException($"Unknow expression {expression.GetType()}");
                 }
-
             }
             else if (expression is UnaryExpression convertExpression
                 && expression.NodeType == ExpressionType.Convert)
@@ -171,14 +169,15 @@ namespace ExpressionToSqlWhereClause
         /// </summary>
         /// <param name="methodCallExpression"></param>
         /// <returns></returns>
-        private static object ParseMethodCallConstantExpression(MethodCallExpression methodCallExpression)
+        internal static object ParseMethodCallConstantExpression(MethodCallExpression methodCallExpression)
+        //private static object ParseMethodCallConstantExpression(MethodCallExpression methodCallExpression)
         {
             MethodInfo mi = methodCallExpression.Method;
             object instance = null;
             object[] parameters = null;
             if (methodCallExpression.Object != null)
             {
-                instance = ParseConstant(methodCallExpression.Object);
+                instance = ConstantExtractor.ParseConstant(methodCallExpression.Object);
             }
             if (methodCallExpression.Arguments != null && methodCallExpression.Arguments.Count > 0)
             {
@@ -186,7 +185,7 @@ namespace ExpressionToSqlWhereClause
                 for (int i = 0; i < methodCallExpression.Arguments.Count; i++)
                 {
                     Expression expression = methodCallExpression.Arguments[i];
-                    parameters[i] = ParseConstant(expression);
+                    parameters[i] = ConstantExtractor.ParseConstant(expression);
                 }
             }
 
@@ -195,21 +194,21 @@ namespace ExpressionToSqlWhereClause
 
         private static object ParseConditionalExpression(ConditionalExpression conditionalExpression)
         {
-            bool condition = (bool)ParseConstant(conditionalExpression.Test);
+            bool condition = (bool)ConstantExtractor.ParseConstant(conditionalExpression.Test);
             if (condition)
             {
-                return ParseConstant(conditionalExpression.IfTrue);
+                return ConstantExtractor.ParseConstant(conditionalExpression.IfTrue);
             }
             else
             {
-                return ParseConstant(conditionalExpression.IfFalse);
+                return ConstantExtractor.ParseConstant(conditionalExpression.IfFalse);
             }
         }
 
         private static object ParseMethodBinaryExpression(BinaryExpression methodBinaryExpression)
         {
-            object left = ParseConstant(methodBinaryExpression.Left);
-            object right = ParseConstant(methodBinaryExpression.Right);
+            object left = ConstantExtractor.ParseConstant(methodBinaryExpression.Left);
+            object right = ConstantExtractor.ParseConstant(methodBinaryExpression.Right);
             MethodInfo methodInfo = methodBinaryExpression.Method;
             if (methodInfo.IsStatic)
             {
@@ -237,7 +236,7 @@ namespace ExpressionToSqlWhereClause
 
         private static object ParseConvertExpression(UnaryExpression convertExpression)
         {
-            object value = ParseConstant(convertExpression.Operand);
+            object value = ConstantExtractor.ParseConstant(convertExpression.Operand);
             return Convert.ChangeType(value, convertExpression.Type);
         }
     }

@@ -174,10 +174,12 @@ namespace ExpressionToSqlWhereClause
             {
                 if (method.Name is "Contains" or "StartsWith" or "EndsWith")
                 {
+                    //like 的3种
                     return ConditionBuilder.BuildLikeOrEqualCondition(methodCallExpression, adhesive);
                 }
                 if (method.Name == "Equals")
                 {
+                    // equal
                     //"Like" condition for string property, For example: u.Name.Contains("A")
                     return ConditionBuilder.BuildLikeOrEqualCondition(methodCallExpression, adhesive);
                 }
@@ -205,7 +207,34 @@ namespace ExpressionToSqlWhereClause
                     return ConditionBuilder.BuildInCondition(memberExpression, valueExpression, adhesive);
                 }
             }
+            else if (method.DeclaringType == typeof(ExpressionToSqlWhereClause.SqlFunc.DbFunctions))
+            {
+                if (method.Name == nameof(ExpressionToSqlWhereClause.SqlFunc.DbFunctions.Month))
+                {
+                    ConstantExtractor.ParseMethodCallConstantExpression(methodCallExpression);
+                
 
+                    //return mi.Invoke(instance, parameters);
+
+
+                    //ConstantExtractor.ParseConstant(methodCallExpression);
+                    //- methodCallExpression    { Month(u.CreateAt)}
+                    //System.Linq.Expressions.MethodCallExpression { System.Linq.Expressions.MethodCallExpression1}
+                    //-methodCallExpression.GetType()  { Name = "MethodCallExpression1" FullName = "System.Linq.Expressions.MethodCallExpression1"}
+                    //System.Type { System.RuntimeType}
+
+                    if (methodCallExpression is MethodCallExpression)
+                    {
+                        //var memberInfo = memberExpression.Member;
+                        //string fieldName = adhesive.SqlAdapter.FormatColumnName(memberInfo);
+                        //string parameterName = EnsureParameter(memberInfo, adhesive);
+                        //object value = ConstantExtractor.ParseConstant(methodCallExpression.Arguments[0]);
+                        //adhesive.Parameters.Add($"@{parameterName}", string.Format(valueSymbol, value));
+                        //return new StringBuilder(string.Format($"{fieldName} {symbol}", $"@{parameterName}"));
+                    }
+                }
+                throw new NotSupportedException();
+            }
             throw new NotSupportedException();
 
         }

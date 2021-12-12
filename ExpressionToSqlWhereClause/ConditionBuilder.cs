@@ -49,15 +49,15 @@ namespace ExpressionToSqlWhereClause
                     symbol = SqlKeys.Equals_symbol;
                     valueSymbol = SqlKeys.Equals_valueSymbol;
                     break;
-                case "StartsWith":
+                case "StartsWith": //like 的3种/1
                     symbol = SqlKeys.StartsWith_symbol;
                     valueSymbol = SqlKeys.StartsWith_valueSymbol;
                     break;
-                case "EndsWith":
+                case "EndsWith"://like 的3种/2
                     symbol = SqlKeys.EndsWith_symbol;
                     valueSymbol = SqlKeys.EndsWith_valueSymbol;
                     break;
-                case "Contains":
+                case "Contains"://like 的3种/3
                     symbol = SqlKeys.Contains_symbol;
                     valueSymbol = SqlKeys.Contains_valueSymbol;
                     break;
@@ -122,7 +122,7 @@ namespace ExpressionToSqlWhereClause
                 if (memberInfo is PropertyInfo pi && pi.PropertyType == typeof(bool))
                 {
                     //return "!=";  //和 NotEqual 等价  , 
-                    return SqlKeys.NotEqual;   
+                    return SqlKeys.NotEqual;
                 }
             }
             return expressionType switch
