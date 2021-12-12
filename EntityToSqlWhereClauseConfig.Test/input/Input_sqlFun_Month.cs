@@ -1,5 +1,5 @@
-﻿using EntityToSqlWhereClauseConfig.SqlFun;
-using ExpressionToSqlWhereClause.SqlFun;
+﻿
+
 using System;
 
 namespace EntityToSqlWhereClauseConfig.Test.input

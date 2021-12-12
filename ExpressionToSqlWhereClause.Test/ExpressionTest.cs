@@ -308,6 +308,40 @@ namespace ExpressionToSqlWhereClause.Test
             AssertParameters(expectedParameters, parameters);
         }
 
+
+        //todo:testing,在
+        //[TestMethod]
+        //public void ValidateMethodConstant2_SqlFunc2()
+        //{
+        //    //EntityToSqlWherecClauseConfig 的 in
+        //    var userFilter = new User_SqlFunc2() { CreateAtMonth = new List<int> { 5, 6 } };
+        //    Expression<Func<User_SqlFunc_Entity, bool>> expression =
+        //        u => (SqlFunc.DbFunctions.Month(u.CreateAt) == userFilter.CreateAtMonth[0] ||
+        //        SqlFunc.DbFunctions.Month(u.CreateAt) == userFilter.CreateAtMonth[1]
+        //        ); //如果有多个条件, 这个()不能去掉
+        //    (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
+        //    Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
+        //    expectedParameters.Add("@Age", 20);
+        //    //Assert.AreEqual("((Age < @Age))", whereClause);
+        //    Assert.AreEqual("Age < @Age", whereClause);
+        //    AssertParameters(expectedParameters, parameters);
+        //}
+
+        //todo:testing
+       [TestMethod]
+        public void ValidateMethodConstant2_SqlFunc()
+        {
+            var userFilter = new User_SqlFunc() { CreateAtMonth = 5 };
+            Expression<Func<User_SqlFunc_Entity, bool>> expression =
+                u => SqlFunc.DbFunctions.Month(u.CreateAt) == userFilter.CreateAtMonth;
+            (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
+            Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
+            expectedParameters.Add("@Age", 20);
+            //Assert.AreEqual("((Age < @Age))", whereClause);
+            Assert.AreEqual("Age < @Age", whereClause);
+            AssertParameters(expectedParameters, parameters);
+        }
+
         [TestMethod]
         public void ValidateMethodConstant2()
         {
@@ -334,7 +368,7 @@ namespace ExpressionToSqlWhereClause.Test
             AssertParameters(expectedParameters, parameters);
         }
 
-    
+
 
         [TestMethod]
         public void ValidateEqualMethod()
@@ -545,7 +579,7 @@ namespace ExpressionToSqlWhereClause.Test
             //优先级:方法参数的 alias > Column
             (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
-            expectedParameters.Add("@Age", 20); 
+            expectedParameters.Add("@Age", 20);
             Assert.AreEqual("UserAge <> @Age", whereClause);
             AssertParameters(expectedParameters, parameters);
         }

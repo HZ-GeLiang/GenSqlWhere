@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 
 namespace ExpressionToSqlWhereClause.Test
 {
-    
-    
     public class User
     {
         public string Name { get; set; }
