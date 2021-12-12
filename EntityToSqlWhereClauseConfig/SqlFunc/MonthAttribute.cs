@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace EntityToSqlWhereClauseConfig.SqlFun
+namespace EntityToSqlWhereClauseConfig.SqlFunc
 {
     public class MonthAttribute : Attribute
     {
