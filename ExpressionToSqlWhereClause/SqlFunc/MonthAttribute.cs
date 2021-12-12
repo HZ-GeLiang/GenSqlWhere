@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ExpressionToSqlWhereClause.SqlFun
+namespace ExpressionToSqlWhereClause.SqlFunc
 {
 
     public class DbFunctions

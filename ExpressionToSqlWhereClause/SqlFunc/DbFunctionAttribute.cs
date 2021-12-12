@@ -2,12 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ExpressionToSqlWhereClause.SqlFun
+namespace ExpressionToSqlWhereClause.SqlFunc
 {
- 
- 
     [AttributeUsage(AttributeTargets.Method)]
- 
     public class DbFunctionAttribute : Attribute
     {
         private string? _name;

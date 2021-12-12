@@ -309,18 +309,6 @@ namespace ExpressionToSqlWhereClause.Test
         }
 
         [TestMethod]
-        public void ValidateMethodChainConstant()
-        {
-            Expression<Func<User, bool>> expression = u => u.Age < int.Parse(GetInt().ToString());
-            (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause(null, new TestSqlAdapter());
-            Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
-            expectedParameters.Add("@Age", 20);
-            //Assert.AreEqual("((Age < @Age))", whereClause);
-            Assert.AreEqual("Age < @Age", whereClause);
-            AssertParameters(expectedParameters, parameters);
-        }
-
-        [TestMethod]
         public void ValidateMethodConstant2()
         {
             UserFilter userFilter = new UserFilter();
@@ -333,6 +321,20 @@ namespace ExpressionToSqlWhereClause.Test
             Assert.AreEqual("Age < @Age", whereClause);
             AssertParameters(expectedParameters, parameters);
         }
+
+        [TestMethod]
+        public void ValidateMethodChainConstant()
+        {
+            Expression<Func<User, bool>> expression = u => u.Age < int.Parse(GetInt().ToString());
+            (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause(null, new TestSqlAdapter());
+            Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
+            expectedParameters.Add("@Age", 20);
+            //Assert.AreEqual("((Age < @Age))", whereClause);
+            Assert.AreEqual("Age < @Age", whereClause);
+            AssertParameters(expectedParameters, parameters);
+        }
+
+    
 
         [TestMethod]
         public void ValidateEqualMethod()
