@@ -239,7 +239,9 @@ namespace ExpressionToSqlWhereClause
                 }
 
                 var index = parseResult.WhereClause.IndexOf(' ');
-                if (index == -1)
+                //Remove的index小于0会报错,所以,这里添加一个判断
+                //虽然这个判断永远不会生效(以目前逻辑来讲,2021.12.12),但是为了保险起见, 还是添加了
+                if (index == -1)  
                 {
                     return parseResult.WhereClause;
                 }
