@@ -232,31 +232,19 @@ namespace ExpressionToSqlWhereClause
             //处理别名
             StringBuilder ReplaceAlias(ParseResult parseResult)
             {
-                string alias = null;
-
-                if (aliasDict != null && aliasDict.Count > 0 && parseResult.MemberInfo != null)
-                {
-                    var aliasKey = parseResult.MemberInfo.Name;
-                    if (aliasDict.ContainsKey(aliasKey))
-                    {
-                        alias = aliasDict[aliasKey];
-                    }
-                }
-
-                if (alias == null)
+                if (parseResult.MemberInfo == null ||  
+                    !aliasDict.ContainsKey(parseResult.MemberInfo.Name))
                 {
                     return parseResult.WhereClause;
                 }
 
                 var index = parseResult.WhereClause.IndexOf(' ');
-                if (index==-1)
+                if (index == -1)
                 {
                     return parseResult.WhereClause;
                 }
-                parseResult.WhereClause.Remove(0, index);
-                parseResult.WhereClause.Insert(0, alias);
-                return parseResult.WhereClause;
 
+                return parseResult.WhereClause.Remove(0, index).Insert(0, aliasDict[parseResult.MemberInfo.Name]);
             }
 
             if (binaryExpression.NodeType is

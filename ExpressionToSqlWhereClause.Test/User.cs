@@ -12,10 +12,9 @@ namespace ExpressionToSqlWhereClause.Test
         [Column("UserAge")]   
         public int Age { get; set; }
     }
+
     public class User
     {
-     
-
         public string Name { get; set; }
 
         public bool Sex { get; set; }
