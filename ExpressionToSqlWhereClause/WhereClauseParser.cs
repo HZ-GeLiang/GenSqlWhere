@@ -170,43 +170,44 @@ namespace ExpressionToSqlWhereClause
         {
             var method = methodCallExpression.Method;
 
-            if (method.DeclaringType == typeof(string) && (method.Name == "Contains" || method.Name == "StartsWith" || method.Name == "EndsWith"))
+            if (method.DeclaringType == typeof(string))
             {
-                //"Like" condition for string property, For example: u.Name.Contains("A")
-                return ConditionBuilder.BuildLikeOrEqualCondition(methodCallExpression, adhesive);
+                if (method.Name is "Contains" or "StartsWith" or "EndsWith")
+                {
+                    return ConditionBuilder.BuildLikeOrEqualCondition(methodCallExpression, adhesive);
+                }
+                if (method.Name == "Equals")
+                {
+                    //"Like" condition for string property, For example: u.Name.Contains("A")
+                    return ConditionBuilder.BuildLikeOrEqualCondition(methodCallExpression, adhesive);
+                }
             }
-            else if (method.Name == "Equals")
+            else if (method.DeclaringType == typeof(System.Linq.Enumerable))
             {
-                //"Like" condition for string property, For example: u.Name.Contains("A")
-                return ConditionBuilder.BuildLikeOrEqualCondition(methodCallExpression, adhesive);
+                if (methodCallExpression.Arguments?.Count == 2 && method.Name == "Contains")
+                {
+                    //"In" condition, Support the `Contains` extension Method of IEnumerable<TSource> Type
+                    //For example: List<string> values = new List<string> { "foo", "bar"};
+                    //values.Contains(u.Name)  
+                    MemberExpression memberExpression = methodCallExpression.Arguments[1] as MemberExpression;
+                    Expression valueExpression = methodCallExpression.Arguments[0];
+                    return ConditionBuilder.BuildInCondition(memberExpression, valueExpression, adhesive);
+                }
             }
-            else if (method.DeclaringType == typeof(System.Linq.Enumerable)
-                     && methodCallExpression.Arguments?.Count == 2
-                     && method.Name == "Contains")
+            else if (method.DeclaringType.IsGenericType)
             {
-                //"In" condition, Support the `Contains` extension Method of IEnumerable<TSource> Type
-                //For example: List<string> values = new List<string> { "foo", "bar"};
-                //             values.Contains(u.Name)  
-                MemberExpression memberExpression = methodCallExpression.Arguments[1] as MemberExpression;
-                Expression valueExpression = methodCallExpression.Arguments[0];
-                return ConditionBuilder.BuildInCondition(memberExpression, valueExpression, adhesive);
-            }
-            else if (method.DeclaringType.IsGenericType
-                     && method.DeclaringType.GetGenericTypeDefinition() == typeof(List<>)
+                if (method.DeclaringType.GetGenericTypeDefinition() == typeof(List<>)
                      && methodCallExpression.Arguments?.Count == 1
                      && method.Name == "Contains")
-            {
-                //"In" Condition, Support the `Contains` Method of List<T> type
-                //For example: string[] values = new string[]{ "foo", "bar"};
-                //             values.Contains(u.Name)  
-                MemberExpression memberExpression = methodCallExpression.Arguments[0] as MemberExpression;
-                Expression valueExpression = methodCallExpression.Object;
-                return ConditionBuilder.BuildInCondition(memberExpression, valueExpression, adhesive);
+                {
+                    MemberExpression memberExpression = methodCallExpression.Arguments[0] as MemberExpression;
+                    Expression valueExpression = methodCallExpression.Object;
+                    return ConditionBuilder.BuildInCondition(memberExpression, valueExpression, adhesive);
+                }
             }
-            else
-            {
-                throw new NotSupportedException();
-            }
+
+            throw new NotSupportedException();
+
         }
 
         private static StringBuilder ParseBinaryExpression(
@@ -232,7 +233,7 @@ namespace ExpressionToSqlWhereClause
             //处理别名
             StringBuilder ReplaceAlias(ParseResult parseResult)
             {
-                if (parseResult.MemberInfo == null ||  
+                if (parseResult.MemberInfo == null ||
                     !aliasDict.ContainsKey(parseResult.MemberInfo.Name))
                 {
                     return parseResult.WhereClause;
@@ -241,7 +242,7 @@ namespace ExpressionToSqlWhereClause
                 var index = parseResult.WhereClause.IndexOf(' ');
                 //Remove的index小于0会报错,所以,这里添加一个判断
                 //虽然这个判断永远不会生效(以目前逻辑来讲,2021.12.12),但是为了保险起见, 还是添加了
-                if (index == -1)  
+                if (index == -1)
                 {
                     return parseResult.WhereClause;
                 }
