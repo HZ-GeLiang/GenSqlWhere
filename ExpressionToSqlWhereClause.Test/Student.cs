@@ -2,7 +2,7 @@
 
 namespace ExpressionToSqlWhereClause.Test
 {
-    public   class Student
+    public class Student
     {
         public int Id { get; set; }
 
@@ -13,6 +13,12 @@ namespace ExpressionToSqlWhereClause.Test
         public string DataRemark { get; set; }
         public DateTime DataCreatedAt { get; set; }
         public DateTime DataUpdatedAt { get; set; }
+
+    }
+
+    public class Student_Alias
+    {
+        public int Id { get; set; }
 
     }
 }

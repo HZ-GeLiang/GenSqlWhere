@@ -24,6 +24,27 @@ namespace ExpressionToSqlWhereClause
                 return (string.Empty, new Dictionary<string, object>(0));
             }
 
+            #region 处理 alias
+            if (alias == null)
+            {
+                alias = new Dictionary<string, string>();
+            }
+            var columnAttributeType = typeof(ColumnAttribute);
+            foreach (var propertyInfo in typeof(T).GetProperties())
+            {
+                //优先级: 方法参数的 alias > Column
+                if (!alias.ContainsKey(propertyInfo.Name))
+                {
+                    //netstand2.0无法支持数据注解,
+                    var attrs = propertyInfo.GetCustomAttributes(columnAttributeType, true);
+                    if (attrs.Length == 1)
+                    {
+                        alias[propertyInfo.Name] = ((ColumnAttribute)attrs[0]).Name;
+                    }
+                }
+            }
+            #endregion
+
             var body = expression.Body;
             var parseResult = WhereClauseParser.Parse(body, alias, sqlAdapter);
 
@@ -58,7 +79,7 @@ namespace ExpressionToSqlWhereClause
 
             #endregion
 
-            var result = (parseResult.WhereClause , parseResult.Parameters ?? new Dictionary<string, object>(0));
+            var result = (parseResult.WhereClause, parseResult.Parameters ?? new Dictionary<string, object>(0));
             return result;
         }
 
