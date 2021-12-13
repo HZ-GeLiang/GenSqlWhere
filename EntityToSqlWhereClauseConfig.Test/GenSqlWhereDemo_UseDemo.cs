@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using EntityToSqlWhereClauseConfig.Helper;
 using EntityToSqlWhereClauseConfig.Test.input;
 using ExpressionToSqlWhereClause;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -68,6 +69,33 @@ namespace EntityToSqlWhereClauseConfig.Test
         }
 
         [TestMethod]
+        public void Use2()
+        {
+            var searchModel = new Input_Demo()
+            {
+                IsDel = true,
+                Url = "123",
+            };
+
+            var whereLambda = new WhereLambda<People, Input_Demo>();
+            whereLambda.SearchModel = searchModel;
+
+            whereLambda[SearchType.eq] = new List<string>
+            {
+                nameof(searchModel.IsDel),
+                nameof(searchModel.Url),
+            };
+
+            Expression<Func<People, bool>> exp = whereLambda.ToExpression();
+            (string sql, Dictionary<string, object> param) = exp.ToWhereClause();
+
+            Assert.AreEqual(sql, "IsDel = @IsDel And Url = @Url");
+            sql = WhereClauseHelper.ParamNameToNumber(sql);
+            Assert.AreEqual(sql, "IsDel = @0 And Url = @1");
+
+        }
+
+        [TestMethod]
         public void UseDynamic()
         {
             var searchModel = new
@@ -109,6 +137,26 @@ namespace EntityToSqlWhereClauseConfig.Test
             Assert.AreEqual(sql, "Id In @Id And Sex In @Sex And IsDel = @IsDel And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
         }
 
+        [TestMethod]
+        public void UseDynamic_Test2()
+        {
+            var searchModel = new
+            {
+                //IsDel = 0,
+                Name = (string)null,
+            };
+
+            var whereLambda = searchModel.CrateWhereLambda((People p) => { });
+
+            whereLambda[SearchType.like] = new List<string>
+            {
+                "balabala"
+            };
+            Assert.ThrowsException<ArgumentException>(() => whereLambda.ToExpression().ToWhereClause(), "类'<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'中不存在名为'balabala'的属性");
+
+        }
+
+        //todo:testing
         [TestMethod]
         public void UseExampleForEf()
         {

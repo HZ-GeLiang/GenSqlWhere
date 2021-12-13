@@ -34,6 +34,11 @@ namespace EntityToSqlWhereClauseConfig
             Type type = typeof(T);
             //Type type = Target.GetType();//如使用多态,这里获得的是实际类型
             PropertyInfo property = type.GetProperty(name);
+            if (property == null)
+            {
+                throw new ArgumentException($"类'{type.FullName}'中不存在名为'{name}'的属性");
+            }
+
             if (property.PropertyType.IsClass)
             {
                 //用了多态, 这里会报错: Cannot bind to the target method because its signature is not compatible with that of the delegate type.

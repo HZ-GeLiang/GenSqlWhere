@@ -1,4 +1,6 @@
-﻿namespace ExpressionToSqlWhereClause.Test
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ExpressionToSqlWhereClause.Test
 {
     public class User_columnAttr
     {
