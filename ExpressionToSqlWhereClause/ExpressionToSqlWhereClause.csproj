@@ -11,7 +11,7 @@
 		<PackageProjectUrl>https://gitee.com/hzgel/GenSqlWhere</PackageProjectUrl>
 		<Copyright>Copyright (c) GeLiang</Copyright>
 		<PackageTags>sql,whereclause,expression,expression2sql,convert2sql</PackageTags>
-		<Version>1.1.0</Version>
+		<Version>1.2.0</Version>
 		<LangVersion>9</LangVersion>
 		<RepositoryType>Gitee</RepositoryType>
 		<PackageId>ExpressionToSqlWhereClause</PackageId>
@@ -23,5 +23,9 @@
 
 	<ItemGroup>
 	  <Folder Include="Helper\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 	</ItemGroup>
 </Project>
