@@ -49,12 +49,62 @@ namespace EntityToSqlWhereClauseConfig.Test
 
             var whereLambda = searchModel.CrateWhereLambda((People _) => { });
 
-
             (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
             Assert.AreEqual(sql, "");
             var dict = new Dictionary<string, object>();
             DictionaryAssert.AreEqual(param, dict);
+        }
+
+        [TestMethod]
+        public void Test_le_dynamic_bool和int()
+        {
+            //int to bool  取决于 Convert.ChangeType(propertyValue, bool );
+
+            {
+                var searchModel = new
+                {
+                    IsDel = 0,
+                };
+
+                var whereLambda = searchModel.CrateWhereLambda((People _) => { });
+                whereLambda[SearchType.eq] = new List<string>
+                {
+                    nameof(searchModel.IsDel),
+                };
+
+                (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+
+                Assert.AreEqual(sql, "IsDel = @IsDel");
+                var dict = new Dictionary<string, object>
+                {
+                    { "@IsDel", false },
+                };
+                DictionaryAssert.AreEqual(param, dict);
+            }
+            {
+                var searchModel = new
+                {
+                    IsDel = 1,
+                };
+
+                var whereLambda = searchModel.CrateWhereLambda((People _) => { });
+                whereLambda[SearchType.eq] = new List<string>
+                {
+                    nameof(searchModel.IsDel),
+                };
+
+                (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+
+                Assert.AreEqual(sql, "IsDel = @IsDel");
+                var dict = new Dictionary<string, object>
+                {
+                    { "@IsDel", false },
+                };
+                DictionaryAssert.AreEqual(param, dict);
+            }
+
+
         }
     }
 }
