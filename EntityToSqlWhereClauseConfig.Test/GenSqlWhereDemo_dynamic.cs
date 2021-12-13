@@ -37,5 +37,24 @@ namespace EntityToSqlWhereClauseConfig.Test
 
             DictionaryAssert.AreEqual(param, dict);
         }
+
+        [TestMethod]
+        public void Test_le_dynamic_什么条件都没配()
+        {
+            var searchModel = new
+            {
+                Id = 5,
+                DataCreatedAt = DateTime.Parse("2021-8-8"),
+            };
+
+            var whereLambda = searchModel.CrateWhereLambda((People _) => { });
+
+
+            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+
+            Assert.AreEqual(sql, "");
+            var dict = new Dictionary<string, object>();
+            DictionaryAssert.AreEqual(param, dict);
+        }
     }
 }
