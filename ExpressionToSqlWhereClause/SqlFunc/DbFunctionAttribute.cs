@@ -4,71 +4,39 @@ using System.Text;
 
 namespace ExpressionToSqlWhereClause.SqlFunc
 {
-    [AttributeUsage(AttributeTargets.Method)]
-    public class DbFunctionAttribute : Attribute
-    {
-        private string? _name;
-        private string? _schema;
-        private bool _builtIn;
-        private bool? _nullable;
 
- 
+    [AttributeUsage(AttributeTargets.Method)]
+    public class DbFunctionAttribute : Attribute //类名字参考自ef
+    {
         public DbFunctionAttribute()
         {
+            this.FormatOnlyName = true;
         }
 
-   
-        public DbFunctionAttribute(string name, string? schema = null)
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="format">格式化</param>
+        public DbFunctionAttribute(string format)
         {
-            _name = name;
-            _schema = schema;
+            //举例: SqlFunc.DbFunctions.Month(u.CreateAt) 要翻译为 Month(CreateAt)
+            //需要[DbFunctionAttribute(format: "Month({0})", formatOnlyName: true)]
+
+            this.Format = format;
+            this.FormatOnlyName = true;
         }
 
         /// <summary>
-        ///     The name of the function in the database.
+        /// 翻译为sql的处理方式
         /// </summary>
-  
-        public virtual string? Name
-        {
-            get => _name;
-            set
-            {
-                _name = value;
-            }
-        }
+        public string Format { get; set; }
 
         /// <summary>
-        ///     The schema of the function in the database.
+        /// 是否只保留属性名, 默认 true
+        /// 格式化的时候只要属性名, 即取消 u.xxx 的 u.
+        /// 目前不对外开放, 如果对外开放,那么 表达时的 u.xxx的 u就要是表名/表别名(因为我不知道sql的xxx是来自哪个表) 
         /// </summary>
-        public virtual string? Schema
-        {
-            get => _schema;
-            set => _schema = value;
-        }
-
-        /// <summary>
-        ///     The value indicating whether the database function is built-in or not.
-        /// </summary>
-        public virtual bool IsBuiltIn
-        {
-            get => _builtIn;
-            set => _builtIn = value;
-        }
-
-        /// <summary>
-        ///     The value indicating whether the database function can return null result or not.
-        /// </summary>
-        public virtual bool IsNullable
-        {
-            get => _nullable ?? true;
-            set => _nullable = value;
-        }
-
-        /// <summary>
-        ///     Checks whether <see cref="IsNullable" /> has been explicitly set to a value.
-        /// </summary>
-        public bool IsNullableHasValue
-            => _nullable.HasValue;
+        public bool FormatOnlyName { get; private set; } = true;
     }
-
 }

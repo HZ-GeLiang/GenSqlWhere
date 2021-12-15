@@ -327,8 +327,8 @@ namespace ExpressionToSqlWhereClause.Test
         //    AssertParameters(expectedParameters, parameters);
         //}
 
-        //todo:testing
-       [TestMethod]
+         
+        [TestMethod]
         public void ValidateMethodConstant2_SqlFunc()
         {
             var userFilter = new User_SqlFunc() { CreateAtMonth = 5 };
@@ -336,9 +336,8 @@ namespace ExpressionToSqlWhereClause.Test
                 u => SqlFunc.DbFunctions.Month(u.CreateAt) == userFilter.CreateAtMonth;
             (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
-            expectedParameters.Add("@Age", 20);
-            //Assert.AreEqual("((Age < @Age))", whereClause);
-            Assert.AreEqual("Age < @Age", whereClause);
+            expectedParameters.Add("@Month", 5); 
+            Assert.AreEqual("Month(CreateAt) = @Month", whereClause);
             AssertParameters(expectedParameters, parameters);
         }
 
@@ -367,8 +366,6 @@ namespace ExpressionToSqlWhereClause.Test
             Assert.AreEqual("Age < @Age", whereClause);
             AssertParameters(expectedParameters, parameters);
         }
-
-
 
         [TestMethod]
         public void ValidateEqualMethod()
@@ -468,15 +465,12 @@ namespace ExpressionToSqlWhereClause.Test
         [TestMethod]
         public void ValidateUnary()
         {
-            try
+            Assert.ThrowsException<NotSupportedException>(() =>
             {
                 Expression<Func<User, bool>> expression = u => !u.Name.Contains("Name");
                 var sql = expression.ToWhereClause(null, new TestSqlAdapter());
-            }
-            catch (Exception e)
-            {
-                Assert.IsTrue(e.GetType() == typeof(NotSupportedException));
-            }
+            });
+
         }
 
         [TestMethod]

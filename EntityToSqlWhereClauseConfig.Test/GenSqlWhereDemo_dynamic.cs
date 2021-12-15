@@ -99,7 +99,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 Assert.AreEqual(sql, "IsDel = @IsDel");
                 var dict = new Dictionary<string, object>
                 {
-                    { "@IsDel", false },
+                    { "@IsDel", true },
                 };
                 DictionaryAssert.AreEqual(param, dict);
             }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using ExpressionToSqlWhereClause.Helper;
 
 namespace ExpressionToSqlWhereClause
 {
@@ -10,7 +12,7 @@ namespace ExpressionToSqlWhereClause
     {
 
         /// <summary>
-        /// 这个方法我自己写的
+        /// 把IEnumerable的数据的值给显示出来,多个值之间用,分隔
         /// </summary>
         /// <param name="value"></param>
         /// <param name="isParse">是否解析</param>
@@ -68,6 +70,12 @@ namespace ExpressionToSqlWhereClause
         /// <returns></returns>
         public static object ParseConstant(Expression expression)
         {
+#if DEBUG
+            StackFrame frame = new StackFrame(1, true);
+            var method = frame.GetMethod();
+            var fileName = frame.GetFileName();
+            var lineNumber = frame.GetFileLineNumber();
+#endif
             if (expression is ConstantExpression constantExpression)
             {
                 return ConstantExtractor.ParseConstantExpression(constantExpression);
@@ -103,15 +111,25 @@ namespace ExpressionToSqlWhereClause
                     throw new NotSupportedException($"Unknow expression {expression.GetType()}");
                 }
             }
-            else if (expression is UnaryExpression convertExpression
-                && expression.NodeType == ExpressionType.Convert)
+            else if (expression is UnaryExpression convertExpression)
             {
-                return ParseConvertExpression(convertExpression);
+                if (expression.NodeType == ExpressionType.Convert)
+                {
+                    return ParseConvertExpression(convertExpression);
+                }
+                else
+                {
+                    throw new NotSupportedException($"Unknow expression {expression.GetType()}");
+                }
             }
-            else
-            {
-                throw new NotSupportedException($"Unknow expression {expression.GetType()}");
-            }
+
+            //不支持的有:
+            //if (expression.GetType().FullName == "System.Linq.Expressions.TypedParameterExpression")
+            //{
+            //    throw new NotSupportedException($"Unknow expression {expression.GetType()}");
+            //}
+            throw new NotSupportedException($"Unknow expression {expression.GetType()}");
+
         }
 
         private static object ParseConstantExpression(ConstantExpression constantExpression)
@@ -138,13 +156,13 @@ namespace ExpressionToSqlWhereClause
             if (memberExpression.NodeType == System.Linq.Expressions.ExpressionType.Constant)
             {
 #if DEBUG
-                //进来看看
-                System.Diagnostics.Debugger.Break();
+                System.Diagnostics.Debugger.Break(); //进来看看
 #endif 
                 //官方获得值的方法: https://docs.microsoft.com/zh-cn/dotnet/api/system.linq.expressions.expression.field?redirectedfrom=MSDN&view=netframework-4.8
                 //    dynamic rightValue = Expression.Lambda(memberExpression).Compile()();
                 //    return rightValue;
             }
+
 
             // Firstly: Get the value of u
             object value = ParseConstant(memberExpression.Expression);
@@ -160,12 +178,19 @@ namespace ExpressionToSqlWhereClause
                     PropertyInfo propertyInfo = type.GetProperty(memberExpression.Member.Name);
                     return propertyInfo.GetValue(value);
                 default:
+#if DEBUG
+                    StackFrame frame = new StackFrame(1, true);
+                    var method = frame.GetMethod();
+                    var fileName = frame.GetFileName();
+                    var lineNumber = frame.GetFileLineNumber();
+#endif
                     throw new NotSupportedException($"Unknow Member type {memberExpression.Member.MemberType}");
             }
         }
 
         /// <summary>
-        /// For example: execute the method to get the value, like: u.Name.SubString(1,2), call the 'SubString' mehod
+        /// For example: execute the method to get the value,
+        /// like: u.Name.SubString(1,2), call the 'SubString' mehod
         /// </summary>
         /// <param name="methodCallExpression"></param>
         /// <returns></returns>
@@ -185,7 +210,22 @@ namespace ExpressionToSqlWhereClause
                 for (int i = 0; i < methodCallExpression.Arguments.Count; i++)
                 {
                     Expression expression = methodCallExpression.Arguments[i];
-                    parameters[i] = ConstantExtractor.ParseConstant(expression);
+
+                    if (expression.GetType().FullName == "System.Linq.Expressions.PropertyExpression")
+                    {
+                        DebuggerHelper.Break();
+                        return expression.ToString();
+
+                    }
+                    else if (expression.GetType().FullName == "System.Linq.Expressions.TypedParameterExpression")
+                    {
+                        DebuggerHelper.Break();
+                        throw new NotSupportedException($"Unknow expression {expression.GetType()}");
+                    }
+                    else
+                    {
+                        parameters[i] = ConstantExtractor.ParseConstant(expression);
+                    }
                 }
             }
 
