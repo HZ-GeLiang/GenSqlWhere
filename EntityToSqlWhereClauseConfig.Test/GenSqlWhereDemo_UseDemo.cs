@@ -156,7 +156,6 @@ namespace EntityToSqlWhereClauseConfig.Test
 
         }
 
-        //todo:testing
         [TestMethod]
         public void UseExampleForEf()
         {
