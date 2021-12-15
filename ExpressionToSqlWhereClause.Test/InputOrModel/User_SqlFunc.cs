@@ -8,6 +8,7 @@ namespace ExpressionToSqlWhereClause.Test
     /// </summary>
     public class User_SqlFunc
     {
+        public int Month { get; set; }
         public int CreateAtMonth { get; set; }
         public int DelAtMonth { get; set; }
     }
@@ -24,5 +25,6 @@ namespace ExpressionToSqlWhereClause.Test
     {
         public DateTime CreateAt { get; set; }
         public DateTime DelAt { get; set; }
+        public int Month { get; set; }
     }
 }

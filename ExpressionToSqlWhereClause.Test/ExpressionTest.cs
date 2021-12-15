@@ -309,28 +309,52 @@ namespace ExpressionToSqlWhereClause.Test
         }
 
 
-        //todo:testing,在
-        //[TestMethod]
-        //public void ValidateMethodConstant2_SqlFunc2()
-        //{
-        //    //EntityToSqlWherecClauseConfig 的 in
-        //    var userFilter = new User_SqlFunc2() { CreateAtMonth = new List<int> { 5, 6 } };
-        //    Expression<Func<User_SqlFunc_Entity, bool>> expression =
-        //        u => (SqlFunc.DbFunctions.Month(u.CreateAt) == userFilter.CreateAtMonth[0] ||
-        //        SqlFunc.DbFunctions.Month(u.CreateAt) == userFilter.CreateAtMonth[1]
-        //        ); //如果有多个条件, 这个()不能去掉
-        //    (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
-        //    Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
-        //    expectedParameters.Add("@Age", 20);
-        //    //Assert.AreEqual("((Age < @Age))", whereClause);
-        //    Assert.AreEqual("Age < @Age", whereClause);
-        //    AssertParameters(expectedParameters, parameters);
-        //}
+        [TestMethod]
+        public void ValidateMethodConstant2_SqlFunc2()
+        {
+            //EntityToSqlWherecClauseConfig 的 in
+            var userFilter = new User_SqlFunc2() { CreateAtMonth = new List<int> { 5, 6 } };
+            Expression<Func<User_SqlFunc_Entity, bool>> expression =
+                u => (SqlFunc.DbFunctions.Month(u.CreateAt) == userFilter.CreateAtMonth[0] ||
+                SqlFunc.DbFunctions.Month(u.CreateAt) == userFilter.CreateAtMonth[1]
+                ); //如果有多个条件, 这个()不能去掉
+            (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
+            Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
+            expectedParameters.Add("@Month", 5);
+            expectedParameters.Add("@Month1", 6);
+            //Assert.AreEqual("((Age < @Age))", whereClause);
+            Assert.AreEqual("(((Month(CreateAt) = @Month)) Or ((Month(CreateAt) = @Month1)))", whereClause);
+            AssertParameters(expectedParameters, parameters);
+        }
 
 
         [TestMethod]
         public void ValidateMethodConstant2_SqlFunc()
         {
+            {
+                var userFilter = new User_SqlFunc() { Month = 1, CreateAtMonth = 5 };
+                Expression<Func<User_SqlFunc_Entity, bool>> expression =
+                    u => SqlFunc.DbFunctions.Month(u.CreateAt) == userFilter.CreateAtMonth &&
+                         u.Month == userFilter.Month;
+                (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
+                Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
+                expectedParameters.Add("@Month", 5);
+                expectedParameters.Add("@Month1", 1);
+                Assert.AreEqual("Month(CreateAt) = @Month And Month = @Month1", whereClause);
+                AssertParameters(expectedParameters, parameters);
+            }
+            {
+                var userFilter = new User_SqlFunc() { Month = 1, CreateAtMonth = 5 };
+                Expression<Func<User_SqlFunc_Entity, bool>> expression =
+                    u => u.Month == userFilter.Month &&
+                         SqlFunc.DbFunctions.Month(u.CreateAt) == userFilter.CreateAtMonth;
+                (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
+                Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
+                expectedParameters.Add("@Month", 1);
+                expectedParameters.Add("@Month1", 5);
+                Assert.AreEqual("Month = @Month And Month(CreateAt) = @Month1", whereClause);
+                AssertParameters(expectedParameters, parameters);
+            }
 
             {
                 var userFilter = new User_SqlFunc() { CreateAtMonth = 5, DelAtMonth = 6 };
@@ -356,7 +380,7 @@ namespace ExpressionToSqlWhereClause.Test
                 AssertParameters(expectedParameters, parameters);
             }
 
-          
+
         }
 
         [TestMethod]
