@@ -214,8 +214,16 @@ namespace ExpressionToSqlWhereClause
                     if (expression.GetType().FullName == "System.Linq.Expressions.PropertyExpression")
                     {
                         DebuggerHelper.Break();
-                        return expression.ToString();
+                        var nodeType = (ExpressionType)(((dynamic)expression).Expression.NodeType);
 
+                        if (nodeType == ExpressionType.Parameter)
+                        {
+                            return expression.ToString(); //u.CreateAt
+                        }
+                        else if (nodeType == ExpressionType.MemberAccess)
+                        {
+                            parameters[i] = ConstantExtractor.ParseConstant(expression);//GetInt(userFilter.Internal.Age);
+                        }
                     }
                     else if (expression.GetType().FullName == "System.Linq.Expressions.TypedParameterExpression")
                     {
