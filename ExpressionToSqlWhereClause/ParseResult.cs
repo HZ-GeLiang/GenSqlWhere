@@ -12,7 +12,7 @@ namespace ExpressionToSqlWhereClause
         public StringBuilder WhereClause { get; set; }
 
         /// <summary>
-        /// 调用方是否需要额外添加参数
+        /// 调用方是否需要额外添加参数 , 这个值为true 时,同属性的 MemberInfo 不能为null
         /// </summary>
         public bool NeedAddPara { get; set; } = false;
 
@@ -26,6 +26,6 @@ namespace ExpressionToSqlWhereClause
         /// </summary>
         public MemberInfo MemberInfo { get; set; } = null;
 
- 
+
     }
 }

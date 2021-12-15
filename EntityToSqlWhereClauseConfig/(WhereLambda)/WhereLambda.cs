@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using EntityToSqlWhereClauseConfig.ExtensionMethod;
+using EntityToSqlWhereClauseConfig.Helper;
 
 namespace EntityToSqlWhereClauseConfig
 {
@@ -111,9 +112,7 @@ namespace EntityToSqlWhereClauseConfig
             var props = typeof(TSearchModel).GetProperties();
             foreach (System.Reflection.PropertyInfo prop in props)
             {
-                //netstand2.0无法支持数据注解,
-                var attrs = prop.GetCustomAttributes(typeof(SearchTypeAttribute), false);
-
+                var attrs = ReflectionHelper.GetAttributeForProperty<SearchTypeAttribute>(prop, false);
                 foreach (SearchTypeAttribute item in attrs)
                 {
                     if (!config.ContainsKey(item.SearchType))

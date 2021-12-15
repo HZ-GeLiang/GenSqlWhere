@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExpressionToSqlWhereClause.Helper;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
@@ -36,8 +37,7 @@ namespace ExpressionToSqlWhereClause
                 //优先级: 方法参数的 alias > Column
                 if (!alias.ContainsKey(propertyInfo.Name))
                 {
-                    //netstand2.0无法支持数据注解,
-                    var attrs = propertyInfo.GetCustomAttributes(columnAttributeType, true);
+                    var attrs = ReflectionHelper.GetAttributeForProperty<ColumnAttribute>(propertyInfo, true);
                     if (attrs.Length == 1)
                     {
                         alias[propertyInfo.Name] = ((ColumnAttribute)attrs[0]).Name;
@@ -51,8 +51,8 @@ namespace ExpressionToSqlWhereClause
 
             #region 处理 parseResult.WhereClause
 
-            //去掉 关系条件的 ()
-            //只能去掉全是 and 语句的 ()
+            #region 去掉 关系条件 多余的 ()
+            //能力有限: 只能去掉全是 and 语句的 ()
             if (!parseResult.WhereClause.Contains(SqlKeys.or))
             {
                 if (parseResult.WhereClause.Contains("("))
@@ -64,6 +64,17 @@ namespace ExpressionToSqlWhereClause
                     parseResult.WhereClause = parseResult.WhereClause.Replace(")", string.Empty);
                 }
             }
+            #endregion
+
+            #region 函数的[] 变成 ()
+
+            if (parseResult.WhereClause.Contains("[") && parseResult.WhereClause.Contains("]")  )
+            {
+                parseResult.WhereClause = parseResult.WhereClause.Replace("[", "(");
+                parseResult.WhereClause = parseResult.WhereClause.Replace("]", ")");
+            }
+
+            #endregion
 
             #endregion
 

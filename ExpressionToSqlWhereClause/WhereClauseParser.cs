@@ -1,8 +1,10 @@
-﻿using System;
+﻿using ExpressionToSqlWhereClause.Helper;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using ExpressionToSqlWhereClause.SqlFunc;
 
 namespace ExpressionToSqlWhereClause
 {
@@ -90,12 +92,62 @@ namespace ExpressionToSqlWhereClause
             if (expression is BinaryExpression binaryExpression)
             {
                 var whereClause = ParseBinaryExpression(adhesive, binaryExpression, aliasDict);
-                return new ParseResult() { WhereClause = whereClause };
+                return new ParseResult()
+                {
+                    WhereClause = whereClause
+                };
             }
             else if (expression is MethodCallExpression methodCallExpression)
             {
-                var whereClause = ParseMethodCallExpression(adhesive, methodCallExpression);
-                return new ParseResult() { WhereClause = whereClause };
+                var method = methodCallExpression.Method;
+                if (method.DeclaringType == typeof(ExpressionToSqlWhereClause.SqlFunc.DbFunctions))
+                {
+                    // int Month (datetime dt)   =>  public static Int32 Month(DateTime dt)
+                    var methodInfo = methodCallExpression.Method;  //这个静态方法的定义
+
+                    var attrs = ReflectionHelper.GetAttributeForMethod<DbFunctionAttribute>(methodInfo);
+                    if (attrs.Length > 0)
+                    {
+                        var leftName = ConstantExtractor.ParseMethodCallConstantExpression(methodCallExpression).ToString();//u.CreateAt
+                        var symbol = ConditionBuilder.ToComparisonSymbol(comparison, methodCallExpression.Method); //= 
+
+                        var attr = attrs[0];
+                        string clauseLeft;
+                        if (attr.FormatOnlyName) //目前为止, 这里永远为true 
+                        {
+                            // u.CreateAt  变成  CreateAt
+                            int startIndex = leftName.IndexOf(".");
+                            var leftNameNew = startIndex != -1 ? leftName.Substring(startIndex + 1, leftName.Length - 1 - startIndex) : leftName;
+
+                            clauseLeft=string.Format(attr.Format, leftNameNew);// Month(CreateAt)
+                        }
+                        else
+                        {
+                            clauseLeft=string.Format(attr.Format, leftName);// Month(u.CreateAt)
+                        }
+
+                        string parameterName = ConditionBuilder.EnsureParameter(methodInfo, adhesive);
+                        var whereClause = new StringBuilder($"{clauseLeft} {symbol} @{parameterName}");
+
+                        return new ParseResult()
+                        {
+                            WhereClause = whereClause,
+                            NeedAddPara = true,
+                            MemberExpression = null,
+                            MemberInfo = methodCallExpression.Method
+                        };
+                    }
+
+                    throw new NotSupportedException($"Unknow expression {expression.GetType()}");
+                }
+                else
+                {
+                    var whereClause = ParseMethodCallExpression(adhesive, methodCallExpression);
+                    return new ParseResult()
+                    {
+                        WhereClause = whereClause
+                    };
+                }
             }
             else if (expression is MemberExpression memberExpression)
             {
@@ -108,7 +160,13 @@ namespace ExpressionToSqlWhereClause
                 {
                     whereClause = ConditionBuilder.BuildCondition(memberExpression.Member, adhesive, comparison);
                 }
-                return new ParseResult() { WhereClause = whereClause, NeedAddPara = true, MemberExpression = memberExpression, MemberInfo = memberExpression.Member };
+                return new ParseResult()
+                {
+                    WhereClause = whereClause,
+                    NeedAddPara = true,
+                    MemberExpression = memberExpression,
+                    MemberInfo = memberExpression.Member
+                };
             }
             else if (expression is UnaryExpression unaryExpression)
             {
@@ -157,6 +215,11 @@ namespace ExpressionToSqlWhereClause
                     }
                 }
             }
+
+            //不支持的: 
+            //-expression  { Not(u.Name.Contains("Name"))}
+            //System.Linq.Expressions.Expression { System.Linq.Expressions.UnaryExpression}
+
             throw new NotSupportedException($"Unknow expression {expression.GetType()}");
         }
 
@@ -207,34 +270,7 @@ namespace ExpressionToSqlWhereClause
                     return ConditionBuilder.BuildInCondition(memberExpression, valueExpression, adhesive);
                 }
             }
-            else if (method.DeclaringType == typeof(ExpressionToSqlWhereClause.SqlFunc.DbFunctions))
-            {
-                if (method.Name == nameof(ExpressionToSqlWhereClause.SqlFunc.DbFunctions.Month))
-                {
-                    ConstantExtractor.ParseMethodCallConstantExpression(methodCallExpression);
-                
 
-                    //return mi.Invoke(instance, parameters);
-
-
-                    //ConstantExtractor.ParseConstant(methodCallExpression);
-                    //- methodCallExpression    { Month(u.CreateAt)}
-                    //System.Linq.Expressions.MethodCallExpression { System.Linq.Expressions.MethodCallExpression1}
-                    //-methodCallExpression.GetType()  { Name = "MethodCallExpression1" FullName = "System.Linq.Expressions.MethodCallExpression1"}
-                    //System.Type { System.RuntimeType}
-
-                    if (methodCallExpression is MethodCallExpression)
-                    {
-                        //var memberInfo = memberExpression.Member;
-                        //string fieldName = adhesive.SqlAdapter.FormatColumnName(memberInfo);
-                        //string parameterName = EnsureParameter(memberInfo, adhesive);
-                        //object value = ConstantExtractor.ParseConstant(methodCallExpression.Arguments[0]);
-                        //adhesive.Parameters.Add($"@{parameterName}", string.Format(valueSymbol, value));
-                        //return new StringBuilder(string.Format($"{fieldName} {symbol}", $"@{parameterName}"));
-                    }
-                }
-                throw new NotSupportedException();
-            }
             throw new NotSupportedException();
 
         }
@@ -245,7 +281,7 @@ namespace ExpressionToSqlWhereClause
                 Dictionary<string, string> aliasDict = default
             )
         {
-            //在这里处理: 往adhesive的参数添加值 
+            //在这里处理: 往adhesive的参数添加值  2 和 3 表示这个方法有几个参数, 没有什么特定的含义
             void AddParamteter3(ParseResult _parseResult, WhereClauseAdhesive _adhesive, object _value)
             {
                 string parameterName = ConditionBuilder.EnsureParameter(_parseResult.MemberInfo, _adhesive);
@@ -300,11 +336,6 @@ namespace ExpressionToSqlWhereClause
 
                 if (leftParseResult.NeedAddPara)
                 {
-                    //if (binaryExpression.NodeType == ExpressionType.Convert)
-                    //{
-                    //    var val = ConstantExtractor.ParseConstant(binaryExpression);
-                    //}
-                    //else if (IsDataComparator(binaryExpression.NodeType))
                     if (IsDataComparator(binaryExpression.NodeType))
                     {
                         //Basic case, For example: u.Age > 18
@@ -381,6 +412,11 @@ namespace ExpressionToSqlWhereClause
             }
         }
 
+        /// <summary>
+        /// is数据比较符
+        /// </summary>
+        /// <param name="expressionType"></param>
+        /// <returns></returns>
         private static bool IsDataComparator(ExpressionType expressionType)
         {
             if (expressionType is

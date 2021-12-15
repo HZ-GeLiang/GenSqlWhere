@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31903.59
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpressionToSqlWhereClause", "ExpressionToSqlWhereClause\ExpressionToSqlWhereClause.csproj", "{62CF305C-AAAE-4B33-9203-05386BD9C64D}"
 EndProject
@@ -19,8 +19,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityToSqlWhereClauseConfig.Test", "EntityToSqlWhereClauseConfig.Test\EntityToSqlWhereClauseConfig.Test.csproj", "{340C9D2E-FDC6-4A09-890E-AD7ADFDA66FF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityToSqlWhereClauseConfig", "EntityToSqlWhereClauseConfig\EntityToSqlWhereClauseConfig.csproj", "{FD8D4A93-7C8C-4084-AC49-98831DE53DC4}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{BBD2488B-55E6-44A9-80CB-AEF82FA33F23}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,10 +46,6 @@ Global
 		{FD8D4A93-7C8C-4084-AC49-98831DE53DC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD8D4A93-7C8C-4084-AC49-98831DE53DC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD8D4A93-7C8C-4084-AC49-98831DE53DC4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BBD2488B-55E6-44A9-80CB-AEF82FA33F23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BBD2488B-55E6-44A9-80CB-AEF82FA33F23}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BBD2488B-55E6-44A9-80CB-AEF82FA33F23}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BBD2488B-55E6-44A9-80CB-AEF82FA33F23}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -13,7 +13,8 @@ namespace ExpressionToSqlWhereClause
             string fieldName = adhesive.SqlAdapter.FormatColumnName(memberInfo);
             string parameterName = EnsureParameter(memberInfo, adhesive);
             adhesive.Parameters.Add($"@{parameterName}", value);
-            var sb = new StringBuilder($"{fieldName} {ConditionBuilder.ToComparisonSymbol(comparison, memberInfo)} @{parameterName}");
+            var symbol = ConditionBuilder.ToComparisonSymbol(comparison, memberInfo);
+            var sb = new StringBuilder($"{fieldName} {symbol} @{parameterName}");
             return sb;
         }
 
@@ -30,7 +31,8 @@ namespace ExpressionToSqlWhereClause
             string parameterName = EnsureParameter(memberInfo, adhesive);
             StringBuilder sb = new StringBuilder();
 #if DEBUG
-            var clause = $"{fieldName} {ConditionBuilder.ToComparisonSymbol(comparison, memberInfo)} @{parameterName}";
+            var symbol = ConditionBuilder.ToComparisonSymbol(comparison, memberInfo);
+            var clause = $"{fieldName} {symbol} @{parameterName}";
             sb.Append(clause);
 #else
             sb.Append(fieldName).Append(" ").Append(ConditionBuilder.ToComparisonSymbol(comparison, memberInfo)).Append(" @").Append(parameterName);
@@ -72,7 +74,7 @@ namespace ExpressionToSqlWhereClause
                 string parameterName = EnsureParameter(memberInfo, adhesive);
                 object value = ConstantExtractor.ParseConstant(methodCallExpression.Arguments[0]);
                 adhesive.Parameters.Add($"@{parameterName}", string.Format(valueSymbol, value));
-                return new StringBuilder(string.Format($"{fieldName} {symbol}", $"@{parameterName}"));
+                return new StringBuilder(string.Format($"{fieldName} {symbol}", $"@{parameterName}")); // string.Format( Name Like ){0} , Name1
             }
             else
             {
