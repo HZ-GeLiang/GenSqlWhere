@@ -5,7 +5,11 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using EntityToSqlWhereClauseConfig.ExtensionMethod;
+using EntityToSqlWhereClauseConfig.Helper;
+using EntityToSqlWhereClauseConfig.SqlFunc;
+using ExpressionToSqlWhereClause.SqlFunc;
 
+// ReSharper disable once CheckNamespace
 namespace EntityToSqlWhereClauseConfig
 {
     public static class WhereLambdaHelper
@@ -78,11 +82,15 @@ namespace EntityToSqlWhereClauseConfig
         // t.SomeProperty.Contains("stringValue");
         private static Expression<Func<TEntity, bool>> GetExpression_Contains<TEntity>(string propertyName, string propertyValue)
         {
-            if (typeof(TEntity).GetProperty(propertyName) == null)
+
+            var type_TEntity = typeof(TEntity);
+            var prop_Info = type_TEntity.GetProperty(propertyName);
+            if (prop_Info == null)
             {
                 return null;
             }
-            var parameterExp = Expression.Parameter(typeof(TEntity), "a");
+
+            var parameterExp = Expression.Parameter(type_TEntity, "a");
             var propertyExp = Expression.Property(parameterExp, propertyName);//a.UserNickName
             var method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
             var someValue = Expression.Constant(propertyValue, typeof(string));
@@ -133,12 +141,14 @@ namespace EntityToSqlWhereClauseConfig
         // t.SomeProperty.StartsWith("stringValue");
         private static Expression<Func<TEntity, bool>> GetExpression_StartsWith<TEntity>(string propertyName, string propertyValue)
         {
-            if (typeof(TEntity).GetProperty(propertyName) == null)
+            var type_TEntity = typeof(TEntity);
+            var prop_Info = type_TEntity.GetProperty(propertyName);
+            if (prop_Info == null)
             {
                 return null;
             }
 
-            var parameterExp = Expression.Parameter(typeof(TEntity), "a");
+            var parameterExp = Expression.Parameter(type_TEntity, "a");
             var propertyExp = Expression.Property(parameterExp, propertyName);//a.UserNickName
             var method = typeof(string).GetMethod("StartsWith", new[] { typeof(string) });
             var someValue = Expression.Constant(propertyValue, typeof(string));
@@ -189,11 +199,14 @@ namespace EntityToSqlWhereClauseConfig
         // t.SomeProperty.EndsWith("stringValue");
         private static Expression<Func<TEntity, bool>> GetExpression_EndsWith<TEntity>(string propertyName, string propertyValue)
         {
-            if (typeof(TEntity).GetProperty(propertyName) == null)
+            var type_TEntity = typeof(TEntity);
+            var prop_Info = type_TEntity.GetProperty(propertyName);
+            if (prop_Info == null)
             {
                 return null;
             }
-            var parameterExp = Expression.Parameter(typeof(TEntity), "a");
+
+            var parameterExp = Expression.Parameter(type_TEntity, "a");
             var propertyExp = Expression.Property(parameterExp, propertyName);//a.UserNickName
             var method = typeof(string).GetMethod("EndsWith", new[] { typeof(string) });
             var someValue = Expression.Constant(propertyValue, typeof(string));
@@ -243,7 +256,7 @@ namespace EntityToSqlWhereClauseConfig
                 }
                 //值类型(DateTime) + 非string的引用类型 不给翻译.直接报错
 
-                var parameterExp = Expression.Parameter(typeof(TEntity), "a");
+                var parameterExp = Expression.Parameter(type_TEntity, "a");
                 var propertyExp = Expression.Property(parameterExp, prop);//a.UserNickName
                 var left = Expression.Convert(propertyExp, value.GetType());
                 var right = Expression.Constant(value, value.GetType());
@@ -291,17 +304,33 @@ namespace EntityToSqlWhereClauseConfig
             return whereLambdas;
         }
 
-        private static void AddEqualCore<TEntity, TSearchModel>(string prop, Type valuePropType, object propertyValue, List<Expression<Func<TEntity, bool>>> whereLambdas)
+
+        private static void AddEqualCore<TEntity, TSearchModel>(string propertyName, Type valuePropType, object propertyValue, List<Expression<Func<TEntity, bool>>> whereLambdas)
         {
-            if (typeof(TEntity).GetProperty(prop) == null)//domain 没有prop属性
+            var type_TEntity = typeof(TEntity);
+            var prop_Info = type_TEntity.GetProperty(propertyName);
+            if (prop_Info == null)
             {
                 return;
             }
 
             // AddEqual 的代码
-            var parameterExp = Expression.Parameter(typeof(TEntity), "a");
-            var propertyExp = Expression.Property(parameterExp, prop); //a.AuditStateId
+            var parameterExp = Expression.Parameter(type_TEntity, "a");
+            var propertyExp = Expression.Property(parameterExp, propertyName); //a.AuditStateId
             Type propType_TEntity = propertyExp.Type; //a.AuditStateId 的type(Dto中定义的属性类型)
+
+
+            var type_TSearchModel = typeof(TSearchModel);
+            var prop_Info_SearchModel = type_TSearchModel.GetProperty(propertyName);
+            var attr_SqlFunc = ReflectionHelper.GetAttributeForProperty<SqlFuncAttribute>(prop_Info_SearchModel, true);
+
+            var isAdd = IsDbFunAndAddToLambda<TEntity, TSearchModel>(propertyName, propertyValue, whereLambdas, attr_SqlFunc, type_TEntity, propType_TEntity);
+            if (isAdd)
+            {
+                return;
+            }
+
+
             var left = Expression.Convert(propertyExp, propType_TEntity);
             //var right = Expression.Constant(propertyValue, propertyValue.GetType());//ids这种情况就有问题
             //前半个if 是为了支持ids的查询: 当id需要支持多个值查询时, 前端模型只能是string类型, 然后这里就会因为类型不一致而发生异常
@@ -329,6 +358,37 @@ namespace EntityToSqlWhereClauseConfig
             var body = Expression.Equal(left, right);
             var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
             whereLambdas.Add(lambda);
+        }
+
+        private static bool IsDbFunAndAddToLambda<TEntity, TSearchModel>(string propertyName, object propertyValue,
+            List<Expression<Func<TEntity, bool>>> whereLambdas, SqlFuncAttribute[] attr_SqlFunc, Type type_TEntity, Type propType_TEntity)
+        {
+            if (attr_SqlFunc.Length == 1)
+            {
+                var attr = attr_SqlFunc[0];
+                if (attr is MonthAttribute)
+                {
+                    //var call = Expression.Call(typeof(Enumerable), "Contains", new[] { propertyExp.Type }, someValue, propertyExp);
+
+                    ////var method = typeof(Enumerable).GetMethod("Contains");//会报错 ,说模棱两可的
+
+                    ParameterExpression parameterExpression = Expression.Parameter(type_TEntity, "u");
+                    var leftP2 = typeof(DbFunctions).GetMethod("Month", new Type[] { typeof(DateTime) });
+                    var leftP3 = new Expression[]
+                    {
+                        Expression.Property(parameterExpression, propertyName)
+                    };
+                    var left = Expression.Call(null, leftP2, leftP3);
+                    var right = Expression.Constant(Convert.ToInt32(propertyValue), typeof(int));
+                    var body = Expression.Equal(left, right);
+                    var lambda =
+                        Expression.Lambda<Func<TEntity, bool>>(body, new ParameterExpression[1] { parameterExpression });
+                    whereLambdas.Add(lambda);
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         #endregion
@@ -364,15 +424,18 @@ namespace EntityToSqlWhereClauseConfig
             return whereLambdas;
         }
 
-        private static void AddNotEqualCore<TEntity, TSearchModel>(string prop, Type valuePropType, object propertyValue, List<Expression<Func<TEntity, bool>>> whereLambdas)
+        private static void AddNotEqualCore<TEntity, TSearchModel>(string propertyName, Type valuePropType, object propertyValue, List<Expression<Func<TEntity, bool>>> whereLambdas)
         {
-            if (typeof(TEntity).GetProperty(prop) == null)
+            var type_TEntity = typeof(TEntity);
+            var prop_Info = type_TEntity.GetProperty(propertyName);
+            if (prop_Info == null)
             {
                 return;
             }
+
             // AddEqual 的代码
-            var parameterExp = Expression.Parameter(typeof(TEntity), "a");
-            var propertyExp = Expression.Property(parameterExp, prop); //a.AuditStateId
+            var parameterExp = Expression.Parameter(type_TEntity, "a");
+            var propertyExp = Expression.Property(parameterExp, propertyName); //a.AuditStateId
             Type propType_TEntity = propertyExp.Type; //a.AuditStateId 的type(Dto中定义的属性类型)
             var left = Expression.Convert(propertyExp, propType_TEntity);
             //var right = Expression.Constant(propertyValue, propertyValue.GetType());//ids这种情况就有问题
@@ -430,9 +493,9 @@ namespace EntityToSqlWhereClauseConfig
             {
                 return Default<TEntity>();
             }
+            var type_TEntity = typeof(TEntity);
 
             //key : 字段 value : 开始值(包含), 结束值(包含)
-
             var numberDict = new Dictionary<string, NumberSearch>();
 
             #region 初始化 timeDict
@@ -604,7 +667,7 @@ namespace EntityToSqlWhereClauseConfig
                 {
                     if (typeof(TEntity).GetProperty(key) != null)
                     {
-                        var parameterExp = Expression.Parameter(typeof(TEntity), "a");
+                        var parameterExp = Expression.Parameter(type_TEntity, "a");
                         var propertyExp = Expression.Property(parameterExp, key);//a.CreateAt
                         Type propType_TEntity = propertyExp.Type; //a.AuditStateId 的type(Dto中定义的属性类型)
                         var left = Expression.Convert(propertyExp, propType_TEntity);
@@ -619,7 +682,7 @@ namespace EntityToSqlWhereClauseConfig
                 {
                     if (typeof(TEntity).GetProperty(key) != null)
                     {
-                        var parameterExp = Expression.Parameter(typeof(TEntity), "a");
+                        var parameterExp = Expression.Parameter(type_TEntity, "a");
                         var propertyExp = Expression.Property(parameterExp, key); //a.CreateAt
                         Type propType_TEntity = propertyExp.Type; //a.AuditStateId 的type(Dto中定义的属性类型)
                         var left = Expression.Convert(propertyExp, propType_TEntity);
@@ -661,9 +724,9 @@ namespace EntityToSqlWhereClauseConfig
             {
                 return Default<TEntity>();
             }
+            var type_TEntity = typeof(TEntity);
 
             //key : 字段 value : 开始时间(包含), 结束时间(不含)
-
             var timeDict = new Dictionary<string, TimeSearch>();
 
             #region 初始化 timeDict
@@ -859,7 +922,7 @@ namespace EntityToSqlWhereClauseConfig
                 {
                     if (typeof(TEntity).GetProperty(key) != null)
                     {
-                        var parameterExp = Expression.Parameter(typeof(TEntity), "a");
+                        var parameterExp = Expression.Parameter(type_TEntity, "a");
                         var propertyExp = Expression.Property(parameterExp, key); //a.CreateAt
                         var left = Expression.Convert(propertyExp, typeof(DateTime));
                         var right = Expression.Constant(timeDict[key].TimeRange[0], typeof(DateTime));
@@ -873,7 +936,7 @@ namespace EntityToSqlWhereClauseConfig
                 {
                     if (typeof(TEntity).GetProperty(key) != null)
                     {
-                        var parameterExp = Expression.Parameter(typeof(TEntity), "a");
+                        var parameterExp = Expression.Parameter(type_TEntity, "a");
                         var propertyExp = Expression.Property(parameterExp, key); //a.CreateAt
                         var left = Expression.Convert(propertyExp, typeof(DateTime));
                         var right = Expression.Constant(timeDict[key].TimeRange[1], typeof(DateTime));
@@ -986,6 +1049,7 @@ namespace EntityToSqlWhereClauseConfig
             {
                 return Default<TEntity>();
             }
+            var type_TEntity = typeof(TEntity);
 
             List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
             foreach (var prop in props)
@@ -1028,7 +1092,7 @@ namespace EntityToSqlWhereClauseConfig
                 //    #region 代码封装为一个方法 , 此块代码注释
 
                 //    //// AddEqual 的代码
-                //    //var parameterExp = Expression.Parameter(typeof(TEntity), "a");
+                //    //var parameterExp = Expression.Parameter(type_TEntity, "a");
                 //    //var propertyExp = Expression.Property(parameterExp, prop);//a.AuditStateId
                 //    //Type propType_TEntity = propertyExp.Type; //a.AuditStateId 的type(Dto中定义的属性类型)
                 //    //var left = Expression.Convert(propertyExp, propType_TEntity);
@@ -1066,7 +1130,7 @@ namespace EntityToSqlWhereClauseConfig
                         continue;
                     }
 
-                    var parameterExp = Expression.Parameter(typeof(TEntity), "a");//pe
+                    var parameterExp = Expression.Parameter(type_TEntity, "a");//pe
                     var propertyExp = Expression.Property(parameterExp, prop); //a.AuditStateId  //me
 
                     Type propType_TEntity = propertyExp.Type; //a.AuditStateId 的type (Dto中定义的属性类型)
@@ -1205,7 +1269,7 @@ namespace EntityToSqlWhereClauseConfig
             //https://stackoverflow.com/questions/18491610/dynamic-linq-expression-for-ienumerableint-containsmemberexpression
             //https://stackoverflow.com/questions/26659824/create-a-predicate-builder-for-x-listofints-containsx-listofintstocheck
 
-            //ParameterExpression parameterExp = Expression.Parameter(typeof(TEntity), "a");//pe
+            //ParameterExpression parameterExp = Expression.Parameter(type_TEntity, "a");//pe
             //MemberExpression propertyExp = Expression.Property(parameterExp, propertyName); //a.AuditStateId  //me
 
             //var someValue = Expression.Constant(listObj, typeof(List<Int16?>));
@@ -1275,12 +1339,14 @@ namespace EntityToSqlWhereClauseConfig
         // t.SomeProperty > 5
         private static Expression<Func<TEntity, bool>> GetExpression_gt<TEntity>(string propertyName, object propertyValue)
         {
-            if (typeof(TEntity).GetProperty(propertyName) == null)
+            var type_TEntity = typeof(TEntity);
+            var prop_Info = type_TEntity.GetProperty(propertyName);
+            if (prop_Info == null)
             {
                 return null;
             }
 
-            var parameterExp = Expression.Parameter(typeof(TEntity), "a");
+            var parameterExp = Expression.Parameter(type_TEntity, "a");
             var propertyExp = Expression.Property(parameterExp, propertyName); //a.Id
             Type propType_TEntity = propertyExp.Type; // domain(typeof(TEntity)) 中的Id属性的类型
             var left = Expression.Convert(propertyExp, propType_TEntity);
@@ -1350,12 +1416,14 @@ namespace EntityToSqlWhereClauseConfig
         // t.SomeProperty >= 5
         private static Expression<Func<TEntity, bool>> GetExpression_ge<TEntity>(string propertyName, object propertyValue)
         {
-            if (typeof(TEntity).GetProperty(propertyName) == null)
+            var type_TEntity = typeof(TEntity);
+            var prop_Info = type_TEntity.GetProperty(propertyName);
+            if (prop_Info == null)
             {
                 return null;
             }
 
-            var parameterExp = Expression.Parameter(typeof(TEntity), "a");
+            var parameterExp = Expression.Parameter(type_TEntity, "a");
             var propertyExp = Expression.Property(parameterExp, propertyName); //a.Id
             Type propType_TEntity = propertyExp.Type; // domain(typeof(TEntity)) 中的Id属性的类型
             var left = Expression.Convert(propertyExp, propType_TEntity);
@@ -1425,12 +1493,14 @@ namespace EntityToSqlWhereClauseConfig
         // t.SomeProperty < 5
         private static Expression<Func<TEntity, bool>> GetExpression_lt<TEntity>(string propertyName, object propertyValue)
         {
-            if (typeof(TEntity).GetProperty(propertyName) == null)
+            var type_TEntity = typeof(TEntity);
+            var prop_Info = type_TEntity.GetProperty(propertyName);
+            if (prop_Info == null)
             {
                 return null;
             }
 
-            var parameterExp = Expression.Parameter(typeof(TEntity), "a");
+            var parameterExp = Expression.Parameter(type_TEntity, "a");
             var propertyExp = Expression.Property(parameterExp, propertyName); //a.Id
             Type propType_TEntity = propertyExp.Type; // domain(typeof(TEntity)) 中的Id属性的类型
             var left = Expression.Convert(propertyExp, propType_TEntity);
@@ -1500,12 +1570,14 @@ namespace EntityToSqlWhereClauseConfig
         // t.SomeProperty <= 5
         private static Expression<Func<TEntity, bool>> GetExpression_le<TEntity>(string propertyName, object propertyValue)
         {
-            if (typeof(TEntity).GetProperty(propertyName) == null)
+            var type_TEntity = typeof(TEntity);
+            var prop_Info = type_TEntity.GetProperty(propertyName);
+            if (prop_Info == null)
             {
                 return null;
             }
 
-            var parameterExp = Expression.Parameter(typeof(TEntity), "a");
+            var parameterExp = Expression.Parameter(type_TEntity, "a");
             var propertyExp = Expression.Property(parameterExp, propertyName); //a.Id
             Type propType_TEntity = propertyExp.Type; // domain(typeof(TEntity)) 中的Id属性的类型
             var left = Expression.Convert(propertyExp, propType_TEntity);
