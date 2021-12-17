@@ -15,23 +15,24 @@ namespace ExpressionToSqlWhereClause
         /// 把IEnumerable的数据的值给显示出来,多个值之间用,分隔
         /// </summary>
         /// <param name="value"></param>
-        /// <param name="isParse">是否解析</param>
+        /// <param name="isIEnumerableObj">是否是isIEnumerable 对象</param>
         /// <returns></returns>
-        public static string ConstantExpressionValueToString(object value, out bool isParse)
+        public static string ConstantExpressionValueToString(object value, out bool isIEnumerableObj)
         {
-            IEnumerable loopObj = null;
-            if (value.GetType().FullName.StartsWith("System.Linq.Enumerable+SelectEnumerableIterator`2") && value is IEnumerable)
+            if (value == null)
             {
-                loopObj = (IEnumerable)value;
-            }
-
-            isParse = loopObj != null;
-
-            if (!isParse)
-            {
+                isIEnumerableObj = false;
                 return null;
             }
 
+            if (!value.GetType().FullName.StartsWith("System.Linq.Enumerable+SelectEnumerableIterator`2") || value is not IEnumerable)
+            {
+                isIEnumerableObj = false;
+                return null;
+            }
+
+            IEnumerable loopObj = (IEnumerable)value;
+            isIEnumerableObj = true;
             object firstValue = null;
 
             StringBuilder sb = new StringBuilder();
@@ -62,6 +63,7 @@ namespace ExpressionToSqlWhereClause
             }
 
         }
+
 
         /// <summary>
         /// 获得Expression的值
