@@ -68,7 +68,7 @@ namespace ExpressionToSqlWhereClause
 
             #region 函数的[] 变成 ()
 
-            if (parseResult.WhereClause.Contains("[") && parseResult.WhereClause.Contains("]")  )
+            if (parseResult.WhereClause.Contains("[") && parseResult.WhereClause.Contains("]"))
             {
                 parseResult.WhereClause = parseResult.WhereClause.Replace("[", "(");
                 parseResult.WhereClause = parseResult.WhereClause.Replace("]", ")");
@@ -82,10 +82,19 @@ namespace ExpressionToSqlWhereClause
 
             foreach (var key in parseResult.Parameters.Keys)
             {
-                var parseValue = ConstantExtractor.ConstantExpressionValueToString(parseResult.Parameters[key], out var isParse);
-                if (isParse)
+                var parseValue = ConstantExtractor.ConstantExpressionValueToString(parseResult.Parameters[key], out var isIEnumerableObj);
+                if (isIEnumerableObj)
                 {
                     parseResult.Parameters[key] = parseValue;
+                }
+                else
+                {
+                    //为了支持 a.url == null 可以翻译为 url is null
+                    if (parseResult.Parameters[key] == null)
+                    {
+                        parseResult.Parameters.Remove(key);
+                    }
+                    // todo: 还需要处理  "Url = @Url" 为 Url is null
                 }
             }
 
