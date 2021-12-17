@@ -4,7 +4,10 @@ using System.Text;
 
 namespace EntityToSqlWhereClauseConfig.SqlFunc
 {
-    public class MonthAttribute : Attribute
+    public class SqlFuncAttribute : Attribute
+    {
+    }
+    public class MonthAttribute : SqlFuncAttribute
     {
     }
 }

@@ -15,19 +15,21 @@ namespace EntityToSqlWhereClauseConfig.Test
         {
             var searchModel = new Input_sqlFun_Month()
             {
-                DataCreatedAt = DateTime.Now
-            };
-
-            var whereLambda = new WhereLambda<People, Input_sqlFun_Month>();
-            whereLambda.SearchModel = searchModel;
-
+                DataCreatedAt = 1
+            }; 
+            var whereLambda = searchModel.CrateWhereLambda((People p) => { });
             whereLambda[SearchType.eq] = new List<string>
             {
                 nameof(searchModel.DataCreatedAt),
-            };
+            }; 
+            var exp = whereLambda.ToExpression();
 
-            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+            (string whereClause, Dictionary<string, object> parameters) = exp.ToWhereClause();
 
+            Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
+            expectedParameters.Add("@Month", 1);
+            Assert.AreEqual("Month(DataCreatedAt) = @Month", whereClause);
+            DictionaryAssert.AssertParameters(expectedParameters, parameters);
         }
     }
 }
