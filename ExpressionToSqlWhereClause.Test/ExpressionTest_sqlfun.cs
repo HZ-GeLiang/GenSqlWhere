@@ -18,9 +18,8 @@ namespace ExpressionToSqlWhereClause.Test
                 u => SqlFunc.DbFunctions.Month(u.CreateAt) == 5;
         }
 
-
         [TestMethod]
-        public void SqlFunc_Month_In_一个月()
+        public void SqlFunc_Month_In_多个月()
         {
             //EntityToSqlWherecClauseConfig 的 in
             var userFilter = new User_SqlFunc3() { CreateAtMonth = "5,6" };
@@ -28,7 +27,23 @@ namespace ExpressionToSqlWhereClause.Test
                 u => SqlFunc.DbFunctions.MonthIn(u.CreateAt) == new List<int> { 5, 6 };//string 需要自己转成 List<int> , 这里略,直接写死
             (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
-            expectedParameters.Add("@MonthIn", new List<int> { 5, 6 });
+            expectedParameters.Add("@MonthIn", new List<int> { 5 ,6 });
+            Assert.AreEqual("Month(CreateAt) In @MonthIn", whereClause);
+
+            DictionaryAssert.AreEqual(expectedParameters, parameters);
+
+        }
+
+        [TestMethod]
+        public void SqlFunc_Month_In_一个月()
+        {
+            //EntityToSqlWherecClauseConfig 的 in
+            var userFilter = new User_SqlFunc3() { CreateAtMonth = "5" };
+            Expression<Func<User_SqlFunc_Entity, bool>> expression =
+                u => SqlFunc.DbFunctions.MonthIn(u.CreateAt) == new List<int> { 5 };//string 需要自己转成 List<int> , 这里略,直接写死
+            (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
+            Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
+            expectedParameters.Add("@MonthIn", new List<int> { 5});
             Assert.AreEqual("Month(CreateAt) In @MonthIn", whereClause);
 
             DictionaryAssert.AreEqual(expectedParameters, parameters);
