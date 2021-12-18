@@ -8,6 +8,11 @@ namespace EntityToSqlWhereClauseConfig.Test.input
         [Month]
         public int DataCreatedAt { get; set; } // 必须和 Entity 的属性名一致
     }
+    public class Input_sqlFun_Month2
+    {
+        [Month]
+        public string DataCreatedAt { get; set; } // 必须和 Entity 的属性名一致
+    }
 
 
 }

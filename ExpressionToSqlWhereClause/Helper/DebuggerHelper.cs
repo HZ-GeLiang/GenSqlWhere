@@ -21,7 +21,7 @@ namespace ExpressionToSqlWhereClause.Helper
             [CallerFilePath] string fileName = "",
             [CallerLineNumber] int lineNumber = 0)
         {
-            Debugger.Break();
+            //Debugger.Break();
         }
 
         public static (StackFrame frame, System.Reflection.MethodBase method, string methodName, string fileName, int lineNumber)

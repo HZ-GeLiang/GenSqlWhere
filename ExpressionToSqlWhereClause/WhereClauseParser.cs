@@ -109,7 +109,7 @@ namespace ExpressionToSqlWhereClause
                     if (attrs.Length > 0)
                     {
                         var leftName = ConstantExtractor.ParseMethodCallConstantExpression(methodCallExpression).ToString();//u.CreateAt
-                        var symbol = ConditionBuilder.ToComparisonSymbol(comparison, methodCallExpression.Method); //= 
+                        var symbol = ConditionBuilder.ToComparisonSymbol(comparison, methodCallExpression); //=  
 
                         var attr = attrs[0];
                         string clauseLeft;
@@ -119,11 +119,11 @@ namespace ExpressionToSqlWhereClause
                             int startIndex = leftName.IndexOf(".");
                             var leftNameNew = startIndex != -1 ? leftName.Substring(startIndex + 1, leftName.Length - 1 - startIndex) : leftName;
 
-                            clauseLeft=string.Format(attr.Format, leftNameNew);// Month(CreateAt)
+                            clauseLeft = string.Format(attr.Format, leftNameNew);// Month(CreateAt)
                         }
                         else
                         {
-                            clauseLeft=string.Format(attr.Format, leftName);// Month(u.CreateAt)
+                            clauseLeft = string.Format(attr.Format, leftName);// Month(u.CreateAt)
                         }
 
                         string parameterName = ConditionBuilder.EnsureParameter(methodInfo, adhesive);
@@ -272,7 +272,6 @@ namespace ExpressionToSqlWhereClause
             }
 
             throw new NotSupportedException();
-
         }
 
         private static StringBuilder ParseBinaryExpression(
@@ -327,10 +326,10 @@ namespace ExpressionToSqlWhereClause
             {
                 var sqlBuilder = new StringBuilder();
 
-                //处理left
+                //处理left==
                 var leftParseResult = Parse(binaryExpression.NodeType, binaryExpression.Left, adhesive, aliasDict); //调用自身
 
-                //record: 生成的sql 有 () 问题  , 在最外层返回结果时, 在只有and 的时候把 () 全部替换掉了.
+                //record: 生成的sql 有 () 问题  , 在最外层返回结果时, 在只有 内容全为 and 拼接的sql 时,把 () 全部替换掉了.
                 var leftClause = $"({ReplaceAlias(leftParseResult)})";
                 sqlBuilder.Append(leftClause);
 
@@ -338,9 +337,29 @@ namespace ExpressionToSqlWhereClause
                 {
                     if (IsDataComparator(binaryExpression.NodeType))
                     {
-                        //Basic case, For example: u.Age > 18
-                        var val = ConstantExtractor.ParseConstant(binaryExpression.Right);
-                        AddParamteter3(leftParseResult, adhesive, val);
+                        if (binaryExpression.Right.GetType() == typeof(ListInitExpression))
+                        {
+                            var listInitExpression = binaryExpression.Right as ListInitExpression;
+
+                            var valList = TypeHelper.MakeList(binaryExpression.Right.Type.GenericTypeArguments);
+                            foreach (var elementInit in listInitExpression.Initializers)
+                            {
+                                foreach (var arg in elementInit.Arguments)
+                                {
+                                    var val = ConstantExtractor.ParseConstant(arg);
+                                    valList.Add(val);
+                                }
+                            }
+
+                            AddParamteter3(leftParseResult, adhesive, valList);
+
+                        }
+                        else
+                        {
+                            //Basic case, For example: u.Age > 18
+                            var val = ConstantExtractor.ParseConstant(binaryExpression.Right);
+                            AddParamteter3(leftParseResult, adhesive, val);
+                        }
                     }
                     else
                     {

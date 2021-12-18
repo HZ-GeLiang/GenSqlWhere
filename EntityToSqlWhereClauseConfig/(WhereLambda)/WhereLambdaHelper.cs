@@ -304,7 +304,7 @@ namespace EntityToSqlWhereClauseConfig
             return whereLambdas;
         }
 
-
+        //核心-equal
         private static void AddEqualCore<TEntity, TSearchModel>(string propertyName, Type valuePropType, object propertyValue, List<Expression<Func<TEntity, bool>>> whereLambdas)
         {
             var type_TEntity = typeof(TEntity);
@@ -319,50 +319,7 @@ namespace EntityToSqlWhereClauseConfig
             var propertyExp = Expression.Property(parameterExp, propertyName); //a.AuditStateId
             Type propType_TEntity = propertyExp.Type; //a.AuditStateId 的type(Dto中定义的属性类型)
 
-
-            var type_TSearchModel = typeof(TSearchModel);
-            var prop_Info_SearchModel = type_TSearchModel.GetProperty(propertyName);
-            var attr_SqlFunc = ReflectionHelper.GetAttributeForProperty<SqlFuncAttribute>(prop_Info_SearchModel, true);
-
-            var isAdd = IsDbFunAndAddToLambda<TEntity, TSearchModel>(propertyName, propertyValue, whereLambdas, attr_SqlFunc, type_TEntity, propType_TEntity);
-            if (isAdd)
-            {
-                return;
-            }
-
-
-            var left = Expression.Convert(propertyExp, propType_TEntity);
-            //var right = Expression.Constant(propertyValue, propertyValue.GetType());//ids这种情况就有问题
-            //前半个if 是为了支持ids的查询: 当id需要支持多个值查询时, 前端模型只能是string类型, 然后这里就会因为类型不一致而发生异常
-            if (valuePropType != propType_TEntity || propType_TEntity != typeof(string))
-            {
-                //解决 "" 转成 值类型抛出转换失败异常
-                if (propertyValue.GetType() == typeof(string) && (string)propertyValue == "" && propType_TEntity.IsStructType())
-                {
-                    return;
-                }
-
-                //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
-                if (propType_TEntity.IsNullableType())
-                {
-                    propertyValue = Convert.ChangeType(propertyValue, propType_TEntity.GetNullableTType());
-                }
-                else
-                {
-                    propertyValue = Convert.ChangeType(propertyValue, propType_TEntity);
-                }
-            }
-
-            var right = Expression.Constant(propertyValue, propType_TEntity);
-
-            var body = Expression.Equal(left, right);
-            var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
-            whereLambdas.Add(lambda);
-        }
-
-        private static bool IsDbFunAndAddToLambda<TEntity, TSearchModel>(string propertyName, object propertyValue,
-            List<Expression<Func<TEntity, bool>>> whereLambdas, SqlFuncAttribute[] attr_SqlFunc, Type type_TEntity, Type propType_TEntity)
-        {
+            var attr_SqlFunc = ReflectionHelper.GetAttributeForProperty<SqlFuncAttribute>(typeof(TSearchModel).GetProperty(propertyName), true);
             if (attr_SqlFunc.Length == 1)
             {
                 var attr = attr_SqlFunc[0];
@@ -374,22 +331,49 @@ namespace EntityToSqlWhereClauseConfig
 
                     ParameterExpression parameterExpression = Expression.Parameter(type_TEntity, "u");
                     var leftP2 = typeof(DbFunctions).GetMethod("Month", new Type[] { typeof(DateTime) });
-                    var leftP3 = new Expression[]
-                    {
-                        Expression.Property(parameterExpression, propertyName)
-                    };
+                    var leftP3 = new Expression[] { Expression.Property(parameterExpression, propertyName) };
                     var left = Expression.Call(null, leftP2, leftP3);
+                    //month() 返回的是int 
+                    //https://docs.microsoft.com/zh-cn/sql/t-sql/functions/month-transact-sql?view=sql-server-2017
                     var right = Expression.Constant(Convert.ToInt32(propertyValue), typeof(int));
                     var body = Expression.Equal(left, right);
-                    var lambda =
-                        Expression.Lambda<Func<TEntity, bool>>(body, new ParameterExpression[1] { parameterExpression });
+                    var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExpression);
                     whereLambdas.Add(lambda);
-                    return true;
                 }
             }
+            else
+            {
+                var left = Expression.Convert(propertyExp, propType_TEntity);
+                //var right = Expression.Constant(propertyValue, propertyValue.GetType());//ids这种情况就有问题
+                //前半个if 是为了支持ids的查询: 当id需要支持多个值查询时, 前端模型只能是string类型, 然后这里就会因为类型不一致而发生异常
+                if (valuePropType != propType_TEntity || propType_TEntity != typeof(string))
+                {
+                    //解决 "" 转成 值类型抛出转换失败异常
+                    if (propertyValue.GetType() == typeof(string) && (string)propertyValue == "" && propType_TEntity.IsStructType())
+                    {
+                        return;
+                    }
 
-            return false;
+                    //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
+                    if (propType_TEntity.IsNullableType())
+                    {
+                        propertyValue = Convert.ChangeType(propertyValue, propType_TEntity.GetNullableTType());
+                    }
+                    else
+                    {
+                        propertyValue = Convert.ChangeType(propertyValue, propType_TEntity);
+                    }
+                }
+
+                var right = Expression.Constant(propertyValue, propType_TEntity);
+
+                var body = Expression.Equal(left, right);
+                var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
+                whereLambdas.Add(lambda);
+            }
+
         }
+
 
         #endregion
 
@@ -424,6 +408,7 @@ namespace EntityToSqlWhereClauseConfig
             return whereLambdas;
         }
 
+        //核心
         private static void AddNotEqualCore<TEntity, TSearchModel>(string propertyName, Type valuePropType, object propertyValue, List<Expression<Func<TEntity, bool>>> whereLambdas)
         {
             var type_TEntity = typeof(TEntity);
@@ -437,33 +422,56 @@ namespace EntityToSqlWhereClauseConfig
             var parameterExp = Expression.Parameter(type_TEntity, "a");
             var propertyExp = Expression.Property(parameterExp, propertyName); //a.AuditStateId
             Type propType_TEntity = propertyExp.Type; //a.AuditStateId 的type(Dto中定义的属性类型)
-            var left = Expression.Convert(propertyExp, propType_TEntity);
-            //var right = Expression.Constant(propertyValue, propertyValue.GetType());//ids这种情况就有问题
-            //前半个if 是为了支持ids的查询: 当id需要支持多个值查询时, 前端模型只能是string类型, 然后这里就会因为类型不一致而发生异常
-            if (valuePropType != propType_TEntity || propType_TEntity != typeof(string))
-            {
-                //解决 "" 转成 值类型抛出转换失败异常
-                if (propertyValue.GetType() == typeof(string) && (string)propertyValue == "" && propType_TEntity.IsStructType())
-                {
-                    return;
-                }
 
-                //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
-                if (propType_TEntity.IsNullableType())
+            var attr_SqlFunc = ReflectionHelper.GetAttributeForProperty<SqlFuncAttribute>(typeof(TSearchModel).GetProperty(propertyName), true);
+            if (attr_SqlFunc.Length == 1)
+            {
+                var attr = attr_SqlFunc[0];
+                if (attr is MonthAttribute)
                 {
-                    propertyValue = Convert.ChangeType(propertyValue, propType_TEntity.GetNullableTType());
-                }
-                else
-                {
-                    propertyValue = Convert.ChangeType(propertyValue, propType_TEntity);
+                    ParameterExpression parameterExpression = Expression.Parameter(type_TEntity, "u");
+                    var leftP2 = typeof(DbFunctions).GetMethod("Month", new Type[] { typeof(DateTime) });
+                    var leftP3 = new Expression[] { Expression.Property(parameterExpression, propertyName) };
+                    var left = Expression.Call(null, leftP2, leftP3);
+                    //month() 返回的是int 
+                    //https://docs.microsoft.com/zh-cn/sql/t-sql/functions/month-transact-sql?view=sql-server-2017
+                    var right = Expression.Constant(Convert.ToInt32(propertyValue), typeof(int));
+                    var body = Expression.NotEqual(left, right);
+                    var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExpression);
+                    whereLambdas.Add(lambda);
                 }
             }
+            else
+            {
+                var left = Expression.Convert(propertyExp, propType_TEntity);
+                //var right = Expression.Constant(propertyValue, propertyValue.GetType());//ids这种情况就有问题
+                //前半个if 是为了支持ids的查询: 当id需要支持多个值查询时, 前端模型只能是string类型, 然后这里就会因为类型不一致而发生异常
+                if (valuePropType != propType_TEntity || propType_TEntity != typeof(string))
+                {
+                    //解决 "" 转成 值类型抛出转换失败异常
+                    if (propertyValue.GetType() == typeof(string) && (string)propertyValue == "" && propType_TEntity.IsStructType())
+                    {
+                        return;
+                    }
 
-            var right = Expression.Constant(propertyValue, propType_TEntity);
+                    //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
+                    if (propType_TEntity.IsNullableType())
+                    {
+                        propertyValue = Convert.ChangeType(propertyValue, propType_TEntity.GetNullableTType());
+                    }
+                    else
+                    {
+                        propertyValue = Convert.ChangeType(propertyValue, propType_TEntity);
+                    }
+                }
 
-            var body = Expression.NotEqual(left, right);
-            var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
-            whereLambdas.Add(lambda);
+                var right = Expression.Constant(propertyValue, propType_TEntity);
+
+                var body = Expression.NotEqual(left, right);
+                var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
+                whereLambdas.Add(lambda);
+            }
+
         }
 
         #endregion
@@ -1135,6 +1143,7 @@ namespace EntityToSqlWhereClauseConfig
 
                     Type propType_TEntity = propertyExp.Type; //a.AuditStateId 的type (Dto中定义的属性类型)
 
+                    #region 获得 lambda_常规类型
                     //IEnumerable<T> 的T 必需和  propType_TEntity 一样
                     //string + 整数
                     //string    ushort    short    int    uint    char    float    double    long    ulong    decimal   datetime
@@ -1146,7 +1155,7 @@ namespace EntityToSqlWhereClauseConfig
                     {
                         lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits);
                     }
-                    //值类型
+                    #region 值类型
                     else if (propType_TEntity == typeof(bool))
                     {
                         lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToBool());
@@ -1199,7 +1208,8 @@ namespace EntityToSqlWhereClauseConfig
                     {
                         lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToChar());
                     }
-                    //可空值类型
+                    #endregion
+                    #region 可空值类型
                     else if (propType_TEntity == typeof(bool?))
                     {
                         lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableBool());
@@ -1252,6 +1262,17 @@ namespace EntityToSqlWhereClauseConfig
                     {
                         lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableChar());
                     }
+                    #endregion
+
+                    #endregion
+                    #region 获得lambda_dbFun
+                    if (lambda == null)
+                    {
+                        //todo://
+
+                    }
+
+                    #endregion
 
                     if (lambda == null)
                     {

@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using ExpressionToSqlWhereClause.Helper;
 
 namespace ExpressionToSqlWhereClause
 {
@@ -108,6 +109,24 @@ namespace ExpressionToSqlWhereClause
             return tempKey;
         }
 
+        /// <summary>
+        /// 获得比较符号
+        /// </summary>
+        /// <param name="expressionType"></param>
+        /// <param name="methodCallExpression"></param>
+        /// <returns></returns>
+        internal static string ToComparisonSymbol(ExpressionType expressionType, MethodCallExpression methodCallExpression)
+        {
+            if (expressionType == ExpressionType.Equal)
+            {
+                if (methodCallExpression.Type.IsObjectCollection())
+                {
+                    return SqlKeys.@in;
+                }
+            }
+            var symbol=ToComparisonSymbol(expressionType, methodCallExpression.Method);
+            return symbol;
+        }
 
         /// <summary>
         /// 获得比较符号
@@ -127,7 +146,8 @@ namespace ExpressionToSqlWhereClause
                     return SqlKeys.NotEqual;
                 }
             }
-            return expressionType switch
+           
+            var symbol = expressionType switch
             {
                 ExpressionType.Equal => SqlKeys.Equal,
                 ExpressionType.LessThan => SqlKeys.LessThan,
@@ -139,6 +159,7 @@ namespace ExpressionToSqlWhereClause
                 //    throw new Exceptions.EntityToSqlWhereCaluseConfigException("***");
                 _ => throw new NotSupportedException($"Unknown ExpressionType {expressionType}")
             };
+            return symbol; 
         }
     }
 }

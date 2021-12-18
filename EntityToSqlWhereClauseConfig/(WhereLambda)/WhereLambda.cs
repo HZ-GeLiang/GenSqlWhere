@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using EntityToSqlWhereClauseConfig.ExtensionMethod;
 using EntityToSqlWhereClauseConfig.Helper;
 
+// ReSharper disable once CheckNamespace
 namespace EntityToSqlWhereClauseConfig
 {
     /// <summary>
