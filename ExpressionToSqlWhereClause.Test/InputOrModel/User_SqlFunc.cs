@@ -18,6 +18,11 @@ namespace ExpressionToSqlWhereClause.Test
         public List<int> CreateAtMonth { get; set; }
     }
 
+    public class User_SqlFunc3
+    {
+        public string  CreateAtMonth { get; set; }
+    }
+
     /// <summary>
     /// 数据库实体
     /// </summary>

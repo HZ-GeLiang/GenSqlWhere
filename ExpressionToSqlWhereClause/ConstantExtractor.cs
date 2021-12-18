@@ -24,7 +24,8 @@ namespace ExpressionToSqlWhereClause
                 isIEnumerableObj = false;
                 return null;
             }
-
+          
+            //value的类型有2个参数, 第二个参数假设叫T2
             if (!value.GetType().FullName.StartsWith("System.Linq.Enumerable+SelectEnumerableIterator`2") || value is not IEnumerable)
             {
                 isIEnumerableObj = false;
@@ -37,7 +38,7 @@ namespace ExpressionToSqlWhereClause
 
             StringBuilder sb = new StringBuilder();
             var index = -1;
-            foreach (var obj in loopObj) //这个obj的类型就上面的T2
+            foreach (var obj in loopObj) //这个obj的类型就是上面的T2
             {
                 index++;
                 if (index == 0)
@@ -130,7 +131,8 @@ namespace ExpressionToSqlWhereClause
             //{
             //    throw new NotSupportedException($"Unknow expression {expression.GetType()}");
             //}
-            throw new NotSupportedException($"Unknow expression {expression.GetType()}");
+            var ex_msg = $"Unknow expression {expression.GetType()}";
+            throw new NotSupportedException(ex_msg);
 
         }
 

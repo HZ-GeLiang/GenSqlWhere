@@ -1,10 +1,28 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
-namespace ExpressionToSqlWhereClause
+// ReSharper disable once CheckNamespace
+namespace ExpressionToSqlWhereClause 
 {
     internal static class TypeExtensions
     {
+        public static IList MakeList(this Type t, params object[] items)
+        {
+            Type type = typeof(List<>).MakeGenericType(t);
+
+            object list = Activator.CreateInstance(type);
+            System.Collections.IList ilist = list as System.Collections.IList;
+            if (ilist != null)
+            {
+                foreach (object o in items)
+                {
+                    ilist.Add(o);
+                }
+            }
+            return ilist;
+        }
+
         #region IsObjectCollection
 
         /// <summary>

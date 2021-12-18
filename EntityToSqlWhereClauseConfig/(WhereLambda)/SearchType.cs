@@ -1,3 +1,4 @@
+// ReSharper disable once CheckNamespace
 namespace EntityToSqlWhereClauseConfig
 {
     public class SearchTypeAttribute : System.Attribute
