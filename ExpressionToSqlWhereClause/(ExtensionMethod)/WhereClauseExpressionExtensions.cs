@@ -83,19 +83,22 @@ namespace ExpressionToSqlWhereClause
 
             foreach (var key in parseResult.Parameters.Keys)
             {
-                var parseValue = ConstantExtractor.ConstantExpressionValueToString(parseResult.Parameters[key], out var isIEnumerableObj);
+                var val = parseResult.Parameters[key];
+               
+                if (val == null)
+                {
+                    //为了支持 a.url == null , 需要可以翻译为 url is null
+                    parseResult.Parameters.Remove(key);//移除参数
+
+                    // todo: 还需要处理  "Url = @Url" 为 Url is null
+                    continue;
+                }
+
+                var parseValue = ConstantExtractor.ConstantExpressionValueToString(val, out var isIEnumerableObj);
                 if (isIEnumerableObj)
                 {
                     parseResult.Parameters[key] = parseValue;
-                }
-                else
-                {
-                    //为了支持 a.url == null 可以翻译为 url is null
-                    if (parseResult.Parameters[key] == null)
-                    {
-                        parseResult.Parameters.Remove(key);
-                    }
-                    // todo: 还需要处理  "Url = @Url" 为 Url is null
+                    continue;
                 }
             }
 

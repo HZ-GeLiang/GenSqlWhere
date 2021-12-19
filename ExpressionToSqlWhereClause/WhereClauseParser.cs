@@ -280,7 +280,7 @@ namespace ExpressionToSqlWhereClause
                 Dictionary<string, string> aliasDict = default
             )
         {
-            //在这里处理: 往adhesive的参数添加值  2 和 3 表示这个方法有几个参数, 没有什么特定的含义
+            //在这里处理: 往adhesive的参数添加值. 方法名最后的 2 和 3 表示这个方法有几个参数 
             void AddParamteter3(ParseResult _parseResult, WhereClauseAdhesive _adhesive, object _value)
             {
                 string parameterName = ConditionBuilder.EnsureParameter(_parseResult.MemberInfo, _adhesive);
