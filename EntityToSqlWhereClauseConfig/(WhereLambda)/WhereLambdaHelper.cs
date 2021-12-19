@@ -592,7 +592,6 @@ namespace EntityToSqlWhereClauseConfig
             foreach (var key in numberDict.Keys)
             {
                 var times = numberDict[key];
-
                 if (times.NumberRange[0] == null && times.NumberRange[1] == null)
                 {
                     removeKey.Add(key);
@@ -630,7 +629,6 @@ namespace EntityToSqlWhereClauseConfig
                     }
                 }
             }
-
 
             //根据 NumberRange  创建表达式(一共是下面4钟情况)
             //isPair值    开始         结束
@@ -673,7 +671,7 @@ namespace EntityToSqlWhereClauseConfig
 
                 if (d1 != null) //>=
                 {
-                    if (typeof(TEntity).GetProperty(key) != null)
+                    if (type_TEntity.GetProperty(key) != null)
                     {
                         var parameterExp = Expression.Parameter(type_TEntity, "a");
                         var propertyExp = Expression.Property(parameterExp, key);//a.CreateAt
@@ -688,7 +686,7 @@ namespace EntityToSqlWhereClauseConfig
 
                 if (d2 != null) //<=
                 {
-                    if (typeof(TEntity).GetProperty(key) != null)
+                    if (type_TEntity.GetProperty(key) != null)
                     {
                         var parameterExp = Expression.Parameter(type_TEntity, "a");
                         var propertyExp = Expression.Property(parameterExp, key); //a.CreateAt
@@ -928,7 +926,7 @@ namespace EntityToSqlWhereClauseConfig
 
                 if (d1 != null) //>=
                 {
-                    if (typeof(TEntity).GetProperty(key) != null)
+                    if (type_TEntity.GetProperty(key) != null)
                     {
                         var parameterExp = Expression.Parameter(type_TEntity, "a");
                         var propertyExp = Expression.Property(parameterExp, key); //a.CreateAt
@@ -942,7 +940,7 @@ namespace EntityToSqlWhereClauseConfig
 
                 if (d2 != null) //<
                 {
-                    if (typeof(TEntity).GetProperty(key) != null)
+                    if (type_TEntity.GetProperty(key) != null)
                     {
                         var parameterExp = Expression.Parameter(type_TEntity, "a");
                         var propertyExp = Expression.Property(parameterExp, key); //a.CreateAt
@@ -1049,21 +1047,21 @@ namespace EntityToSqlWhereClauseConfig
         /// <typeparam name="TEntity"></typeparam>
         /// <typeparam name="TSearchModel"></typeparam>
         /// <param name="searchModel"></param>
-        /// <param name="props"></param>
+        /// <param name="propertyNames"></param>
         /// <returns></returns>
-        public static List<Expression<Func<TEntity, bool>>> AddIn<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
+        public static List<Expression<Func<TEntity, bool>>> AddIn<TEntity, TSearchModel>(TSearchModel searchModel, params string[] propertyNames)
         {
-            if (!HaveCount(props))
+            if (!HaveCount(propertyNames))
             {
                 return Default<TEntity>();
             }
             var type_TEntity = typeof(TEntity);
 
             List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
-            foreach (var prop in props)
+            foreach (var propertyName in propertyNames)
             {
                 var propertyValue = new PropertyValue<TSearchModel>(searchModel);
-                (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
+                (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(propertyName);
                 if (value == null)
                 {
                     continue;
@@ -1075,211 +1073,168 @@ namespace EntityToSqlWhereClauseConfig
                 //    throw new ArgumentException("当前属性不是string,无法使用Split()函数");
                 //}
 
-                IEnumerable<string> splits = null;
-                if (value is string s)
-                {
-                    splits = s.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct();
-                }
-                else
-                {
-                    splits = value.ToString().Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct();
-                }
+                IEnumerable<string> splits = value is string s
+                    ? s.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct()
+                    : value.ToString().Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct();
 
-                if (splits.Count() <= 0)
+           
+                if (!splits.Any())
                 {
                     continue;
                 }
-                //else if (splits.Count() == 1)
-                //{
-                //    //注: if (splits.Count() == 1)的这个分支判断可以不需要, 因为翻译sql的where子句为in 还是 = 是EF底层决定的
-                //    //( 注意: Nuget:ExpressionToWhereClause 包, 在出里这种数据时,没给我翻译成 in 还是 =  ,我自己修改源码了
-                //    value = splits.First(); //防止前端传入ids: 2,2 的这种数据
 
-                //    AddEqualCore<TEntity, TSearchModel>(prop, valuePropType, value, whereLambdas);
-
-                //    #region 代码封装为一个方法 , 此块代码注释
-
-                //    //// AddEqual 的代码
-                //    //var parameterExp = Expression.Parameter(type_TEntity, "a");
-                //    //var propertyExp = Expression.Property(parameterExp, prop);//a.AuditStateId
-                //    //Type propType_TEntity = propertyExp.Type; //a.AuditStateId 的type(Dto中定义的属性类型)
-                //    //var left = Expression.Convert(propertyExp, propType_TEntity);
-                //    ////var right = Expression.Constant(value, value.GetType());//ids这种情况就有问题
-                //    ////前半个if 是为了支持ids的查询: 当id需要支持多个值查询时, 前端模型只能是string类型, 然后这里就会因为类型不一致而发生异常
-                //    //if (valuePropType != propType_TEntity || propType_TEntity != typeof(string))
-                //    //{
-                //    //    //解决 "" 转成 值类型抛出转换失败异常
-                //    //    if (propertyValue.GetType() == typeof(string) && (string)propertyValue == "" && propT ype_TEntity.I sStructType())
-                //    //    {
-                //    //        return null;
-                //    //    }
-                //    //    //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
-                //    //    if (propType_TEntity.IsNullableType())
-                //    //    {
-                //    //        value = Convert.ChangeType(value, propType_TEntity.GetNullableTType());
-                //    //    }
-                //    //    else
-                //    //    {
-                //    //        value = Convert.ChangeType(value, propType_TEntity);
-                //    //    }
-                //    //}
-
-                //    //var right = Expression.Constant(value, propType_TEntity);
-
-                //    //var body = Expression.Equal(left, right);
-                //    //var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
-                //    //whereLambdas.Add(lambda); 
-                //    #endregion
-                //}
-                else
+                var prop_Info = type_TEntity.GetProperty(propertyName);
+                if (prop_Info == null)
                 {
-                    if (typeof(TEntity).GetProperty(prop) == null)
-                    {
-                        continue;
-                    }
-
-                    var parameterExp = Expression.Parameter(type_TEntity, "a");//pe
-                    var propertyExp = Expression.Property(parameterExp, prop); //a.AuditStateId  //me
-
-                    Type propType_TEntity = propertyExp.Type; //a.AuditStateId 的type (Dto中定义的属性类型)
-
-                    #region 获得 lambda_常规类型
-                    //IEnumerable<T> 的T 必需和  propType_TEntity 一样
-                    //string + 整数
-                    //string    ushort    short    int    uint    char    float    double    long    ulong    decimal   datetime
-                    //1          1          1       1       1      1         1       1         1       1         1        0
-
-                    Expression<Func<TEntity, bool>> lambda = null;
-
-                    if (propType_TEntity == typeof(string))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits);
-                    }
-                    #region 值类型
-                    else if (propType_TEntity == typeof(bool))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToBool());
-                    }
-                    else if (propType_TEntity == typeof(byte))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToInt8());
-                    }
-                    else if (propType_TEntity == typeof(sbyte))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToUInt8());
-                    }
-                    else if (propType_TEntity == typeof(short))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToInt16());
-                    }
-                    else if (propType_TEntity == typeof(ushort))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToUInt16());
-                    }
-                    else if (propType_TEntity == typeof(int))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToInt32());
-                    }
-                    else if (propType_TEntity == typeof(uint))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToUInt32());
-                    }
-                    else if (propType_TEntity == typeof(long))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToInt64());
-                    }
-                    else if (propType_TEntity == typeof(ulong))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToUInt64());
-                    }
-                    else if (propType_TEntity == typeof(float))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToFloat());
-                    }
-                    else if (propType_TEntity == typeof(double))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToDouble());
-                    }
-                    else if (propType_TEntity == typeof(decimal))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToDecimal());
-                    }
-                    else if (propType_TEntity == typeof(char))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToChar());
-                    }
-                    #endregion
-                    #region 可空值类型
-                    else if (propType_TEntity == typeof(bool?))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableBool());
-                    }
-                    else if (propType_TEntity == typeof(byte?))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableInt8());
-                    }
-                    else if (propType_TEntity == typeof(sbyte?))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToUInt8());
-                    }
-                    else if (propType_TEntity == typeof(short?))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableInt16());
-                    }
-                    else if (propType_TEntity == typeof(ushort?))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableUInt16());
-                    }
-                    else if (propType_TEntity == typeof(int?))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableInt32());
-                    }
-                    else if (propType_TEntity == typeof(uint?))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableUInt32());
-                    }
-                    else if (propType_TEntity == typeof(long?))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableInt64());
-                    }
-                    else if (propType_TEntity == typeof(ulong?))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableUInt64());
-                    }
-                    else if (propType_TEntity == typeof(float?))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableFloat());
-                    }
-                    else if (propType_TEntity == typeof(double?))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableDouble());
-                    }
-                    else if (propType_TEntity == typeof(decimal?))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableDecimal());
-                    }
-                    else if (propType_TEntity == typeof(char?))
-                    {
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableChar());
-                    }
-                    #endregion
-
-                    #endregion
-                    #region 获得lambda_dbFun
-                    if (lambda == null)
-                    {
-                        //todo://
-
-                    }
-
-                    #endregion
-
-                    if (lambda == null)
-                    {
-                        throw new Exceptions.EntityToSqlWhereCaluseConfigException($"WhereLambdaHelper.cs发生异常,原因: 不支持的属性类型:{propType_TEntity}");
-                    }
-                    whereLambdas.Add(lambda);
+                    continue;
                 }
+
+                var parameterExp = Expression.Parameter(type_TEntity, "a");//pe
+                var propertyExp = Expression.Property(parameterExp, propertyName); //a.AuditStateId  //me
+
+                Type propType_TEntity = propertyExp.Type; //a.AuditStateId 的type (Dto中定义的属性类型)
+
+                #region 获得 lambda_常规类型
+                //IEnumerable<T> 的T 必需和  propType_TEntity 一样
+                //string + 整数
+                //string    ushort    short    int    uint    char    float    double    long    ulong    decimal   datetime
+                //1          1          1       1       1      1         1       1         1       1         1        0
+
+                Expression<Func<TEntity, bool>> lambda = null;
+
+                if (propType_TEntity == typeof(string))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits);
+                }
+                #region 值类型
+                else if (propType_TEntity == typeof(bool))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToBool());
+                }
+                else if (propType_TEntity == typeof(byte))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToInt8());
+                }
+                else if (propType_TEntity == typeof(sbyte))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToUInt8());
+                }
+                else if (propType_TEntity == typeof(short))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToInt16());
+                }
+                else if (propType_TEntity == typeof(ushort))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToUInt16());
+                }
+                else if (propType_TEntity == typeof(int))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToInt32());
+                }
+                else if (propType_TEntity == typeof(uint))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToUInt32());
+                }
+                else if (propType_TEntity == typeof(long))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToInt64());
+                }
+                else if (propType_TEntity == typeof(ulong))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToUInt64());
+                }
+                else if (propType_TEntity == typeof(float))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToFloat());
+                }
+                else if (propType_TEntity == typeof(double))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToDouble());
+                }
+                else if (propType_TEntity == typeof(decimal))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToDecimal());
+                }
+                else if (propType_TEntity == typeof(char))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToChar());
+                }
+                #endregion
+                #region 可空值类型
+                else if (propType_TEntity == typeof(bool?))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableBool());
+                }
+                else if (propType_TEntity == typeof(byte?))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableInt8());
+                }
+                else if (propType_TEntity == typeof(sbyte?))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToUInt8());
+                }
+                else if (propType_TEntity == typeof(short?))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableInt16());
+                }
+                else if (propType_TEntity == typeof(ushort?))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableUInt16());
+                }
+                else if (propType_TEntity == typeof(int?))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableInt32());
+                }
+                else if (propType_TEntity == typeof(uint?))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableUInt32());
+                }
+                else if (propType_TEntity == typeof(long?))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableInt64());
+                }
+                else if (propType_TEntity == typeof(ulong?))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableUInt64());
+                }
+                else if (propType_TEntity == typeof(float?))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableFloat());
+                }
+                else if (propType_TEntity == typeof(double?))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableDouble());
+                }
+                else if (propType_TEntity == typeof(decimal?))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableDecimal());
+                }
+                else if (propType_TEntity == typeof(char?))
+                {
+                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableChar());
+                }
+                #endregion
+
+                #endregion
+                #region 获得lambda_dbFun
+                if (lambda == null)
+                {
+                    //todo://sql_fun的
+
+                    //var call = Expression.Call(typeof(Enumerable), "Contains", new[] { propertyExp.Type }, splits.ToInt32(), propertyExp);
+                    //lambda = Expression.Lambda<Func<TEntity, bool>>(call, parameterExp);
+
+                    //return lambda;
+                }
+
+                #endregion
+
+                if (lambda == null)
+                {
+                    throw new Exceptions.EntityToSqlWhereCaluseConfigException($"WhereLambdaHelper.cs发生异常,原因: 不支持的属性类型:{propType_TEntity}");
+                }
+                whereLambdas.Add(lambda);
+
             }
             return whereLambdas;
         }
@@ -1336,11 +1291,13 @@ namespace EntityToSqlWhereClauseConfig
             }
 
             List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+
+            var type_TEntity = typeof(TEntity);
             foreach (string prop in props)
             {
                 var propertyValue = new PropertyValue<TSearchModel>(searchModel);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
-                if (value == null || typeof(TEntity).GetProperty(prop) == null)
+                if (value == null || type_TEntity.GetProperty(prop) == null)
                 {
                     continue;
                 }
@@ -1413,11 +1370,12 @@ namespace EntityToSqlWhereClauseConfig
             }
 
             List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            var type_TEntity = typeof(TEntity);
             foreach (string prop in props)
             {
                 var propertyValue = new PropertyValue<TSearchModel>(searchModel);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
-                if (value == null || typeof(TEntity).GetProperty(prop) == null)
+                if (value == null || type_TEntity.GetProperty(prop) == null)
                 {
                     continue;
                 }
@@ -1490,11 +1448,12 @@ namespace EntityToSqlWhereClauseConfig
             }
 
             List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            var type_TEntity = typeof(TEntity);
             foreach (string prop in props)
             {
                 var propertyValue = new PropertyValue<TSearchModel>(searchModel);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
-                if (value == null || typeof(TEntity).GetProperty(prop) == null)
+                if (value == null || type_TEntity.GetProperty(prop) == null)
                 {
                     continue;
                 }
@@ -1567,11 +1526,12 @@ namespace EntityToSqlWhereClauseConfig
             }
 
             List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            var type_TEntity = typeof(TEntity);
             foreach (string prop in props)
             {
                 var propertyValue = new PropertyValue<TSearchModel>(searchModel);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
-                if (value == null || typeof(TEntity).GetProperty(prop) == null)
+                if (value == null || type_TEntity.GetProperty(prop) == null)
                 {
                     continue;
                 }
