@@ -10,4 +10,7 @@ namespace EntityToSqlWhereClauseConfig.SqlFunc
     public class MonthAttribute : SqlFuncAttribute
     {
     }
+    public class MonthInAttribute : SqlFuncAttribute
+    {
+    }
 }
