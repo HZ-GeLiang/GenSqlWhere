@@ -15,23 +15,23 @@ namespace ExpressionToSqlWhereClause.Test
     public class ExpressionTest
     {
         [TestMethod]
-        public void Test_string为null值()
+        public void string为null值()
         {
             //todo:暂不支持翻译为 isnull
             Expression<Func<Student, bool>> expOr = a => a.Url == null;
             (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause();
-            //Assert.AreEqual(WhereClause, "(Url is null)");
+            Assert.AreEqual(WhereClause, "Url is null");
 
             var para = new Dictionary<string, object>()
             {
 
             };
-            //CollectionAssert.AreEqual(Parameters, para);
+            CollectionAssert.AreEqual(Parameters, para);
         }
 
 
         [TestMethod]
-        public void Test_boolean值的写法1()
+        public void boolean值的写法1()
         {
             Expression<Func<Student, bool>> expOr = a => a.Id == 1 || a.Id == 2;
             expOr = expOr.AndIf(true, () => { return x => x.IsDel; });
@@ -50,7 +50,7 @@ namespace ExpressionToSqlWhereClause.Test
         }
 
         [TestMethod]
-        public void Test_boolean值的写法2()
+        public void boolean值的写法2()
         {
             Expression<Func<Student, bool>> expOr = a => a.Id == 1 || a.Id == 2;
             expOr = expOr.AndIf(true, () => { return x => x.IsDel == true; }); // 和  () => { return x => x.IsDel; } 不一样
@@ -70,7 +70,7 @@ namespace ExpressionToSqlWhereClause.Test
         }
 
         [TestMethod]
-        public void 测试别名()
+        public void 别名()
         {
             Expression<Func<Student_Alias, bool>> expOr = a => a.Id == 1 || a.Id == 2;
 
@@ -91,7 +91,7 @@ namespace ExpressionToSqlWhereClause.Test
         }
 
         [TestMethod]
-        public void 测试别名2()
+        public void 别名2()
         {
             Expression<Func<Student, bool>> expOr = a => a.Id == 1 || a.Id == 2;
             expOr = expOr.AndIf(true, () => { return x => x.IsDel == true; }); // 和  () => { return x => x.IsDel; } 不一样
@@ -114,7 +114,7 @@ namespace ExpressionToSqlWhereClause.Test
         }
 
         [TestMethod]
-        public void 测试别名3()
+        public void 别名3()
         {
             Expression<Func<Student, bool>> expOr = a => a.Id == 1 || a.Id == 2;
             expOr = expOr.AndIf(true, () => { return x => x.IsDel == true; }); // 和  () => { return x => x.IsDel; } 不一样
