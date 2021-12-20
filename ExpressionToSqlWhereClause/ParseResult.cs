@@ -10,7 +10,8 @@ namespace ExpressionToSqlWhereClause
         /// where子句
         /// </summary>
         public StringBuilder WhereClause { get; set; }
-
+        public SqlClauseParametersInfo SqlClauseParametersInfo { get; set; }
+        
         /// <summary>
         /// 调用方是否需要额外添加参数 , 这个值为true 时,同属性的 MemberInfo 不能为null
         /// </summary>
