@@ -23,26 +23,23 @@ namespace ExpressionToSqlWhereClause
         {
             if (expression == null)
             {
-                //return (default, default);
                 return (string.Empty, new Dictionary<string, object>(0));
             }
 
             #region 处理 alias
-            if (alias == null)
-            {
-                alias = new Dictionary<string, string>();
-            }
-            var columnAttributeType = typeof(ColumnAttribute);
+            alias ??= new Dictionary<string, string>();
+
             foreach (var propertyInfo in typeof(T).GetProperties())
             {
                 //优先级: 方法参数的 alias > Column
-                if (!alias.ContainsKey(propertyInfo.Name))
+                if (alias.ContainsKey(propertyInfo.Name))
                 {
-                    var attrs = ReflectionHelper.GetAttributeForProperty<ColumnAttribute>(propertyInfo, true);
-                    if (attrs.Length == 1)
-                    {
-                        alias[propertyInfo.Name] = ((ColumnAttribute)attrs[0]).Name;
-                    }
+                    continue;
+                }
+                var attrs = ReflectionHelper.GetAttributeForProperty<ColumnAttribute>(propertyInfo, true);
+                if (attrs.Length == 1)
+                {
+                    alias[propertyInfo.Name] = attrs[0].Name;
                 }
             }
             #endregion
@@ -50,9 +47,67 @@ namespace ExpressionToSqlWhereClause
             var body = expression.Body;
             var parseResult = WhereClauseParser.Parse(body, alias, sqlAdapter);
 
+            #region 处理 parseResult.Parameters
+
+            foreach (var key in parseResult.Adhesive.GetParameterKeys())
+            {
+                var para = parseResult.Adhesive.GetParameter(key);
+                var val = para.Value;
+
+                #region 处理 val ==null 的情况
+
+                if (val == null)
+                {
+                    if (para.Symbol == SqlKeys.Equal || para.Symbol == SqlKeys.NotEqual)
+                    {
+                        //为了支持 a.url == null , 此处需要翻译为 url is null
+                        var sqlClauseOrigin = para.SqlClause;
+                        var reg = "[ ].*[ ]@.*\\)$";
+                        var strList = RegexHelper.GetStringByMatches(sqlClauseOrigin, reg);
+                        if (strList.Count == 1)
+                        {
+                            string sqlClauseNew;
+                            if (para.Symbol == SqlKeys.Equal)
+                            {
+                                sqlClauseNew = sqlClauseOrigin.Replace(strList[0], " Is Null)");
+                            }
+                            else if (para.Symbol == SqlKeys.NotEqual)
+                            {
+                                sqlClauseNew = sqlClauseOrigin.Replace(strList[0], " Is Not Null)");
+                            }
+                            else
+                            {
+                                throw new Exceptions.ExpressionToSqlWhereClauseException("逻辑错误,需要调整");
+                            }
+
+                            parseResult.WhereClause = parseResult.WhereClause.Replace(sqlClauseOrigin, sqlClauseNew);
+                            parseResult.Adhesive.RemoveParameter(key);//移除参数
+
+                            continue;
+                        }
+                        //else 没有处理 
+                    }
+
+                    //else 没有处理 
+                }
+
+                #endregion
+
+                #region 翻译IEnumerable的值
+                var parseValue = ConstantExtractor.ConstantExpressionValueToString(val, out var isIEnumerableObj);
+                if (isIEnumerableObj)
+                {
+                    para.Value = parseValue;
+                    continue;
+                }
+                #endregion
+            }
+
+            #endregion
+
             #region 处理 parseResult.WhereClause
 
-            #region 去掉 关系条件 多余的 ()
+            #region 去掉 关系条件 全为 and 时 ,sql 语句的 () 可以优化
             //能力有限: 只能去掉全是 and 语句的 ()
             if (!parseResult.WhereClause.Contains(SqlKeys.or))
             {
@@ -79,32 +134,12 @@ namespace ExpressionToSqlWhereClause
 
             #endregion
 
-            #region 处理 parseResult.Parameters
-
-            foreach (var key in parseResult.Parameters.Keys)
+            var parameters = new Dictionary<string, object>(0);
+            foreach (var key in parseResult.Adhesive.GetParameterKeys())
             {
-                var val = parseResult.Parameters[key];
-               
-                if (val == null)
-                {
-                    //为了支持 a.url == null , 需要可以翻译为 url is null
-                    parseResult.Parameters.Remove(key);//移除参数
-
-                    // todo: 还需要处理  "Url = @Url" 为 Url is null
-                    continue;
-                }
-
-                var parseValue = ConstantExtractor.ConstantExpressionValueToString(val, out var isIEnumerableObj);
-                if (isIEnumerableObj)
-                {
-                    parseResult.Parameters[key] = parseValue;
-                    continue;
-                }
+                parameters.Add(key, parseResult.Adhesive.GetParameter(key).Value);
             }
-
-            #endregion
-
-            var result = (parseResult.WhereClause, parseResult.Parameters ?? new Dictionary<string, object>(0));
+            var result = (parseResult.WhereClause, parameters);
             return result;
         }
 

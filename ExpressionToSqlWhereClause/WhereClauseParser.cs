@@ -14,69 +14,63 @@ namespace ExpressionToSqlWhereClause
     internal static class WhereClauseParser
     {
 
-        public static (string WhereClause, Dictionary<string, object> Parameters) Parse(Expression body, Dictionary<string, string> aliasDict, ISqlAdapter sqlAdapter = default)
+        internal static (string WhereClause, WhereClauseAdhesive Adhesive) Parse(
+            Expression body,
+            Dictionary<string, string> aliasDict,
+            ISqlAdapter sqlAdapter = default)
         {
             aliasDict ??= new Dictionary<string, string>(0);
-            sqlAdapter ??= new DefaultSqlAdapter();
-            var parameters = new Dictionary<string, object>(0);
-            var adhesive = new WhereClauseAdhesive(sqlAdapter, parameters);
+
+            var adhesive = new WhereClauseAdhesive(sqlAdapter);
 
             if (body is BinaryExpression binaryExpression)
             {
-                var whereClause = ParseBinaryExpression(adhesive, binaryExpression, aliasDict).ToString();
-                return ($"({whereClause})", parameters);
+                string whereClause = ParseBinaryExpression(adhesive, binaryExpression, aliasDict).ToString();
+                return ($"({whereClause})", adhesive);
             }
-            else if (body is MethodCallExpression methodCallExpression)
+            if (body is MethodCallExpression methodCallExpression)
             {
                 var whereClause = ParseMethodCallExpression(adhesive, methodCallExpression);
-                return ($"({whereClause})", parameters);
-                //throw new NotSupportedException("暂不支持MethodCallExpression,修改程序");
+                return ($"({whereClause.SqlClause})", adhesive);
             }
-            else if (body is MemberExpression)
-            {
-                throw new NotSupportedException("暂不支持MemberExpression,修改程序");
-            }
-            else if (body is UnaryExpression unaryExpression)// UnaryExpression : Expression
+            if (body is UnaryExpression unaryExpression)// UnaryExpression : Expression
             {
                 var pageResult = Parse(body.NodeType, body, adhesive, aliasDict);
                 if (pageResult.NeedAddPara)
                 {
-                    string parameterName = ConditionBuilder.EnsureParameter(pageResult.MemberInfo, adhesive);
-
                     if (body.NodeType == ExpressionType.Not)
                     {
-                        //not 只支持bool 类型
+                        //not 只支持 bool 类型
                         if (unaryExpression.Type == typeof(bool))
                         {
-                            if (unaryExpression.Operand is MemberExpression operandMemberExpression)
+                            if (unaryExpression.Operand is MemberExpression operandMemberExpression ||
+                                unaryExpression.Operand.GetType().Name == "LogicalBinaryExpression")
                             {
                                 var val = ConstantExtractor.ParseConstant(unaryExpression.Operand);
-                                adhesive.Parameters.Add($"@{parameterName}", !Convert.ToBoolean(val));
-                                return ($"({pageResult.WhereClause})", adhesive.Parameters);
-                            }
-                            else if (unaryExpression.Operand.GetType().Name == "LogicalBinaryExpression")
-                            {
-                                var val = ConstantExtractor.ParseConstant(unaryExpression.Operand);
-                                adhesive.Parameters.Add($"@{parameterName}", !Convert.ToBoolean(val));//!取反
-                                return ($"({pageResult.WhereClause})", adhesive.Parameters);
+                                pageResult.SqlClauseParametersInfo.Value = !Convert.ToBoolean(val);
+                                pageResult.SqlClauseParametersInfo.Symbol = SqlKeys.NotEqual;
+
+                                return ($"({pageResult.WhereClause})", adhesive);
                             }
                         }
                     }
-                    throw new NotSupportedException("暂不支持UnaryExpression,修改程序");
+
                 }
                 else
                 {
-                    return ($"({pageResult.WhereClause})", adhesive.Parameters);
+                    return ($"({pageResult.WhereClause})", adhesive);
                 }
             }
-            else if (body is Expression)
+            if (body is Expression)
             {
                 throw new NotSupportedException("暂不支持Expression,修改程序");
             }
-            else
+            if (body is MemberExpression)
             {
-                throw new NotSupportedException("暂不支持,修改程序");
+                throw new NotSupportedException("暂不支持MemberExpression,修改程序");
             }
+            throw new NotSupportedException("暂不支持,修改程序");
+
         }
 
         /// <summary>
@@ -92,12 +86,9 @@ namespace ExpressionToSqlWhereClause
             if (expression is BinaryExpression binaryExpression)
             {
                 var whereClause = ParseBinaryExpression(adhesive, binaryExpression, aliasDict);
-                return new ParseResult()
-                {
-                    WhereClause = whereClause
-                };
+                return new ParseResult() { WhereClause = whereClause };
             }
-            else if (expression is MethodCallExpression methodCallExpression)
+            if (expression is MethodCallExpression methodCallExpression)
             {
                 var method = methodCallExpression.Method;
                 if (method.DeclaringType == typeof(ExpressionToSqlWhereClause.SqlFunc.DbFunctions))
@@ -127,48 +118,55 @@ namespace ExpressionToSqlWhereClause
                         }
 
                         string parameterName = ConditionBuilder.EnsureParameter(methodInfo, adhesive);
-                        var whereClause = new StringBuilder($"{clauseLeft} {symbol} @{parameterName}");
+                        var parametersKey = $"@{parameterName}";
+                        var param = adhesive.GetParameter(parametersKey);
+
+                        param.Symbol = symbol;
+                        param.SqlClause = $"{clauseLeft} {symbol} {parametersKey}";
+                        param.IsDbFunction = true;
 
                         return new ParseResult()
                         {
-                            WhereClause = whereClause,
+                            WhereClause = new StringBuilder(param.SqlClause),
+                            SqlClauseParametersInfo = param,
                             NeedAddPara = true,
                             MemberExpression = null,
                             MemberInfo = methodCallExpression.Method
                         };
                     }
 
-                    throw new NotSupportedException($"Unknow expression {expression.GetType()}");
                 }
                 else
                 {
-                    var whereClause = ParseMethodCallExpression(adhesive, methodCallExpression);
+                    SqlClauseParametersInfo param = ParseMethodCallExpression(adhesive, methodCallExpression);
                     return new ParseResult()
                     {
-                        WhereClause = whereClause
+                        WhereClause = new StringBuilder(param.SqlClause),
+                        SqlClauseParametersInfo = param,
                     };
                 }
             }
-            else if (expression is MemberExpression memberExpression)
+            if (expression is MemberExpression memberExpression)
             {
-                StringBuilder whereClause;
+                SqlClauseParametersInfo param;
                 if (memberExpression.Member is PropertyInfo pi && pi.PropertyType == typeof(bool))
                 {
-                    whereClause = ConditionBuilder.BuildCondition(memberExpression.Member, adhesive, ExpressionType.Equal);
+                    param = ConditionBuilder.BuildCondition(memberExpression.Member, adhesive, ExpressionType.Equal);
                 }
                 else
                 {
-                    whereClause = ConditionBuilder.BuildCondition(memberExpression.Member, adhesive, comparison);
+                    param = ConditionBuilder.BuildCondition(memberExpression.Member, adhesive, comparison);
                 }
                 return new ParseResult()
                 {
-                    WhereClause = whereClause,
+                    WhereClause = new StringBuilder(param.SqlClause),
+                    SqlClauseParametersInfo = param,
                     NeedAddPara = true,
                     MemberExpression = memberExpression,
                     MemberInfo = memberExpression.Member
                 };
             }
-            else if (expression is UnaryExpression unaryExpression)
+            if (expression is UnaryExpression unaryExpression)
             {
                 if (unaryExpression.NodeType == ExpressionType.Not)
                 {
@@ -176,10 +174,11 @@ namespace ExpressionToSqlWhereClause
                     {
                         if (unaryExpression.Type == typeof(bool))
                         {
-                            var whereClause = ConditionBuilder.BuildCondition(operandMemberExpression.Member, adhesive, comparison);
+                            SqlClauseParametersInfo param = ConditionBuilder.BuildCondition(operandMemberExpression.Member, adhesive, comparison);
                             return new ParseResult()
                             {
-                                WhereClause = whereClause,
+                                WhereClause = new StringBuilder(param.SqlClause),
+                                SqlClauseParametersInfo = param,
                                 NeedAddPara = true,
                                 MemberExpression = null,
                                 MemberInfo = operandMemberExpression.Member
@@ -190,10 +189,11 @@ namespace ExpressionToSqlWhereClause
                     {
                         var memberExpression2 = ((unaryExpression.Operand as BinaryExpression).Left as MemberExpression);
                         var member = memberExpression2.Member;
-                        var whereClause = ConditionBuilder.BuildCondition(member, adhesive, comparison);
+                        SqlClauseParametersInfo param = ConditionBuilder.BuildCondition(member, adhesive, comparison);
                         return new ParseResult()
                         {
-                            WhereClause = whereClause,
+                            WhereClause = new StringBuilder(param.SqlClause),
+                            SqlClauseParametersInfo = param,
                             NeedAddPara = true,
                             MemberExpression = memberExpression2,
                             MemberInfo = member
@@ -204,10 +204,11 @@ namespace ExpressionToSqlWhereClause
                 {
                     if (unaryExpression.Operand is MemberExpression operandMemberExpression)
                     {
-                        var whereClause = ConditionBuilder.BuildCondition(operandMemberExpression.Member, adhesive, comparison);
+                        SqlClauseParametersInfo param = ConditionBuilder.BuildCondition(operandMemberExpression.Member, adhesive, comparison);
                         return new ParseResult()
                         {
-                            WhereClause = whereClause,
+                            WhereClause = new StringBuilder(param.SqlClause),
+                            SqlClauseParametersInfo = param,
                             NeedAddPara = true,
                             MemberExpression = null,
                             MemberInfo = operandMemberExpression.Member
@@ -229,7 +230,7 @@ namespace ExpressionToSqlWhereClause
         /// <param name="adhesive">粘合剂</param>
         /// <param name="methodCallExpression"></param>
         /// <returns></returns>
-        private static StringBuilder ParseMethodCallExpression(WhereClauseAdhesive adhesive, MethodCallExpression methodCallExpression)
+        private static SqlClauseParametersInfo ParseMethodCallExpression(WhereClauseAdhesive adhesive, MethodCallExpression methodCallExpression)
         {
             var method = methodCallExpression.Method;
 
@@ -275,24 +276,11 @@ namespace ExpressionToSqlWhereClause
         }
 
         private static StringBuilder ParseBinaryExpression(
-                WhereClauseAdhesive adhesive,
-                BinaryExpression binaryExpression,
-                Dictionary<string, string> aliasDict = default
-            )
+            WhereClauseAdhesive adhesive,
+            BinaryExpression binaryExpression,
+            Dictionary<string, string> aliasDict)
         {
-            //在这里处理: 往adhesive的参数添加值. 方法名最后的 2 和 3 表示这个方法有几个参数 
-            void AddParamteter3(ParseResult _parseResult, WhereClauseAdhesive _adhesive, object _value)
-            {
-                string parameterName = ConditionBuilder.EnsureParameter(_parseResult.MemberInfo, _adhesive);
-                _adhesive.Parameters.Add($"@{parameterName}", _value);
-            }
-
-            void AddParamteter2(ParseResult _parseResult, WhereClauseAdhesive _adhesive)
-            {
-                string parameterName = ConditionBuilder.EnsureParameter(_parseResult.MemberInfo, _adhesive);
-                var _value = ConstantExtractor.ParseConstant(_parseResult.MemberExpression);
-                _adhesive.Parameters.Add($"@{parameterName}", _value);
-            }
+            #region 内部方法
 
             //处理别名
             StringBuilder ReplaceAlias(ParseResult parseResult)
@@ -313,6 +301,7 @@ namespace ExpressionToSqlWhereClause
 
                 return parseResult.WhereClause.Remove(0, index).Insert(0, aliasDict[parseResult.MemberInfo.Name]);
             }
+            #endregion
 
             if (binaryExpression.NodeType is
                  ExpressionType.OrElse or
@@ -326,10 +315,9 @@ namespace ExpressionToSqlWhereClause
             {
                 var sqlBuilder = new StringBuilder();
 
-                //处理left==
+                #region 处理left
                 var leftParseResult = Parse(binaryExpression.NodeType, binaryExpression.Left, adhesive, aliasDict); //调用自身
 
-                //record: 生成的sql 有 () 问题  , 在最外层返回结果时, 在只有 内容全为 and 拼接的sql 时,把 () 全部替换掉了.
                 var leftClause = $"({ReplaceAlias(leftParseResult)})";
                 sqlBuilder.Append(leftClause);
 
@@ -337,50 +325,52 @@ namespace ExpressionToSqlWhereClause
                 {
                     if (IsDataComparator(binaryExpression.NodeType))
                     {
-                        if (binaryExpression.Right.GetType() == typeof(ListInitExpression))
+                        object val;
+                        if (binaryExpression.Right is ListInitExpression listInitExpression)
                         {
-                            var listInitExpression = binaryExpression.Right as ListInitExpression;
-
-                            var valList = TypeHelper.MakeList(binaryExpression.Right.Type.GenericTypeArguments);
+                            var valList = TypeHelper.MakeList(listInitExpression.Type.GenericTypeArguments);
                             foreach (var elementInit in listInitExpression.Initializers)
                             {
                                 foreach (var arg in elementInit.Arguments)
                                 {
-                                    var val = ConstantExtractor.ParseConstant(arg);
-                                    valList.Add(val);
+                                    valList.Add(ConstantExtractor.ParseConstant(arg));
                                 }
                             }
-
-                            AddParamteter3(leftParseResult, adhesive, valList);
-
+                            val = valList;
                         }
                         else
                         {
                             //Basic case, For example: u.Age > 18
-                            var val = ConstantExtractor.ParseConstant(binaryExpression.Right);
-                            AddParamteter3(leftParseResult, adhesive, val);
+                            val = ConstantExtractor.ParseConstant(binaryExpression.Right);
                         }
+
+                        leftParseResult.SqlClauseParametersInfo.Value = val;
+                        leftParseResult.SqlClauseParametersInfo.SqlClause = leftClause;
+
                     }
                     else
                     {
-                        AddParamteter2(leftParseResult, adhesive);
+                        leftParseResult.SqlClauseParametersInfo.Value = ConstantExtractor.ParseConstant(leftParseResult.MemberExpression);
+                        leftParseResult.SqlClauseParametersInfo.SqlClause = leftClause;
                     }
                 }
+                #endregion
 
-                //处理right
-                var parseRight = false;
+                #region 处理right
+
+                var needParseRight = false;
                 if (binaryExpression.NodeType == ExpressionType.OrElse) // {((a.Id == 1) OrElse (a.Id == 2))}
                 {
                     sqlBuilder.Append(SqlKeys.or);
-                    parseRight = true;
+                    needParseRight = true;
                 }
                 else if (binaryExpression.NodeType == ExpressionType.AndAlso) //{(((a.Id == 1) OrElse (a.Id == 2)) AndAlso a.IsDel == true )}
                 {
                     sqlBuilder.Append(SqlKeys.and);
-                    parseRight = true;
+                    needParseRight = true;
                 }
 
-                if (parseRight)
+                if (needParseRight)
                 {
                     ParseResult rightParseResult;
 
@@ -402,33 +392,49 @@ namespace ExpressionToSqlWhereClause
 
                     if (rightParseResult.NeedAddPara)
                     {
-                        AddParamteter2(rightParseResult, adhesive);
+                        rightParseResult.SqlClauseParametersInfo.Value = ConstantExtractor.ParseConstant(rightParseResult.MemberExpression);
+                        rightParseResult.SqlClauseParametersInfo.SqlClause = rightClause;
                     }
                 }
+                #endregion
 
                 return sqlBuilder;
             }
-            else if (binaryExpression.Left is UnaryExpression convertExpression
-                     && convertExpression.NodeType == ExpressionType.Convert
-                     && convertExpression.Operand.Type.IsEnum
-                     && convertExpression.Operand is MemberExpression enumMemberExpression
-                     && IsDataComparator(binaryExpression.NodeType))
+
+            #region  这边的 if 好像进不来了, 先注释
+            /*
+            if (binaryExpression.Left is UnaryExpression convertExpression)
             {
-                //Support the enum Property, For example: u.UserType == UserType.Admin
-                return ConditionBuilder.BuildCondition(enumMemberExpression.Member, adhesive, binaryExpression.NodeType,
-                    ConstantExtractor.ParseConstant(binaryExpression.Right));
+                if (convertExpression.NodeType == ExpressionType.Convert
+                    && convertExpression.Operand.Type.IsEnum
+                    && convertExpression.Operand is MemberExpression enumMemberExpression
+                    && IsDataComparator(binaryExpression.NodeType))
+                {
+                    //Support the enum Property, For example: u.UserType == UserType.Admin
+                    MemberInfo memberInfo = enumMemberExpression.Member;
+                    ExpressionType comparison = binaryExpression.NodeType;
+                    object value = ConstantExtractor.ParseConstant(binaryExpression.Right);
+                    var sqlBuilder = ConditionBuilder.BuildCondition(memberInfo, adhesive, comparison, value);
+                    return sqlBuilder;
+                }
             }
-            else if (binaryExpression.Left is MemberExpression memberExpression && IsDataComparator(binaryExpression.NodeType))
+            if (binaryExpression.Left is MemberExpression memberExpression)
             {
-                //Basic case, For example: u.Age > 18
-                return ConditionBuilder.BuildCondition(memberExpression.Member, adhesive, binaryExpression.NodeType,
-                    ConstantExtractor.ParseConstant(binaryExpression.Right));
+                if (IsDataComparator(binaryExpression.NodeType))
+                {
+                    //Basic case, For example: u.Age > 18
+                    MemberInfo memberInfo = memberExpression.Member;
+                    ExpressionType comparison = binaryExpression.NodeType;
+                    object value = ConstantExtractor.ParseConstant(binaryExpression.Right);
+                    var sqlBuilder = ConditionBuilder.BuildCondition(memberInfo, adhesive, comparison, value);
+                    return sqlBuilder;
+                }
             }
-            else
-            {
-                var msg = $"Unknow Left:{binaryExpression.Left.GetType()}, Right:{binaryExpression.Right.GetType()},  NodeType:{binaryExpression.NodeType}";
-                throw new NotSupportedException(msg);
-            }
+            */
+            #endregion
+            var msg = $"Unknow Left:{binaryExpression.Left.GetType()}, Right:{binaryExpression.Right.GetType()},  NodeType:{binaryExpression.NodeType}";
+            throw new NotSupportedException(msg);
+
         }
 
         /// <summary>

@@ -9,99 +9,105 @@ namespace ExpressionToSqlWhereClause
     public static class ConditionBuilder
     {
 
-        public static StringBuilder BuildCondition(MemberInfo memberInfo, WhereClauseAdhesive adhesive, ExpressionType comparison, object value)
+        public static SqlClauseParametersInfo BuildCondition(MemberInfo memberInfo, WhereClauseAdhesive adhesive, ExpressionType comparison, object value)
         {
             string fieldName = adhesive.SqlAdapter.FormatColumnName(memberInfo);
             string parameterName = EnsureParameter(memberInfo, adhesive);
-            adhesive.Parameters.Add($"@{parameterName}", value);
+            var parametersKey = $"@{parameterName}";
+            var param = adhesive.GetParameter(parametersKey);
             var symbol = ConditionBuilder.ToComparisonSymbol(comparison, memberInfo);
-            var sb = new StringBuilder($"{fieldName} {symbol} @{parameterName}");
-            return sb;
+            param.Symbol = symbol;
+            param.Value = value;
+            param.SqlClause = $"{fieldName} {symbol} {parametersKey}";
+            return param;
         }
 
         /// <summary>
-        /// 编译条件,获得where子句
+        /// 编译条件 
         /// </summary>
         /// <param name="memberInfo"></param>
         /// <param name="adhesive"></param>
         /// <param name="comparison"></param>
-        /// <returns>where子句</returns>
-        public static StringBuilder BuildCondition(MemberInfo memberInfo, WhereClauseAdhesive adhesive, ExpressionType comparison)
+        /// <returns> </returns>
+        public static SqlClauseParametersInfo BuildCondition(MemberInfo memberInfo, WhereClauseAdhesive adhesive, ExpressionType comparison)
         {
             string fieldName = adhesive.SqlAdapter.FormatColumnName(memberInfo);
             string parameterName = EnsureParameter(memberInfo, adhesive);
-            StringBuilder sb = new StringBuilder();
-#if DEBUG
             var symbol = ConditionBuilder.ToComparisonSymbol(comparison, memberInfo);
-            var clause = $"{fieldName} {symbol} @{parameterName}";
-            sb.Append(clause);
-#else
-            sb.Append(fieldName).Append(" ").Append(ConditionBuilder.ToComparisonSymbol(comparison, memberInfo)).Append(" @").Append(parameterName);
-#endif
-            return sb;
+            var parametersKey = $"@{parameterName}";
+            var param = adhesive.GetParameter(parametersKey);
+            param.Symbol = symbol;
+            param.SqlClause = $"{fieldName} {symbol} {parametersKey}";
+            return param;
 
         }
 
-        public static StringBuilder BuildLikeOrEqualCondition(MethodCallExpression methodCallExpression, WhereClauseAdhesive adhesive)
+        public static SqlClauseParametersInfo BuildLikeOrEqualCondition(MethodCallExpression methodCallExpression, WhereClauseAdhesive adhesive)
         {
-            string symbol;
-            string valueSymbol;
-            switch (methodCallExpression.Method.Name)
-            {
-                case "Equals":
-                    symbol = SqlKeys.Equals_symbol;
-                    valueSymbol = SqlKeys.Equals_valueSymbol;
-                    break;
-                case "StartsWith": //like 的3种/1
-                    symbol = SqlKeys.StartsWith_symbol;
-                    valueSymbol = SqlKeys.StartsWith_valueSymbol;
-                    break;
-                case "EndsWith"://like 的3种/2
-                    symbol = SqlKeys.EndsWith_symbol;
-                    valueSymbol = SqlKeys.EndsWith_valueSymbol;
-                    break;
-                case "Contains"://like 的3种/3
-                    symbol = SqlKeys.Contains_symbol;
-                    valueSymbol = SqlKeys.Contains_valueSymbol;
-                    break;
-                default:
-                    throw new NotSupportedException($"Not support method name:{methodCallExpression.Method.Name}");
-            }
-
             if (methodCallExpression.Object is MemberExpression memberExpression)
             {
+                #region 获得值: symbol + valueSymbol
+                string symbol;
+                string valueSymbol;
+                switch (methodCallExpression.Method.Name)
+                {
+                    case "Equals":
+                        symbol = SqlKeys.Equals_symbol;
+                        valueSymbol = SqlKeys.Equals_valueSymbol;
+                        break;
+                    case "StartsWith": //like 的3种/1
+                        symbol = SqlKeys.StartsWith_symbol;
+                        valueSymbol = SqlKeys.StartsWith_valueSymbol;
+                        break;
+                    case "EndsWith"://like 的3种/2
+                        symbol = SqlKeys.EndsWith_symbol;
+                        valueSymbol = SqlKeys.EndsWith_valueSymbol;
+                        break;
+                    case "Contains"://like 的3种/3
+                        symbol = SqlKeys.Contains_symbol;
+                        valueSymbol = SqlKeys.Contains_valueSymbol;
+                        break;
+                    default:
+                        throw new NotSupportedException($"Not support method name:{methodCallExpression.Method.Name}");
+                }
+                #endregion
+
                 var memberInfo = memberExpression.Member;
                 string fieldName = adhesive.SqlAdapter.FormatColumnName(memberInfo);
                 string parameterName = EnsureParameter(memberInfo, adhesive);
                 object value = ConstantExtractor.ParseConstant(methodCallExpression.Arguments[0]);
-                adhesive.Parameters.Add($"@{parameterName}", string.Format(valueSymbol, value));
-                return new StringBuilder(string.Format($"{fieldName} {symbol}", $"@{parameterName}")); // string.Format( Name Like ){0} , Name1
+                var parametersKey = $"@{parameterName}";
+                var param = adhesive.GetParameter(parametersKey);
+                param.Value = string.Format(valueSymbol, value);
+                param.Symbol = symbol;
+                param.SqlClause = string.Format($"{fieldName} {symbol}", parametersKey);// string.Format( Name Like ){0} , Name1
+                return param;
             }
-            else
-            {
-                throw new NotSupportedException();
-            }
+
+            throw new NotSupportedException();
         }
 
-        public static StringBuilder BuildInCondition(MemberExpression memberExpression, Expression valueExpression, WhereClauseAdhesive adhesive)
+        public static SqlClauseParametersInfo BuildInCondition(MemberExpression memberExpression, Expression valueExpression, WhereClauseAdhesive adhesive)
         {
             var memberInfo = memberExpression.Member;
             string fieldName = adhesive.SqlAdapter.FormatColumnName(memberInfo);
             string parameterName = EnsureParameter(memberInfo, adhesive);
             object value = ConstantExtractor.ParseConstant(valueExpression);
-            adhesive.Parameters.Add($"@{parameterName}", value);
-            //return new StringBuilder($"{fieldName} {SqlKeys.@in} {parameterName}");
-            var sb = new StringBuilder(32);
-            sb.Append(fieldName).Append(" ").Append(SqlKeys.@in).Append(" @").Append(parameterName);
-            return sb;
+            var parametersKey = $"@{parameterName}";
+            var symbol = SqlKeys.@in;
+            var param = adhesive.GetParameter(parametersKey);
+            param.Symbol = symbol;
+            param.Value = value;
+            param.SqlClause = $"{fieldName} {symbol} {parametersKey}";
+            return param;
         }
 
         internal static string EnsureParameter(MemberInfo memberInfo, WhereClauseAdhesive adhesive)
         {
-            string key = memberInfo.Name;
             int seed = 1;
+            string key = memberInfo.Name;
             string tempKey = key;
-            while (adhesive.Parameters.ContainsKey($"@{tempKey}"))
+            while (adhesive.ContainsParameter($"@{tempKey}"))
             {
                 tempKey = key + seed;
                 seed++;
@@ -124,7 +130,7 @@ namespace ExpressionToSqlWhereClause
                     return SqlKeys.@in;
                 }
             }
-            var symbol=ToComparisonSymbol(expressionType, methodCallExpression.Method);
+            var symbol = ToComparisonSymbol(expressionType, methodCallExpression.Method);
             return symbol;
         }
 
@@ -146,7 +152,7 @@ namespace ExpressionToSqlWhereClause
                     return SqlKeys.NotEqual;
                 }
             }
-           
+
             var symbol = expressionType switch
             {
                 ExpressionType.Equal => SqlKeys.Equal,
@@ -159,7 +165,7 @@ namespace ExpressionToSqlWhereClause
                 //    throw new Exceptions.EntityToSqlWhereCaluseConfigException("***");
                 _ => throw new NotSupportedException($"Unknown ExpressionType {expressionType}")
             };
-            return symbol; 
+            return symbol;
         }
     }
 }

@@ -25,8 +25,8 @@ namespace ExpressionToSqlWhereClause
                 return null;
             }
           
-            //value的类型有2个参数, 第二个参数假设叫T2
-            if (!value.GetType().FullName.StartsWith("System.Linq.Enumerable+SelectEnumerableIterator`2") || value is not IEnumerable)
+
+            if (!value.GetType().IsObjectCollection())
             {
                 isIEnumerableObj = false;
                 return null;
