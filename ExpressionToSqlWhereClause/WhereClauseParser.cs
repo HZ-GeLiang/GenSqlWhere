@@ -107,7 +107,7 @@ namespace ExpressionToSqlWhereClause
                         if (attr.FormatOnlyName) //目前为止, 这里永远为true 
                         {
                             // u.CreateAt  变成  CreateAt
-                            int startIndex = leftName.IndexOf(".");
+                            int startIndex = leftName.IndexOf(".", StringComparison.Ordinal);
                             var leftNameNew = startIndex != -1 ? leftName.Substring(startIndex + 1, leftName.Length - 1 - startIndex) : leftName;
 
                             clauseLeft = string.Format(attr.Format, leftNameNew);// Month(CreateAt)
@@ -291,7 +291,7 @@ namespace ExpressionToSqlWhereClause
                     return parseResult.WhereClause;
                 }
 
-                var index = parseResult.WhereClause.IndexOf(' ');
+                var index = parseResult.WhereClause.IndexOf(' ');// IndexOf 是扩展方法
                 //Remove的index小于0会报错,所以,这里添加一个判断
                 //虽然这个判断永远不会生效(以目前逻辑来讲,2021.12.12),但是为了保险起见, 还是添加了
                 if (index == -1)
