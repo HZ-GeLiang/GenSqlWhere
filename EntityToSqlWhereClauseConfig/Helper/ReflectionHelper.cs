@@ -7,6 +7,19 @@ namespace EntityToSqlWhereClauseConfig.Helper
 {
     internal static class ReflectionHelper
     {
+
+        #region GetProperties
+
+        public static PropertyInfo[] GetProperties<T>() => typeof(T).GetProperties();
+
+        public static PropertyInfo[] GetProperties(Type type) => type.GetProperties();
+
+        public static PropertyInfo[] GetProperties<T>(BindingFlags bindingAttr) => typeof(T).GetProperties(bindingAttr);
+
+        public static PropertyInfo[] GetProperties(Type type, BindingFlags bindingAttr) => type.GetProperties(bindingAttr);
+
+        #endregion
+
         #region GetAttributeForProperty
 
         /// <summary>

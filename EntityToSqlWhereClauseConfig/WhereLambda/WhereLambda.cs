@@ -110,7 +110,7 @@ namespace EntityToSqlWhereClauseConfig
         internal static Dictionary<SearchType, List<string>> GetSearchCondition(TSearchModel searchModel, Dictionary<SearchType, List<string>> searchTypeConfig)
         {
             var config = searchTypeConfig.Clone();
-            var props = typeof(TSearchModel).GetProperties();
+            var props = ReflectionHelper.GetProperties(typeof(TSearchModel));
             foreach (System.Reflection.PropertyInfo prop in props)
             {
                 var attrs = ReflectionHelper.GetAttributeForProperty<SearchTypeAttribute>(prop, false);
