@@ -29,7 +29,7 @@ namespace ExpressionToSqlWhereClause
             #region 处理 alias
             alias ??= new Dictionary<string, string>();
 
-            foreach (var propertyInfo in typeof(T).GetProperties())
+            foreach (var propertyInfo in ReflectionHelper.GetProperties<T>())
             {
                 //优先级: 方法参数的 alias > Column
                 if (alias.ContainsKey(propertyInfo.Name))
