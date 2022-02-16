@@ -535,5 +535,24 @@ namespace ExpressionToSqlWhereClause.Test
             Assert.AreEqual("UserAge <> @Age", whereClause);
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
+
+        [TestMethod]
+        public void 测试范围是否有问题()
+        {
+            DateTime? d1 = new DateTime(2020, 1, 1);
+            DateTime? d2 = new DateTime(2020, 1, 15);
+            Expression<Func<UserCreateTime, bool>> expression = u => u.Age != 20 ||
+                (u.CreateStart > d1 && u.CreateEnd < d2);
+ 
+            (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
+
+           
+            //Dictionary<string, object> expectedParameters = new Dictionary<string, object>
+            //{
+            //    { "@Age", 20 }
+            //};
+            //Assert.AreEqual("(((Age <> @Age)) Or (((CreateStart > @CreateStart)) And ((CreateEnd < @CreateEnd))))", whereClause);
+            //DictionaryAssert.AreEqual(expectedParameters, parameters);
+        }
     }
 }
