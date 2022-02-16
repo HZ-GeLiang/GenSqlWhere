@@ -846,7 +846,7 @@ namespace EntityToSqlWhereClauseConfig
                 }
                 else
                 {
-                    if (times.TimeRange[0] != null && times.TimeRange[1] != null)
+                    if (times.TimeRange[0] != null && times.TimeRange[1] != null) //都有值 或 start值
                     {
                         DateTime d1 = times.TimeRange[0].Value;
                         DateTime d2 = times.TimeRange[1].Value;
@@ -874,7 +874,7 @@ namespace EntityToSqlWhereClauseConfig
                         times.TimeRange[0] = d1;
                         times.TimeRange[1] = d2;
                     }
-                    else if (times.TimeRange[0] == null || times.TimeRange[1] != null)//只有end 有值
+                    else if (times.TimeRange[0] == null || times.TimeRange[1] != null)//只有 end 有值
                     {
                         var endTime = (DateTime)times.TimeRange[1];
                         var range = 获得查询的时间精度(endTime);
@@ -990,9 +990,21 @@ namespace EntityToSqlWhereClauseConfig
         private enum TimeRange
         {
             //None,
+            /// <summary>
+            /// 天
+            /// </summary>
             Day = 1,
+            /// <summary>
+            /// 小时
+            /// </summary>
             Hour,
+            /// <summary>
+            /// 分钟
+            /// </summary>
             Minute,
+            /// <summary>
+            /// 秒
+            /// </summary>
             Second,
         }
 
@@ -1077,7 +1089,7 @@ namespace EntityToSqlWhereClauseConfig
                     ? s.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct()
                     : value.ToString().Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct();
 
-           
+
                 if (!splits.Any())
                 {
                     continue;
