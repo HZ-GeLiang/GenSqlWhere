@@ -924,6 +924,7 @@ namespace EntityToSqlWhereClauseConfig
                     throw new Exceptions.EntityToSqlWhereCaluseConfigException("代码逻辑有问题, 不应该进入这个分支");
                 }
 
+                //todo:验证:  a.id>1 or (a.createTime >='2022-1-1' and a.createTime<'2022-15' )  这时候,里会有问题吗
                 if (d1 != null) //>=
                 {
                     if (type_TEntity.GetProperty(key) != null)
