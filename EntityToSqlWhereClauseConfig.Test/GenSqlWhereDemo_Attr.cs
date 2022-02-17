@@ -119,7 +119,7 @@ namespace EntityToSqlWhereClauseConfig.Test
             var whereLambda = searchModel.CrateWhereLambda((People _) => { });
             var expression = whereLambda.ToExpression();
             (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
-            Assert.AreEqual(sql, "Id In @Id And Sex In @Sex");
+            Assert.AreEqual(sql, "((Id In (@Id)) And (Sex In (@Sex)))");
             var dict = new Dictionary<string, object>
             {
                 { "@Id", searchModel.Id},
@@ -139,7 +139,7 @@ namespace EntityToSqlWhereClauseConfig.Test
             var whereLambda = searchModel.CrateWhereLambda((People _) => { });
             var expression = whereLambda.ToExpression();
             (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
-            Assert.AreEqual(sql, "Id In @Id");
+            Assert.AreEqual(sql, "(Id In (@Id))");
             var dict = new Dictionary<string, object>
             {
                 { "@Id", "1"},//in 可以有多个值,所以这个值就是stirng类型的

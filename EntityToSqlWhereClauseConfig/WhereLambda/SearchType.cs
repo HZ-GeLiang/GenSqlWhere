@@ -32,7 +32,7 @@ namespace EntityToSqlWhereClauseConfig
         eq,
 
         /// <summary>
-        /// 实际翻译成 in 还是 Equal , 根据 split() 后的个数而定
+        /// 实际翻译成 in 还是 Equal , 根据 split() 后的个数而定 (sqlFunc除外)
         /// </summary>
         @in,
 

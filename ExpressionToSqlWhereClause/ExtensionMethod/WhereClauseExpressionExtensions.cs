@@ -108,18 +108,23 @@ namespace ExpressionToSqlWhereClause
             #region 处理 parseResult.WhereClause
 
             #region 去掉 关系条件 全为 and 时 ,sql 语句的 () 可以优化
-            //能力有限: 只能去掉全是 and 语句的 ()
-            if (!parseResult.WhereClause.Contains(SqlKeys.or))
+            //能力有限: 只能去掉全是 and 语句的 ()  注 in ()  的  () 不能排除, 所以,还要去掉 in
+            var containsOr = parseResult.WhereClause.Contains(SqlKeys.or);
+            if (!containsOr)
             {
-                if (parseResult.WhereClause.Contains("("))
+                var containsin = parseResult.WhereClause.Contains(SqlKeys.@in);
+                if (!containsin)
                 {
-                    parseResult.WhereClause = parseResult.WhereClause.Replace("(", string.Empty);
+                    if (parseResult.WhereClause.Contains("("))
+                    {
+                        parseResult.WhereClause = parseResult.WhereClause.Replace("(", string.Empty);
+                    }
+                    if (parseResult.WhereClause.Contains(")"))
+                    {
+                        parseResult.WhereClause = parseResult.WhereClause.Replace(")", string.Empty);
+                    }
                 }
-                if (parseResult.WhereClause.Contains(")"))
-                {
-                    parseResult.WhereClause = parseResult.WhereClause.Replace(")", string.Empty);
-                }
-            }
+            } 
             #endregion
 
             #region 函数的[] 变成 ()

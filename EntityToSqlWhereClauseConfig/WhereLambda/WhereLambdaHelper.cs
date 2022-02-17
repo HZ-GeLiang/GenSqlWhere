@@ -320,20 +320,23 @@ namespace EntityToSqlWhereClauseConfig
             Type propType_TEntity = propertyExp.Type; //a.AuditStateId 的type(Dto中定义的属性类型)
 
             var attr_SqlFunc = ReflectionHelper.GetAttributeForProperty<SqlFuncAttribute>(typeof(TSearchModel).GetProperty(propertyName), true);
-            if (attr_SqlFunc.Length == 1)
+            var haveAttr_SqlFunc = attr_SqlFunc.Length > 0;
+            if (haveAttr_SqlFunc)
             {
+                if (attr_SqlFunc.Length > 1)
+                {
+                    throw new Exceptions.EntityToSqlWhereCaluseConfigException($"特性:{nameof(SqlFuncAttribute)}不能标记多个.");
+                }
+
                 var attr = attr_SqlFunc[0];
                 if (attr is MonthAttribute)
                 {
-                    //var call = Expression.Call(typeof(Enumerable), "Contains", new[] { propertyExp.Type }, someValue, propertyExp);
-
-                    ////var method = typeof(Enumerable).GetMethod("Contains");//会报错 ,说模棱两可的
-
+                    //GetLambda_MonthAttribute_Equal
                     ParameterExpression parameterExpression = Expression.Parameter(type_TEntity, "u");
                     var leftP2 = typeof(DbFunctions).GetMethod("Month", new Type[] { typeof(DateTime) });
                     var leftP3 = new Expression[] { Expression.Property(parameterExpression, propertyName) };
                     var left = Expression.Call(null, leftP2, leftP3);
-                    //month() 返回的是int 
+                    //Sql 的 month() 返回的是int 
                     //https://docs.microsoft.com/zh-cn/sql/t-sql/functions/month-transact-sql?view=sql-server-2017
                     var right = Expression.Constant(Convert.ToInt32(propertyValue), typeof(int));
                     var body = Expression.Equal(left, right);
@@ -373,6 +376,7 @@ namespace EntityToSqlWhereClauseConfig
             }
 
         }
+
 
 
         #endregion
@@ -424,8 +428,13 @@ namespace EntityToSqlWhereClauseConfig
             Type propType_TEntity = propertyExp.Type; //a.AuditStateId 的type(Dto中定义的属性类型)
 
             var attr_SqlFunc = ReflectionHelper.GetAttributeForProperty<SqlFuncAttribute>(typeof(TSearchModel).GetProperty(propertyName), true);
-            if (attr_SqlFunc.Length == 1)
+            var haveAttr_SqlFunc = attr_SqlFunc.Length > 0;
+            if (haveAttr_SqlFunc)
             {
+                if (attr_SqlFunc.Length > 1)
+                {
+                    throw new Exceptions.EntityToSqlWhereCaluseConfigException($"特性:{nameof(SqlFuncAttribute)}不能标记多个.");
+                }
                 var attr = attr_SqlFunc[0];
                 if (attr is MonthAttribute)
                 {
@@ -433,7 +442,7 @@ namespace EntityToSqlWhereClauseConfig
                     var leftP2 = typeof(DbFunctions).GetMethod("Month", new Type[] { typeof(DateTime) });
                     var leftP3 = new Expression[] { Expression.Property(parameterExpression, propertyName) };
                     var left = Expression.Call(null, leftP2, leftP3);
-                    //month() 返回的是int 
+                    //Sql 的 month() 返回的是int 
                     //https://docs.microsoft.com/zh-cn/sql/t-sql/functions/month-transact-sql?view=sql-server-2017
                     var right = Expression.Constant(Convert.ToInt32(propertyValue), typeof(int));
                     var body = Expression.NotEqual(left, right);
@@ -1171,17 +1180,10 @@ namespace EntityToSqlWhereClauseConfig
                     ? s.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct()
                     : value.ToString().Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct();
 
-
-                if (!splits.Any())
-                {
-                    continue;
-                }
+                if (!splits.Any()) { continue; }
 
                 var prop_Info = type_TEntity.GetProperty(propertyName);
-                if (prop_Info == null)
-                {
-                    continue;
-                }
+                if (prop_Info == null) { continue; }
 
                 var parameterExp = Expression.Parameter(type_TEntity, "a");//pe
                 var propertyExp = Expression.Property(parameterExp, propertyName); //a.AuditStateId  //me
@@ -1313,10 +1315,50 @@ namespace EntityToSqlWhereClauseConfig
                 #region 获得lambda_dbFun
                 if (lambda == null)
                 {
-                    //todo://sql_fun的
+                    //处理 SqlFunc
+                    var attr_SqlFunc = ReflectionHelper.GetAttributeForProperty<SqlFuncAttribute>(typeof(TSearchModel).GetProperty(propertyName), true);
+                    var haveAttr_SqlFunc = attr_SqlFunc.Length > 0;
+                    if (haveAttr_SqlFunc)
+                    {
+                        if (attr_SqlFunc.Length > 1)
+                        {
+                            throw new Exceptions.EntityToSqlWhereCaluseConfigException(
+                                $"特性:{nameof(SqlFuncAttribute)}不能标记多个.");
+                        }
 
-                    //var call = Expression.Call(typeof(Enumerable), "Contains", new[] { propertyExp.Type }, splits.ToInt32(), propertyExp);
-                    //lambda = Expression.Lambda<Func<TEntity, bool>>(call, parameterExp);
+                        var attr = attr_SqlFunc[0];
+
+                        if (attr is MonthAttribute)
+                        {
+                            //GetLambda_MonthInAttribute
+
+                            //Sql 的 month() 返回的是int 
+
+                            var propertyExp2 = Expression.Property(parameterExp, typeof(int), propertyName); //a.AuditStateId  //me
+
+                            ParameterExpression parameterExp2 = Expression.Parameter(type_TEntity, "a");//pe
+                            lambda = GetExpression_In<TEntity>(parameterExp, propertyExp2, splits.ToInt32());
+
+                            //GetExpression_In
+                            //ParameterExpression parameterExpression = Expression.Parameter(type_TEntity, "u");
+                            //var leftP2 = typeof(DbFunctions).GetMethod("Month", new Type[] { typeof(DateTime) });
+                            //var leftP3 = new Expression[] { Expression.Property(parameterExpression, propertyName) };
+                            //var left = Expression.Call(null, leftP2, leftP3);
+
+                            ////https://docs.microsoft.com/zh-cn/sql/t-sql/functions/month-transact-sql?view=sql-server-2017
+                            //var right = Expression.Constant(Convert.ToInt32(propertyValue), typeof(int));
+                            //var body = Expression.Equal(left, right);
+
+                            //var call = Expression.Call(typeof(Enumerable), "Contains", new[] { propertyExp.Type }, splits.ToInt32(), propertyExp);
+                            //lambda = Expression.Lambda<Func<TEntity, bool>>(call, parameterExp);
+
+
+                        }
+
+                    }
+
+
+
 
                     //return lambda;
                 }

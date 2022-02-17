@@ -22,7 +22,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 Sex = "1",
                 IsDel = true,
                 Url = "123",
-                DataCreatedAtStart = time.AddHours(-1),
+                DataCreatedAtStart = time.AddDays(-1), //Todo:如果这里是 Addhour,默认的时间进度将计算错误
                 DataCreatedAtEnd = time,
             };
 
@@ -65,7 +65,20 @@ namespace EntityToSqlWhereClauseConfig.Test
 
             (string sql, Dictionary<string, object> param) = exp.ToWhereClause();
 
-            Assert.AreEqual(sql, "Id In @Id And Sex In @Sex And IsDel = @IsDel And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
+            Assert.AreEqual(sql, "((((((Id In (@Id)) And (Sex In (@Sex))) And ((IsDel = @IsDel))) And ((DataCreatedAt >= @DataCreatedAt))) And ((DataCreatedAt < @DataCreatedAt1))) And (Url Like @Url))");
+
+
+            var dict = new Dictionary<string, object>
+            {
+                { "@Id",   "1,2"},
+                { "@Sex", searchModel.Sex },
+                { "@IsDel", searchModel.IsDel },
+                { "@DataCreatedAt", searchModel.DataCreatedAtStart },
+                { "@DataCreatedAt1", searchModel.DataCreatedAtEnd?.AddDays(1) },
+                { "@Url", $@"%{searchModel.Url}%" },
+            };
+
+            DictionaryAssert.AreEqual(param, dict);
         }
 
         [TestMethod]
@@ -134,7 +147,7 @@ namespace EntityToSqlWhereClauseConfig.Test
 
             (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
-            Assert.AreEqual(sql, "Id In @Id And Sex In @Sex And IsDel = @IsDel And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
+            Assert.AreEqual(sql, "((((((Id In (@Id)) And (Sex In (@Sex))) And ((IsDel = @IsDel))) And ((DataCreatedAt >= @DataCreatedAt))) And ((DataCreatedAt < @DataCreatedAt1))) And (Url Like @Url))");
         }
 
         [TestMethod]
