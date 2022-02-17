@@ -47,10 +47,7 @@ namespace ExpressionToSqlWhereClause.Helper
                 return attrs;
                 //list.Add(attrs);
             }
-
-        
             return attrs; //Length <= 0
-
         }
 
         public static TAttribute[] GetAttributeForMethod<TAttribute>(MemberInfo method) => GetAttributeForMethod(method, typeof(TAttribute)) as TAttribute[];
