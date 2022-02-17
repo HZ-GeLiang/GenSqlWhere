@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using EntityToSqlWhereClauseConfig.Helper;
 using ExpressionToSqlWhereClause;
 using ExpressionToSqlWhereClause.Test.ExtensionMethod;
 using ExpressionToSqlWhereClause.Test.InputOrModel;
@@ -62,8 +63,20 @@ namespace ExpressionToSqlWhereClause.Test
                .WhereIf(input.DateStart.HasValue, a => a.Date >= input.DateStart)
                .WhereIf(input.DateEnd.HasValue, a => a.Date <= input.DateEnd)
             ;
-            (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
 
+            //MergeParametersIntoSql 的 2种使用方式
+            {
+                var a = expression.ToWhereClause();
+                var sql2 = EntityToSqlWhereClauseConfig.Helper.WhereClauseHelper.MergeParametersIntoSql(a);
+                Assert.AreEqual(sql2, "Product_ID = 1 And Production Like '%aa%'");
+            }
+
+            {
+
+                (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
+                var sql2 = EntityToSqlWhereClauseConfig.Helper.WhereClauseHelper.MergeParametersIntoSql(sql, param);
+                Assert.AreEqual(sql2, "Product_ID = 1 And Production Like '%aa%'");
+            }
             int cc = 3;
 
         }
