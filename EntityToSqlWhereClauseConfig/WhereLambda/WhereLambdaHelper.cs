@@ -899,7 +899,7 @@ namespace EntityToSqlWhereClauseConfig
                         times.TimeRange[0] = d1;
                         times.TimeRange[1] = d2;
                     }
-                    else if (times.TimeRange[0] == null || times.TimeRange[1] != null)//只有 end 有值
+                    else if (times.TimeRange[0] == null && times.TimeRange[1] != null)//只有 end 有值
                     {
                         var endTime = (DateTime)times.TimeRange[1];
                         var range = 主动查询时间精度 ? 获得查询的时间精度(endTime) : fixedTimeRange.Value;
@@ -1014,7 +1014,7 @@ namespace EntityToSqlWhereClauseConfig
 
             var whereLambdas = AddDateTimeRange_GetWhereLambdas<TEntity>(timeDict);
             return whereLambdas;
-        } 
+        }
         #endregion
 
         /// <summary>
