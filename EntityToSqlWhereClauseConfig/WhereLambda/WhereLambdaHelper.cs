@@ -1,13 +1,13 @@
+using EntityToSqlWhereClauseConfig.ExtensionMethod;
+using EntityToSqlWhereClauseConfig.Helper;
+using EntityToSqlWhereClauseConfig.SqlFunc;
+using ExpressionToSqlWhereClause.SqlFunc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using EntityToSqlWhereClauseConfig.ExtensionMethod;
-using EntityToSqlWhereClauseConfig.Helper;
-using EntityToSqlWhereClauseConfig.SqlFunc;
-using ExpressionToSqlWhereClause.SqlFunc;
 
 // ReSharper disable once CheckNamespace
 namespace EntityToSqlWhereClauseConfig
@@ -730,8 +730,17 @@ namespace EntityToSqlWhereClauseConfig
             {
                 return Default<TEntity>();
             }
-            var type_TEntity = typeof(TEntity);
 
+            var timeDict = AddDateTimeRange_GetTimeDict(searchModel, props);
+
+            Get_AddDateTimeRange_DealTimeDict(timeDict, null);
+
+            var whereLambdas = AddDateTimeRange_GetWhereLambdas<TEntity>(timeDict);
+            return whereLambdas;
+        }
+
+        private static Dictionary<string, TimeSearch> AddDateTimeRange_GetTimeDict<TSearchModel>(TSearchModel searchModel, string[] props)
+        {
             //key : 字段 value : 开始时间(包含), 结束时间(不含)
             var timeDict = new Dictionary<string, TimeSearch>();
 
@@ -831,7 +840,21 @@ namespace EntityToSqlWhereClauseConfig
                 timeDict.Remove(key);
             }
             #endregion
+            return timeDict;
+        }
 
+        /// <summary>
+        /// 处理时间精度
+        /// </summary>
+        /// <param name="timeDict"></param>
+        private static void Get_AddDateTimeRange_DealTimeDict(Dictionary<string, TimeSearch> timeDict, Func<TimeRange> rangeFunc)
+        {
+            var 主动查询时间精度 = rangeFunc == null;
+            TimeRange? FixedRange = null;
+            if (!主动查询时间精度)
+            {
+                FixedRange = rangeFunc.Invoke();
+            }
             foreach (var key in timeDict.Keys)
             {
                 var times = timeDict[key];
@@ -840,7 +863,7 @@ namespace EntityToSqlWhereClauseConfig
                     if (times.TimeRange[0] != null)
                     {
                         DateTime time = times.TimeRange[0].Value;
-                        var range = 获得查询的时间精度(time);
+                        var range = 主动查询时间精度 ? 获得查询的时间精度(time) : FixedRange.Value;
                         times.TimeRange[1] = GetTimeByTimeRange(range, time);
                     }
                 }
@@ -862,13 +885,15 @@ namespace EntityToSqlWhereClauseConfig
 
                         if (d1 == d2)//效果等价于 只有一个字段 给查询的时间范围  
                         {
-                            var range = 获得查询的时间精度(d1);
+
+                            var range = 主动查询时间精度 ? 获得查询的时间精度(d1) : FixedRange.Value;
                             d2 = GetTimeByTimeRange(range, d1);
                         }
                         else
                         {
-                            var range = 获得查询的时间精度(d2);
+                            var range = 主动查询时间精度 ? 获得查询的时间精度(d2) : FixedRange.Value;
                             d2 = GetTimeByTimeRange(range, d2);
+
                         }
 
                         times.TimeRange[0] = d1;
@@ -877,14 +902,17 @@ namespace EntityToSqlWhereClauseConfig
                     else if (times.TimeRange[0] == null || times.TimeRange[1] != null)//只有 end 有值
                     {
                         var endTime = (DateTime)times.TimeRange[1];
-                        var range = 获得查询的时间精度(endTime);
-                        var newEndTime = GetTimeByTimeRange(range, endTime);
+                        var range = 主动查询时间精度 ? 获得查询的时间精度(endTime) : FixedRange.Value;
+                        var newEndTime = GetTimeByTimeRange((TimeRange)range, endTime);
                         times.TimeRange[1] = newEndTime;
                     }
                 }
             }
+        }
 
-
+        private static List<Expression<Func<TEntity, bool>>> AddDateTimeRange_GetWhereLambdas<TEntity>(Dictionary<string, TimeSearch> timeDict)
+        {
+            var type_TEntity = typeof(TEntity);
             //根据 TimeRange  创建表达式(一共是下面4钟情况)
             //isPair值    开始         结束
             //false      有值(包含)     有值(不含)
@@ -952,8 +980,42 @@ namespace EntityToSqlWhereClauseConfig
                     }
                 }
             }
+
             return whereLambdas;
         }
+
+        #region 指定range的
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <typeparam name="TSearchModel"></typeparam>
+        /// <param name="range">当为秒的时候需要调用这个方法</param>
+        /// <param name="searchModel"></param>
+        /// <param name="props"></param>
+        /// <returns></returns>
+        public static List<Expression<Func<TEntity, bool>>> AddDateTimeRange<TEntity, TSearchModel>(TimeRange range, TSearchModel searchModel, List<string> props)
+        {
+            return HaveCount(props)
+                ? AddDateTimeRange<TEntity, TSearchModel>(range, searchModel, props.ToArray())
+                : Default<TEntity>();
+        }
+
+        public static List<Expression<Func<TEntity, bool>>> AddDateTimeRange<TEntity, TSearchModel>(TimeRange range, TSearchModel searchModel, params string[] props)
+        {
+            if (!HaveCount(props))
+            {
+                return Default<TEntity>();
+            }
+
+            var timeDict = AddDateTimeRange_GetTimeDict(searchModel, props);
+
+            Get_AddDateTimeRange_DealTimeDict(timeDict, () => range);
+
+            var whereLambdas = AddDateTimeRange_GetWhereLambdas<TEntity>(timeDict);
+            return whereLambdas;
+        } 
+        #endregion
 
         /// <summary>
         /// 根据 range  获得结束时间
@@ -987,7 +1049,7 @@ namespace EntityToSqlWhereClauseConfig
             return endTime;
         }
 
-        private enum TimeRange
+        public enum TimeRange
         {
             //None,
             /// <summary>
@@ -1008,31 +1070,51 @@ namespace EntityToSqlWhereClauseConfig
             Second,
         }
 
+        /// <summary>
+        /// 目前该方法的唯一问题: 时间精度为 Second 时, 这个方法并不能返回你要的精度
+        /// d1:2022-1-1 9:0:0
+        /// d2:2022-1-1 9:1:0  此时 返回的  精度是 Minute
+        /// 
+        /// d1:2022-1-1 0:0:0
+        /// d2:2022-1-1 1:0:0  此时 返回的  精度是 Hour
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns></returns>
         private static TimeRange 获得查询的时间精度(DateTime time)
         {
-            TimeRange range;
-            if (time.Hour == 0 && time.Minute == 0 && time.Second == 0)
+            if (time.Hour == 0)
             {
-                range = TimeRange.Day;
-            }
-            else if (time.Hour != 0 && time.Minute == 0 && time.Second == 0)
-            {
-                range = TimeRange.Hour;
-            }
-            else if (time.Hour != 0 && time.Minute != 0 && time.Second == 0)
-            {
-                range = TimeRange.Minute;
-            }
-            else if (time.Hour != 0 && time.Minute != 0 && time.Second != 0)
-            {
-                range = TimeRange.Second;
+                if (time.Minute == 0)
+                {
+                    if (time.Second == 0)
+                    {
+                        return TimeRange.Day;
+                    }
+                }
             }
             else
             {
-                throw new Exceptions.EntityToSqlWhereCaluseConfigException("此片段逻辑有误,需要修改代码");
+                if (time.Minute == 0)
+                {
+                    if (time.Second == 0)
+                    {
+                        return TimeRange.Hour;
+                    }
+                }
+                else
+                {
+                    if (time.Second == 0)
+                    {
+                        return TimeRange.Minute;
+                    }
+                    else
+                    {
+                        return TimeRange.Second;
+                    }
+                }
             }
 
-            return range;
+            throw new Exception("此片段逻辑有误,需要修改代码");
         }
 
         #endregion
