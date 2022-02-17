@@ -111,7 +111,8 @@ namespace EntityToSqlWhereClauseConfig.Test
         [TestMethod]
         public void UseDynamic()
         {
-            var searchModel = new
+            //针对  People  的匿名类 
+            var searchModel = new /*People*/
             {
                 //Id = 1,
                 Id = "1,2",
@@ -122,7 +123,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
             };
 
-            var whereLambda = searchModel.CrateWhereLambda((People p) => { });
+            var whereLambda = searchModel.CrateWhereLambda((People p) => { }); //这个 People 类型 和上面的匿名类型有关联的
 
             whereLambda[SearchType.like] = new List<string>
             {
@@ -153,13 +154,14 @@ namespace EntityToSqlWhereClauseConfig.Test
         [TestMethod]
         public void UseDynamic_Test2()
         {
-            var searchModel = new
+            //针对  People  的匿名类 
+            var searchModel = new /*People*/
             {
                 //IsDel = 0,
                 Name = (string)null,
             };
 
-            var whereLambda = searchModel.CrateWhereLambda((People p) => { });
+            var whereLambda = searchModel.CrateWhereLambda((People p) => { });//这个 People 类型 和上面的匿名类型有关联的
 
             whereLambda[SearchType.like] = new List<string>
             {
