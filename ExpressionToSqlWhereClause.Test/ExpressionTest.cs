@@ -16,6 +16,58 @@ namespace ExpressionToSqlWhereClause.Test
     {
 
         [TestMethod]
+        public void 获得sql_不使用sql参数()
+        {
+            var input = new PriceInfoInput()
+            {
+                Product_ID = 1,
+                Production = "aa",
+            };
+
+            Expression<Func<PriceInfoInput, bool>> expression = null;
+            //todo:支持Nullbale<>
+            //expression = expression
+            //    .WhereIf(input.Product_ID.HasValue, a => a.Product_ID == input.Product_ID.Value)
+            //    .WhereIf(!string.IsNullOrEmpty(input.Production), a => a.Production.Contains(input.Production))
+            //    .WhereIf(input.Unit.HasValue, a => a.Unit == input.Unit.Value)
+            //    .WhereIf(!string.IsNullOrEmpty(input.Unit_Name), a => a.Unit_Name.Contains(input.Unit_Name))
+            //    .WhereIf(input.Price_Type.HasValue, a => a.Price_Type == input.Price_Type.Value)
+            //    .WhereIf(!string.IsNullOrEmpty(input.Price_Type_Name), a => a.Price_Type_Name.Contains(input.Price_Type_Name))
+            //    .WhereIf(input.Price_Trend.HasValue, a => a.Price_Trend == input.Price_Trend.Value)
+            //    .WhereIf(!string.IsNullOrEmpty(input.Price_Trend_Name), a => a.Price_Trend_Name.Contains(input.Price_Trend_Name))
+            //    .WhereIf(input.Fee_Type.HasValue, a => a.Fee_Type == input.Fee_Type.Value)
+            //    .WhereIf(!string.IsNullOrEmpty(input.Fee_Type_Name), a => a.Fee_Type_Name.Contains(input.Fee_Type_Name))
+            //    .WhereIf(input.Log_Type.HasValue, a => a.Log_Type == input.Log_Type.Value)
+            //    .WhereIf(!string.IsNullOrEmpty(input.Log_Type_Name), a => a.Log_Type_Name.Contains(input.Log_Type_Name))
+            //    .WhereIf(!string.IsNullOrEmpty(input.Remarks), a => a.Remarks.Contains(input.Remarks))
+            //    .WhereIf(input.CreateUserID.HasValue, a => a.CreateUserID == input.CreateUserID.Value)
+            //    .WhereIf(input.DateStart.HasValue, a => a.Date >= input.DateStart)
+            //    .WhereIf(input.DateEnd.HasValue, a => a.Date <= input.DateEnd)
+
+            expression = expression
+               .WhereIf(input.Product_ID.HasValue, a => a.Product_ID == input.Product_ID)
+               .WhereIf(!string.IsNullOrEmpty(input.Production), a => a.Production.Contains(input.Production))
+               .WhereIf(input.Unit.HasValue, a => a.Unit == input.Unit)
+               .WhereIf(!string.IsNullOrEmpty(input.Unit_Name), a => a.Unit_Name.Contains(input.Unit_Name))
+               .WhereIf(input.Price_Type.HasValue, a => a.Price_Type == input.Price_Type)
+               .WhereIf(!string.IsNullOrEmpty(input.Price_Type_Name), a => a.Price_Type_Name.Contains(input.Price_Type_Name))
+               .WhereIf(input.Price_Trend.HasValue, a => a.Price_Trend == input.Price_Trend)
+               .WhereIf(!string.IsNullOrEmpty(input.Price_Trend_Name), a => a.Price_Trend_Name.Contains(input.Price_Trend_Name))
+               .WhereIf(input.Fee_Type.HasValue, a => a.Fee_Type == input.Fee_Type)
+               .WhereIf(!string.IsNullOrEmpty(input.Fee_Type_Name), a => a.Fee_Type_Name.Contains(input.Fee_Type_Name))
+               .WhereIf(input.Log_Type.HasValue, a => a.Log_Type == input.Log_Type)
+               .WhereIf(!string.IsNullOrEmpty(input.Log_Type_Name), a => a.Log_Type_Name.Contains(input.Log_Type_Name))
+               .WhereIf(!string.IsNullOrEmpty(input.Remarks), a => a.Remarks.Contains(input.Remarks))
+               .WhereIf(input.CreateUserID.HasValue, a => a.CreateUserID == input.CreateUserID)
+               .WhereIf(input.DateStart.HasValue, a => a.Date >= input.DateStart)
+               .WhereIf(input.DateEnd.HasValue, a => a.Date <= input.DateEnd)
+            ;
+            (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
+
+            int cc = 3;
+
+        }
+        [TestMethod]
         public void string为null值()
         {
             {

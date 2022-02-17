@@ -18,6 +18,15 @@ namespace ExpressionToSqlWhereClause.Test.ExtensionMethod
 
     public static class ExpressionExtensions
     {
+        public static Expression<Func<T, bool>> WhereIf<T>(this Expression<Func<T, bool>> exp, bool condition, Expression<Func<T, bool>> predicate)
+        {
+            if (exp == null)
+            {
+                return predicate;
+            }
+            return condition ? exp.And(predicate) : exp;
+        }
+
         public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> first, Expression<Func<T, bool>> second)
             => first.Compose(second, Expression.AndAlso);
 
