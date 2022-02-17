@@ -98,7 +98,7 @@ namespace ExpressionToSqlWhereClause
             var param = adhesive.GetParameter(parametersKey);
             param.Symbol = symbol;
             param.Value = value;
-            param.SqlClause = $"{fieldName} {symbol} {parametersKey}";
+            param.SqlClause = $"{fieldName} {symbol} ({parametersKey})";
             return param;
         }
 

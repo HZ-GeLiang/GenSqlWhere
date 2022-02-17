@@ -9,6 +9,7 @@ namespace EntityToSqlWhereClauseConfig.Test
     [TestClass]
     public class GenSqlWhereDemo_sqlFun
     {
+        //todo:
         //[TestMethod]
         //public void Month_多个月()
         //{
@@ -31,7 +32,7 @@ namespace EntityToSqlWhereClauseConfig.Test
         [TestMethod]
         public void Month_in_一个月_list类型()
         {
-            var searchModel = new Input_sqlFun_Month()
+            var searchModel = new Input_sqlFun_MonthIn1()
             {
                 DataCreatedAt = 1
             };
@@ -72,6 +73,7 @@ namespace EntityToSqlWhereClauseConfig.Test
             Assert.AreEqual("Month(DataCreatedAt) <> @Month", whereClause);
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
+
         [TestMethod]
         public void Month_eq_一个月()
         {
