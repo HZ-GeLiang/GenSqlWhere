@@ -25,7 +25,7 @@ namespace ExpressionToSqlWhereClause.Test
                 Production = "aa",
             };
 
-            Expression<Func<PriceInfoInput, bool>> expression = null;
+            //Expression<Func<PriceInfoInput, bool>> expression = null;
             //todo:支持Nullbale<>
             //expression = expression
             //    .WhereIf(input.Product_ID.HasValue, a => a.Product_ID == input.Product_ID.Value)
@@ -45,7 +45,7 @@ namespace ExpressionToSqlWhereClause.Test
             //    .WhereIf(input.DateStart.HasValue, a => a.Date >= input.DateStart)
             //    .WhereIf(input.DateEnd.HasValue, a => a.Date <= input.DateEnd)
 
-            expression = expression
+            var expression = default(Expression<Func<PriceInfoInput, bool>>)
                .WhereIf(input.Product_ID.HasValue, a => a.Product_ID == input.Product_ID)
                .WhereIf(!string.IsNullOrEmpty(input.Production), a => a.Production.Contains(input.Production))
                .WhereIf(input.Unit.HasValue, a => a.Unit == input.Unit)
@@ -72,12 +72,10 @@ namespace ExpressionToSqlWhereClause.Test
             }
 
             {
-
                 (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
                 var sql2 = EntityToSqlWhereClauseConfig.Helper.WhereClauseHelper.MergeParametersIntoSql(sql, param);
                 Assert.AreEqual(sql2, "Product_ID = 1 And Production Like '%aa%'");
             }
-            int cc = 3;
 
         }
         [TestMethod]
