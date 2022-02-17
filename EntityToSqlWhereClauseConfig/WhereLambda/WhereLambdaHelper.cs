@@ -847,13 +847,13 @@ namespace EntityToSqlWhereClauseConfig
         /// 处理时间精度
         /// </summary>
         /// <param name="timeDict"></param>
-        private static void Get_AddDateTimeRange_DealTimeDict(Dictionary<string, TimeSearch> timeDict, Func<TimeRange> rangeFunc)
+        private static void Get_AddDateTimeRange_DealTimeDict(Dictionary<string, TimeSearch> timeDict, Func<TimeRange> timeRangeFunc)
         {
-            var 主动查询时间精度 = rangeFunc == null;
-            TimeRange? FixedRange = null;
+            var 主动查询时间精度 = timeRangeFunc == null;
+            TimeRange? fixedTimeRange = null;
             if (!主动查询时间精度)
             {
-                FixedRange = rangeFunc.Invoke();
+                fixedTimeRange = timeRangeFunc.Invoke();
             }
             foreach (var key in timeDict.Keys)
             {
@@ -863,7 +863,7 @@ namespace EntityToSqlWhereClauseConfig
                     if (times.TimeRange[0] != null)
                     {
                         DateTime time = times.TimeRange[0].Value;
-                        var range = 主动查询时间精度 ? 获得查询的时间精度(time) : FixedRange.Value;
+                        var range = 主动查询时间精度 ? 获得查询的时间精度(time) : fixedTimeRange.Value;
                         times.TimeRange[1] = GetTimeByTimeRange(range, time);
                     }
                 }
@@ -886,12 +886,12 @@ namespace EntityToSqlWhereClauseConfig
                         if (d1 == d2)//效果等价于 只有一个字段 给查询的时间范围  
                         {
 
-                            var range = 主动查询时间精度 ? 获得查询的时间精度(d1) : FixedRange.Value;
+                            var range = 主动查询时间精度 ? 获得查询的时间精度(d1) : fixedTimeRange.Value;
                             d2 = GetTimeByTimeRange(range, d1);
                         }
                         else
                         {
-                            var range = 主动查询时间精度 ? 获得查询的时间精度(d2) : FixedRange.Value;
+                            var range = 主动查询时间精度 ? 获得查询的时间精度(d2) : fixedTimeRange.Value;
                             d2 = GetTimeByTimeRange(range, d2);
 
                         }
@@ -902,7 +902,7 @@ namespace EntityToSqlWhereClauseConfig
                     else if (times.TimeRange[0] == null || times.TimeRange[1] != null)//只有 end 有值
                     {
                         var endTime = (DateTime)times.TimeRange[1];
-                        var range = 主动查询时间精度 ? 获得查询的时间精度(endTime) : FixedRange.Value;
+                        var range = 主动查询时间精度 ? 获得查询的时间精度(endTime) : fixedTimeRange.Value;
                         var newEndTime = GetTimeByTimeRange((TimeRange)range, endTime);
                         times.TimeRange[1] = newEndTime;
                     }
