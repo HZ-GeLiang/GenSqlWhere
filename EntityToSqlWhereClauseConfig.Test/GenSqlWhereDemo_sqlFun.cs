@@ -18,7 +18,7 @@ namespace EntityToSqlWhereClauseConfig.Test
         //    {
         //        DataCreatedAt = "1,2"
         //    };
-        //    var whereLambda = searchModel.CrateWhereLambda((People p) => { });
+        //    var whereLambda = searchModel.CrateWhereLambda((Input_sqlFun_Month2 p) => { });
         //    whereLambda[SearchType.@in] = new List<string>
         //    {
         //        nameof(searchModel.DataCreatedAt),
@@ -36,7 +36,7 @@ namespace EntityToSqlWhereClauseConfig.Test
             {
                 DataCreatedAt = 1
             };
-            var whereLambda = searchModel.CrateWhereLambda((People p) => { });
+            var whereLambda = searchModel.CrateWhereLambda((Input_sqlFun_MonthIn1 p) => { });
             whereLambda[SearchType.@in] = new List<string>
             {
                 nameof(searchModel.DataCreatedAt),
@@ -47,7 +47,8 @@ namespace EntityToSqlWhereClauseConfig.Test
 
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Month", 1);//Month()返回的是int ,所以1 是int类型的才对
-            Assert.AreEqual("Month(DataCreatedAt) In (@Month)", whereClause);
+            Assert.AreEqual("(Month(DataCreatedAt) In (@Month))", whereClause);
+            
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
 
@@ -59,7 +60,7 @@ namespace EntityToSqlWhereClauseConfig.Test
             {
                 DataCreatedAt = 1
             };
-            var whereLambda = searchModel.CrateWhereLambda((People p) => { });
+            var whereLambda = searchModel.CrateWhereLambda((Input_sqlFun_Month p) => { });
             whereLambda[SearchType.neq] = new List<string>
             {
                 nameof(searchModel.DataCreatedAt),
@@ -81,7 +82,7 @@ namespace EntityToSqlWhereClauseConfig.Test
             {
                 DataCreatedAt = 1
             };
-            var whereLambda = searchModel.CrateWhereLambda((People p) => { });
+            var whereLambda = searchModel.CrateWhereLambda((Input_sqlFun_Month p) => { });
             whereLambda[SearchType.eq] = new List<string>
             {
                 nameof(searchModel.DataCreatedAt),
