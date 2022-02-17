@@ -47,7 +47,7 @@ namespace EntityToSqlWhereClauseConfig.Test
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Month", 1);//Month()返回的是int ,所以1 是int类型的才对
             Assert.AreEqual("Month(DataCreatedAt) In (@Month)", whereClause);
-           DictionaryAssert.AreEqual(expectedParameters, parameters);
+            DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
 
 
@@ -70,7 +70,7 @@ namespace EntityToSqlWhereClauseConfig.Test
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Month", 1);//Month()返回的是int ,所以1 是int类型的才对
             Assert.AreEqual("Month(DataCreatedAt) <> @Month", whereClause);
-           DictionaryAssert.AreEqual(expectedParameters, parameters);
+            DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
         [TestMethod]
         public void Month_eq_一个月()
@@ -91,7 +91,7 @@ namespace EntityToSqlWhereClauseConfig.Test
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Month", 1);//Month()返回的是int ,所以1 是int类型的才对
             Assert.AreEqual("Month(DataCreatedAt) = @Month", whereClause);
-           DictionaryAssert.AreEqual(expectedParameters, parameters);
+            DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
     }
 }
