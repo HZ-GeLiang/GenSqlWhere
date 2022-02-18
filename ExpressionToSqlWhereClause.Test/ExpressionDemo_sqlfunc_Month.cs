@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace ExpressionToSqlWhereClause.Test
 {
     [TestClass]
-    public class ExpressionTest_sqlfun
+    public class ExpressionDemo_sqlfunc_Month
     {
         public void Test_Expression_compile()
         {

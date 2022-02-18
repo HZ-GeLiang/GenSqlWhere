@@ -18,8 +18,10 @@ namespace ExpressionToSqlWhereClause
         /// <param name="alias">别名</param>
         /// <param name="sqlAdapter">适配器</param>
         /// <returns></returns>
-        public static (string WhereClause, Dictionary<string, object> Parameters) ToWhereClause<T>(this Expression<Func<T, bool>> expression, Dictionary<string, string> alias = null, ISqlAdapter sqlAdapter = default)
-            where T : class
+        public static (string WhereClause, Dictionary<string, object> Parameters) ToWhereClause<T>(
+            this Expression<Func<T, bool>> expression,
+            Dictionary<string, string> alias = null, 
+            ISqlAdapter sqlAdapter = default) where T : class
         {
             if (expression == null)
             {
@@ -145,21 +147,6 @@ namespace ExpressionToSqlWhereClause
                 parameters.Add(key, parseResult.Adhesive.GetParameter(key).Value);
             }
             var result = (parseResult.WhereClause, parameters);
-            return result;
-        }
-
-        /// <summary>
-        /// 转换为Where子句(异步)
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="expression"></param>
-        /// <param name="alias"></param>
-        /// <param name="sqlAdapter"></param>
-        /// <returns></returns>
-        public static Task<(string WhereClause, Dictionary<string, object> Parameters)> ToWhereClauseAsync<T>(this Expression<Func<T, bool>> expression, Dictionary<string, string> alias = null, ISqlAdapter sqlAdapter = default)
-            where T : class
-        {
-            var result = Task.FromResult(expression.ToWhereClause(alias, sqlAdapter));
             return result;
         }
     }
