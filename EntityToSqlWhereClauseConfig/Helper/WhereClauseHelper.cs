@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -67,6 +68,31 @@ namespace EntityToSqlWhereClauseConfig.Helper
         public static string MergeParametersIntoSql(ValueTuple<string, Dictionary<string, object>> sqlAndParam)
             => MergeParametersIntoSql(sqlAndParam.Item1, sqlAndParam.Item2);
 
+
+        /// <summary>
+        /// 转换参数. 如转成 sqlserver 的参数等等
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="parameters"></param>
+        /// <param name="convertFunc">Func的参数:  string key  , object value , T 返回对象 </param>
+        /// <returns></returns>
+        public static T[] ConvertParameters<T>(Dictionary<string, object> parameters, Func<string, object, T> convertFunc)
+        {
+            if (parameters == null || convertFunc == null ||
+                parameters.Keys.Any())
+            {
+                return Array.Empty<T>();
+            }
+
+            T[] tArray = new T[parameters.Count];
+            int i = 0;
+            foreach (var key in parameters.Keys)
+            {
+                tArray[i] = convertFunc.Invoke(key, parameters[key]);
+                i++;
+            }
+            return tArray;
+        }
 
 
     }

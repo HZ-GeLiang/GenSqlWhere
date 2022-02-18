@@ -77,6 +77,7 @@ namespace ExpressionToSqlWhereClause.Test
                 Assert.AreEqual(sql2, "Product_ID = 1 And Production Like '%aa%'");
             }
 
+
         }
         [TestMethod]
         public void string为null值()
@@ -136,6 +137,12 @@ namespace ExpressionToSqlWhereClause.Test
             };
             CollectionAssert.AreEqual(Parameters, para);
 
+
+            //这个是   WhereClauseHelper.ConvertParameters 使用示例
+            var pms = WhereClauseHelper.ConvertParameters(Parameters, (key, val) =>
+            {
+                return new { ParameterName = key, Value = val };
+            });
         }
 
         [TestMethod]
