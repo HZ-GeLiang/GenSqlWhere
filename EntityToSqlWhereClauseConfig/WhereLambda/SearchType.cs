@@ -37,8 +37,9 @@ namespace EntityToSqlWhereClauseConfig
         @in,
 
         /// <summary>
-        /// 日期的区间(只接受日期),结束时间会在当前精度+1,然后使用 小于符号, 即: >=@xxx And < @xxx1
-        /// 1:有区间范围 [xxxStart, xxxEnd]=> 包含开始值,包含结束值
+        /// 日期的区间(只接受日期),
+        /// 结束时间会在当前精度+1(最小为秒, 然后秒的精度识别有问题), 然后使用 小于符号, 即: >=@xxx And < @xxx1
+        /// 1:有区间范围 [xxxStart, xxxEnd] => 包含开始值,包含结束值
         /// 2:没有区间范围  xxx =>(取当前时间精度: 如 当前这天, 当前这一小时, 当前这一分钟, 当前这一秒)
         /// </summary>
         datetimeRange,
