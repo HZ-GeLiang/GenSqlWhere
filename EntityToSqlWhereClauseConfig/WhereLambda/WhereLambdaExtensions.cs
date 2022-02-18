@@ -20,7 +20,7 @@ namespace EntityToSqlWhereClauseConfig
                 SearchType.eq => WhereLambdaHelper.AddEqual<TEntity, TSearchModel>(searchModel, props),
                 SearchType.neq => WhereLambdaHelper.AddNotEqual<TEntity, TSearchModel>(searchModel, props),
                 SearchType.@in => WhereLambdaHelper.AddIn<TEntity, TSearchModel>(searchModel, props),
-                SearchType.datetimeRange => WhereLambdaHelper.AddDateTimeRange<TEntity, TSearchModel>(searchModel, props),
+                SearchType.timeRange => WhereLambdaHelper.AddTimeRange<TEntity, TSearchModel>(searchModel, props),
                 SearchType.numberRange => WhereLambdaHelper.AddNumberRange<TEntity, TSearchModel>(searchModel, props),
                 SearchType.gt => WhereLambdaHelper.AddGt<TEntity, TSearchModel>(searchModel, props),
                 SearchType.ge => WhereLambdaHelper.AddGe<TEntity, TSearchModel>(searchModel, props),
@@ -41,10 +41,9 @@ namespace EntityToSqlWhereClauseConfig
             return new WhereLambda<TEntity, TSearchModel>(searchModel);
         }
 
-
         /// <summary>
         /// 适合TEntity ==  TSearchModel,
-        /// 这种方式的, 没法用dataRange 和 timeRange
+        /// 这种方式的, 没法用 timeRange
         /// </summary>
         /// <typeparam name="TSearchModel"></typeparam>
         /// <param name="searchModel"></param>

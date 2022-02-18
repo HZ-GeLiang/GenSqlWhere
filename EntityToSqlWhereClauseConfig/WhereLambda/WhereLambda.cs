@@ -51,7 +51,7 @@ namespace EntityToSqlWhereClauseConfig
             SearchType.none,
             SearchType.@in,
             SearchType.eq,
-            SearchType.datetimeRange,
+            SearchType.timeRange,
             SearchType.numberRange,
             SearchType.gt,
             SearchType.ge,

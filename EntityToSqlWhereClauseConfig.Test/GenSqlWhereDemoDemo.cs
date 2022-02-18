@@ -59,7 +59,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 nameof(searchModel.Sex),
             };
 
-            whereLambda[SearchType.datetimeRange] = new List<string>
+            whereLambda[SearchType.timeRange] = new List<string>
             {
                 nameof(searchModel.DataCreatedAtStart),
                 nameof(searchModel.DataCreatedAtEnd),
@@ -154,7 +154,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 nameof(searchModel.Sex),
             };
 
-            whereLambda[SearchType.datetimeRange] = new List<string>
+            whereLambda[SearchType.timeRange] = new List<string>
             {
                 nameof(searchModel.DataCreatedAtStart),
                 nameof(searchModel.DataCreatedAtEnd),
@@ -219,7 +219,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 nameof(searchModel.Sex),
             };
 
-            whereLambda[SearchType.datetimeRange] = new List<string>
+            whereLambda[SearchType.timeRange] = new List<string>
             {
                 nameof(searchModel.DataCreatedAtStart),
                 nameof(searchModel.DataCreatedAtEnd),
