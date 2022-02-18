@@ -30,7 +30,7 @@ namespace ExpressionToSqlWhereClause.Test
             {
                 { "@MonthIn", "5,6" }
             };
-            Assert.AreEqual("Month(CreateAt) In @MonthIn", whereClause);
+            Assert.AreEqual("((Month(CreateAt) In (@MonthIn)))", whereClause);
 
             DictionaryAssert.AreEqual(expectedParameters, parameters);
 
@@ -48,7 +48,7 @@ namespace ExpressionToSqlWhereClause.Test
             {
                 { "@MonthIn", "5" }
             };
-            Assert.AreEqual("Month(CreateAt) In @MonthIn", whereClause);
+            Assert.AreEqual("((Month(CreateAt) In (@MonthIn)))", whereClause);
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
 

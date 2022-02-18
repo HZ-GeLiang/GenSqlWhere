@@ -539,7 +539,7 @@ namespace ExpressionToSqlWhereClause.Test
             List<string> values = new List<string> { "a", "b" };
             Expression<Func<User, bool>> expression = u => values.Contains(u.Name);
             (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause(sqlAdapter: new TestSqlAdapter());
-            Assert.AreEqual("Name In @Name", whereClause);
+            Assert.AreEqual("(Name In (@Name))", whereClause);
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>
             {
                 { "@Name", "a,b" }
@@ -553,7 +553,7 @@ namespace ExpressionToSqlWhereClause.Test
             string[] values = new string[] { "a", "b" };
             Expression<Func<User, bool>> expression = u => values.Contains(u.Name);
             (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause(sqlAdapter: new TestSqlAdapter());
-            Assert.AreEqual("Name In @Name", whereClause);
+            Assert.AreEqual("(Name In (@Name))", whereClause);
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>
             {
                 { "@Name", "a,b" }

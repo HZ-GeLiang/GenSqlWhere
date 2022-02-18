@@ -122,7 +122,14 @@ namespace ExpressionToSqlWhereClause
                         var param = adhesive.GetParameter(parametersKey);
 
                         param.Symbol = symbol;
-                        param.SqlClause = $"{clauseLeft} {symbol} {parametersKey}";
+                        if (symbol == SqlKeys.@in)
+                        {
+                            param.SqlClause = $"{clauseLeft} {symbol} ({parametersKey})";
+                        }
+                        else
+                        {
+                            param.SqlClause = $"{clauseLeft} {symbol} {parametersKey}";
+                        }
                         param.IsDbFunction = true;
 
                         return new ParseResult()

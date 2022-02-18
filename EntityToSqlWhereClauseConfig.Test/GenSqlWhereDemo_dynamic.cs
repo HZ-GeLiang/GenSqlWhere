@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using EntityToSqlWhereClauseConfig.Test.input;
+
 using ExpressionToSqlWhereClause;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
