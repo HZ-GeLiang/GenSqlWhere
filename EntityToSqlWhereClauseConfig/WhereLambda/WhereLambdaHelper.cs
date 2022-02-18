@@ -333,16 +333,22 @@ namespace EntityToSqlWhereClauseConfig
                 if (attr_SqlFunc is MonthAttribute)
                 {
                     //GetLambda_MonthAttribute_Equal
+
                     ParameterExpression parameterExpression = Expression.Parameter(type_TEntity, "u");
-                    var leftP2 = typeof(DbFunctions).GetMethod("Month", new Type[] { typeof(DateTime) });
-                    var leftP3 = new Expression[] { Expression.Property(parameterExpression, propertyName) };
-                    var left = Expression.Call(null, leftP2, leftP3);
+                    //                  DbFunctions 的          Month(                      DateTime dt) 
+                    var leftP2 = typeof(DbFunctions).GetMethod("Month", new Type[] { typeof(DateTime) }); //SqlFunc.DbFunctions.Month(DateTime dt) 
+                                                                                                          //  type_TEntity 的 propertyName 的 类型 必须 是   DateTime
+                    var leftP3 = new Expression[] { Expression.Property(parameterExpression, propertyName) }; // u.CreateAt
+                    var left = Expression.Call(null, leftP2, leftP3); //SqlFunc.DbFunctions.Month(u.CreateAt)
+
+
                     //Sql 的 month() 返回的是int 
                     //https://docs.microsoft.com/zh-cn/sql/t-sql/functions/month-transact-sql?view=sql-server-2017
                     var right = Expression.Constant(Convert.ToInt32(propertyValue), typeof(int));
                     var body = Expression.Equal(left, right);
                     var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExpression);
                     whereLambdas.Add(lambda);
+
                 }
             }
             else

@@ -82,6 +82,7 @@ namespace EntityToSqlWhereClauseConfig.Test
             {
                 DataCreatedAt = 1
             };
+            //var whereLambda = searchModel.CrateWhereLambda((People p) => { });
             var whereLambda = searchModel.CrateWhereLambda((Input_sqlFun_Month p) => { });
             whereLambda[SearchType.eq] = new List<string>
             {
