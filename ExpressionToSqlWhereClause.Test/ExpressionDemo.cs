@@ -13,7 +13,7 @@ namespace ExpressionToSqlWhereClause.Test
 
 
     [TestClass]
-    public class ExpressionTest
+    public class ExpressionDemo
     {
 
         [TestMethod]
@@ -79,27 +79,6 @@ namespace ExpressionToSqlWhereClause.Test
 
 
         }
-        [TestMethod]
-        public void string为null值()
-        {
-            {
-                Expression<Func<Student, bool>> expOr = a => a.Url == null;
-                (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause();
-                Assert.AreEqual(WhereClause, "Url Is Null");
-
-                var para = new Dictionary<string, object>();
-                CollectionAssert.AreEqual(Parameters, para);
-            }
-            {
-                Expression<Func<Student, bool>> expOr = a => a.Url != null;
-                (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause();
-                Assert.AreEqual(WhereClause, "Url Is Not Null");
-
-                var para = new Dictionary<string, object>();
-                CollectionAssert.AreEqual(Parameters, para);
-            }
-        }
-
 
         [TestMethod]
         public void boolean值的写法1()
@@ -146,74 +125,6 @@ namespace ExpressionToSqlWhereClause.Test
         }
 
         [TestMethod]
-        public void 别名()
-        {
-            Expression<Func<Student_Alias, bool>> expOr = a => a.Id == 1 || a.Id == 2;
-
-            var dict = new Dictionary<string, string>()
-            {
-                { "Id", "RouteId" }
-            };
-            (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause(alias: dict);
-
-            Assert.AreEqual(WhereClause, "(((RouteId = @Id)) Or ((RouteId = @Id1)))");
-
-            var para = new Dictionary<string, object>()
-            {
-                {"@Id", 1},
-                {"@Id1", 2},
-            };
-            CollectionAssert.AreEqual(Parameters, para);
-        }
-
-        [TestMethod]
-        public void 别名2()
-        {
-            Expression<Func<Student, bool>> expOr = a => a.Id == 1 || a.Id == 2;
-            expOr = expOr.AndIf(true, () => { return x => x.IsDel == true; }); // 和  () => { return x => x.IsDel; } 不一样
-
-            var dict = new Dictionary<string, string>()
-            {
-                { "Id", "RouteId" }
-            };
-            (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause(alias: dict);
-
-            Assert.AreEqual(WhereClause, "((((RouteId = @Id)) Or ((RouteId = @Id1))) And ((IsDel = @IsDel)))");
-
-            var para = new Dictionary<string, object>()
-            {
-                {"@Id", 1},
-                {"@Id1", 2},
-                {"@IsDel", true},
-            };
-            CollectionAssert.AreEqual(Parameters, para);
-        }
-
-        [TestMethod]
-        public void 别名3()
-        {
-            Expression<Func<Student, bool>> expOr = a => a.Id == 1 || a.Id == 2;
-            expOr = expOr.AndIf(true, () => { return x => x.IsDel == true; }); // 和  () => { return x => x.IsDel; } 不一样
-
-            var dict = new Dictionary<string, string>()
-            {
-                { "Id", "RouteId" },
-                { "IsDel", "b.IsDel" }
-            };
-            (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause(alias: dict);
-
-            Assert.AreEqual(WhereClause, "((((RouteId = @Id)) Or ((RouteId = @Id1))) And ((b.IsDel = @IsDel)))");
-
-            var para = new Dictionary<string, object>()
-            {
-                {"@Id", 1},
-                {"@Id1", 2},
-                {"@IsDel", true},
-            };
-            CollectionAssert.AreEqual(Parameters, para);
-        }
-
-        [TestMethod]
         public void ValidateString()
         {
             Expression<Func<User, bool>> expression = u => u.Name != "aa";
@@ -224,7 +135,6 @@ namespace ExpressionToSqlWhereClause.Test
             Assert.AreEqual("Name <> @Name", sql);
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
-
 
         [TestMethod]
         public void ValidateBool()
@@ -238,7 +148,18 @@ namespace ExpressionToSqlWhereClause.Test
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
 
+        [TestMethod]
+        public void ValidateBool2()
+        {
+            Expression<Func<User, bool>> expression = u => u.Sex && u.Name.StartsWith("Foo");
+            (string sql, Dictionary<string, object> parameters) = expression.ToWhereClause(null, new TestSqlAdapter());
+            Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
+            expectedParameters.Add("@Sex", true);
+            expectedParameters.Add("@Name", "Foo%");
+            Assert.AreEqual("Sex = @Sex And Name Like @Name", sql);
+            DictionaryAssert.AreEqual(expectedParameters, parameters);
 
+        }
         [TestMethod]
         public void ValidateBool3()
         {
@@ -263,18 +184,6 @@ namespace ExpressionToSqlWhereClause.Test
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
 
-        [TestMethod]
-        public void ValidateBool2()
-        {
-            Expression<Func<User, bool>> expression = u => u.Sex && u.Name.StartsWith("Foo");
-            (string sql, Dictionary<string, object> parameters) = expression.ToWhereClause(null, new TestSqlAdapter());
-            Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
-            expectedParameters.Add("@Sex", true);
-            expectedParameters.Add("@Name", "Foo%");
-            Assert.AreEqual("Sex = @Sex And Name Like @Name", sql);
-            DictionaryAssert.AreEqual(expectedParameters, parameters);
-
-        }
 
         [TestMethod]
         public void ValidateConstant()
@@ -501,6 +410,7 @@ namespace ExpressionToSqlWhereClause.Test
         }
 
         [TestMethod]
+        //一元
         public void ValidateUnary()
         {
             Assert.ThrowsException<NotSupportedException>(() =>

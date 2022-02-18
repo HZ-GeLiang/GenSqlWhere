@@ -13,14 +13,11 @@ namespace ExpressionToSqlWhereClause
     /// </summary>
     internal static class WhereClauseParser
     {
-
         internal static (string WhereClause, WhereClauseAdhesive Adhesive) Parse(
             Expression body,
             Dictionary<string, string> aliasDict,
             ISqlAdapter sqlAdapter = default)
         {
-            aliasDict ??= new Dictionary<string, string>(0);
-
             var adhesive = new WhereClauseAdhesive(sqlAdapter);
 
             if (body is BinaryExpression binaryExpression)
