@@ -11,7 +11,7 @@ namespace EntityToSqlWhereClauseConfig.Test.input
     }
     #region 待实现
 
-    //todo:
+    //todo: 提供demo
 
     public class Input_sqlFun_MonthIn1
     {

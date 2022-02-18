@@ -10,8 +10,9 @@ namespace ExpressionToSqlWhereClause.SqlFunc
     {
         //[DbFunctionAttribute("Month({0})")]
         [DbFunctionAttribute("Month[{0}]")]
-        public static int Month(DateTime dt) { throw new InvalidOperationException(nameof(Month)); }
+        public static int Month(DateTime dt) { throw new InvalidOperationException(nameof(Month)); } // Expression 用 
 
+ 
         [DbFunctionAttribute("Month[{0}]")]
         public static List<int> MonthIn(DateTime dt) { throw new InvalidOperationException(nameof(MonthIn)); }
 
