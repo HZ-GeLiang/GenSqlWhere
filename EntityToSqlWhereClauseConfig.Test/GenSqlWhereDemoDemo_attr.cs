@@ -14,10 +14,10 @@ namespace EntityToSqlWhereClauseConfig.Test
         [SearchType(SearchType.@in)] public string Sex { get; set; }
         [SearchType(SearchType.eq)] public bool IsDel { get; set; }
         [SearchType(SearchType.like)] public string Data_Remark { get; set; }
-        [SearchType(SearchType.datetimeRange)] public DateTime? DataCreatedAtStart { get; set; }
-        [SearchType(SearchType.datetimeRange)] public DateTime? DataCreatedAtEnd { get; set; }
-        [SearchType(SearchType.datetimeRange)] public DateTime? DataUpdatedAtStart { get; set; }
-        [SearchType(SearchType.datetimeRange)] public DateTime? DataUpdatedAtEnd { get; set; }
+        [SearchType(SearchType.timeRange)] public DateTime? DataCreatedAtStart { get; set; }
+        [SearchType(SearchType.timeRange)] public DateTime? DataCreatedAtEnd { get; set; }
+        [SearchType(SearchType.timeRange)] public DateTime? DataUpdatedAtStart { get; set; }
+        [SearchType(SearchType.timeRange)] public DateTime? DataUpdatedAtEnd { get; set; }
     }
 
 

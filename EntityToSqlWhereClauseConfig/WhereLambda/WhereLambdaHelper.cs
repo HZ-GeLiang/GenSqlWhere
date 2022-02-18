@@ -719,41 +719,41 @@ namespace EntityToSqlWhereClauseConfig
 
         #endregion
 
-        #region AddDateTimeRange
+        #region AddTimeRange
 
         internal class TimeSearch
         {
             public string Prop { get; set; }
 
-            public DateTime?[] TimeRange { get; set; }
+            public DateTime?[] StartAndEnd { get; set; }
 
             public bool? IsPair { get; set; }
 
         }
 
-        public static List<Expression<Func<TEntity, bool>>> AddDateTimeRange<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
+        public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
         {
             return HaveCount(props)
-                ? AddDateTimeRange<TEntity, TSearchModel>(searchModel, props.ToArray())
+                ? AddTimeRange<TEntity, TSearchModel>(searchModel, props.ToArray())
                 : Default<TEntity>();
         }
 
-        public static List<Expression<Func<TEntity, bool>>> AddDateTimeRange<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
+        public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
         {
             if (!HaveCount(props))
             {
                 return Default<TEntity>();
             }
 
-            var timeDict = AddDateTimeRange_GetTimeDict(searchModel, props);
+            var timeDict = AddTimeRange_GetTimeDict(searchModel, props);
 
-            Get_AddDateTimeRange_DealTimeDict(timeDict, null);
+            Get_TimePeriode(timeDict, null);
 
-            var whereLambdas = AddDateTimeRange_GetWhereLambdas<TEntity>(timeDict);
+            var whereLambdas = AddTimeRange_GetWhereLambdas<TEntity>(timeDict);
             return whereLambdas;
         }
 
-        private static Dictionary<string, TimeSearch> AddDateTimeRange_GetTimeDict<TSearchModel>(TSearchModel searchModel, string[] props)
+        private static Dictionary<string, TimeSearch> AddTimeRange_GetTimeDict<TSearchModel>(TSearchModel searchModel, string[] props)
         {
             //key : 字段 value : 开始时间(包含), 结束时间(不含)
             var timeDict = new Dictionary<string, TimeSearch>();
@@ -778,10 +778,10 @@ namespace EntityToSqlWhereClauseConfig
                     var key = prop.RemoveSuffix("Start");
                     if (!timeDict.ContainsKey(key))
                     {
-                        timeDict.Add(key, new TimeSearch() { Prop = key, TimeRange = new DateTime?[2] });
+                        timeDict.Add(key, new TimeSearch() { Prop = key, StartAndEnd = new DateTime?[2] });
                     }
 
-                    timeDict[key].TimeRange[0] = (DateTime?)value;
+                    timeDict[key].StartAndEnd[0] = (DateTime?)value;
                     if (timeDict[key].IsPair == null)
                     {
                         timeDict[key].IsPair = true;
@@ -799,10 +799,10 @@ namespace EntityToSqlWhereClauseConfig
                     var key = prop.RemoveSuffix("End");
                     if (!timeDict.ContainsKey(key))
                     {
-                        timeDict.Add(key, new TimeSearch() { Prop = key, TimeRange = new DateTime?[2] });
+                        timeDict.Add(key, new TimeSearch() { Prop = key, StartAndEnd = new DateTime?[2] });
                     }
 
-                    timeDict[key].TimeRange[1] = (DateTime?)value;
+                    timeDict[key].StartAndEnd[1] = (DateTime?)value;
                     if (timeDict[key].IsPair == null)
                     {
                         timeDict[key].IsPair = true;
@@ -820,9 +820,9 @@ namespace EntityToSqlWhereClauseConfig
                     var key = prop;
                     if (!timeDict.ContainsKey(key))
                     {
-                        timeDict.Add(key, new TimeSearch() { Prop = key, TimeRange = new DateTime?[2] });
+                        timeDict.Add(key, new TimeSearch() { Prop = key, StartAndEnd = new DateTime?[2] });
                     }
-                    timeDict[key].TimeRange[0] = (DateTime?)value;
+                    timeDict[key].StartAndEnd[0] = (DateTime?)value;
                     if (timeDict[key].IsPair == null)
                     {
                         timeDict[key].IsPair = false;
@@ -842,7 +842,7 @@ namespace EntityToSqlWhereClauseConfig
             {
                 var times = timeDict[key];
 
-                if (times.TimeRange[0] == null && times.TimeRange[1] == null)
+                if (times.StartAndEnd[0] == null && times.StartAndEnd[1] == null)
                 {
                     removeKey.Add(key);
                     continue;
@@ -857,36 +857,38 @@ namespace EntityToSqlWhereClauseConfig
             return timeDict;
         }
 
+
         /// <summary>
         /// 处理时间精度
         /// </summary>
         /// <param name="timeDict"></param>
-        private static void Get_AddDateTimeRange_DealTimeDict(Dictionary<string, TimeSearch> timeDict, Func<TimeRange> timeRangeFunc)
+        /// <param name="getTimePeriodFunc"></param>
+        private static void Get_TimePeriode(Dictionary<string, TimeSearch> timeDict, Func<TimePeriod> getTimePeriodFunc)
         {
-            var 主动查询时间精度 = timeRangeFunc == null;
-            TimeRange? fixedTimeRange = null;
-            if (!主动查询时间精度)
+            var 主动查询时间周期 = getTimePeriodFunc == null;
+            TimePeriod? fixedTimePeriod = null;
+            if (!主动查询时间周期)
             {
-                fixedTimeRange = timeRangeFunc.Invoke();
+                fixedTimePeriod = getTimePeriodFunc.Invoke();
             }
             foreach (var key in timeDict.Keys)
             {
                 var times = timeDict[key];
                 if (times.IsPair == false)
                 {
-                    if (times.TimeRange[0] != null)
+                    if (times.StartAndEnd[0] != null)
                     {
-                        DateTime time = times.TimeRange[0].Value;
-                        var range = 主动查询时间精度 ? 获得查询的时间精度(time) : fixedTimeRange.Value;
-                        times.TimeRange[1] = GetTimeByTimeRange(range, time);
+                        DateTime time = times.StartAndEnd[0].Value;
+                        var range = 主动查询时间周期 ? 获得查询的时间精度(time) : fixedTimePeriod.Value;
+                        times.StartAndEnd[1] = GetEndTime(range, time);
                     }
                 }
                 else
                 {
-                    if (times.TimeRange[0] != null && times.TimeRange[1] != null) //都有值 或 start值
+                    if (times.StartAndEnd[0] != null && times.StartAndEnd[1] != null) //都有值 或 start值
                     {
-                        DateTime d1 = times.TimeRange[0].Value;
-                        DateTime d2 = times.TimeRange[1].Value;
+                        DateTime d1 = times.StartAndEnd[0].Value;
+                        DateTime d2 = times.StartAndEnd[1].Value;
 
                         //SwopUtil.SwopAsc(ref d1, ref d2);
 
@@ -899,35 +901,34 @@ namespace EntityToSqlWhereClauseConfig
 
                         if (d1 == d2)//效果等价于 只有一个字段 给查询的时间范围  
                         {
-
-                            var range = 主动查询时间精度 ? 获得查询的时间精度(d1) : fixedTimeRange.Value;
-                            d2 = GetTimeByTimeRange(range, d1);
+                            var period = 主动查询时间周期 ? 获得查询的时间精度(d1) : fixedTimePeriod.Value;
+                            d2 = GetEndTime(period, d1);
                         }
                         else
                         {
-                            var range = 主动查询时间精度 ? 获得查询的时间精度(d2) : fixedTimeRange.Value;
-                            d2 = GetTimeByTimeRange(range, d2);
+                            var period = 主动查询时间周期 ? 获得查询的时间精度(d2) : fixedTimePeriod.Value;
+                            d2 = GetEndTime(period, d2);
 
                         }
 
-                        times.TimeRange[0] = d1;
-                        times.TimeRange[1] = d2;
+                        times.StartAndEnd[0] = d1;
+                        times.StartAndEnd[1] = d2;
                     }
-                    else if (times.TimeRange[0] == null && times.TimeRange[1] != null)//只有 end 有值
+                    else if (times.StartAndEnd[0] == null && times.StartAndEnd[1] != null)//只有 end 有值
                     {
-                        var endTime = (DateTime)times.TimeRange[1];
-                        var range = 主动查询时间精度 ? 获得查询的时间精度(endTime) : fixedTimeRange.Value;
-                        var newEndTime = GetTimeByTimeRange((TimeRange)range, endTime);
-                        times.TimeRange[1] = newEndTime;
+                        var endTime = (DateTime)times.StartAndEnd[1];
+                        var period = 主动查询时间周期 ? 获得查询的时间精度(endTime) : fixedTimePeriod.Value;
+                        var newEndTime = GetEndTime((TimePeriod)period, endTime);
+                        times.StartAndEnd[1] = newEndTime;
                     }
                 }
             }
         }
 
-        private static List<Expression<Func<TEntity, bool>>> AddDateTimeRange_GetWhereLambdas<TEntity>(Dictionary<string, TimeSearch> timeDict)
+        private static List<Expression<Func<TEntity, bool>>> AddTimeRange_GetWhereLambdas<TEntity>(Dictionary<string, TimeSearch> timeDict)
         {
             var type_TEntity = typeof(TEntity);
-            //根据 TimeRange  创建表达式(一共是下面4钟情况)
+            //根据 TimePeriod 创建表达式(一共是下面4钟情况)
             //isPair值    开始         结束
             //false      有值(包含)     有值(不含)
             //true       有值(包含)     有值(不含)
@@ -942,24 +943,24 @@ namespace EntityToSqlWhereClauseConfig
                 DateTime? d2 = null;//<
                 var ispair = (bool)timeDict[key].IsPair;
 
-                if (ispair == false && timeDict[key].TimeRange[0] != null && timeDict[key].TimeRange[1] != null)
+                if (ispair == false && timeDict[key].StartAndEnd[0] != null && timeDict[key].StartAndEnd[1] != null)
                 {
-                    d1 = timeDict[key].TimeRange[0];
-                    d2 = timeDict[key].TimeRange[1];
+                    d1 = timeDict[key].StartAndEnd[0];
+                    d2 = timeDict[key].StartAndEnd[1];
                 }
-                else if (ispair == true && timeDict[key].TimeRange[0] != null && timeDict[key].TimeRange[1] != null)
+                else if (ispair == true && timeDict[key].StartAndEnd[0] != null && timeDict[key].StartAndEnd[1] != null)
                 {
-                    d1 = timeDict[key].TimeRange[0];
-                    d2 = timeDict[key].TimeRange[1];
+                    d1 = timeDict[key].StartAndEnd[0];
+                    d2 = timeDict[key].StartAndEnd[1];
                 }
-                else if (ispair == true && timeDict[key].TimeRange[0] != null && timeDict[key].TimeRange[1] == null)
+                else if (ispair == true && timeDict[key].StartAndEnd[0] != null && timeDict[key].StartAndEnd[1] == null)
                 {
-                    d1 = timeDict[key].TimeRange[0];
+                    d1 = timeDict[key].StartAndEnd[0];
 
                 }
-                else if (ispair == true && timeDict[key].TimeRange[0] == null && timeDict[key].TimeRange[1] != null)
+                else if (ispair == true && timeDict[key].StartAndEnd[0] == null && timeDict[key].StartAndEnd[1] != null)
                 {
-                    d2 = timeDict[key].TimeRange[1];
+                    d2 = timeDict[key].StartAndEnd[1];
                 }
                 else
                 {
@@ -973,7 +974,7 @@ namespace EntityToSqlWhereClauseConfig
                         var parameterExp = Expression.Parameter(type_TEntity, "a");
                         var propertyExp = Expression.Property(parameterExp, key); //a.CreateAt
                         var left = Expression.Convert(propertyExp, typeof(DateTime));
-                        var right = Expression.Constant(timeDict[key].TimeRange[0], typeof(DateTime));
+                        var right = Expression.Constant(timeDict[key].StartAndEnd[0], typeof(DateTime));
                         var body = Expression.GreaterThanOrEqual(left, right);
                         var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
                         whereLambdas.Add(lambda);
@@ -987,7 +988,7 @@ namespace EntityToSqlWhereClauseConfig
                         var parameterExp = Expression.Parameter(type_TEntity, "a");
                         var propertyExp = Expression.Property(parameterExp, key); //a.CreateAt
                         var left = Expression.Convert(propertyExp, typeof(DateTime));
-                        var right = Expression.Constant(timeDict[key].TimeRange[1], typeof(DateTime));
+                        var right = Expression.Constant(timeDict[key].StartAndEnd[1], typeof(DateTime));
                         var body = Expression.LessThan(left, right);
                         var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
                         whereLambdas.Add(lambda);
@@ -998,72 +999,67 @@ namespace EntityToSqlWhereClauseConfig
             return whereLambdas;
         }
 
-        #region 指定range的
+        #region 指定 period 的
         /// <summary>
         /// 
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <typeparam name="TSearchModel"></typeparam>
-        /// <param name="range">当为秒的时候需要调用这个方法</param>
+        /// <param name="period">当为秒的时候需要调用这个方法</param>
         /// <param name="searchModel"></param>
         /// <param name="props"></param>
         /// <returns></returns>
-        public static List<Expression<Func<TEntity, bool>>> AddDateTimeRange<TEntity, TSearchModel>(TimeRange range, TSearchModel searchModel, List<string> props)
+        public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearchModel>(TimePeriod period, TSearchModel searchModel, List<string> props)
         {
             return HaveCount(props)
-                ? AddDateTimeRange<TEntity, TSearchModel>(range, searchModel, props.ToArray())
+                ? AddTimeRange<TEntity, TSearchModel>(period, searchModel, props.ToArray())
                 : Default<TEntity>();
         }
 
-        public static List<Expression<Func<TEntity, bool>>> AddDateTimeRange<TEntity, TSearchModel>(TimeRange range, TSearchModel searchModel, params string[] props)
+        public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearchModel>(TimePeriod period, TSearchModel searchModel, params string[] props)
         {
             if (!HaveCount(props))
             {
                 return Default<TEntity>();
             }
 
-            var timeDict = AddDateTimeRange_GetTimeDict(searchModel, props);
+            var timeDict = AddTimeRange_GetTimeDict(searchModel, props);
 
-            Get_AddDateTimeRange_DealTimeDict(timeDict, () => range);
+            Get_TimePeriode(timeDict, () => period);
 
-            var whereLambdas = AddDateTimeRange_GetWhereLambdas<TEntity>(timeDict);
+            var whereLambdas = AddTimeRange_GetWhereLambdas<TEntity>(timeDict);
             return whereLambdas;
         }
         #endregion
 
-        /// <summary>
-        /// 根据 range  获得结束时间
-        /// </summary>
-        /// <param name="range"></param>
-        /// <param name="time"></param>
-        private static DateTime GetTimeByTimeRange(TimeRange range, DateTime time)
+        private static DateTime GetEndTime(TimePeriod period, DateTime time)
         {
-            DateTime endTime;
-            if (range == TimeRange.Day)
+            if (period == TimePeriod.Day)
             {
-                endTime = new DateTime(time.Year, time.Month, time.Day, 0, 0, 0).AddDays(1);
+                return new DateTime(time.Year, time.Month, time.Day, 0, 0, 0).AddDays(1);
             }
-            else if (range == TimeRange.Hour)
+            if (period == TimePeriod.Hour)
             {
-                endTime = new DateTime(time.Year, time.Month, time.Day, time.Hour, 0, 0).AddHours(1);
+                return new DateTime(time.Year, time.Month, time.Day, time.Hour, 0, 0).AddHours(1);
             }
-            else if (range == TimeRange.Minute)
+            if (period == TimePeriod.Minute)
             {
-                endTime = new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, 0).AddMinutes(1);
+                return new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, 0).AddMinutes(1);
             }
-            else if (range == TimeRange.Second)
+            if (period == TimePeriod.Second)
             {
-                endTime = new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Minute).AddSeconds(1);
-            }
-            else
-            {
-                throw new Exceptions.EntityToSqlWhereCaluseConfigException("后续开发修改过代码逻辑, 但是此处却未修改,需要修改代码");
+                return new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Minute).AddSeconds(1);
             }
 
-            return endTime;
+            throw new Exceptions.EntityToSqlWhereCaluseConfigException("后续开发修改过代码逻辑, 但是此处却未修改,需要修改代码");
+
         }
 
-        public enum TimeRange
+
+        /// <summary>
+        /// 时间周期
+        /// </summary>
+        public enum TimePeriod
         {
             //None,
             /// <summary>
@@ -1094,7 +1090,7 @@ namespace EntityToSqlWhereClauseConfig
         /// </summary>
         /// <param name="time"></param>
         /// <returns></returns>
-        private static TimeRange 获得查询的时间精度(DateTime time)
+        private static TimePeriod 获得查询的时间精度(DateTime time)
         {
             if (time.Hour == 0)
             {
@@ -1102,7 +1098,7 @@ namespace EntityToSqlWhereClauseConfig
                 {
                     if (time.Second == 0)
                     {
-                        return TimeRange.Day;
+                        return TimePeriod.Day;
                     }
                 }
             }
@@ -1112,18 +1108,18 @@ namespace EntityToSqlWhereClauseConfig
                 {
                     if (time.Second == 0)
                     {
-                        return TimeRange.Hour;
+                        return TimePeriod.Hour;
                     }
                 }
                 else
                 {
                     if (time.Second == 0)
                     {
-                        return TimeRange.Minute;
+                        return TimePeriod.Minute;
                     }
                     else
                     {
-                        return TimeRange.Second;
+                        return TimePeriod.Second;
                     }
                 }
             }

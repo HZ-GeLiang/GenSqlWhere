@@ -7,41 +7,41 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace EntityToSqlWhereClauseConfig.Test
 {
 
-    public class Input_datetimeRange
+    public class Input_timeRange
     {
         public DateTime? DataCreatedAt { get; set; }
         public DateTime? DataUpdatedAt { get; set; }
     }
 
-    public class Input_datetimeRange_Attr
+    public class Input_timeRange_Attr
     {
-        [SearchType(SearchType.datetimeRange)] public DateTime? DataCreatedAtStart { get; set; }
-        [SearchType(SearchType.datetimeRange)] public DateTime? DataCreatedAtEnd { get; set; }
-        [SearchType(SearchType.datetimeRange)] public DateTime? DataUpdatedAtStart { get; set; }
-        [SearchType(SearchType.datetimeRange)] public DateTime? DataUpdatedAtEnd { get; set; }
+        [SearchType(SearchType.timeRange)] public DateTime? DataCreatedAtStart { get; set; }
+        [SearchType(SearchType.timeRange)] public DateTime? DataCreatedAtEnd { get; set; }
+        [SearchType(SearchType.timeRange)] public DateTime? DataUpdatedAtStart { get; set; }
+        [SearchType(SearchType.timeRange)] public DateTime? DataUpdatedAtEnd { get; set; }
     }
 
-    public class Input_datetimeRange2_Attr
+    public class Input_timeRange2_Attr
     {
-        [SearchType(SearchType.datetimeRange)] public DateTime? DataCreatedAt { get; set; }
+        [SearchType(SearchType.timeRange)] public DateTime? DataCreatedAt { get; set; }
     }
 
     [TestClass]
     public class GenSqlWhereDemo_TimeRange
     {
         [TestMethod]
-        public void Test_datetimeRange_start_neq_end()
+        public void Test_timeRange_start_neq_end()
         {
             //DataCreatedAtStart != DataCreatedAtEnd 
-            var searchModel = new Input_datetimeRange_Attr()
+            var searchModel = new Input_timeRange_Attr()
             {
                 DataCreatedAtStart = DateTime.Parse("2021-8-7 23:00:00"),
                 DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
             };
-            var whereLambda = new WhereLambda<Input_datetimeRange, Input_datetimeRange_Attr>();
+            var whereLambda = new WhereLambda<Input_timeRange, Input_timeRange_Attr>();
             whereLambda.SearchModel = searchModel;
 
-            whereLambda[SearchType.datetimeRange] = new List<string>
+            whereLambda[SearchType.timeRange] = new List<string>
             {
                 nameof(searchModel.DataCreatedAtStart),
                 nameof(searchModel.DataCreatedAtEnd),
@@ -63,18 +63,18 @@ namespace EntityToSqlWhereClauseConfig.Test
         }
 
         [TestMethod]
-        public void Test_datetimeRange_Get时间精度()
+        public void Test_timeRange_Get时间精度()
         {
             //没有区间范围 (取当前时间精度: 如 当前 当前小时, 当前这一分钟, 当前这秒)
-            var searchModel = new Input_datetimeRange2_Attr()
+            var searchModel = new Input_timeRange2_Attr()
             {
                 DataCreatedAt = DateTime.Parse("2021-8-8")
             };
 
-            var whereLambda = new WhereLambda<People, Input_datetimeRange2_Attr>();
+            var whereLambda = new WhereLambda<People, Input_timeRange2_Attr>();
             whereLambda.SearchModel = searchModel;
 
-            whereLambda[SearchType.datetimeRange] = new List<string>
+            whereLambda[SearchType.timeRange] = new List<string>
             {
                 nameof(searchModel.DataCreatedAt)
             };

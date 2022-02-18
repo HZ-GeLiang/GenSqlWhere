@@ -152,12 +152,12 @@ namespace EntityToSqlWhereClauseConfig.Test
         public void Test_datetimeRange_Attr()
         {
             {
-                var searchModel = new Input_datetimeRange_Attr()
+                var searchModel = new Input_timeRange_Attr()
                 {
                     DataCreatedAtStart = DateTime.Parse("2021-8-7 23:00:00"),
                     DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
                 };
-                var whereLambda = searchModel.CrateWhereLambda((Input_datetimeRange _) => { });
+                var whereLambda = searchModel.CrateWhereLambda((Input_timeRange _) => { });
                 var expression = whereLambda.ToExpression();
                 (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
                 Assert.AreEqual(sql, "DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1");
@@ -172,12 +172,12 @@ namespace EntityToSqlWhereClauseConfig.Test
 
             {
                 //没有区间范围 (取当前时间精度: 如 当前 当前小时, 当前这一分钟, 当前这秒)
-                var searchModel = new Input_datetimeRange2_Attr()
+                var searchModel = new Input_timeRange2_Attr()
                 {
                     DataCreatedAt = DateTime.Parse("2021-8-8")
                 };
 
-                var whereLambda = searchModel.CrateWhereLambda((Input_datetimeRange2_Attr _) => { });
+                var whereLambda = searchModel.CrateWhereLambda((Input_timeRange2_Attr _) => { });
                 var expression = whereLambda.ToExpression();
                 (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
                 Assert.AreEqual(sql, "DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1");
