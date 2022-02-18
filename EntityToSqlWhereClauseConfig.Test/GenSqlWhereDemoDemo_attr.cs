@@ -1,12 +1,26 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using EntityToSqlWhereClauseConfig.Test.input;
+
 using ExpressionToSqlWhereClause;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EntityToSqlWhereClauseConfig.Test
 {
+    public class Input_Demo_Attr
+    {
+        [SearchType(SearchType.@in)] public string Id { get; set; }
+        [SearchType(SearchType.like)] public string Url { get; set; }
+        [SearchType(SearchType.@in)] public string Sex { get; set; }
+        [SearchType(SearchType.eq)] public bool IsDel { get; set; }
+        [SearchType(SearchType.like)] public string Data_Remark { get; set; }
+        [SearchType(SearchType.datetimeRange)] public DateTime? DataCreatedAtStart { get; set; }
+        [SearchType(SearchType.datetimeRange)] public DateTime? DataCreatedAtEnd { get; set; }
+        [SearchType(SearchType.datetimeRange)] public DateTime? DataUpdatedAtStart { get; set; }
+        [SearchType(SearchType.datetimeRange)] public DateTime? DataUpdatedAtEnd { get; set; }
+    }
+
+
     [TestClass]
     public class UseDemo_Attr
     {

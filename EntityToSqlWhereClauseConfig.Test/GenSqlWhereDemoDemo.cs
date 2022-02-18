@@ -2,12 +2,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using EntityToSqlWhereClauseConfig.Helper;
-using EntityToSqlWhereClauseConfig.Test.input;
+
 using ExpressionToSqlWhereClause;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EntityToSqlWhereClauseConfig.Test
 {
+    public class Input_Demo
+    {
+        //public int? Id { get; set; }
+        public string Id { get; set; }
+        public string Url { get; set; }
+        public string Sex { get; set; }
+        public bool IsDel { get; set; }
+        public string Data_Remark { get; set; }
+        public DateTime? DataCreatedAtStart { get; set; }
+        public DateTime? DataCreatedAtEnd { get; set; }
+        public DateTime? DataUpdatedAtStart { get; set; }
+        public DateTime? DataUpdatedAtEnd { get; set; }
+    }
+
     [TestClass]
     public class UseDemo
     {

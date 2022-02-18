@@ -1,11 +1,21 @@
 using System;
 using System.Collections.Generic;
-using EntityToSqlWhereClauseConfig.Test.input;
+
 using ExpressionToSqlWhereClause;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EntityToSqlWhereClauseConfig.Test
 {
+
+    public class Input_expection1
+    {
+        public int Id { get; set; }
+    }
+    public class Input_expection2
+    {
+        public int? Id { get; set; }
+    }
+
     [TestClass]
     public class GenSqlWhereDemo_exception
     {
