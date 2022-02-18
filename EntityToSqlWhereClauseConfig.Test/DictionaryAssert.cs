@@ -106,7 +106,8 @@ namespace EntityToSqlWhereClauseConfig.Test
                 }
                 else
                 {
-                    Assert.IsTrue(dict[key].Equals(dict2[key]), $"The expected value is {dict[key]}, the actual value is {dict2[key]}");
+                    Assert.IsTrue(dict[key].Equals(dict2[key]),
+                        $"The expected value is {dict[key]} ({dict[key].GetType().FullName}), the actual value is {dict2[key]} ({dict2[key].GetType().FullName})");
                 }
             }
         }

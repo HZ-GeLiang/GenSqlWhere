@@ -216,12 +216,12 @@ namespace EntityToSqlWhereClauseConfig.Test
         {
             {
                 //DataCreatedAtStart != DataCreatedAtEnd 
-                var searchModel = new Input_datetimeRange()
+                var searchModel = new Input_datetimeRange_Attr()
                 {
                     DataCreatedAtStart = DateTime.Parse("2021-8-7 23:00:00"),
                     DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
                 };
-                var whereLambda = new WhereLambda<People, Input_datetimeRange>();
+                var whereLambda = new WhereLambda<Input_datetimeRange, Input_datetimeRange_Attr>();
                 whereLambda.SearchModel = searchModel;
 
                 whereLambda[SearchType.datetimeRange] = new List<string>
@@ -248,12 +248,12 @@ namespace EntityToSqlWhereClauseConfig.Test
 
             {
                 //没有区间范围 (取当前时间精度: 如 当前 当前小时, 当前这一分钟, 当前这秒)
-                var searchModel = new Input_datetimeRange2()
+                var searchModel = new Input_datetimeRange2_Attr()
                 {
                     DataCreatedAt = DateTime.Parse("2021-8-8")
                 };
 
-                var whereLambda = new WhereLambda<People, Input_datetimeRange2>();
+                var whereLambda = new WhereLambda<People, Input_datetimeRange2_Attr>();
                 whereLambda.SearchModel = searchModel;
 
                 whereLambda[SearchType.datetimeRange] = new List<string>
@@ -281,12 +281,12 @@ namespace EntityToSqlWhereClauseConfig.Test
         public void Test_numberRange()
         {
             {
-                var searchModel = new Input_numberRange()
+                var searchModel = new Input_numberRange_Attr()
                 {
                     IdLeft = 3,
                     IdRight = 9
                 };
-                var whereLambda = new WhereLambda<People, Input_numberRange>();
+                var whereLambda = new WhereLambda<People, Input_numberRange_Attr>();
                 whereLambda.SearchModel = searchModel;
                 whereLambda[SearchType.numberRange] = new List<string>
                 {
