@@ -79,7 +79,7 @@ namespace EntityToSqlWhereClauseConfig.Helper
         public static T[] ConvertParameters<T>(Dictionary<string, object> parameters, Func<string, object, T> convertFunc)
         {
             if (parameters == null || convertFunc == null ||
-                parameters.Keys.Any())
+                !parameters.Keys.Any())
             {
                 return Array.Empty<T>();
             }
