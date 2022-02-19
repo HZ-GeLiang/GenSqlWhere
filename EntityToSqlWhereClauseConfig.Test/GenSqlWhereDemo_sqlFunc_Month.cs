@@ -159,5 +159,28 @@ namespace EntityToSqlWhereClauseConfig.Test
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
 
+        [TestMethod]
+        public void MonthIn_eq_3()
+        {
+            var searchModel = new Input_sqlFun_MonthIn3()
+            {
+                DataCreatedAt = new List<int> { 1, 2, 3 }
+            };
+            var whereLambda = searchModel.CrateWhereLambda((Model_sqlFun_Month p) => { });
+            whereLambda[SearchType.@in] = new List<string>
+            {
+                nameof(searchModel.DataCreatedAt),
+            };
+            var exp = whereLambda.ToExpression();
+
+            (string whereClause, Dictionary<string, object> parameters) = exp.ToWhereClause();
+
+            Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
+            expectedParameters.Add("@MonthIn", "1,2,3"); //sql 的 in(变量), 这个变量只能写一个, 所以,这里是string
+            Assert.AreEqual("((Month(DataCreatedAt) In (@MonthIn)))", whereClause);
+
+            DictionaryAssert.AreEqual(expectedParameters, parameters);
+        }
+
     }
 }

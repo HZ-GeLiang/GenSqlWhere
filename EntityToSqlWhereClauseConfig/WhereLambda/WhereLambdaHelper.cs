@@ -1160,9 +1160,24 @@ namespace EntityToSqlWhereClauseConfig
                 //    throw new ArgumentException("当前属性不是string,无法使用Split()函数");
                 //}
 
-                IEnumerable<string> splits = value is string s
-                    ? s.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct()
-                    : value.ToString().Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct();
+                IEnumerable<string> splits;
+                if (value is string s)
+                {
+                    splits = s.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct();
+                }
+                else if (value.GetType().IsObjectCollection())
+                {
+                    var list = new List<string>();
+                    ForeachHelper.Each(value, a =>
+                    {
+                        list.Add(a.ToString());
+                    });
+                    splits = list;
+                }
+                else
+                {
+                    splits = value.ToString().Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct();
+                }
 
                 if (!splits.Any()) { continue; }
 
