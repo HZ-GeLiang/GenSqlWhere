@@ -1,10 +1,26 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace EntityToSqlWhereClauseConfig.ExtensionMethod
 {
     internal static class TypeExtensions
     {
+        /// <summary>
+        /// 是否为列表对象
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsObjectCollection(this Type type)
+        {
+            var isObjectList = typeof(IEnumerable).IsAssignableFrom(type);
+            return isObjectList;
+        }
+
         /// <summary>
         /// 返回Nullable&lt;T&gt;里的T类型
         /// </summary>
