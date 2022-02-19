@@ -7,11 +7,22 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EntityToSqlWhereClauseConfig.Test
 {
-    public class Input_sqlFun_Month
+    public class Input_sqlFun_Month_eq
     {
-
         [Month]
         [SearchType(SearchType.eq)]
+        public int DataCreatedAt { get; set; } // 必须和 Entity 的属性名一致
+    }
+    public class Input_sqlFun_Month_neq
+    {
+        [Month]
+        [SearchType(SearchType.neq)]
+        public int DataCreatedAt { get; set; } // 必须和 Entity 的属性名一致
+    }
+    public class Input_sqlFun_Month_in
+    {
+        [Month]
+        [SearchType(SearchType.@in)]
         public int DataCreatedAt { get; set; } // 必须和 Entity 的属性名一致
     }
 
@@ -26,8 +37,8 @@ namespace EntityToSqlWhereClauseConfig.Test
 
     public class Input_sqlFun_MonthIn1
     {
-        [Month]
-        public int DataCreatedAt { get; set; } // 必须和 Entity 的属性名一致
+        [MonthIn]
+        public int DataCreatedAt { get; set; } //最后要翻译为 List<int> 
     }
 
     public class Input_sqlFun_MonthIn2
@@ -41,16 +52,8 @@ namespace EntityToSqlWhereClauseConfig.Test
         [MonthIn]
         public string DataCreatedAt { get; set; } //最后要翻译为 List<int> 
     }
-    public class Input_sqlFun_MonthIn4
-    {
-        [MonthIn]
-        public int DataCreatedAt { get; set; } //最后要翻译为 List<int> 
-    }
-    public class Input_sqlFun_MonthIn5
-    {
-        [MonthIn]
-        public List<string> DataCreatedAt { get; set; } //最后要翻译为 List<int> 
-    }
+
+
     #endregion
 
     [TestClass]
@@ -58,9 +61,9 @@ namespace EntityToSqlWhereClauseConfig.Test
     {
 
         [TestMethod]
-        public void Month_eq_一个月()
+        public void Month_eq()
         {
-            var searchModel = new Input_sqlFun_Month() //这里不能是匿名类型
+            var searchModel = new Input_sqlFun_Month_eq() //这里不能是匿名类型
             {
                 DataCreatedAt = 1
             };
@@ -77,17 +80,13 @@ namespace EntityToSqlWhereClauseConfig.Test
         }
 
         [TestMethod]
-        public void Month_Neq_一个月()
+        public void Month_Neq()
         {
-            var searchModel = new Input_sqlFun_Month
+            var searchModel = new Input_sqlFun_Month_neq
             {
                 DataCreatedAt = 1
             };
             var whereLambda = searchModel.CrateWhereLambda((Model_sqlFun_Month p) => { });
-            //whereLambda[SearchType.neq] = new List<string>
-            //{
-            //    nameof(searchModel.DataCreatedAt),
-            //};
 
             var exp = whereLambda.ToExpression();
 
@@ -98,44 +97,31 @@ namespace EntityToSqlWhereClauseConfig.Test
             Assert.AreEqual(whereClause, "Month(DataCreatedAt) <> @Month");
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
-
-
-
         [TestMethod]
-        public void Month_in_一个月_list类型()
+        public void Month_In()
         {
-            var searchModel = new Input_sqlFun_MonthIn1()
+            var searchModel = new Input_sqlFun_Month_in
             {
                 DataCreatedAt = 1
             };
-            var whereLambda = searchModel.CrateWhereLambda((Input_sqlFun_MonthIn1 p) => { });
-            whereLambda[SearchType.@in] = new List<string>
-            {
-                nameof(searchModel.DataCreatedAt),
-            };
-            var exp = whereLambda.ToExpression();
+            var whereLambda = searchModel.CrateWhereLambda((Model_sqlFun_Month p) => { });
 
-            (string whereClause, Dictionary<string, object> parameters) = exp.ToWhereClause();
+            //SearchType:in,操作遇到不支持的属性类型:System.DateTime
+            var exMsg = $"SearchType:{nameof(SearchType.@in)},操作遇到不支持的属性类型:{typeof(DateTime).FullName}";
 
-            Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
-            expectedParameters.Add("@Month", 1);//Month()返回的是int ,所以1 是int类型的才对
-            Assert.AreEqual("(Month(DataCreatedAt) In (@Month))", whereClause);
+            Assert.ThrowsException<Exceptions.EntityToSqlWhereCaluseConfigException>(() => whereLambda.ToExpression().ToWhereClause(), exMsg);
 
-            DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
 
 
-
-        //todo:
         //[TestMethod]
-        //public void Month_多个月()
+        //public void Month_in_一个月_list类型()
         //{
-        //    //不支持
-        //    var searchModel = new Input_sqlFun_Month2()
+        //    var searchModel = new Input_sqlFun_MonthIn1()
         //    {
-        //        DataCreatedAt = "1,2"
+        //        DataCreatedAt = 1
         //    };
-        //    var whereLambda = searchModel.CrateWhereLambda((Input_sqlFun_Month2 p) => { });
+        //    var whereLambda = searchModel.CrateWhereLambda((Model_sqlFun_Month p) => { });
         //    whereLambda[SearchType.@in] = new List<string>
         //    {
         //        nameof(searchModel.DataCreatedAt),
@@ -143,6 +129,12 @@ namespace EntityToSqlWhereClauseConfig.Test
         //    var exp = whereLambda.ToExpression();
 
         //    (string whereClause, Dictionary<string, object> parameters) = exp.ToWhereClause();
+
+        //    Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
+        //    expectedParameters.Add("@Month", new List<int> { 1 });//Month()返回的是int ,所以1 是int类型的才对
+        //    Assert.AreEqual("(Month(DataCreatedAt) In (@Month))", whereClause);
+
+        //    DictionaryAssert.AreEqual(expectedParameters, parameters);
         //}
 
     }
