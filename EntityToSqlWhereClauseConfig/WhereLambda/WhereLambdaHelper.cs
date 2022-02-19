@@ -1193,19 +1193,35 @@ namespace EntityToSqlWhereClauseConfig
                     var attr_SqlFunc = attr_SqlFuncArray[0];
                     if (attr_SqlFunc is MonthInAttribute)
                     {
-                        //todo:
-                        //ParameterExpression parameterExpression = Expression.Parameter(type_TEntity, "u");
-                        //var leftP2 = typeof(DbFunctions).GetMethod("Month", new Type[] { typeof(DateTime) });
-                        //var leftP3 = new Expression[] { Expression.Property(parameterExpression, propertyName) };
-                        //var left = Expression.Call(null, leftP2, leftP3);
-                        ////Sql 的 month() 返回的是int 
-                        ////https://docs.microsoft.com/zh-cn/sql/t-sql/functions/month-transact-sql?view=sql-server-2017
-                        //var right = Expression.Constant(Convert.ToInt32(propertyValue), typeof(int));
-                        //var body = Expression.NotEqual(left, right);
-                        //var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExpression);
-                        //whereLambdas.Add(lambda);
+                        #region 不要问怎么写的, 问就是反编译 代码抄的
+                        //反编译代码: Expression<Func<User_SqlFunc_Entity, bool>> expression = u => SqlFunc.DbFunctions.MonthIn(u.CreateAt) == new List<int> { 5, 6 };
 
-                        lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToInt32());
+                        ParameterExpression parameterExpression = Expression.Parameter(type_TEntity, "u");
+                        var leftP2 = typeof(DbFunctions).GetMethod("MonthIn", new Type[] { typeof(DateTime) });
+                        var leftP3 = new Expression[]
+                        {
+                            Expression.Property(parameterExpression, ReflectionHelper.GetMethod(type_TEntity, "get_" + propertyName))
+                        };
+                        var left = Expression.Call(null, leftP2, leftP3);
+
+                        var right_Para = new System.Linq.Expressions.ElementInit[splits.Count()];
+
+                        var index = 0;
+                        foreach (var val in splits.ToInt32())
+                        {
+                            right_Para[index] = Expression.ElementInit(ReflectionHelper.GetMethod(typeof(List<int>), "Add"), new Expression[]
+                            {
+                                Expression.Constant(val, typeof(int))
+                            });
+
+                            index++;
+                        }
+                        ListInitExpression right = Expression.ListInit(Expression.New(typeof(List<int>)), right_Para);
+
+                        var body = Expression.Equal(left, right);
+
+                        lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExpression);
+                        #endregion
                     }
                 }
 
@@ -1349,13 +1365,11 @@ namespace EntityToSqlWhereClauseConfig
             //https://stackoverflow.com/questions/18491610/dynamic-linq-expression-for-ienumerableint-containsmemberexpression
             //https://stackoverflow.com/questions/26659824/create-a-predicate-builder-for-x-listofints-containsx-listofintstocheck
 
-            //ParameterExpression parameterExp = Expression.Parameter(type_TEntity, "a");//pe
-            //MemberExpression propertyExp = Expression.Property(parameterExp, propertyName); //a.AuditStateId  //me
+            //ParameterExpression parameterExp = Expression.Parameter(type_TEntity, "a"); 
+            //MemberExpression propertyExp = Expression.Property(parameterExp, propertyName); //a.AuditStateId   
 
             //var someValue = Expression.Constant(listObj, typeof(List<Int16?>));
-            var someValue = Expression.Constant(listObj);  //ce
-
-            var call = Expression.Call(typeof(Enumerable), "Contains", new[] { propertyExp.Type }, someValue, propertyExp);
+            ConstantExpression someValue = Expression.Constant(listObj);
 
             //会生产 sql  CAST( `t`.`audit_state_id` AS int ) , 但是 mysql(5.7.32)  int 要翻译成改成 signed 不然提示sql语法有误
             //var convertExpression = Expression.Convert(propertyExp, typeof(Int32));
@@ -1367,7 +1381,7 @@ namespace EntityToSqlWhereClauseConfig
 
             //var call = Expression.Call(someValue, method, propertyExp); //这行代码是可以跑的.
 
-            //var call = Expression.Call(typeof(Enumerable), "Contains", new[] { propertyExp.Type }, someValue, propertyExp);
+            var call = Expression.Call(typeof(Enumerable), "Contains", new[] { propertyExp.Type }, someValue, propertyExp);
 
             //containsMethodExp
             var lambda = Expression.Lambda<Func<TEntity, bool>>(call, parameterExp);

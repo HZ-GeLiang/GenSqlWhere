@@ -19,10 +19,23 @@ namespace ExpressionToSqlWhereClause.Test
         }
 
         [TestMethod]
-        public void SqlFunc_Month_In_多个月()
+        public void SqlFunc_Month_eq()
+        { 
+            Expression<Func<User_SqlFunc_Entity, bool>> expression = u => SqlFunc.DbFunctions.Month(u.CreateAt) == 5;
+            (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
+            Dictionary<string, object> expectedParameters = new Dictionary<string, object>
+            {
+                { "@Month", 5 }
+            };
+            Assert.AreEqual("Month(CreateAt) = @Month", whereClause);
+            DictionaryAssert.AreEqual(expectedParameters, parameters);
+        }
+
+
+        [TestMethod]
+        public void SqlFunc_MonthIn_eq()
         {
-            //EntityToSqlWherecClauseConfig 的 in
-            var userFilter = new User_SqlFunc3() { CreateAtMonth = "5,6" };
+            //EntityToSqlWherecClauseConfig 的 in 
             Expression<Func<User_SqlFunc_Entity, bool>> expression =
                 u => SqlFunc.DbFunctions.MonthIn(u.CreateAt) == new List<int> { 5, 6 };//string 需要自己转成 List<int> , 这里略,直接写死
             (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
@@ -36,100 +49,5 @@ namespace ExpressionToSqlWhereClause.Test
 
         }
 
-        [TestMethod]
-        public void SqlFunc_Month_In_一个月()
-        {
-            //EntityToSqlWherecClauseConfig 的 in
-            var userFilter = new User_SqlFunc3() { CreateAtMonth = "5" };
-            Expression<Func<User_SqlFunc_Entity, bool>> expression =
-                u => SqlFunc.DbFunctions.MonthIn(u.CreateAt) == new List<int> { 5 };//string 需要自己转成 List<int> , 这里略,直接写死
-            (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
-            Dictionary<string, object> expectedParameters = new Dictionary<string, object>
-            {
-                { "@MonthIn", "5" }
-            };
-            Assert.AreEqual("((Month(CreateAt) In (@MonthIn)))", whereClause);
-            DictionaryAssert.AreEqual(expectedParameters, parameters);
-        }
-
-        [TestMethod]
-        public void SqlFunc_Month_Eq_多个月()
-        {
-            //EntityToSqlWherecClauseConfig 的 in
-            var userFilter = new User_SqlFunc2() { CreateAtMonth = new List<int> { 5, 6 } };
-            Expression<Func<User_SqlFunc_Entity, bool>> expression =
-                u => (SqlFunc.DbFunctions.Month(u.CreateAt) == userFilter.CreateAtMonth[0] ||
-                SqlFunc.DbFunctions.Month(u.CreateAt) == userFilter.CreateAtMonth[1]
-                ); //如果有多个条件, 这个()不能去掉
-            (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
-            Dictionary<string, object> expectedParameters = new Dictionary<string, object>
-            {
-                { "@Month", 5 },
-                { "@Month1", 6 }
-            };
-            Assert.AreEqual("(((Month(CreateAt) = @Month)) Or ((Month(CreateAt) = @Month1)))", whereClause);
-            DictionaryAssert.AreEqual(expectedParameters, parameters);
-        }
-
-        [TestMethod]
-        public void SqlFunc_Month_Eq_一个月()
-        {
-            {
-                var userFilter = new User_SqlFunc() { Month = 1, CreateAtMonth = 5 };
-                Expression<Func<User_SqlFunc_Entity, bool>> expression =
-                    u => SqlFunc.DbFunctions.Month(u.CreateAt) == userFilter.CreateAtMonth &&
-                         u.Month == userFilter.Month;
-                (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
-                Dictionary<string, object> expectedParameters = new Dictionary<string, object>
-                {
-                    { "@Month", 5 },
-                    { "@Month1", 1 }
-                };
-                Assert.AreEqual("Month(CreateAt) = @Month And Month = @Month1", whereClause);
-                DictionaryAssert.AreEqual(expectedParameters, parameters);
-            }
-            {
-                var userFilter = new User_SqlFunc() { Month = 1, CreateAtMonth = 5 };
-                Expression<Func<User_SqlFunc_Entity, bool>> expression =
-                    u => u.Month == userFilter.Month &&
-                         SqlFunc.DbFunctions.Month(u.CreateAt) == userFilter.CreateAtMonth;
-                (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
-                Dictionary<string, object> expectedParameters = new Dictionary<string, object>
-                {
-                    { "@Month", 1 },
-                    { "@Month1", 5 }
-                };
-                Assert.AreEqual("Month = @Month And Month(CreateAt) = @Month1", whereClause);
-                DictionaryAssert.AreEqual(expectedParameters, parameters);
-            }
-
-            {
-                var userFilter = new User_SqlFunc() { CreateAtMonth = 5, DelAtMonth = 6 };
-                Expression<Func<User_SqlFunc_Entity, bool>> expression =
-                    u => SqlFunc.DbFunctions.Month(u.CreateAt) == userFilter.CreateAtMonth &&
-                         SqlFunc.DbFunctions.Month(u.DelAt) == userFilter.DelAtMonth;
-                (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
-                Dictionary<string, object> expectedParameters = new Dictionary<string, object>
-                {
-                    { "@Month", 5 },
-                    { "@Month1", 6 }
-                };
-                Assert.AreEqual("Month(CreateAt) = @Month And Month(DelAt) = @Month1", whereClause);
-                DictionaryAssert.AreEqual(expectedParameters, parameters);
-            }
-
-            {
-                var userFilter = new User_SqlFunc() { CreateAtMonth = 5 };
-                Expression<Func<User_SqlFunc_Entity, bool>> expression =
-                    u => SqlFunc.DbFunctions.Month(u.CreateAt) == userFilter.CreateAtMonth;
-                (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
-                Dictionary<string, object> expectedParameters = new Dictionary<string, object>
-                {
-                    { "@Month", 5 }
-                };
-                Assert.AreEqual("Month(CreateAt) = @Month", whereClause);
-                DictionaryAssert.AreEqual(expectedParameters, parameters);
-            }
-        }
     }
 }
