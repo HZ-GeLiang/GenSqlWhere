@@ -7,6 +7,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EntityToSqlWhereClauseConfig.Test
 {
+    //demo2,  在 input 模型上 标记 Attribute 的这种配置方式来创建sql (推荐)
+    //注: demo1 和demo2 如果写重复, 那么都会生效
     public class Input_Demo_Attr
     {
         [SearchType(SearchType.@in)] public string Id { get; set; }
@@ -22,7 +24,7 @@ namespace EntityToSqlWhereClauseConfig.Test
 
 
     [TestClass]
-    public class UseDemo_Attr
+    public class UseDemo2
     {
         [TestMethod]
         public void Use_attr()
@@ -39,9 +41,9 @@ namespace EntityToSqlWhereClauseConfig.Test
                 DataCreatedAtEnd = time,
             };
 
-            var whereLambda = searchModel.CrateWhereLambda((People _) => { });
+            var whereLambda = searchModel.CrateWhereLambda((Model_People _) => { });
 
-            Expression<Func<People, bool>> exp = whereLambda.ToExpression();
+            Expression<Func<Model_People, bool>> exp = whereLambda.ToExpression();
 
             (string sql, Dictionary<string, object> param) = exp.ToWhereClause();
 
@@ -70,11 +72,11 @@ namespace EntityToSqlWhereClauseConfig.Test
         [TestMethod]
         public void Test_like_self()
         {
-            var searchModel = new Input_like()
+            var searchModel = new model_like()
             {
                 Url = "123",
             };
-            var whereLambda = new WhereLambda<Input_like>();
+            var whereLambda = new WhereLambda<model_like>();
             whereLambda.SearchModel = searchModel;
 
             whereLambda[SearchType.like] = new List<string>

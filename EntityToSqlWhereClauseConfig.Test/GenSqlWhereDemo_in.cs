@@ -6,14 +6,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EntityToSqlWhereClauseConfig.Test
 {
-    public class Input_in
+    public class model_in
     {
         //public int? Id { get; set; }
         public string Id { get; set; }
         public string Sex { get; set; }
 
     }
-    public class Input_in2
+    public class model_in2
     {
         public int? Id { get; set; }
 
@@ -38,13 +38,13 @@ namespace EntityToSqlWhereClauseConfig.Test
         [TestMethod]
         public void Test_in()
         {
-            var searchModel = new Input_in()
+            var searchModel = new model_in()
             {
                 Id = "1,2",
                 Sex = "1",
             };
 
-            var whereLambda = new WhereLambda<People, Input_in>();
+            var whereLambda = new WhereLambda<Model_People, model_in>();
             whereLambda.SearchModel = searchModel;
 
             whereLambda[SearchType.@in] = new List<string>
@@ -70,12 +70,12 @@ namespace EntityToSqlWhereClauseConfig.Test
         [TestMethod]
         public void Test_in2()
         {
-            var searchModel = new Input_in2()
+            var searchModel = new model_in2()
             {
                 Id = 1
             };
 
-            var whereLambda = new WhereLambda<People, Input_in2>();
+            var whereLambda = new WhereLambda<Model_People, model_in2>();
             whereLambda.SearchModel = searchModel;
 
             whereLambda[SearchType.@in] = new List<string>

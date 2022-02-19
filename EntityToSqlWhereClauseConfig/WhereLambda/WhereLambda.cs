@@ -23,7 +23,7 @@ namespace EntityToSqlWhereClauseConfig
     /// SearchModel 转 Entity的表达式树的配置
     /// </summary>
     /// <typeparam name="TEntity">数据表实体类型</typeparam>
-    /// <typeparam name="TSearchModel">不要使用多态,会报错的</typeparam>
+    /// <typeparam name="TSearchModel">搜索Input类型, 不要使用多态,会报错的</typeparam>
     public class WhereLambda<TEntity, TSearchModel>
     {
         /// <summary>

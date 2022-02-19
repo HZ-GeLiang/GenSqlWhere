@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EntityToSqlWhereClauseConfig.Test
 {
-    public class Input_like
+    public class model_like
     {
         public string Url { get; set; }
         public string Data_Remark { get; set; }
@@ -50,11 +50,11 @@ namespace EntityToSqlWhereClauseConfig.Test
         [TestMethod]
         public void Test_like()
         {
-            var searchModel = new Input_like()
+            var searchModel = new model_like()
             {
                 Url = "123",
             };
-            var whereLambda = new WhereLambda<People, Input_like>();
+            var whereLambda = new WhereLambda<Model_People, model_like>();
             whereLambda.SearchModel = searchModel;
 
             whereLambda[SearchType.like] = new List<string>
@@ -83,7 +83,7 @@ namespace EntityToSqlWhereClauseConfig.Test
             {
                 Url = "123",
             };
-            var whereLambda = new WhereLambda<People, Input_likeLeft>();
+            var whereLambda = new WhereLambda<Model_People, Input_likeLeft>();
             whereLambda.SearchModel = searchModel;
 
             whereLambda[SearchType.likeLeft] = new List<string>
@@ -112,7 +112,7 @@ namespace EntityToSqlWhereClauseConfig.Test
             {
                 Url = "123",
             };
-            var whereLambda = new WhereLambda<People, Input_likeRight>();
+            var whereLambda = new WhereLambda<Model_People, Input_likeRight>();
             whereLambda.SearchModel = searchModel;
 
             whereLambda[SearchType.likeRight] = new List<string>

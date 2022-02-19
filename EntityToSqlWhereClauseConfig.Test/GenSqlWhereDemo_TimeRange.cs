@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace EntityToSqlWhereClauseConfig.Test
 {
 
-    public class Input_timeRange
+    public class model_timeRange
     {
         public DateTime? DataCreatedAt { get; set; }
         public DateTime? DataUpdatedAt { get; set; }
@@ -38,7 +38,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 DataCreatedAtStart = DateTime.Parse("2021-8-7 23:00:00"),
                 DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
             };
-            var whereLambda = new WhereLambda<Input_timeRange, Input_timeRange_Attr>();
+            var whereLambda = new WhereLambda<model_timeRange, Input_timeRange_Attr>();
             whereLambda.SearchModel = searchModel;
 
             whereLambda[SearchType.timeRange] = new List<string>
@@ -71,7 +71,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 DataCreatedAt = DateTime.Parse("2021-8-8")
             };
 
-            var whereLambda = new WhereLambda<People, Input_timeRange2_Attr>();
+            var whereLambda = new WhereLambda<Model_People, Input_timeRange2_Attr>();
             whereLambda.SearchModel = searchModel;
 
             whereLambda[SearchType.timeRange] = new List<string>

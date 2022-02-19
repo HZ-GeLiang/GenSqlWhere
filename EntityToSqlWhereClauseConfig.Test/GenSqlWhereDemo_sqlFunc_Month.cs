@@ -9,9 +9,17 @@ namespace EntityToSqlWhereClauseConfig.Test
 {
     public class Input_sqlFun_Month
     {
+
         [Month]
+        [SearchType(SearchType.eq)]
         public int DataCreatedAt { get; set; } // 必须和 Entity 的属性名一致
     }
+
+    public class Model_sqlFun_Month
+    {
+        public DateTime DataCreatedAt { get; set; } // 必须和 Entity 的属性名一致
+    }
+
     #region 待实现
 
     //todo: 提供demo
@@ -48,24 +56,49 @@ namespace EntityToSqlWhereClauseConfig.Test
     [TestClass]
     public class GenSqlWhereDemo_sqlFunc_Month
     {
-        //todo:
-        //[TestMethod]
-        //public void Month_多个月()
-        //{
-        //    //不支持
-        //    var searchModel = new Input_sqlFun_Month2()
-        //    {
-        //        DataCreatedAt = "1,2"
-        //    };
-        //    var whereLambda = searchModel.CrateWhereLambda((Input_sqlFun_Month2 p) => { });
-        //    whereLambda[SearchType.@in] = new List<string>
-        //    {
-        //        nameof(searchModel.DataCreatedAt),
-        //    };
-        //    var exp = whereLambda.ToExpression();
 
-        //    (string whereClause, Dictionary<string, object> parameters) = exp.ToWhereClause();
-        //}
+        [TestMethod]
+        public void Month_eq_一个月()
+        {
+            var searchModel = new Input_sqlFun_Month() //这里不能是匿名类型
+            {
+                DataCreatedAt = 1
+            };
+            var whereLambda = searchModel.CrateWhereLambda((Model_sqlFun_Month p) => { });
+
+            var exp = whereLambda.ToExpression();
+
+            (string whereClause, Dictionary<string, object> parameters) = exp.ToWhereClause();
+
+            Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
+            expectedParameters.Add("@Month", 1);//Month()返回的是int ,所以1 是int类型的才对
+            Assert.AreEqual(whereClause, "Month(DataCreatedAt) = @Month");
+            DictionaryAssert.AreEqual(expectedParameters, parameters);
+        }
+
+        [TestMethod]
+        public void Month_Neq_一个月()
+        {
+            var searchModel = new Input_sqlFun_Month
+            {
+                DataCreatedAt = 1
+            };
+            var whereLambda = searchModel.CrateWhereLambda((Model_sqlFun_Month p) => { });
+            //whereLambda[SearchType.neq] = new List<string>
+            //{
+            //    nameof(searchModel.DataCreatedAt),
+            //};
+
+            var exp = whereLambda.ToExpression();
+
+            (string whereClause, Dictionary<string, object> parameters) = exp.ToWhereClause();
+
+            Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
+            expectedParameters.Add("@Month", 1);//Month()返回的是int ,所以1 是int类型的才对
+            Assert.AreEqual(whereClause, "Month(DataCreatedAt) <> @Month");
+            DictionaryAssert.AreEqual(expectedParameters, parameters);
+        }
+
 
 
         [TestMethod]
@@ -87,54 +120,30 @@ namespace EntityToSqlWhereClauseConfig.Test
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Month", 1);//Month()返回的是int ,所以1 是int类型的才对
             Assert.AreEqual("(Month(DataCreatedAt) In (@Month))", whereClause);
-            
+
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
 
 
-        [TestMethod]
-        public void Month_Neq_一个月()
-        {
-            var searchModel = new Input_sqlFun_Month()
-            {
-                DataCreatedAt = 1
-            };
-            var whereLambda = searchModel.CrateWhereLambda((Input_sqlFun_Month p) => { });
-            whereLambda[SearchType.neq] = new List<string>
-            {
-                nameof(searchModel.DataCreatedAt),
-            };
-            var exp = whereLambda.ToExpression();
 
-            (string whereClause, Dictionary<string, object> parameters) = exp.ToWhereClause();
+        //todo:
+        //[TestMethod]
+        //public void Month_多个月()
+        //{
+        //    //不支持
+        //    var searchModel = new Input_sqlFun_Month2()
+        //    {
+        //        DataCreatedAt = "1,2"
+        //    };
+        //    var whereLambda = searchModel.CrateWhereLambda((Input_sqlFun_Month2 p) => { });
+        //    whereLambda[SearchType.@in] = new List<string>
+        //    {
+        //        nameof(searchModel.DataCreatedAt),
+        //    };
+        //    var exp = whereLambda.ToExpression();
 
-            Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
-            expectedParameters.Add("@Month", 1);//Month()返回的是int ,所以1 是int类型的才对
-            Assert.AreEqual("Month(DataCreatedAt) <> @Month", whereClause);
-            DictionaryAssert.AreEqual(expectedParameters, parameters);
-        }
+        //    (string whereClause, Dictionary<string, object> parameters) = exp.ToWhereClause();
+        //}
 
-        [TestMethod]
-        public void Month_eq_一个月()
-        {
-            var searchModel = new Input_sqlFun_Month()
-            {
-                DataCreatedAt = 1
-            };
-            //var whereLambda = searchModel.CrateWhereLambda((People p) => { });
-            var whereLambda = searchModel.CrateWhereLambda((Input_sqlFun_Month p) => { });
-            whereLambda[SearchType.eq] = new List<string>
-            {
-                nameof(searchModel.DataCreatedAt),
-            };
-            var exp = whereLambda.ToExpression();
-
-            (string whereClause, Dictionary<string, object> parameters) = exp.ToWhereClause();
-
-            Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
-            expectedParameters.Add("@Month", 1);//Month()返回的是int ,所以1 是int类型的才对
-            Assert.AreEqual("Month(DataCreatedAt) = @Month", whereClause);
-            DictionaryAssert.AreEqual(expectedParameters, parameters);
-        }
     }
 }

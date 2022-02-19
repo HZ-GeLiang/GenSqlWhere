@@ -363,16 +363,7 @@ namespace EntityToSqlWhereClauseConfig
                     {
                         return;
                     }
-
-                    //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
-                    if (propType_TEntity.IsNullableType())
-                    {
-                        propertyValue = Convert.ChangeType(propertyValue, propType_TEntity.GetNullableTType());
-                    }
-                    else
-                    {
-                        propertyValue = Convert.ChangeType(propertyValue, propType_TEntity);
-                    }
+                    propertyValue = ConvertHelper.ChangeType(propertyValue, propType_TEntity);
                 }
 
                 var right = Expression.Constant(propertyValue, propType_TEntity);
@@ -468,15 +459,7 @@ namespace EntityToSqlWhereClauseConfig
                         return;
                     }
 
-                    //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
-                    if (propType_TEntity.IsNullableType())
-                    {
-                        propertyValue = Convert.ChangeType(propertyValue, propType_TEntity.GetNullableTType());
-                    }
-                    else
-                    {
-                        propertyValue = Convert.ChangeType(propertyValue, propType_TEntity);
-                    }
+                    propertyValue = ConvertHelper.ChangeType(propertyValue, propType_TEntity);
                 }
 
                 var right = Expression.Constant(propertyValue, propType_TEntity);
@@ -1457,15 +1440,7 @@ namespace EntityToSqlWhereClauseConfig
                 return null;
             }
 
-            //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
-            if (propType_TEntity.IsNullableType())
-            {
-                propertyValue = Convert.ChangeType(propertyValue, propType_TEntity.GetNullableTType());
-            }
-            else
-            {
-                propertyValue = Convert.ChangeType(propertyValue, propType_TEntity);
-            }
+            propertyValue = ConvertHelper.ChangeType(propertyValue, propType_TEntity);
 
             var right = Expression.Constant(propertyValue, propType_TEntity);
             var body = Expression.GreaterThan(left, right);
@@ -1535,15 +1510,7 @@ namespace EntityToSqlWhereClauseConfig
                 return null;
             }
 
-            //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
-            if (propType_TEntity.IsNullableType())
-            {
-                propertyValue = Convert.ChangeType(propertyValue, propType_TEntity.GetNullableTType());
-            }
-            else
-            {
-                propertyValue = Convert.ChangeType(propertyValue, propType_TEntity);
-            }
+            propertyValue = ConvertHelper.ChangeType(propertyValue, propType_TEntity);
 
             var right = Expression.Constant(propertyValue, propType_TEntity);
             var body = Expression.GreaterThanOrEqual(left, right);
@@ -1613,15 +1580,7 @@ namespace EntityToSqlWhereClauseConfig
                 return null;
             }
 
-            //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
-            if (propType_TEntity.IsNullableType())
-            {
-                propertyValue = Convert.ChangeType(propertyValue, propType_TEntity.GetNullableTType());
-            }
-            else
-            {
-                propertyValue = Convert.ChangeType(propertyValue, propType_TEntity);
-            }
+            propertyValue = ConvertHelper.ChangeType(propertyValue, propType_TEntity);
 
             var right = Expression.Constant(propertyValue, propType_TEntity);
             var body = Expression.LessThan(left, right);
@@ -1691,15 +1650,7 @@ namespace EntityToSqlWhereClauseConfig
                 return null;
             }
 
-            //转换为数据库对应的c#类型,如果是可空类型,那么要获得Nullable<T> 中的T类型
-            if (propType_TEntity.IsNullableType())
-            {
-                propertyValue = Convert.ChangeType(propertyValue, propType_TEntity.GetNullableTType());
-            }
-            else
-            {
-                propertyValue = Convert.ChangeType(propertyValue, propType_TEntity);
-            }
+            propertyValue = ConvertHelper.ChangeType(propertyValue, propType_TEntity);
 
             var right = Expression.Constant(propertyValue, propType_TEntity);
             var body = Expression.LessThanOrEqual(left, right);

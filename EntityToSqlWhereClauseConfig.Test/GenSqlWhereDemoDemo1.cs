@@ -8,6 +8,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EntityToSqlWhereClauseConfig.Test
 {
+    //demo1, 使用   whereLambda[SearchType.like] 的这种配置方式来创建sql
+    //注: demo1 和demo2 如果写重复, 那么都会生效
     public class Input_Demo
     {
         //public int? Id { get; set; }
@@ -23,7 +25,7 @@ namespace EntityToSqlWhereClauseConfig.Test
     }
 
     [TestClass]
-    public class UseDemo
+    public class UseDemo1
     {
         [TestMethod]
         public void Use()
@@ -40,7 +42,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 DataCreatedAtEnd = time,
             };
 
-            var whereLambda = new WhereLambda<People, Input_Demo>();
+            var whereLambda = new WhereLambda<Model_People, Input_Demo>();
             whereLambda.SearchModel = searchModel;
 
             whereLambda[SearchType.like] = new List<string>
@@ -72,7 +74,7 @@ namespace EntityToSqlWhereClauseConfig.Test
             };
 
             //List<Expression<Func<Route, bool>>> listExp = whereLambda.ToExpressionList(); //可以给ef用
-            Expression<Func<People, bool>> exp = whereLambda.ToExpression();
+            Expression<Func<Model_People, bool>> exp = whereLambda.ToExpression();
             //等价
             //List<Expression<Func<Route, bool>>> listExp = whereLambda;
             //Expression<Func<Route, bool>> exp = whereLambda;
@@ -104,7 +106,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 Url = "123",
             };
 
-            var whereLambda = new WhereLambda<People, Input_Demo>();
+            var whereLambda = new WhereLambda<Model_People, Input_Demo>();
             whereLambda.SearchModel = searchModel;
 
             whereLambda[SearchType.eq] = new List<string>
@@ -113,7 +115,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 nameof(searchModel.Url),
             };
 
-            Expression<Func<People, bool>> exp = whereLambda.ToExpression();
+            Expression<Func<Model_People, bool>> exp = whereLambda.ToExpression();
             (string sql, Dictionary<string, object> param) = exp.ToWhereClause();
 
             Assert.AreEqual(sql, "IsDel = @IsDel And Url = @Url");
@@ -137,7 +139,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
             };
 
-            var whereLambda = searchModel.CrateWhereLambda((People p) => { }); //这个 People 类型 和上面的匿名类型有关联的
+            var whereLambda = searchModel.CrateWhereLambda((Model_People p) => { }); //这个 People 类型 和上面的匿名类型有关联的
 
             whereLambda[SearchType.like] = new List<string>
             {
@@ -175,7 +177,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 Name = (string)null,
             };
 
-            var whereLambda = searchModel.CrateWhereLambda((People p) => { });//这个 People 类型 和上面的匿名类型有关联的
+            var whereLambda = searchModel.CrateWhereLambda((Model_People p) => { });//这个 People 类型 和上面的匿名类型有关联的
 
             whereLambda[SearchType.like] = new List<string>
             {
@@ -200,7 +202,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 DataCreatedAtEnd = time,
             };
 
-            var whereLambda = new WhereLambda<People, Input_Demo>();
+            var whereLambda = new WhereLambda<Model_People, Input_Demo>();
             whereLambda.SearchModel = searchModel;
 
             whereLambda[SearchType.like] = new List<string>

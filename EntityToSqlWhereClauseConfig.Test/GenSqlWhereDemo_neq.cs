@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EntityToSqlWhereClauseConfig.Test
 {
-    public class Input_neq
+    public class model_neq
     {
         public bool IsDel { get; set; }
     }
@@ -22,12 +22,12 @@ namespace EntityToSqlWhereClauseConfig.Test
         [TestMethod]
         public void Test_neq()
         {
-            var searchModel = new Input_neq()
+            var searchModel = new model_neq()
             {
                 IsDel = true,//todo://计划:添加当其他值为xx时,当前值才生效
             };
 
-            var whereLambda = new WhereLambda<People, Input_neq>();
+            var whereLambda = new WhereLambda<Model_People, model_neq>();
             whereLambda.SearchModel = searchModel;
 
             whereLambda[SearchType.neq] = new List<string>
