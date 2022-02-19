@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EntityToSqlWhereClauseConfig.Test
 {
-    public class Input_le
+    public class model_le
     {
         public long? Id { get; set; }
         public DateTime? DataCreatedAt { get; set; }
@@ -25,13 +25,13 @@ namespace EntityToSqlWhereClauseConfig.Test
         [TestMethod]
         public void Test_le()
         {
-            var searchModel = new Input_le()
+            var searchModel = new model_le()
             {
                 Id = 5,
                 DataCreatedAt = DateTime.Parse("2021-8-8"),
             };
 
-            var whereLambda = new WhereLambda<People, Input_le>();
+            var whereLambda = new WhereLambda<Model_People, model_le>();
             whereLambda.SearchModel = searchModel;
 
             whereLambda[SearchType.le] = new List<string>

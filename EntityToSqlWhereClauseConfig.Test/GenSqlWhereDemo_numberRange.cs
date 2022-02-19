@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace EntityToSqlWhereClauseConfig.Test
 {
 
-    public class Input_numberRange
+    public class model_numberRange
     {
         public int? Id { get; set; }
     }
@@ -42,7 +42,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                     IdLeft = 3,
                     IdRight = 9
                 };
-                var whereLambda = new WhereLambda<People, Input_numberRange_Attr>();
+                var whereLambda = new WhereLambda<Model_People, Input_numberRange_Attr>();
                 whereLambda.SearchModel = searchModel;
                 whereLambda[SearchType.numberRange] = new List<string>
                 {
@@ -68,7 +68,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 {
                     Id = 5
                 };
-                var whereLambda = new WhereLambda<People, Input_numberRange2>();
+                var whereLambda = new WhereLambda<Model_People, Input_numberRange2>();
                 whereLambda.SearchModel = searchModel;
                 whereLambda[SearchType.numberRange] = new List<string>
                 {

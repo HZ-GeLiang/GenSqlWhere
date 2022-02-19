@@ -6,6 +6,15 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EntityToSqlWhereClauseConfig.Test
 {
+    public class model_dynamic
+    {
+        public int Id { get; set; }
+        public bool IsDel { get; set; }
+        public DateTime DataCreatedAt { get; set; }
+
+    }
+
+
     [TestClass]
     public class GenSqlWhereDemo_dynamic
     {
@@ -18,7 +27,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 DataCreatedAt = DateTime.Parse("2021-8-8"),
             };
 
-            var whereLambda = searchModel.CrateWhereLambda((People _) => { });
+            var whereLambda = searchModel.CrateWhereLambda((model_dynamic _) => { });
 
             whereLambda[SearchType.le] = new List<string>
             {
@@ -47,7 +56,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 DataCreatedAt = DateTime.Parse("2021-8-8"),
             };
 
-            var whereLambda = searchModel.CrateWhereLambda((People _) => { });
+            var whereLambda = searchModel.CrateWhereLambda((model_dynamic _) => { });
 
             (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
@@ -67,7 +76,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                     IsDel = 0,
                 };
 
-                var whereLambda = searchModel.CrateWhereLambda((People _) => { });
+                var whereLambda = searchModel.CrateWhereLambda((model_dynamic _) => { });
                 whereLambda[SearchType.eq] = new List<string>
                 {
                     nameof(searchModel.IsDel),
@@ -88,7 +97,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                     IsDel = 1,
                 };
 
-                var whereLambda = searchModel.CrateWhereLambda((People _) => { });
+                var whereLambda = searchModel.CrateWhereLambda((model_dynamic _) => { });
                 whereLambda[SearchType.eq] = new List<string>
                 {
                     nameof(searchModel.IsDel),

@@ -8,12 +8,12 @@ namespace EntityToSqlWhereClauseConfig.Test
 {
     public class Input_eq
     {
-        public bool IsDel { get; set; }
+        [SearchType(SearchType.eq)] public bool IsDel { get; set; }
     }
 
-    public class Input_eq_Attr
+    public class Model_eq
     {
-        [SearchType(SearchType.eq)] public bool IsDel { get; set; }
+        public bool IsDel { get; set; }
     }
 
 
@@ -23,12 +23,12 @@ namespace EntityToSqlWhereClauseConfig.Test
         [TestMethod]
         public void Test_eq()
         {
-            var searchModel = new Input_eq()
+            var searchModel = new Model_eq()
             {
                 IsDel = true,//todo://计划:添加当其他值为xx时,当前值才生效
             };
 
-            var whereLambda = new WhereLambda<People, Input_eq>();
+            var whereLambda = new WhereLambda<Input_eq, Model_eq>();
             whereLambda.SearchModel = searchModel;
 
             whereLambda[SearchType.eq] = new List<string>

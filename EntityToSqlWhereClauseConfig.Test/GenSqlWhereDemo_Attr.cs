@@ -16,7 +16,7 @@ namespace EntityToSqlWhereClauseConfig.Test
             {
                 Url = "123",
             };
-            var whereLambda = searchModel.CrateWhereLambda((Input_like _) => { });
+            var whereLambda = searchModel.CrateWhereLambda((model_like _) => { });
             var expression = whereLambda.ToExpression();
             (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
             Assert.AreEqual(sql, "Url Like @Url");
@@ -69,12 +69,12 @@ namespace EntityToSqlWhereClauseConfig.Test
         [TestMethod]
         public void Test_eq_Attr()
         {
-            var searchModel = new Input_eq_Attr()
+            var searchModel = new Input_eq()
             {
                 IsDel = true,
             };
 
-            var whereLambda = searchModel.CrateWhereLambda((Input_eq _) => { });
+            var whereLambda = searchModel.CrateWhereLambda((Model_eq _) => { });
             var expression = whereLambda.ToExpression();
             (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
 
@@ -95,7 +95,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 IsDel = true,//todo://计划:添加当其他值为xx时,当前值才生效
             };
          
-            var whereLambda = searchModel.CrateWhereLambda((Input_neq _) => { });
+            var whereLambda = searchModel.CrateWhereLambda((model_neq _) => { });
             var expression = whereLambda.ToExpression();
             (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
             Assert.AreEqual(sql, "IsDel <> @IsDel");
@@ -116,7 +116,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 Sex = "1",
             };
  
-            var whereLambda = searchModel.CrateWhereLambda((Input_in _) => { });
+            var whereLambda = searchModel.CrateWhereLambda((model_in _) => { });
             var expression = whereLambda.ToExpression();
             (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
             Assert.AreEqual(sql, "((Id In (@Id)) And (Sex In (@Sex)))");
@@ -136,7 +136,7 @@ namespace EntityToSqlWhereClauseConfig.Test
             {
                 Id = 1
             };
-            var whereLambda = searchModel.CrateWhereLambda((Input_in2 _) => { });
+            var whereLambda = searchModel.CrateWhereLambda((model_in2 _) => { });
             var expression = whereLambda.ToExpression();
             (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
             Assert.AreEqual(sql, "(Id In (@Id))");
@@ -157,7 +157,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                     DataCreatedAtStart = DateTime.Parse("2021-8-7 23:00:00"),
                     DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
                 };
-                var whereLambda = searchModel.CrateWhereLambda((Input_timeRange _) => { });
+                var whereLambda = searchModel.CrateWhereLambda((model_timeRange _) => { });
                 var expression = whereLambda.ToExpression();
                 (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
                 Assert.AreEqual(sql, "DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1");
@@ -201,7 +201,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                     IdLeft = 3,
                     IdRight = 9
                 };
-                var whereLambda = searchModel.CrateWhereLambda((Input_numberRange _) => { });
+                var whereLambda = searchModel.CrateWhereLambda((model_numberRange _) => { });
                 var expression = whereLambda.ToExpression();
                 (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
 
@@ -243,7 +243,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 DataCreatedAt = DateTime.Parse("2021-8-8"),
             };
 
-            var whereLambda = searchModel.CrateWhereLambda((Input_gt _) => { });
+            var whereLambda = searchModel.CrateWhereLambda((model_gt _) => { });
             var expression = whereLambda.ToExpression();
             (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
             Assert.AreEqual(sql, "Id > @Id And DataCreatedAt > @DataCreatedAt");
@@ -264,7 +264,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 Id = 5,
                 DataCreatedAt = DateTime.Parse("2021-8-8"),
             };
-            var whereLambda = searchModel.CrateWhereLambda((Input_ge _) => { });
+            var whereLambda = searchModel.CrateWhereLambda((model_ge _) => { });
             var expression = whereLambda.ToExpression();
             (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
             Assert.AreEqual(sql, "Id >= @Id And DataCreatedAt >= @DataCreatedAt");
@@ -285,7 +285,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 Id = 5,
                 DataCreatedAt = DateTime.Parse("2021-8-8"),
             };
-            var whereLambda = searchModel.CrateWhereLambda((Input_lt _) => { });
+            var whereLambda = searchModel.CrateWhereLambda((model_lt _) => { });
             var expression = whereLambda.ToExpression();
             (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
             Assert.AreEqual(sql, "Id < @Id And DataCreatedAt < @DataCreatedAt");
@@ -306,7 +306,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                 Id = 5,
                 DataCreatedAt = DateTime.Parse("2021-8-8"),
             };
-            var whereLambda = searchModel.CrateWhereLambda((Input_le _) => { });
+            var whereLambda = searchModel.CrateWhereLambda((model_le _) => { });
             var expression = whereLambda.ToExpression();
             (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
 

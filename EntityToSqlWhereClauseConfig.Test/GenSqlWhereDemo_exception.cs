@@ -7,11 +7,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace EntityToSqlWhereClauseConfig.Test
 {
 
-    public class Input_expection1
+    public class model_expection1
     {
         public int Id { get; set; }
     }
-    public class Input_expection2
+    public class model_expection2
     {
         public int? Id { get; set; }
     }
@@ -30,7 +30,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                     Id = (string)null,
                 };
 
-                var whereLambda = searchModel.CrateWhereLambda((Input_expection1 _) => { });
+                var whereLambda = searchModel.CrateWhereLambda((model_expection1 _) => { });
 
                 whereLambda[SearchType.eq] = new List<string>
                 {
@@ -51,7 +51,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                     Id = string.Empty,
                 };
 
-                var whereLambda = searchModel.CrateWhereLambda((Input_expection1 _) => { });
+                var whereLambda = searchModel.CrateWhereLambda((model_expection1 _) => { });
 
                 whereLambda[SearchType.eq] = new List<string>
                 {
@@ -73,7 +73,7 @@ namespace EntityToSqlWhereClauseConfig.Test
                     Id = string.Empty,
                 };
 
-                var whereLambda = searchModel.CrateWhereLambda((Input_expection2 _) => { });
+                var whereLambda = searchModel.CrateWhereLambda((model_expection2 _) => { });
 
                 whereLambda[SearchType.eq] = new List<string>
                 {
@@ -91,12 +91,12 @@ namespace EntityToSqlWhereClauseConfig.Test
         [TestMethod]
         public void Test_sqlShouldBeEmpty()
         {
-            var searchModel = new Input_lt()
+            var searchModel = new model_lt()
             {
 
             };
 
-            var whereLambda = new WhereLambda<People, Input_lt>();
+            var whereLambda = new WhereLambda<Model_People, model_lt>();
             whereLambda.SearchModel = searchModel;
 
             whereLambda[SearchType.lt] = new List<string>

@@ -2,7 +2,7 @@
 
 namespace EntityToSqlWhereClauseConfig.Test
 {
-    public class People
+    public class Model_People
     {
         public int Id { get; set; }
 
