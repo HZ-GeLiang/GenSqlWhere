@@ -350,7 +350,6 @@ namespace ExpressionToSqlWhereClause
 
                         leftParseResult.SqlClauseParametersInfo.Value = val;
                         leftParseResult.SqlClauseParametersInfo.SqlClause = leftClause;
-
                     }
                     else
                     {
