@@ -114,28 +114,28 @@ namespace EntityToSqlWhereClauseConfig.Test
         }
 
 
-        //[TestMethod]
-        //public void Month_in_一个月_list类型()
-        //{
-        //    var searchModel = new Input_sqlFun_MonthIn1()
-        //    {
-        //        DataCreatedAt = 1
-        //    };
-        //    var whereLambda = searchModel.CrateWhereLambda((Model_sqlFun_Month p) => { });
-        //    whereLambda[SearchType.@in] = new List<string>
-        //    {
-        //        nameof(searchModel.DataCreatedAt),
-        //    };
-        //    var exp = whereLambda.ToExpression();
+        [TestMethod]
+        public void MonthIn_eq()
+        {
+            var searchModel = new Input_sqlFun_MonthIn1()
+            {
+                DataCreatedAt = 1
+            };
+            var whereLambda = searchModel.CrateWhereLambda((Model_sqlFun_Month p) => { });
+            whereLambda[SearchType.@in] = new List<string>
+            {
+                nameof(searchModel.DataCreatedAt),
+            };
+            var exp = whereLambda.ToExpression();
 
-        //    (string whereClause, Dictionary<string, object> parameters) = exp.ToWhereClause();
+            (string whereClause, Dictionary<string, object> parameters) = exp.ToWhereClause();
 
-        //    Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
-        //    expectedParameters.Add("@Month", new List<int> { 1 });//Month()返回的是int ,所以1 是int类型的才对
-        //    Assert.AreEqual("(Month(DataCreatedAt) In (@Month))", whereClause);
+            Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
+            expectedParameters.Add("@MonthIn", "1"); //sql 的 in(变量), 这个变量只能写一个, 所以,这里是string
+            Assert.AreEqual("((Month(DataCreatedAt) In (@MonthIn)))", whereClause);
 
-        //    DictionaryAssert.AreEqual(expectedParameters, parameters);
-        //}
+            DictionaryAssert.AreEqual(expectedParameters, parameters);
+        }
 
     }
 }
