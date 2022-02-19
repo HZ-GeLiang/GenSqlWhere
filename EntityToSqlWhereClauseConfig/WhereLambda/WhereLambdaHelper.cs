@@ -1174,7 +1174,6 @@ namespace EntityToSqlWhereClauseConfig
 
                 Type propType_TEntity = propertyExp.Type; //a.AuditStateId 的type (Dto中定义的属性类型)
 
-
                 //IEnumerable<T> 的T 必需和  propType_TEntity 一样
                 //string + 整数
                 //string    ushort    short    int    uint    char    float    double    long    ulong    decimal   datetime
@@ -1187,12 +1186,12 @@ namespace EntityToSqlWhereClauseConfig
                 {
                     if (attr_SqlFuncArray.Length > 1)
                     {
-                        throw new Exceptions.EntityToSqlWhereCaluseConfigException(
-                            $"特性:{nameof(SqlFuncAttribute)}不能标记多个.");
+                        var exMsg = $"特性:{nameof(SqlFuncAttribute)}不能标记多个.";
+                        throw new Exceptions.EntityToSqlWhereCaluseConfigException(exMsg);
                     }
 
                     var attr_SqlFunc = attr_SqlFuncArray[0];
-                    if (attr_SqlFunc is MonthAttribute)
+                    if (attr_SqlFunc is MonthInAttribute)
                     {
                         //todo:
                         //ParameterExpression parameterExpression = Expression.Parameter(type_TEntity, "u");
@@ -1329,13 +1328,13 @@ namespace EntityToSqlWhereClauseConfig
                         lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableChar());
                     }
 
-                    #endregion
+                    #endregion 
                 }
-
 
                 if (lambda == null)
                 {
-                    throw new Exceptions.EntityToSqlWhereCaluseConfigException($"WhereLambdaHelper.cs发生异常,原因: 不支持的属性类型:{propType_TEntity}");
+                    var exMsg = $"SearchType:{nameof(SearchType.@in)},操作遇到不支持的属性类型:{propType_TEntity}";
+                    throw new Exceptions.EntityToSqlWhereCaluseConfigException(exMsg);
                 }
 
                 whereLambdas.Add(lambda);
