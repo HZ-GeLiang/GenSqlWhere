@@ -11,7 +11,7 @@
 		<PackageProjectUrl>https://gitee.com/hzgel/GenSqlWhere</PackageProjectUrl>
 		<Copyright>Copyright (c) GeLiang</Copyright>
 		<PackageTags>configModel2sql</PackageTags>
-		<Version>1.2.0</Version>
+		<Version>1.3.0</Version>
 		<LangVersion>9</LangVersion>
 		<RepositoryType>Gitee</RepositoryType>
 		<PackageId>EntityToSqlWhereClauseConfig</PackageId>
@@ -27,5 +27,8 @@
 	
 	<ItemGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 	  <ProjectReference Include="..\ExpressionToSqlWhereClause\ExpressionToSqlWhereClause.csproj" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<PackageReference Include="ExpressionToSqlWhereClause" Version="1.3.0" />
 	</ItemGroup>
 </Project>
