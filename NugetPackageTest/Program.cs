@@ -1,12 +1,19 @@
-﻿#if DEBUG 
-using EntityToSqlWhereClauseConfig;
+﻿using EntityToSqlWhereClauseConfig;
 using ExpressionToSqlWhereClause;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace GenerateSqlWhereClause
+namespace NugetPackageTest
 {
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            TestProgram.Test();
+            Console.WriteLine("Hello World!");
+        }
+    }
+
     public class People
     {
         public int Id { get; set; }
@@ -21,9 +28,9 @@ namespace GenerateSqlWhereClause
 
     }
 
-    class TestProgram
+    public class TestProgram
     {
-        static void Test()
+        public static void Test()
         {
             var searchModel = new
             {
@@ -41,11 +48,7 @@ namespace GenerateSqlWhereClause
 
             (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
-            var a = sql == "Id <= @Id And DataCreatedAt <= @DataCreatedAt";
-
+            Console.WriteLine(sql == "Id <= @Id And DataCreatedAt <= @DataCreatedAt");
         }
     }
-
-
 }
-#endif
