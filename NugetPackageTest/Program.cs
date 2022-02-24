@@ -1,7 +1,7 @@
-﻿using EntityToSqlWhereClauseConfig;
-using ExpressionToSqlWhereClause;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using ExpressionToSqlWhereClause;
+using ExpressionToSqlWhereClause.EntityConfig;
 
 namespace NugetPackageTest
 {
