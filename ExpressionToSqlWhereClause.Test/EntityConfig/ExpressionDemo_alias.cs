@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using ExpressionToSqlWhereClause.Test.ExtensionMethod;
+using ExpressionToSqlWhereClause;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SqlWhere.ExtensionMethod;
 
-namespace ExpressionToSqlWhereClause.Test.EntityConfig
+namespace SqlWhere.EntityConfig
 {
     [TestClass]
     public class ExpressionDemo_alias
@@ -35,7 +36,8 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfig
         public void 别名2()
         {
             Expression<Func<Student, bool>> expOr = a => a.Id == 1 || a.Id == 2;
-            expOr = expOr.AndIf(true, () => { return x => x.IsDel == true; }); // 和  () => { return x => x.IsDel; } 不一样
+            expOr = expOr.AndIf(true, () => { return x => x.IsDel == true; });  //                         ((IsDel = @IsDel)))
+            //                    和  () => { return x => x.IsDel; } 不一样:解析不一样,导致最后的sql 语句不一样,  (IsDel = @IsDel)
 
             var dict = new Dictionary<string, string>()
             {
@@ -44,7 +46,8 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfig
             (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause(alias: dict);
 
             Assert.AreEqual(WhereClause, "((((RouteId = @Id)) Or ((RouteId = @Id1))) And ((IsDel = @IsDel)))");
-
+            //((((RouteId = @Id)) Or ((RouteId = @Id1))) And (IsDel = @IsDel))
+            //((((RouteId = @Id)) Or ((RouteId = @Id1))) And ((IsDel = @IsDel)))
             var para = new Dictionary<string, object>()
             {
                 {"@Id", 1},
@@ -58,7 +61,8 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfig
         public void 别名3()
         {
             Expression<Func<Student, bool>> expOr = a => a.Id == 1 || a.Id == 2;
-            expOr = expOr.AndIf(true, () => { return x => x.IsDel == true; }); // 和  () => { return x => x.IsDel; } 不一样
+            expOr = expOr.AndIf(true, () => { return x => x.IsDel == true; });  //                         ((IsDel = @IsDel)))
+            //                    和  () => { return x => x.IsDel; } 不一样:解析不一样,导致最后的sql 语句不一样,  (IsDel = @IsDel)
 
             var dict = new Dictionary<string, string>()
             {

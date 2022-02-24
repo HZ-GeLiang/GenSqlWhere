@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using ExpressionToSqlWhereClause;
+using ExpressionToSqlWhereClause.SqlFunc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ExpressionToSqlWhereClause.Test.EntityConfig
+namespace SqlWhere.EntityConfig
 {
     public class User_SqlFunc_Entity
     {
@@ -18,13 +20,13 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfig
         public void Test_Expression_compile()
         {
             Expression<Func<User_SqlFunc_Entity, bool>> expression =
-                u => SqlFunc.DbFunctions.Month(u.CreateAt) == 5;
+                u => DbFunctions.Month(u.CreateAt) == 5;
         }
 
         [TestMethod]
         public void SqlFunc_Month_eq()
         { 
-            Expression<Func<User_SqlFunc_Entity, bool>> expression = u => SqlFunc.DbFunctions.Month(u.CreateAt) == 5;
+            Expression<Func<User_SqlFunc_Entity, bool>> expression = u => DbFunctions.Month(u.CreateAt) == 5;
             (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>
             {
@@ -40,7 +42,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfig
         {
             //EntityToSqlWherecClauseConfig 的 in 
             Expression<Func<User_SqlFunc_Entity, bool>> expression =
-                u => SqlFunc.DbFunctions.MonthIn(u.CreateAt) == new List<int> { 5, 6 };//string 需要自己转成 List<int> , 这里略,直接写死
+                u => DbFunctions.MonthIn(u.CreateAt) == new List<int> { 5, 6 };//string 需要自己转成 List<int> , 这里略,直接写死
             (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>
             {
@@ -53,4 +55,5 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfig
         }
 
     }
+ 
 }

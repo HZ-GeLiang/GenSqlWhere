@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Linq.Expressions;
+using ExpressionToSqlWhereClause;
 using ExpressionToSqlWhereClause.Helper.EntityConfig;
-using ExpressionToSqlWhereClause.Test.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SqlWhere.ExtensionMethod;
 
-namespace ExpressionToSqlWhereClause.Test.EntityConfig
+namespace SqlWhere.EntityConfig
 {
     public class UserFilter
     {
@@ -156,7 +157,8 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfig
         public void boolean值的写法2()
         {
             Expression<Func<Student, bool>> expOr = a => a.Id == 1 || a.Id == 2;
-            expOr = expOr.AndIf(true, () => { return x => x.IsDel == true; }); // 和  () => { return x => x.IsDel; } 不一样
+            expOr = expOr.AndIf(true, () => { return x => x.IsDel == true; });
+            //                    和  () => { return x => x.IsDel; } 不一样
 
             (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause();
 
