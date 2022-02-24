@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 
 // ReSharper disable once CheckNamespace
 namespace ExpressionToSqlWhereClause 
@@ -81,12 +82,8 @@ namespace ExpressionToSqlWhereClause
 
         #endregion
 
-        //原文链接：https://blog.csdn.net/WPwalter/article/details/82859267
-#if net45
+  
         public static bool IsSubClassOfRawGeneric(this Type type, Type generic)
-#else
-        public static bool IsSubClassOfRawGeneric(this Type type, Type generic)
-#endif
         {
             if (type == null) throw new ArgumentNullException(nameof(type));
             if (generic == null) throw new ArgumentNullException(nameof(generic));
@@ -102,6 +99,47 @@ namespace ExpressionToSqlWhereClause
 
             bool IsTheRawGenericType(Type test)
                 => generic == (test.IsGenericType ? test.GetGenericTypeDefinition() : test);
+        }
+
+
+ 
+
+        /// <summary>
+        /// 返回Nullable&lt;T&gt;里的T类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns>返回Nullable&lt;T&gt;里的T类型,T是枚举值</returns>
+        public static Type GetNullableTType(this Type type)
+        {
+            return type.GetProperty("Value").PropertyType;
+        }
+
+        public static bool IsNullableType(this Type type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+            return type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
+
+        public static bool IsStructType(this Type type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+            var isStructType = !type.IsClass;
+            if (isStructType)
+            {
+                return true;
+            }
+
+            if (type.IsNullableType() && !type.GetNullableTType().IsClass)
+            {
+                return true;
+            }
+            return false;
         }
 
     }

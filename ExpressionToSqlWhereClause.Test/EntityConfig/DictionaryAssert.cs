@@ -3,11 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ExpressionToSqlWhereClause.Test
+namespace ExpressionToSqlWhereClause.Test.EntityConfig
 {
     public class DictionaryAssert
     {
-
         #region IsObjectCollection
         private static bool IsSubClassOfRawGeneric(Type type, Type generic)
         {
@@ -92,7 +91,6 @@ namespace ExpressionToSqlWhereClause.Test
 
             Assert.AreEqual(dict.Count, dict2.Count);
 
-
             CollectionAssert.AreEqual(dict.Keys, dict2.Keys);    //ÅÐ¶Ïkey
 
             //ÅÐ¶Ïvalue
@@ -106,11 +104,9 @@ namespace ExpressionToSqlWhereClause.Test
                 }
                 else
                 {
-                    Assert.IsTrue(dict[key].Equals(dict2[key]),
-                        $"The expected value is {dict[key]} ({dict[key].GetType().FullName}), the actual value is {dict2[key]} ({dict2[key].GetType().FullName})");
+                    Assert.IsTrue(dict[key].Equals(dict2[key]), $"The expected value is {dict[key]}, the actual value is {dict2[key]}");
                 }
             }
         }
-
     }
 }

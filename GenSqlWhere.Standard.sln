@@ -5,18 +5,9 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpressionToSqlWhereClause", "ExpressionToSqlWhereClause\ExpressionToSqlWhereClause.csproj", "{62CF305C-AAAE-4B33-9203-05386BD9C64D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTest", "UnitTest", "{92D595D3-0A50-4E7A-AE8D-ED945F5EC125}"
-	ProjectSection(SolutionItems) = preProject
-		类库说明.md = 类库说明.md
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpressionToSqlWhereClause.Test", "ExpressionToSqlWhereClause.Test\ExpressionToSqlWhereClause.Test.csproj", "{F7085441-0D02-41E9-A33F-EEBEAC73659C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityToSqlWhereClauseConfig.Test", "EntityToSqlWhereClauseConfig.Test\EntityToSqlWhereClauseConfig.Test.csproj", "{340C9D2E-FDC6-4A09-890E-AD7ADFDA66FF}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityToSqlWhereClauseConfig", "EntityToSqlWhereClauseConfig\EntityToSqlWhereClauseConfig.csproj", "{FD8D4A93-7C8C-4084-AC49-98831DE53DC4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NugetPackageTest", "NugetPackageTest\NugetPackageTest.csproj", "{CA442197-5D36-49BA-AF76-8CD99EF408A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NugetPackageTest", "NugetPackageTest\NugetPackageTest.csproj", "{CA442197-5D36-49BA-AF76-8CD99EF408A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,14 +23,6 @@ Global
 		{F7085441-0D02-41E9-A33F-EEBEAC73659C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7085441-0D02-41E9-A33F-EEBEAC73659C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7085441-0D02-41E9-A33F-EEBEAC73659C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{340C9D2E-FDC6-4A09-890E-AD7ADFDA66FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{340C9D2E-FDC6-4A09-890E-AD7ADFDA66FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{340C9D2E-FDC6-4A09-890E-AD7ADFDA66FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{340C9D2E-FDC6-4A09-890E-AD7ADFDA66FF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FD8D4A93-7C8C-4084-AC49-98831DE53DC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FD8D4A93-7C8C-4084-AC49-98831DE53DC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FD8D4A93-7C8C-4084-AC49-98831DE53DC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FD8D4A93-7C8C-4084-AC49-98831DE53DC4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CA442197-5D36-49BA-AF76-8CD99EF408A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CA442197-5D36-49BA-AF76-8CD99EF408A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA442197-5D36-49BA-AF76-8CD99EF408A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -47,11 +30,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{F7085441-0D02-41E9-A33F-EEBEAC73659C} = {92D595D3-0A50-4E7A-AE8D-ED945F5EC125}
-		{340C9D2E-FDC6-4A09-890E-AD7ADFDA66FF} = {92D595D3-0A50-4E7A-AE8D-ED945F5EC125}
-		{CA442197-5D36-49BA-AF76-8CD99EF408A6} = {92D595D3-0A50-4E7A-AE8D-ED945F5EC125}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0C2A6E85-32E9-4C4D-A2AA-A9501F40ACE6}
