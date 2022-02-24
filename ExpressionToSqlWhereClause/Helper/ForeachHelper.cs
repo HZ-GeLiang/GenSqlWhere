@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace ExpressionToSqlWhereClause.Helper.EntityConfig
+namespace ExpressionToSqlWhereClause.Helper
 {
     internal class ForeachHelper
     {

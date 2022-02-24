@@ -1,19 +1,15 @@
-using ExpressionToSqlWhereClause.SqlFunc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using ExpressionToSqlWhereClause;
 using ExpressionToSqlWhereClause.ExtensionMethod;
 using ExpressionToSqlWhereClause.Helper;
-using ExpressionToSqlWhereClause.Helper.EntityConfig;
+using ExpressionToSqlWhereClause.SqlFunc;
 using ExpressionToSqlWhereClause.SqlFunc.EntityConfig;
-using ReflectionHelper = ExpressionToSqlWhereClause.Helper.EntityConfig.ReflectionHelper;
 
-// ReSharper disable once CheckNamespace
-namespace EntityToSqlWhereClauseConfig
+namespace ExpressionToSqlWhereClause.EntityConfig
 {
     public static class WhereLambdaHelper
     {

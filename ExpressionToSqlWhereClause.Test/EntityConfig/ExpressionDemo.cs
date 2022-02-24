@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Linq.Expressions;
 using ExpressionToSqlWhereClause;
-using ExpressionToSqlWhereClause.Helper.EntityConfig;
+using ExpressionToSqlWhereClause.Helper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SqlWhere.ExtensionMethod;
 

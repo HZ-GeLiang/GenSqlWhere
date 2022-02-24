@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using ExpressionToSqlWhereClause.ExtensionMethod;
-using ExpressionToSqlWhereClause.Helper.EntityConfig;
+using ExpressionToSqlWhereClause.Helper;
 
-// ReSharper disable once CheckNamespace
-namespace EntityToSqlWhereClauseConfig
+namespace ExpressionToSqlWhereClause.EntityConfig
 {
     /// <summary>
     /// 适合TEntity ==  TSearchModel,
