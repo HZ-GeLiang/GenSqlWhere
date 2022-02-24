@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using EntityToSqlWhereClauseConfig;
+using ExpressionToSqlWhere.Test;
+using ExpressionToSqlWhereClause;
 using ExpressionToSqlWhereClause.SqlFunc.EntityConfig;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ExpressionToSqlWhereClause.Test.ExpressionTree
+namespace SqlWhere.ExpressionTree
 {
     public class Input_sqlFun_Month_eq
     {

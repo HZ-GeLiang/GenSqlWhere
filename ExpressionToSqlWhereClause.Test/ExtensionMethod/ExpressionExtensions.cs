@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace ExpressionToSqlWhereClause.Test.ExtensionMethod
+namespace SqlWhere.ExtensionMethod
 {
     #region 操作Expression的扩展方法
     /*

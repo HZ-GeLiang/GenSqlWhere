@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using EntityToSqlWhereClauseConfig;
+using ExpressionToSqlWhere.Test;
+using ExpressionToSqlWhereClause;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ExpressionToSqlWhereClause.Test.ExpressionTree
+namespace SqlWhere.ExpressionTree
 {
     //demo2,  在 input 模型上 标记 Attribute 的这种配置方式来创建sql (推荐)
     //注: demo1 和demo2 如果写重复, 那么都会生效
@@ -96,8 +98,6 @@ namespace ExpressionToSqlWhereClause.Test.ExpressionTree
 
             DictionaryAssert.AreEqual(param, dict);
         }
-
-
 
     }
 }

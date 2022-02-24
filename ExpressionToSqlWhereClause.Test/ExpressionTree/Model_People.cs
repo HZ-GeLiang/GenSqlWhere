@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ExpressionToSqlWhereClause.Test.ExpressionTree
+namespace SqlWhere.ExpressionTree
 {
     public class Model_People
     {

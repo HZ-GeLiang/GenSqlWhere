@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using EntityToSqlWhereClauseConfig;
+using ExpressionToSqlWhere.Test;
+using ExpressionToSqlWhereClause;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ExpressionToSqlWhereClause.Test.ExpressionTree
+namespace SqlWhere.ExpressionTree
 {
 
     public class model_timeRange
