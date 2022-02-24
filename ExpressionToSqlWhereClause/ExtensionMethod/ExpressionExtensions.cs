@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace ExpressionToSqlWhereClause.Test.ExtensionMethod
+namespace ExpressionToSqlWhereClause.ExtensionMethod
 {
     #region 操作Expression的扩展方法
     /*
@@ -16,22 +16,19 @@ namespace ExpressionToSqlWhereClause.Test.ExtensionMethod
      For more information about this solution please refer to http://blogs.msdn.com/b/meek/archive/2008/05/02/linq-to-entities-combining-predicates.aspx.  (这个地址失效了, 估计就是微软的docs那个)
     */
 
-    public static class ExpressionExtensions
+    internal static class ExpressionExtensions
     {
-        public static Expression<Func<T, bool>> WhereIf<T>(this Expression<Func<T, bool>> exp, bool condition, Expression<Func<T, bool>> predicate)
-        {
-            if (exp == null)
-            {
-                return predicate;
-            }
-            return condition ? exp.And(predicate) : exp;
-        }
-
         public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> first, Expression<Func<T, bool>> second)
             => first.Compose(second, Expression.AndAlso);
 
         public static Expression<Func<T, bool>> AndIf<T>(this Expression<Func<T, bool>> first, bool condition, Func<Expression<Func<T, bool>>> second)
             => condition ? first.Compose(second(), Expression.AndAlso) : first;
+
+        public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> first, Expression<Func<T, bool>> second)
+            => first.Compose(second, Expression.OrElse);
+
+        public static Expression<Func<T, bool>> OrIf<T>(this Expression<Func<T, bool>> first, bool condition, Expression<Func<T, bool>> second)
+            => condition ? first.Compose(second, Expression.OrElse) : first;
 
 
         private static Expression<T> Compose<T>(this Expression<T> first, Expression<T> second, Func<Expression, Expression, Expression> merge)

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using ExpressionToSqlWhereClause.ExpressionTree;
+using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
 
 // ReSharper disable once CheckNamespace
 namespace ExpressionToSqlWhereClause
@@ -79,7 +81,7 @@ namespace ExpressionToSqlWhereClause
                             }
                             else
                             {
-                                throw new Exceptions.ExpressionToSqlWhereClauseException("逻辑错误,需要调整");
+                                throw new ExpressionToSqlWhereClauseException("逻辑错误,需要调整");
                             }
 
                             parseResult.WhereClause = parseResult.WhereClause.Replace(sqlClauseOrigin, sqlClauseNew);
