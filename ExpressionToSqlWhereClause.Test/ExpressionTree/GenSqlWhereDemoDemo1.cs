@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using EntityToSqlWhereClauseConfig;
 using ExpressionToSqlWhere.Test;
 using ExpressionToSqlWhereClause;
-using ExpressionToSqlWhereClause.Helper.EntityConfig;
+using ExpressionToSqlWhereClause.EntityConfig;
+using ExpressionToSqlWhereClause.Helper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace SqlWhere.ExpressionTree

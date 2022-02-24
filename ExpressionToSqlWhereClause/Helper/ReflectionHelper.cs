@@ -19,7 +19,6 @@ namespace ExpressionToSqlWhereClause.Helper
 
         #endregion
 
-
         #region GetAttributeForProperty
 
         /// <summary>
@@ -52,6 +51,23 @@ namespace ExpressionToSqlWhereClause.Helper
 
         public static TAttribute[] GetAttributeForMethod<TAttribute>(MemberInfo method) => GetAttributeForMethod(method, typeof(TAttribute)) as TAttribute[];
 
+        #endregion
+
+        #region GetMethod
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="methodName"></param>
+        /// <param name="bindingAttr">默认与 GetMethod 方法的 BindingFlags 参数值 一致 </param>
+        /// <returns></returns>
+        public static MethodInfo? GetMethod(Type type, string methodName,
+            BindingFlags bindingAttr = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public)
+        {
+            MethodInfo? method = type.GetMethod(methodName, bindingAttr);
+            return method;
+        }
         #endregion
     }
 }

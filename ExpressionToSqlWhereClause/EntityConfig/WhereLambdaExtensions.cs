@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using ExpressionToSqlWhereClause;
 
-// ReSharper disable once CheckNamespace
-namespace EntityToSqlWhereClauseConfig
+namespace ExpressionToSqlWhereClause.EntityConfig
 {
     public static class WhereLambdaExtensions
     {
