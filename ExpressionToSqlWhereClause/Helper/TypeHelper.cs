@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ExpressionToSqlWhereClause.Helper
 {
-    internal class TypeHelper
+    internal sealed class TypeHelper
     {
         /// <summary>
         /// 

@@ -11,7 +11,7 @@ namespace ExpressionToSqlWhereClause.Helper
     //object value = propertyValue.Get("Name");
 
     //快速的动态获取属性值
-    internal class PropertyValue<T>
+    internal sealed class PropertyValue<T>
     {
         private static ConcurrentDictionary<string, MemberGetDelegate> _memberGetDelegate = new ConcurrentDictionary<string, MemberGetDelegate>();
         delegate object MemberGetDelegate(T target);
