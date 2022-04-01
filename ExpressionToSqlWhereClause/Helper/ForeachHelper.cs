@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace ExpressionToSqlWhereClause.Helper
 {
-    internal class ForeachHelper
+    internal sealed class ForeachHelper
     {
         /// <summary>
         /// 

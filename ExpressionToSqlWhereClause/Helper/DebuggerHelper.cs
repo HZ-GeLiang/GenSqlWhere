@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ExpressionToSqlWhereClause.Helper
 {
-    internal static class DebuggerHelper
+    internal sealed class DebuggerHelper
     {
         /// <summary>
         /// 只在deubg下生效
