@@ -16,7 +16,7 @@ namespace SqlWhere.ExtensionMethod
      For more information about this solution please refer to http://blogs.msdn.com/b/meek/archive/2008/05/02/linq-to-entities-combining-predicates.aspx.  (这个地址失效了, 估计就是微软的docs那个)
     */
 
-    public static class ExpressionExtensions
+    internal static class ExpressionExtensions
     {
         public static Expression<Func<T, bool>> WhereIf<T>(this Expression<Func<T, bool>> exp, bool condition, Expression<Func<T, bool>> predicate)
         {
