@@ -132,7 +132,6 @@ namespace SqlWhere.EntityConfig
                 Assert.AreEqual(sql2, "Production Like '%aa%'");
             }
 
-
         }
 
         [TestMethod]
