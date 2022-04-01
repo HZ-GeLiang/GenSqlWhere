@@ -22,9 +22,12 @@ namespace SqlWhere.ExtensionMethod
         {
             if (exp == null)
             {
-                return predicate;
+                return condition ? predicate : exp;
             }
-            return condition ? exp.And(predicate) : exp;
+            else
+            {
+                return condition ? exp.And(predicate) : exp;
+            }
         }
 
         public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> first, Expression<Func<T, bool>> second)
