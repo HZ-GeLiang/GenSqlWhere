@@ -36,8 +36,7 @@ namespace ExpressionToSqlWhereClause.Helper
         /// <param name="parameters"></param>
         /// <param name="formatDateTime"></param>
         /// <returns></returns>
-        public static string MergeParametersIntoSql(string whereClause, Dictionary<string, object> parameters,
-           Dictionary<string, string> formatDateTime = null)
+        public static string MergeParametersIntoSql(string whereClause, Dictionary<string, object> parameters, Dictionary<string, string> formatDateTime = null)
         {
             if (string.IsNullOrWhiteSpace(whereClause))
             {
@@ -47,20 +46,22 @@ namespace ExpressionToSqlWhereClause.Helper
             string pattern = "@[a-zA-Z0-9_]*";
             var matches = Regex.Matches(whereClause, pattern);
 
-            var 值包裹 = new Type[] { typeof(string) };
-            var 值包裹_日期 = new Type[] { typeof(DateTime), typeof(DateTime?) };
-
-            //要倒序替换
-            for (int i = matches.Count - 1; i >= 0; i--)
+            for (int i = matches.Count - 1; i >= 0; i--) //要倒序替换
             {
                 var sqlParameterName = matches[i].Value;
                 var sqlParameterValue = parameters[matches[i].Value];
+
+                if (sqlParameterValue == null)
+                {
+                    whereClause = whereClause.Replace(sqlParameterName, "Null");
+                }
                 var sqlParameterValueType = sqlParameterValue.GetType();
-                if (值包裹.Contains(sqlParameterValueType))
+                if (sqlParameterValueType == typeof(string))
                 {
                     whereClause = whereClause.Replace(sqlParameterName, $"'{sqlParameterValue}'");
+
                 }
-                else if (值包裹_日期.Contains(sqlParameterValueType))
+                else if (sqlParameterValueType == typeof(DateTime) || sqlParameterValueType == typeof(DateTime?))
                 {
                     if (formatDateTime != null && formatDateTime.ContainsKey(sqlParameterName))
                     {
@@ -78,6 +79,7 @@ namespace ExpressionToSqlWhereClause.Helper
                     whereClause = whereClause.Replace(sqlParameterName, $"{sqlParameterValue}");
                 }
             }
+            
             return whereClause;
         }
 
@@ -115,7 +117,6 @@ namespace ExpressionToSqlWhereClause.Helper
             }
             return tArray;
         }
-
 
     }
 }
