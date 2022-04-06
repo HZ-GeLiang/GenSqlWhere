@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace ExpressionToSqlWhereClause.Helper
 {
-    internal class RegexHelper
+    internal sealed class RegexHelper
     {
         public static List<string> GetStringByMatches(string source, string pattern)
         {

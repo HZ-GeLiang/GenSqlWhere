@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ExpressionToSqlWhereClause.Helper
 {
-    internal static class ReflectionHelper
+    internal sealed class ReflectionHelper
     {
         #region GetProperties
 

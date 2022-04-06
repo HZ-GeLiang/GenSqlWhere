@@ -4,7 +4,7 @@ using System.Reflection;
 namespace ExpressionToSqlWhereClause.Helper
 {
 
-    internal class ConvertHelper
+    internal sealed class ConvertHelper
     {
         public static object ChangeType(object val, Type type)
         {

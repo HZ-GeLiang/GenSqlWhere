@@ -3,9 +3,9 @@ using System.Reflection;
 
 namespace ExpressionToSqlWhereClause.Helper
 {
-    internal static class ExpressionHelper
+    internal sealed class ExpressionHelper
     {
-        internal class Visitor : ExpressionVisitor
+        internal sealed class Visitor : ExpressionVisitor
         {
             public object Value { get; set; }
             protected override Expression VisitMember(MemberExpression member)
