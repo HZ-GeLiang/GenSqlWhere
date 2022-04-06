@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace ExpressionToSqlWhereClause.Helper
 {
-    public class WhereClauseHelper
+    public sealed class WhereClauseHelper
     {
         /// <summary>
         /// sql参数名转成数字的
@@ -49,7 +49,7 @@ namespace ExpressionToSqlWhereClause.Helper
 
             var 值包裹 = new Type[] { typeof(string) };
             var 值包裹_日期 = new Type[] { typeof(DateTime), typeof(DateTime?) };
-            
+
             //要倒序替换
             for (int i = matches.Count - 1; i >= 0; i--)
             {
