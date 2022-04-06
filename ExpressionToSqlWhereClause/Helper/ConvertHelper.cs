@@ -3,7 +3,6 @@ using System.Reflection;
 
 namespace ExpressionToSqlWhereClause.Helper
 {
-
     internal sealed class ConvertHelper
     {
         public static object ChangeType(object val, Type type)
