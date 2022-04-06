@@ -47,9 +47,9 @@ namespace ExpressionToSqlWhereClause.Helper
             string pattern = "@[a-zA-Z0-9_]*";
             var matches = Regex.Matches(whereClause, pattern);
 
-
             var 值包裹 = new Type[] { typeof(string) };
             var 值包裹_日期 = new Type[] { typeof(DateTime), typeof(DateTime?) };
+            
             //要倒序替换
             for (int i = matches.Count - 1; i >= 0; i--)
             {
@@ -62,9 +62,11 @@ namespace ExpressionToSqlWhereClause.Helper
                 }
                 else if (值包裹_日期.Contains(sqlParameterValueType))
                 {
-                    if (formatDateTime?.ContainsKey(sqlParameterName) == true)
+                    if (formatDateTime != null && formatDateTime.ContainsKey(sqlParameterName))
                     {
-                        whereClause = whereClause.Replace(sqlParameterName, $"'{((DateTime)sqlParameterValue).ToString(formatDateTime[sqlParameterName])}'");
+                        var format = formatDateTime[sqlParameterName];
+                        var newVal = $"'{((DateTime)sqlParameterValue).ToString(format)}'";
+                        whereClause = whereClause.Replace(sqlParameterName, newVal);
                     }
                     else
                     {
