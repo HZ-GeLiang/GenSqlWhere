@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using ExpressionToSqlWhere.Test;
 using ExpressionToSqlWhereClause;
 using ExpressionToSqlWhereClause.EntityConfig;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SqlWhere.ExtensionMethod;
 
 namespace SqlWhere.ExpressionTree
 {
@@ -11,11 +14,21 @@ namespace SqlWhere.ExpressionTree
         [SearchType(SearchType.eq)] public bool IsDel { get; set; }
     }
 
+    public class Input_eq2
+    {
+        [SearchType(SearchType.eq)] public long? Id  { get; set; }
+    }
+
+
     public class Model_eq
     {
         public bool IsDel { get; set; }
     }
 
+    public class Model_eq2
+    {
+        public int Id { get; set; }
+    }
 
     [TestClass]
     public class GenSqlWhereDemo_eq
@@ -46,6 +59,21 @@ namespace SqlWhere.ExpressionTree
             };
 
             DictionaryAssert.AreEqual(param, dict);
+        }
+
+        [TestMethod]
+        public void Test_eq2()
+        {
+            var searchModel = new Model_eq2()
+            {
+                Id = 1
+            };
+
+            var expression = default(Expression<Func<Input_eq2, bool>>)
+             .WhereIf(true, a => a.Id == searchModel.Id)
+             ;
+            (string clause, Dictionary<string, object> param) = expression.ToWhereClause();
+
         }
 
     }
