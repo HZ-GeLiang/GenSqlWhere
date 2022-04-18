@@ -24,7 +24,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 isIEnumerableObj = false;
                 return null;
             }
-          
+
 
             if (!value.GetType().IsObjectCollection())
             {
@@ -288,8 +288,15 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
 
         private static object ParseConvertExpression(UnaryExpression convertExpression)
         {
+            bool IsNullableType(Type type) => type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+
+            Type GetNullableTType(Type type) => type.GetProperty("Value").PropertyType;
+
+            object ChangeType(object val, Type type) => Convert.ChangeType(val, IsNullableType(type) ? GetNullableTType(type) : type);
+
             object value = ConstantExtractor.ParseConstant(convertExpression.Operand);
-            return Convert.ChangeType(value, convertExpression.Type);
+
+            return ChangeType(value, convertExpression.Type);
         }
     }
 }
