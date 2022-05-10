@@ -123,8 +123,8 @@ namespace SqlWhere.ExpressionTree
             Assert.AreEqual(sql, "((Id In (@Id)) And (Sex In (@Sex)))");
             var dict = new Dictionary<string, object>
             {
-                { "@Id", searchModel.Id},
-                { "@Sex", searchModel.Sex}
+                { "@Id", "'1','2'"},
+                { "@Sex", "'1'"}
             };
 
             DictionaryAssert.AreEqual(param, dict);

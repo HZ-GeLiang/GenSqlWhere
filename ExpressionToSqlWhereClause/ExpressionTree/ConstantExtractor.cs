@@ -10,7 +10,6 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
 {
     public static class ConstantExtractor
     {
-
         /// <summary>
         /// 把IEnumerable的数据的值给显示出来,多个值之间用,分隔
         /// </summary>
@@ -25,7 +24,6 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 return null;
             }
 
-
             if (!value.GetType().IsObjectCollection())
             {
                 isIEnumerableObj = false;
@@ -36,35 +34,51 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
             isIEnumerableObj = true;
             object firstValue = null;
 
-            StringBuilder sb = new StringBuilder();
-            var index = -1;
-            foreach (var obj in loopObj) //这个obj的类型就是上面的T2
+            var loopCount = -1; //  -1  0  1 只有3种值 
+            foreach (var obj in loopObj)
             {
-                index++;
-                if (index == 0)
+                loopCount++;
+                if (loopCount > 0)
+                {
+                    break;
+                }
+                if (obj.GetType().IsStructType())
                 {
                     firstValue = obj;
                 }
-
-                sb.Append(obj).Append(",");
+                else
+                {
+                    firstValue = $"'{obj}'";
+                }
             }
-
-            if (index < 0)
+            if (loopCount < 0)
             {
                 return string.Empty;
             }
-            else if (index == 0)
+
+            if (loopCount == 0)
             {
-                return firstValue.ToString();
+                return firstValue.ToString();//列表只有一个, 直接返回第一项
             }
-            else
+
+            //else  loopCount > 0
+            
+            StringBuilder sb = new StringBuilder();
+            foreach (var obj in loopObj)
             {
-                var intxt = sb.Remove(sb.Length - 1, 1).ToString(); //RemoveLastChar
-                return intxt;
+                if (obj.GetType().IsStructType())
+                {
+                    sb.Append(obj).Append(",");
+                }
+                else
+                {
+                    sb.Append("'").Append(obj).Append("'").Append(",");
+                }
             }
+            var txt = sb.Remove(sb.Length - 1, 1).ToString(); //RemoveLastChar
+            return txt;
 
         }
-
 
         /// <summary>
         /// 获得Expression的值
