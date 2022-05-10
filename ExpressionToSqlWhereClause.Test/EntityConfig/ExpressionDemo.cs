@@ -507,7 +507,7 @@ namespace SqlWhere.EntityConfig
             Assert.AreEqual("(Name In (@Name))", whereClause);
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>
             {
-                { "@Name", "a,b" }
+                { "@Name", "'a','b'" }
             };
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
@@ -521,7 +521,7 @@ namespace SqlWhere.EntityConfig
             Assert.AreEqual("(Name In (@Name))", whereClause);
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>
             {
-                { "@Name", "a,b" }
+                { "@Name", "'a','b'" }
             };
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
