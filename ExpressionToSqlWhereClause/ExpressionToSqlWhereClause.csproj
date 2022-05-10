@@ -21,7 +21,7 @@
 		<PackageReleaseNotes></PackageReleaseNotes>
 		<RepositoryType>gitee</RepositoryType>
 		<PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
-		<Version>1.5.1</Version>
+		<Version>1.5.2</Version>
 		<LangVersion>9</LangVersion>
 	</PropertyGroup>
 
