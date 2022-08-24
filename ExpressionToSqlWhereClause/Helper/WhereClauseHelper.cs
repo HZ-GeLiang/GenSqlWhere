@@ -30,18 +30,65 @@ namespace ExpressionToSqlWhereClause.Helper
         }
 
         /// <summary>
+        /// 默认的日期格式
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public static Dictionary<string, string> GetDefaultFormatDateTime(Dictionary<string, object> parameters)
+        {
+            return GetDefaultFormatDateTime(parameters, "yyyy-MM-dd HH:mm:ss");
+        }
+
+        /// <summary>
+        /// 默认的日期格式
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        public static Dictionary<string, string> GetDefaultFormatDateTime(Dictionary<string, object> parameters, string format)
+        {
+            Dictionary<string, string> formatDateTime = new Dictionary<string, string>();
+            if (parameters != null)
+            {
+                foreach (var parameter in parameters)
+                {
+                    var type = parameter.Value.GetType();
+                    if (type == typeof(DateTime) || type == typeof(DateTime?))
+                    {
+                        formatDateTime.Add(parameter.Key, format);
+                    }
+                }
+            }
+            return formatDateTime;
+        }
+
+        /// <summary>
+        /// sql参数合并到sql语句中
+        /// </summary>
+        /// <param name="whereClause"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public static string MergeParametersIntoSql(string whereClause, Dictionary<string, object> parameters)
+        {
+            Dictionary<string, string> formatDateTime = GetDefaultFormatDateTime(parameters);
+            return MergeParametersIntoSql(whereClause, parameters, formatDateTime);
+        }      
+
+        /// <summary>
         /// sql参数合并到sql语句中
         /// </summary>
         /// <param name="whereClause"></param>
         /// <param name="parameters"></param>
         /// <param name="formatDateTime"></param>
         /// <returns></returns>
-        public static string MergeParametersIntoSql(string whereClause, Dictionary<string, object> parameters, Dictionary<string, string> formatDateTime = null)
+        public static string MergeParametersIntoSql(string whereClause, Dictionary<string, object> parameters, Dictionary<string, string> formatDateTime)
         {
             if (string.IsNullOrWhiteSpace(whereClause))
             {
                 return null;
             }
+
+            var default_formatDateTime = WhereClauseHelper.GetDefaultFormatDateTime(parameters);
 
             string pattern = "@[a-zA-Z0-9_]*";
             var matches = Regex.Matches(whereClause, pattern);
@@ -63,9 +110,18 @@ namespace ExpressionToSqlWhereClause.Helper
                 }
                 else if (sqlParameterValueType == typeof(DateTime) || sqlParameterValueType == typeof(DateTime?))
                 {
+                    string format = null;
                     if (formatDateTime != null && formatDateTime.ContainsKey(sqlParameterName))
                     {
-                        var format = formatDateTime[sqlParameterName];
+                        format = formatDateTime[sqlParameterName]; //取用户配置的
+                    }
+                    else if (default_formatDateTime.ContainsKey(sqlParameterName))
+                    {
+                        format = default_formatDateTime[sqlParameterName];//取默认配置
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(format))
+                    {
                         var newVal = $"'{((DateTime)sqlParameterValue).ToString(format)}'";
                         whereClause = whereClause.Replace(sqlParameterName, newVal);
                     }
@@ -79,8 +135,23 @@ namespace ExpressionToSqlWhereClause.Helper
                     whereClause = whereClause.Replace(sqlParameterName, $"{sqlParameterValue}");
                 }
             }
-            
+
             return whereClause;
+        }
+
+        /// <summary>
+        /// sql参数合并到sql语句中
+        /// </summary>
+        /// <param name="sqlAndParam"></param> 
+        /// <returns></returns>
+        public static string MergeParametersIntoSql(ValueTuple<string, Dictionary<string, object>> sqlAndParam)
+        {
+
+            string whereClause = sqlAndParam.Item1;
+            Dictionary<string, object> parameters = sqlAndParam.Item2;
+            Dictionary<string, string> formatDateTime = GetDefaultFormatDateTime(parameters);
+
+            return MergeParametersIntoSql(whereClause, parameters, formatDateTime);
         }
 
         /// <summary>
@@ -89,9 +160,12 @@ namespace ExpressionToSqlWhereClause.Helper
         /// <param name="sqlAndParam"></param>
         /// <param name="formatDateTime"></param>
         /// <returns></returns>
-        public static string MergeParametersIntoSql(ValueTuple<string, Dictionary<string, object>> sqlAndParam,
-             Dictionary<string, string> formatDateTime = null)
-             => MergeParametersIntoSql(sqlAndParam.Item1, sqlAndParam.Item2, formatDateTime);
+        public static string MergeParametersIntoSql(ValueTuple<string, Dictionary<string, object>> sqlAndParam, Dictionary<string, string> formatDateTime)
+        {
+            string whereClause = sqlAndParam.Item1;
+            Dictionary<string, object> parameters = sqlAndParam.Item2;
+            return MergeParametersIntoSql(whereClause, parameters, formatDateTime);
+        }
 
         /// <summary>
         /// 转换参数. 如转成 sqlserver 的参数等等
