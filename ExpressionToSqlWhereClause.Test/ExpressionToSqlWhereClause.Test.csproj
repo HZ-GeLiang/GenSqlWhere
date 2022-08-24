@@ -13,11 +13,10 @@
 		<PackageReference Include="MSTest.TestFramework" Version="2.2.3" />
 		<PackageReference Include="coverlet.collector" Version="3.0.2" />
 	</ItemGroup>
-	<ItemGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-		<PackageReference Include="ExpressionToSqlWhereClause" Version="1.3.0" />
-	</ItemGroup>
+	
 	<ItemGroup>
 	  <ProjectReference Include="..\ExpressionToSqlWhereClause\ExpressionToSqlWhereClause.csproj" />
+		<!--<PackageReference Include="ExpressionToSqlWhereClause" Version="1.5.1" />-->
 	</ItemGroup>
 
 </Project>
