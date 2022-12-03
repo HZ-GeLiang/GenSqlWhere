@@ -35,7 +35,7 @@ namespace ExpressionToSqlWhereClause.Helper
             int lineNumber = frame.GetFileLineNumber();
             return (frame, method, methodName, fileName, lineNumber);
 #else
-            return (null, null, null, null, null);
+            return (default, default, default, default, default);
 #endif
         }
     }
