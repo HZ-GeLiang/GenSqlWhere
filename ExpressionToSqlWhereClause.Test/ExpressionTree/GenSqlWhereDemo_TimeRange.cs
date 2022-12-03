@@ -113,7 +113,7 @@ namespace SqlWhere.ExpressionTree
 
                 var formatDateTime = new Dictionary<string, string>() { { "@DataCreatedAt1", "yyyy-MM-dd" } };
                 sql = WhereClauseHelper.MergeParametersIntoSql(sql, param, formatDateTime);
-                Assert.AreEqual(sql, "DataCreatedAt >= '2022-3-1 15:12:34' And DataCreatedAt < '2022-03-03'");
+                Assert.AreEqual(sql, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03'");
 
             }
 
@@ -129,7 +129,7 @@ namespace SqlWhere.ExpressionTree
 
                 var formatDateTime = WhereClauseHelper.GetDefaultFormatDateTime(param);
                 sql = WhereClauseHelper.MergeParametersIntoSql(sql, param, formatDateTime);
-                Assert.AreEqual(sql, "DataCreatedAt >= '2022-3-1 15:12:34' And DataCreatedAt < '2022-3-3 12:34:56'");
+                Assert.AreEqual(sql, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03 12:34:56'");
             }
         }
     }
