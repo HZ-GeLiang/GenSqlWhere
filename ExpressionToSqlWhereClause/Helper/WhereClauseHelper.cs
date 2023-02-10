@@ -117,38 +117,41 @@ namespace ExpressionToSqlWhereClause.Helper
                 {
                     whereClause = whereClause.Replace(sqlParameterName, "Null");
                 }
-                var sqlParameterValueType = sqlParameterValue.GetType();
-                if (sqlParameterValueType == typeof(string))
+                else
                 {
-                    whereClause = whereClause.Replace(sqlParameterName, $"'{sqlParameterValue}'");
-
-                }
-                else if (sqlParameterValueType == typeof(DateTime) || sqlParameterValueType == typeof(DateTime?))
-                {
-                    string format = null;
-                    if (formatDateTime != null && formatDateTime.ContainsKey(sqlParameterName))
-                    {
-                        format = formatDateTime[sqlParameterName]; //取用户配置的
-                    }
-                    else if (default_formatDateTime.ContainsKey(sqlParameterName))
-                    {
-                        format = default_formatDateTime[sqlParameterName];//取默认配置
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(format))
-                    {
-                        var newVal = $"'{((DateTime)sqlParameterValue).ToString(format)}'";
-                        whereClause = whereClause.Replace(sqlParameterName, newVal);
-                    }
-                    else
+                    var sqlParameterValueType = sqlParameterValue.GetType();
+                    if (sqlParameterValueType == typeof(string))
                     {
                         whereClause = whereClause.Replace(sqlParameterName, $"'{sqlParameterValue}'");
                     }
+                    else if (sqlParameterValueType == typeof(DateTime) || sqlParameterValueType == typeof(DateTime?))
+                    {
+                        string format = null;
+                        if (formatDateTime != null && formatDateTime.ContainsKey(sqlParameterName))
+                        {
+                            format = formatDateTime[sqlParameterName]; //取用户配置的
+                        }
+                        else if (default_formatDateTime.ContainsKey(sqlParameterName))
+                        {
+                            format = default_formatDateTime[sqlParameterName];//取默认配置
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(format))
+                        {
+                            var newVal = $"'{((DateTime)sqlParameterValue).ToString(format)}'";
+                            whereClause = whereClause.Replace(sqlParameterName, newVal);
+                        }
+                        else
+                        {
+                            whereClause = whereClause.Replace(sqlParameterName, $"'{sqlParameterValue}'");
+                        }
+                    }
+                    else
+                    {
+                        whereClause = whereClause.Replace(sqlParameterName, $"{sqlParameterValue}");
+                    }
                 }
-                else
-                {
-                    whereClause = whereClause.Replace(sqlParameterName, $"{sqlParameterValue}");
-                }
+               
             }
 
             return whereClause;
