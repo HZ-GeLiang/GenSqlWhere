@@ -120,7 +120,9 @@ namespace ExpressionToSqlWhereClause.Helper
                 else
                 {
                     var sqlParameterValueType = sqlParameterValue.GetType();
-                    if (sqlParameterValueType == typeof(string))
+                    if (sqlParameterValueType == typeof(string) ||
+                        sqlParameterValueType == typeof(Guid) ||
+                        sqlParameterValueType == typeof(Guid?))
                     {
                         whereClause = whereClause.Replace(sqlParameterName, $"'{sqlParameterValue}'");
                     }
@@ -151,7 +153,7 @@ namespace ExpressionToSqlWhereClause.Helper
                         whereClause = whereClause.Replace(sqlParameterName, $"{sqlParameterValue}");
                     }
                 }
-               
+
             }
 
             return whereClause;
@@ -177,6 +179,30 @@ namespace ExpressionToSqlWhereClause.Helper
             {
                 var sqlParameterName = matches[i].Value;
                 whereClause = whereClause.Replace(sqlParameterName, "{" + i + "}");
+
+                //var sqlParameterValue = parameters[matches[i].Value];
+                //if (sqlParameterValue == null)
+                //{
+                //    whereClause = whereClause.Replace(sqlParameterName, "{" + i + "}");
+                //}
+                //else
+                //{
+                //    var sqlParameterValueType = sqlParameterValue.GetType();
+                //    if (sqlParameterValueType == typeof(string) ||
+                //        sqlParameterValueType == typeof(DateTime) ||
+                //        sqlParameterValueType == typeof(DateTime?) ||
+                //        sqlParameterValueType == typeof(Guid) ||
+                //        sqlParameterValueType == typeof(Guid?)
+                //        )
+                //    {
+                //        //whereClause = whereClause.Replace(sqlParameterName, "'{" + i + "}'");//不需要这样写
+                //        whereClause = whereClause.Replace(sqlParameterName, "{" + i + "}");
+                //    }
+                //    else
+                //    {
+                //        whereClause = whereClause.Replace(sqlParameterName, "{" + i + "}");
+                //    }
+                //}
             }
 
             return (whereClause, parameters?.Values.ToArray() ?? new object[] { });
