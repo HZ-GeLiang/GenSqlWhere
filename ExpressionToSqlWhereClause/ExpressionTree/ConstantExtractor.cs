@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using ExpressionToSqlWhereClause.Consts;
 using ExpressionToSqlWhereClause.Helper;
 
 namespace ExpressionToSqlWhereClause.ExpressionTree
@@ -141,7 +142,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
             }
 
             //不支持的有:
-            //if (expression.GetType().FullName == "System.Linq.Expressions.TypedParameterExpression")
+            //if (expression.GetType().FullName == ExpressionFullNameSpaceConst.TypedParameter)
             //{
             //    throw new NotSupportedException($"Unknow expression {expression.GetType()}");
             //}
@@ -229,7 +230,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 {
                     Expression expression = methodCallExpression.Arguments[i];
 
-                    if (expression.GetType().FullName == "System.Linq.Expressions.PropertyExpression")
+                    if (expression.GetType().FullName == ExpressionFullNameSpaceConst.Property)
                     {
                         DebuggerHelper.Break();
                         var nodeType = (ExpressionType)(((dynamic)expression).Expression.NodeType);
@@ -243,7 +244,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                             parameters[i] = ConstantExtractor.ParseConstant(expression);//GetInt(userFilter.Internal.Age);
                         }
                     }
-                    else if (expression.GetType().FullName == "System.Linq.Expressions.TypedParameterExpression")
+                    else if (expression.GetType().FullName == ExpressionFullNameSpaceConst.TypedParameter)
                     {
                         DebuggerHelper.Break();
                         throw new NotSupportedException($"Unknow expression {expression.GetType()}");
