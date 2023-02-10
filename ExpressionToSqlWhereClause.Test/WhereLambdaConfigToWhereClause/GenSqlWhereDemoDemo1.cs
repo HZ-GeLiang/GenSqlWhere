@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using ExpressionToSqlWhere.Test;
-using ExpressionToSqlWhereClause;
 using ExpressionToSqlWhereClause.EntityConfig;
 using ExpressionToSqlWhereClause.Helper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace SqlWhere.ExpressionTree
+namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
     //demo1, 使用   whereLambda[SearchType.like] 的这种配置方式来创建sql
     //注: demo1 和demo2 如果写重复, 那么都会生效
@@ -31,7 +29,7 @@ namespace SqlWhere.ExpressionTree
         [TestMethod]
         public void Use()
         {
-            var time = System.DateTime.Parse("2021-8-8");
+            var time = DateTime.Parse("2021-8-8");
             var searchModel = new Input_Demo()
             {
                 //Id = 1,
@@ -191,7 +189,7 @@ namespace SqlWhere.ExpressionTree
         [TestMethod]
         public void UseExampleForEf()
         {
-            var time = System.DateTime.Parse("2021-8-8");
+            var time = DateTime.Parse("2021-8-8");
             var searchModel = new Input_Demo()
             {
                 //Id = 1,

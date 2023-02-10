@@ -1,50 +1,49 @@
 using System;
 using System.Collections.Generic;
-using ExpressionToSqlWhere.Test;
-using ExpressionToSqlWhereClause;
 using ExpressionToSqlWhereClause.EntityConfig;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace SqlWhere.ExpressionTree
+namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
-    public class model_lt
+    public class model_gt
     {
         public long? Id { get; set; }
         public DateTime? DataCreatedAt { get; set; }
     }
-
-    public class Input_lt_Attr
+    public class Input_gt_Attr
     {
-        [SearchType(SearchType.lt)] public long? Id { get; set; }
-        [SearchType(SearchType.lt)] public DateTime? DataCreatedAt { get; set; }
+        [SearchType(SearchType.gt)]
+        public long? Id { get; set; }
+        [SearchType(SearchType.gt)]
+        public DateTime? DataCreatedAt { get; set; }
     }
 
     [TestClass]
-    public class GenSqlWhereDemo_lt
+    public class GenSqlWhereDemo_gt
     {
+
         [TestMethod]
-        public void Test_lt()
+        public void Test_gt()
         {
-            var searchModel = new model_lt()
+            var searchModel = new model_gt()
             {
                 Id = 5,
                 DataCreatedAt = DateTime.Parse("2021-8-8"),
             };
 
-            var whereLambda = new WhereLambda<Model_People, model_lt>();
+            var whereLambda = new WhereLambda<Model_People, model_gt>();
             whereLambda.SearchModel = searchModel;
 
-            whereLambda[SearchType.lt] = new List<string>
+            whereLambda[SearchType.gt] = new List<string>
             {
                 nameof(searchModel.Id),
                 nameof(searchModel.DataCreatedAt),
             };
 
-
             var expression = whereLambda.ToExpression();
             (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
 
-            Assert.AreEqual(sql, "Id < @Id And DataCreatedAt < @DataCreatedAt");
+            Assert.AreEqual(sql, "Id > @Id And DataCreatedAt > @DataCreatedAt");
             var dict = new Dictionary<string, object>
             {
                 { "@Id", 5 },//取 domain 的类型
@@ -53,6 +52,7 @@ namespace SqlWhere.ExpressionTree
 
             DictionaryAssert.AreEqual(param, dict);
         }
+
 
     }
 }

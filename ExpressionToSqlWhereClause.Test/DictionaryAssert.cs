@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ExpressionToSqlWhere.Test
+namespace ExpressionToSqlWhereClause.Test
 {
     public class DictionaryAssert
     {

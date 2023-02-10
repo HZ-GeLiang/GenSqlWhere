@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using ExpressionToSqlWhere.Test;
-using ExpressionToSqlWhereClause;
 using ExpressionToSqlWhereClause.EntityConfig;
+using ExpressionToSqlWhereClause.Test.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SqlWhere.ExtensionMethod;
 
-namespace SqlWhere.ExpressionTree
+namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
     public class Input_eq
     {
@@ -16,7 +14,7 @@ namespace SqlWhere.ExpressionTree
 
     public class Input_eq2
     {
-        [SearchType(SearchType.eq)] public long? Id  { get; set; }
+        [SearchType(SearchType.eq)] public long? Id { get; set; }
     }
 
 
