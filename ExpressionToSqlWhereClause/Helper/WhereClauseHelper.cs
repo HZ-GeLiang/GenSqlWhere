@@ -62,17 +62,32 @@ namespace ExpressionToSqlWhereClause.Helper
             return formatDateTime;
         }
 
-        /// <summary>
-        /// sql参数合并到sql语句中
-        /// </summary>
-        /// <param name="whereClause"></param>
-        /// <param name="parameters"></param>
-        /// <returns></returns>
+        /// <inheritdoc cref="MergeParametersIntoSql(string, Dictionary{string, object}, Dictionary{string, string})"/>
+        public static string MergeParametersIntoSql(ValueTuple<string, Dictionary<string, object>> sqlAndParam)
+        {
+
+            string whereClause = sqlAndParam.Item1;
+            Dictionary<string, object> parameters = sqlAndParam.Item2;
+            Dictionary<string, string> formatDateTime = GetDefaultFormatDateTime(parameters);
+
+            return MergeParametersIntoSql(whereClause, parameters, formatDateTime);
+        }
+
+        /// <inheritdoc cref="MergeParametersIntoSql(string, Dictionary{string, object}, Dictionary{string, string})"/>
         public static string MergeParametersIntoSql(string whereClause, Dictionary<string, object> parameters)
         {
             Dictionary<string, string> formatDateTime = GetDefaultFormatDateTime(parameters);
+            var whreCaluse = MergeParametersIntoSql(whereClause, parameters, formatDateTime);
+            return whreCaluse;
+        }
+
+        /// <inheritdoc cref="MergeParametersIntoSql(string, Dictionary{string, object}, Dictionary{string, string})"/>
+        public static string MergeParametersIntoSql(ValueTuple<string, Dictionary<string, object>> sqlAndParam, Dictionary<string, string> formatDateTime)
+        {
+            string whereClause = sqlAndParam.Item1;
+            Dictionary<string, object> parameters = sqlAndParam.Item2;
             return MergeParametersIntoSql(whereClause, parameters, formatDateTime);
-        }      
+        }
 
         /// <summary>
         /// sql参数合并到sql语句中
@@ -139,33 +154,32 @@ namespace ExpressionToSqlWhereClause.Helper
             return whereClause;
         }
 
-        /// <summary>
-        /// sql参数合并到sql语句中
-        /// </summary>
-        /// <param name="sqlAndParam"></param> 
-        /// <returns></returns>
-        public static string MergeParametersIntoSql(ValueTuple<string, Dictionary<string, object>> sqlAndParam)
+
+        public static (string whereClause, object[] parameters) ToFormattableString(ValueTuple<string, Dictionary<string, object>> sqlAndParam)
         {
-
-            string whereClause = sqlAndParam.Item1;
-            Dictionary<string, object> parameters = sqlAndParam.Item2;
-            Dictionary<string, string> formatDateTime = GetDefaultFormatDateTime(parameters);
-
-            return MergeParametersIntoSql(whereClause, parameters, formatDateTime);
+            return ToFormattableString(sqlAndParam.Item1, sqlAndParam.Item2);
         }
 
-        /// <summary>
-        /// sql参数合并到sql语句中
-        /// </summary>
-        /// <param name="sqlAndParam"></param>
-        /// <param name="formatDateTime"></param>
-        /// <returns></returns>
-        public static string MergeParametersIntoSql(ValueTuple<string, Dictionary<string, object>> sqlAndParam, Dictionary<string, string> formatDateTime)
+        public static (string whereClause, object[] parameters) ToFormattableString(string whereClause, Dictionary<string, object> parameters)
         {
-            string whereClause = sqlAndParam.Item1;
-            Dictionary<string, object> parameters = sqlAndParam.Item2;
-            return MergeParametersIntoSql(whereClause, parameters, formatDateTime);
+            if (string.IsNullOrWhiteSpace(whereClause))
+            {
+                return ("", new object[] { });
+            }
+
+            string pattern = "@[a-zA-Z0-9_]*";
+            var matches = Regex.Matches(whereClause, pattern);
+
+            for (int i = matches.Count - 1; i >= 0; i--) //要倒序替换
+            {
+                var sqlParameterName = matches[i].Value;
+                whereClause = whereClause.Replace(sqlParameterName, "{" + i + "}");
+            }
+
+            return (whereClause, parameters?.Values.ToArray() ?? new object[] { });
         }
+
+
 
         /// <summary>
         /// 转换参数. 如转成 sqlserver 的参数等等
