@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Linq.Expressions;
-using ExpressionToSqlWhereClause.Helper; 
+using ExpressionToSqlWhereClause.Helper;
 using ExpressionToSqlWhereClause.Test.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -120,15 +120,23 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 
             //MergeParametersIntoSql 的 2种使用方式
             {
-                var a = expression.ToWhereClause();
-                var sql2 = WhereClauseHelper.MergeParametersIntoSql(a);
+                var whereClause = expression.ToWhereClause();
+                var sql2 = WhereClauseHelper.MergeParametersIntoSql(whereClause);
                 Assert.AreEqual(sql2, "Production Like '%aa%'");
+
+                var sql3 = WhereClauseHelper.ToFormattableString(whereClause);
+                Assert.AreEqual(sql3.whereClause, "Production Like '{0}'");
+
             }
 
             {
-                (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
-                var sql2 = WhereClauseHelper.MergeParametersIntoSql(sql, param);
+                //这个更加直观
+                (string whereClause, Dictionary<string, object> whereClausePara) = expression.ToWhereClause();
+                var sql2 = WhereClauseHelper.MergeParametersIntoSql(whereClause, whereClausePara);
                 Assert.AreEqual(sql2, "Production Like '%aa%'");
+
+                var sql3 = WhereClauseHelper.ToFormattableString(whereClause, whereClausePara);
+                Assert.AreEqual(sql3.whereClause, "Production Like '{0}'");
             }
 
         }
