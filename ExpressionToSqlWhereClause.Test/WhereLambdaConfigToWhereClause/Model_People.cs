@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SqlWhere.ExpressionTree
+namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
     public class Model_People
     {

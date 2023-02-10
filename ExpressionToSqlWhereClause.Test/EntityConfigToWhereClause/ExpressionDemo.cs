@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Linq.Expressions;
-using ExpressionToSqlWhereClause;
 using ExpressionToSqlWhereClause.Helper;
+using ExpressionToSqlWhereClause.Test.EntityConfig;
+using ExpressionToSqlWhereClause.Test.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SqlWhere.ExtensionMethod;
 
-namespace SqlWhere.EntityConfig
+namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 {
     public class UserFilter
     {
@@ -79,20 +79,20 @@ namespace SqlWhere.EntityConfig
 
     public class ShopInfoInput
     {
-     
+
         public DateTime? DateStart { get; set; }
         public DateTime? DateEnd { get; set; }
 
         internal DateTime? Date { get; set; } //冗余的
- 
+
         public string Production { get; set; }
 
         public int? Unit { get; set; }
         public string Unit_Name { get; set; }
- 
+
         public string Remarks { get; set; }
         public long? CreateUserID { get; set; }
-         
+
 
     }
 
@@ -483,7 +483,7 @@ namespace SqlWhere.EntityConfig
             filter.Internal.Age = 20;
             filter.Name = "Gary";
             Expression<Func<User, bool>> expression =
-                u => ((u.Sex && u.Age > 18) || (u.Sex == false && u.Age > filter.Internal.Age))
+                u => (u.Sex && u.Age > 18 || u.Sex == false && u.Age > filter.Internal.Age)
                   && (u.Name == filter.Name || u.Name.Contains(filter.Name.Substring(1, 2)));
             (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause(null, new TestSqlAdapter());
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
@@ -577,7 +577,7 @@ namespace SqlWhere.EntityConfig
             DateTime? d1 = new DateTime(2020, 1, 1);
             DateTime? d2 = new DateTime(2020, 1, 15);
             //                                             lambda     left       ||   right
-            Expression<Func<UserCreateTime, bool>> expression = u => u.Age != 20 || (u.CreateStart > d1 && u.CreateEnd < d2);
+            Expression<Func<UserCreateTime, bool>> expression = u => u.Age != 20 || u.CreateStart > d1 && u.CreateEnd < d2;
 
             (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
 

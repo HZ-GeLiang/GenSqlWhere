@@ -1,10 +1,8 @@
 using System.Collections.Generic;
-using ExpressionToSqlWhere.Test;
-using ExpressionToSqlWhereClause;
 using ExpressionToSqlWhereClause.EntityConfig;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace SqlWhere.ExpressionTree
+namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
     public class Input_Demo3_不同配置
     {
@@ -28,7 +26,7 @@ namespace SqlWhere.ExpressionTree
 
         [TestMethod]
         public void 重复配置使用方法_不同配置()
-        {  
+        {
             //todo: 重复配置的检测
             var searchModel = new Input_Demo3_不同配置
             {

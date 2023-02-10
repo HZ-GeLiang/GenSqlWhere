@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using ExpressionToSqlWhere.Test;
-using ExpressionToSqlWhereClause;
 using ExpressionToSqlWhereClause.EntityConfig;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace SqlWhere.ExpressionTree
+namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
     [TestClass]
     public class GenSqlWhereDemo_Attr
@@ -95,7 +93,7 @@ namespace SqlWhere.ExpressionTree
             {
                 IsDel = true,//todo://计划:添加当其他值为xx时,当前值才生效
             };
-         
+
             var whereLambda = searchModel.CrateWhereLambda((model_neq _) => { });
             var expression = whereLambda.ToExpression();
             (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
@@ -116,7 +114,7 @@ namespace SqlWhere.ExpressionTree
                 Id = "1,2",
                 Sex = "1",
             };
- 
+
             var whereLambda = searchModel.CrateWhereLambda((model_in _) => { });
             var expression = whereLambda.ToExpression();
             (string sql, Dictionary<string, object> param) = expression.ToWhereClause();

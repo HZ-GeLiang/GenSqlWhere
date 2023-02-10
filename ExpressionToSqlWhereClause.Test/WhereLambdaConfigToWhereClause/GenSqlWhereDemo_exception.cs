@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using ExpressionToSqlWhere.Test;
-using ExpressionToSqlWhereClause;
 using ExpressionToSqlWhereClause.EntityConfig;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace SqlWhere.ExpressionTree
+namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
 
     public class model_expection1
@@ -40,7 +38,7 @@ namespace SqlWhere.ExpressionTree
 
                 (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
-                Assert.AreEqual(sql, String.Empty);
+                Assert.AreEqual(sql, string.Empty);
 
                 DictionaryAssert.AreEqual(param, new Dictionary<string, object>());
             }
@@ -109,7 +107,7 @@ namespace SqlWhere.ExpressionTree
 
             (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
 
-            Assert.AreEqual(sql, String.Empty);
+            Assert.AreEqual(sql, string.Empty);
             DictionaryAssert.AreEqual(param, new Dictionary<string, object>(0));
 
         }

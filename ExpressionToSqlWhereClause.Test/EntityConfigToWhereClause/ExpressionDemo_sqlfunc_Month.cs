@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using ExpressionToSqlWhereClause;
 using ExpressionToSqlWhereClause.SqlFunc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace SqlWhere.EntityConfig
+namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 {
     public class User_SqlFunc_Entity
     {
@@ -25,7 +24,7 @@ namespace SqlWhere.EntityConfig
 
         [TestMethod]
         public void SqlFunc_Month_eq()
-        { 
+        {
             Expression<Func<User_SqlFunc_Entity, bool>> expression = u => DbFunctions.Month(u.CreateAt) == 5;
             (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>
@@ -55,5 +54,5 @@ namespace SqlWhere.EntityConfig
         }
 
     }
- 
+
 }

@@ -7,7 +7,6 @@
 		<DefineConstants>DEBUG;TRACE</DefineConstants>
 		<NoWarn>1701;1702;1591;</NoWarn>
 		<DocumentationFile>$(SolutionDir)$(AssemblyName)\$(AssemblyName).xml</DocumentationFile>
-
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageId>ExpressionToSqlWhereClause</PackageId>
@@ -21,8 +20,8 @@
 		<PackageReleaseNotes></PackageReleaseNotes>
 		<RepositoryType>gitee</RepositoryType>
 		<PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
-		<Version>1.5.2</Version>
-		<LangVersion>9</LangVersion>
+		<Version>1.5.3</Version>
+		<LangVersion>10</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup>

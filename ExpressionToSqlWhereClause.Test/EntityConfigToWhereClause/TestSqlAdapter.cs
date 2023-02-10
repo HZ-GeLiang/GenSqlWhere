@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
 
-namespace SqlWhere.EntityConfig
+namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 {
 
     public class TestSqlAdapter : DefaultSqlAdapter

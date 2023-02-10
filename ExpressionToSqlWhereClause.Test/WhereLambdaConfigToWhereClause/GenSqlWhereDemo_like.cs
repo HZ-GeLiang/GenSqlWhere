@@ -1,10 +1,8 @@
 using System.Collections.Generic;
-using ExpressionToSqlWhere.Test;
-using ExpressionToSqlWhereClause;
 using ExpressionToSqlWhereClause.EntityConfig;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace SqlWhere.ExpressionTree
+namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
     public class model_like
     {

@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using ExpressionToSqlWhere.Test;
-using ExpressionToSqlWhereClause;
 using ExpressionToSqlWhereClause.EntityConfig;
 using ExpressionToSqlWhereClause.Helper;
+using ExpressionToSqlWhereClause.Test.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SqlWhere.ExtensionMethod;
 
-namespace SqlWhere.ExpressionTree
+namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
 
     public class model_timeRange
@@ -102,8 +100,8 @@ namespace SqlWhere.ExpressionTree
         public void Test_timeRange_MergeParametersIntoSql()
         {
             {
-                DateTime? d1 = ((DateTime?)DateTime.Parse("2022-3-1 15:12:34"));
-                DateTime? d2 = ((DateTime?)DateTime.Parse("2022-3-3 12:34:56"));
+                DateTime? d1 = (DateTime?)DateTime.Parse("2022-3-1 15:12:34");
+                DateTime? d2 = (DateTime?)DateTime.Parse("2022-3-3 12:34:56");
                 var expression = default(Expression<Func<Input_timeRange2_Attr, bool>>)
                   .WhereIf(true, a => a.DataCreatedAt >= d1)
                   .WhereIf(true, a => a.DataCreatedAt < d2)
@@ -118,8 +116,8 @@ namespace SqlWhere.ExpressionTree
             }
 
             {
-                DateTime? d1 = ((DateTime?)DateTime.Parse("2022-3-1 15:12:34"));
-                DateTime? d2 = ((DateTime?)DateTime.Parse("2022-3-3 12:34:56"));
+                DateTime? d1 = (DateTime?)DateTime.Parse("2022-3-1 15:12:34");
+                DateTime? d2 = (DateTime?)DateTime.Parse("2022-3-3 12:34:56");
                 var expression = default(Expression<Func<Input_timeRange2_Attr, bool>>)
                   .WhereIf(true, a => a.DataCreatedAt >= d1)
                   .WhereIf(true, a => a.DataCreatedAt < d2)

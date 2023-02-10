@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using ExpressionToSqlWhereClause;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace SqlWhere.EntityConfig
+namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 {
 
     [TestClass]
