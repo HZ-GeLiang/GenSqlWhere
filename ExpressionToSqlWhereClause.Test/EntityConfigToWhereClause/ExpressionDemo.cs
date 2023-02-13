@@ -68,7 +68,11 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
     public class Student_Alias
     {
         public int Id { get; set; }
+    }
 
+    public class Student_mssql_buildIn_name  
+    {
+        public int Index { get; set; }
     }
     public enum Sex
     {

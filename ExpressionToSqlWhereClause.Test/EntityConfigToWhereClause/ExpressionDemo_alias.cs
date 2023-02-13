@@ -9,6 +9,26 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
     [TestClass]
     public class ExpressionDemo_alias
     {
+        [TestMethod]
+        public void Sql内置系统关键字()
+        {
+            Expression<Func<Student_mssql_buildIn_name, bool>> expOr = a => a.Index == 1 || a.Index == 2;
+
+            var dict = new Dictionary<string, string>()
+            {
+                { "Index", "[Index]" }
+            };
+            (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause(alias: dict);
+
+            Assert.AreEqual(WhereClause, "((([Index] = @Index)) Or (([Index] = @Index1)))");
+
+            var para = new Dictionary<string, object>()
+            {
+                {"@Index", 1},
+                {"@Index1", 2},
+            };
+            CollectionAssert.AreEqual(Parameters, para);
+        }
 
         [TestMethod]
         public void 别名()

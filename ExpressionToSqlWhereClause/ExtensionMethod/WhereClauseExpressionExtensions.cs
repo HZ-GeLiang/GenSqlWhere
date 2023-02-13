@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using ExpressionToSqlWhereClause.ExpressionTree;
 using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
+using System.Linq;
 
 // ReSharper disable once CheckNamespace
 namespace ExpressionToSqlWhereClause
@@ -22,7 +23,7 @@ namespace ExpressionToSqlWhereClause
         /// <returns></returns>
         public static (string WhereClause, Dictionary<string, object> Parameters) ToWhereClause<T>(
             this Expression<Func<T, bool>> expression,
-            Dictionary<string, string> alias = null, 
+            Dictionary<string, string> alias = null,
             ISqlAdapter sqlAdapter = default) where T : class
         {
             if (expression == null)
@@ -111,32 +112,58 @@ namespace ExpressionToSqlWhereClause
 
             #region 处理 parseResult.WhereClause
 
+            var whereClause = parseResult.WhereClause;
+
             #region 去掉 关系条件 全为 and 时 ,sql 语句的 () 可以优化
             //能力有限: 只能去掉全是 and 语句的 ()  注 in ()  的  () 不能排除, 所以,还要去掉 in
-            var containsOr = parseResult.WhereClause.Contains(SqlKeys.or);
+            var containsOr = whereClause.Contains(SqlKeys.or);
             if (!containsOr)
             {
-                var containsin = parseResult.WhereClause.Contains(SqlKeys.@in);
+                var containsin = whereClause.Contains(SqlKeys.@in);
                 if (!containsin)
                 {
-                    if (parseResult.WhereClause.Contains("("))
+                    if (whereClause.Contains("("))
                     {
-                        parseResult.WhereClause = parseResult.WhereClause.Replace("(", string.Empty);
+                        whereClause = whereClause.Replace("(", string.Empty);
                     }
-                    if (parseResult.WhereClause.Contains(")"))
+                    if (whereClause.Contains(")"))
                     {
-                        parseResult.WhereClause = parseResult.WhereClause.Replace(")", string.Empty);
+                        whereClause = whereClause.Replace(")", string.Empty);
                     }
                 }
-            } 
+            }
             #endregion
 
             #region 函数的[] 变成 ()
 
-            if (parseResult.WhereClause.Contains("[") && parseResult.WhereClause.Contains("]"))
+            if (whereClause.Contains("[") && whereClause.Contains("]"))
             {
-                parseResult.WhereClause = parseResult.WhereClause.Replace("[", "(");
-                parseResult.WhereClause = parseResult.WhereClause.Replace("]", ")");
+                //需要注意, mssql下, 系统保留字是  [] 包裹的
+
+                var syste_buildIn_names = alias.Values.Where(a => a.StartsWith("[") && a.EndsWith("]")).ToList();
+
+                //把 []  包裹的用其他字符替换
+                foreach (var item in syste_buildIn_names)
+                {
+                    var newValue = $@",{item.Substring(1, item.Length - 2)},";
+                    whereClause = whereClause.Replace(item, newValue);
+                }
+
+
+                if (whereClause.Contains("[") && whereClause.Contains("]"))
+                {
+                    //这里是无脑替换.
+                    whereClause = whereClause.Replace("[", "(");
+                    whereClause = whereClause.Replace("]", ")");
+                }
+
+                //然后替换回来
+                foreach (var item in syste_buildIn_names)
+                {
+                    var oldValue = $@",{item.Substring(1, item.Length - 2)},";
+                    whereClause = whereClause.Replace(oldValue, item);
+                }
+
             }
 
             #endregion
