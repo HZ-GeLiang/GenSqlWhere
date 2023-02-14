@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpressionToSqlWhereClause"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpressionToSqlWhereClause.Test", "ExpressionToSqlWhereClause.Test\ExpressionToSqlWhereClause.Test.csproj", "{F7085441-0D02-41E9-A33F-EEBEAC73659C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NugetPackageTest", "NugetPackageTest\NugetPackageTest.csproj", "{CA442197-5D36-49BA-AF76-8CD99EF408A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WithEFTest", "WithEFTest\WithEFTest.csproj", "{16B5461B-8940-44B1-B413-F490C455C7C1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{F7085441-0D02-41E9-A33F-EEBEAC73659C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7085441-0D02-41E9-A33F-EEBEAC73659C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7085441-0D02-41E9-A33F-EEBEAC73659C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CA442197-5D36-49BA-AF76-8CD99EF408A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CA442197-5D36-49BA-AF76-8CD99EF408A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CA442197-5D36-49BA-AF76-8CD99EF408A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CA442197-5D36-49BA-AF76-8CD99EF408A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16B5461B-8940-44B1-B413-F490C455C7C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16B5461B-8940-44B1-B413-F490C455C7C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16B5461B-8940-44B1-B413-F490C455C7C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16B5461B-8940-44B1-B413-F490C455C7C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
