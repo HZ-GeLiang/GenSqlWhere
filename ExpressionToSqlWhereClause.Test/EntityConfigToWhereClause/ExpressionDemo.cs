@@ -542,7 +542,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var where = expression.ToWhereClause();
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>
             {
-                { "@CreateAt", new DateTime(2023, 1, 1)}
+                { "@Flag", Guid.Parse("DEA5B56C-D1B1-4513-83E7-B58B9D3EBB81")}
             };
 
             Assert.AreEqual("((Flag = @Flag))", where.WhereClause);
