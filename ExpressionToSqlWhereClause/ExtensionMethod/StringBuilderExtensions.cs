@@ -12,14 +12,15 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
         /// </summary>
         /// <param name="sb"></param>
         /// <param name="value"></param>
+        /// <param name="startIndex">从0开始</param>
         /// <returns></returns>
-        public static int IndexOf(this StringBuilder sb, char value)
+        public static int IndexOf(this StringBuilder sb, char value, int startIndex = 0)
         {
             if (sb == null)
             {
                 return -1;
             }
-            for (int i = 0; i < sb.Length; i++)
+            for (int i = startIndex; i < sb.Length; i++)
             {
                 if (sb[i] == value)
                 {
