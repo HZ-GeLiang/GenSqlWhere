@@ -1,4 +1,5 @@
-﻿using ExpressionToSqlWhereClause.ExtensionMethod;
+﻿using ExpressionToSqlWhereClause.Consts;
+using ExpressionToSqlWhereClause.ExtensionMethod;
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -8,10 +9,11 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
     public static class ConditionBuilder
     {
 
-        public static SqlClauseParametersInfo BuildCondition(MemberInfo memberInfo, WhereClauseAdhesive adhesive, ExpressionType comparison, object value)
+        public static SqlClauseParametersInfo BuildCondition(Expression expression, MemberInfo memberInfo, WhereClauseAdhesive adhesive, ExpressionType comparison, object value)
         {
-            string fieldName = adhesive.SqlAdapter.FormatColumnName(memberInfo);
-            string parameterName = EnsureParameter(memberInfo, adhesive);
+            string fieldName = GetFieldName(expression, memberInfo);
+            fieldName = adhesive.SqlAdapter.FormatColumnName(fieldName);
+            string parameterName = EnsureParameter(fieldName, adhesive);
             var parametersKey = $"@{parameterName}";
             var param = adhesive.GetParameter(parametersKey);
             var symbol = ConditionBuilder.ToComparisonSymbol(comparison, memberInfo);
@@ -21,6 +23,23 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
             return param;
         }
 
+        private static string GetFieldName(Expression expression, MemberInfo memberInfo)
+        {
+            if (memberInfo.DeclaringType.IsNullableType() &&
+                "Value" == memberInfo.Name
+                )//a.Flag.Value
+            {
+                if (expression.GetType().FullName == ExpressionFullNameSpaceConst.Property)
+                {
+                    Expression exp = (Expression)((dynamic)expression).Expression;//a.Flag
+                    MemberInfo member = (MemberInfo)((dynamic)exp).Member;
+                    return GetFieldName(exp, member);
+                }
+            }
+            return memberInfo.Name;
+
+        }
+
         /// <summary>
         /// 编译条件 
         /// </summary>
@@ -28,10 +47,11 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
         /// <param name="adhesive"></param>
         /// <param name="comparison"></param>
         /// <returns> </returns>
-        public static SqlClauseParametersInfo BuildCondition(MemberInfo memberInfo, WhereClauseAdhesive adhesive, ExpressionType comparison)
+        public static SqlClauseParametersInfo BuildCondition(Expression expression, MemberInfo memberInfo, WhereClauseAdhesive adhesive, ExpressionType comparison)
         {
-            string fieldName = adhesive.SqlAdapter.FormatColumnName(memberInfo);
-            string parameterName = EnsureParameter(memberInfo, adhesive);
+            string fieldName = GetFieldName(expression, memberInfo);
+            fieldName = adhesive.SqlAdapter.FormatColumnName(fieldName);
+            string parameterName = EnsureParameter(fieldName, adhesive);
             var symbol = ConditionBuilder.ToComparisonSymbol(comparison, memberInfo);
             var parametersKey = $"@{parameterName}";
             var param = adhesive.GetParameter(parametersKey);
@@ -72,8 +92,9 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 #endregion
 
                 var memberInfo = memberExpression.Member;
-                string fieldName = adhesive.SqlAdapter.FormatColumnName(memberInfo);
-                string parameterName = EnsureParameter(memberInfo, adhesive);
+                string fieldName = GetFieldName(memberExpression, memberInfo);
+                fieldName = adhesive.SqlAdapter.FormatColumnName(fieldName);
+                string parameterName = EnsureParameter(fieldName, adhesive);
                 object value = ConstantExtractor.ParseConstant(methodCallExpression.Arguments[0]);
                 var parametersKey = $"@{parameterName}";
                 var param = adhesive.GetParameter(parametersKey);
@@ -89,8 +110,9 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
         public static SqlClauseParametersInfo BuildInCondition(MemberExpression memberExpression, Expression valueExpression, WhereClauseAdhesive adhesive)
         {
             var memberInfo = memberExpression.Member;
-            string fieldName = adhesive.SqlAdapter.FormatColumnName(memberInfo);
-            string parameterName = EnsureParameter(memberInfo, adhesive);
+            string fieldName = GetFieldName(memberExpression, memberInfo);
+            fieldName = adhesive.SqlAdapter.FormatColumnName(fieldName);
+            string parameterName = EnsureParameter(fieldName, adhesive);
             object value = ConstantExtractor.ParseConstant(valueExpression);
             var parametersKey = $"@{parameterName}";
             var symbol = SqlKeys.@in;
@@ -101,14 +123,13 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
             return param;
         }
 
-        internal static string EnsureParameter(MemberInfo memberInfo, WhereClauseAdhesive adhesive)
+        internal static string EnsureParameter(string fieldName, WhereClauseAdhesive adhesive)
         {
             int seed = 1;
-            string key = memberInfo.Name;
-            string tempKey = key;
+            string tempKey = fieldName;
             while (adhesive.ContainsParameter($"@{tempKey}"))
             {
-                tempKey = key + seed;
+                tempKey = fieldName + seed;
                 seed++;
             }
             return tempKey;

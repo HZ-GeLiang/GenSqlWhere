@@ -55,7 +55,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             var expression = whereLambda.ToExpression();
             (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
 
-            Assert.AreEqual(sql, "DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1");
+            Assert.AreEqual(sql, "(((DataCreatedAt >= @DataCreatedAt)) And ((DataCreatedAt < @DataCreatedAt1)))");
             var dict = new Dictionary<string, object>
             {
                 { "@DataCreatedAt", searchModel.DataCreatedAtStart},
@@ -86,7 +86,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             var expression = whereLambda.ToExpression();
             (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
 
-            Assert.AreEqual(sql, "DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1");
+            Assert.AreEqual(sql, "(((DataCreatedAt >= @DataCreatedAt)) And ((DataCreatedAt < @DataCreatedAt1)))");
 
             var dict = new Dictionary<string, object>
             {
@@ -112,7 +112,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
                 var formatDateTime = new Dictionary<string, string>() { { "@DataCreatedAt1", "yyyy-MM-dd" } };
                 sql = WhereClauseHelper.MergeParametersIntoSql(sql, param, formatDateTime);
-                Assert.AreEqual(sql, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03'");
+                Assert.AreEqual(sql, "(((DataCreatedAt >= '2022-03-01 15:12:34')) And ((DataCreatedAt < '2022-03-03')))");
 
             }
 
@@ -128,7 +128,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
                 var formatDateTime = WhereClauseHelper.GetDefaultFormatDateTime(param);
                 sql = WhereClauseHelper.MergeParametersIntoSql(sql, param, formatDateTime);
-                Assert.AreEqual(sql, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03 12:34:56'");
+                Assert.AreEqual(sql, "(((DataCreatedAt >= '2022-03-01 15:12:34')) And ((DataCreatedAt < '2022-03-03 12:34:56')))");
             }
         }
     }

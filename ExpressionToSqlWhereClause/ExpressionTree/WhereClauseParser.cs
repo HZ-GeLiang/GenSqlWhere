@@ -92,7 +92,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 var method = methodCallExpression.Method;
                 if (method.DeclaringType == typeof(ExpressionToSqlWhereClause.SqlFunc.DbFunctions))
                 {
-                    // int Month (datetime dt)   =>  public static Int32 Month(DateTime dt)
+                    // int Month (datetime dt) => public static Int32 Month(DateTime dt)
                     var methodInfo = methodCallExpression.Method;  //这个静态方法的定义
 
                     var attrs = ReflectionHelper.GetAttributeForMethod<DbFunctionAttribute>(methodInfo);
@@ -116,7 +116,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                             clauseLeft = string.Format(attr.Format, leftName);// Month(u.CreateAt)
                         }
 
-                        string parameterName = ConditionBuilder.EnsureParameter(methodInfo, adhesive);
+                        string parameterName = ConditionBuilder.EnsureParameter(methodInfo.Name, adhesive);
                         var parametersKey = $"@{parameterName}";
                         var param = adhesive.GetParameter(parametersKey);
 
@@ -157,11 +157,11 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 SqlClauseParametersInfo param;
                 if (memberExpression.Member is PropertyInfo pi && pi.PropertyType == typeof(bool))
                 {
-                    param = ConditionBuilder.BuildCondition(memberExpression.Member, adhesive, ExpressionType.Equal);
+                    param = ConditionBuilder.BuildCondition(memberExpression, memberExpression.Member, adhesive, ExpressionType.Equal);
                 }
                 else
                 {
-                    param = ConditionBuilder.BuildCondition(memberExpression.Member, adhesive, comparison);
+                    param = ConditionBuilder.BuildCondition(memberExpression, memberExpression.Member, adhesive, comparison);
                 }
                 return new ParseResult()
                 {
@@ -180,7 +180,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                     {
                         if (unaryExpression.Type == typeof(bool))
                         {
-                            SqlClauseParametersInfo param = ConditionBuilder.BuildCondition(operandMemberExpression.Member, adhesive, comparison);
+                            SqlClauseParametersInfo param = ConditionBuilder.BuildCondition(operandMemberExpression, operandMemberExpression.Member, adhesive, comparison);
                             return new ParseResult()
                             {
                                 WhereClause = new StringBuilder(param.SqlClause),
@@ -195,7 +195,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                     {
                         var memberExpression2 = ((unaryExpression.Operand as BinaryExpression).Left as MemberExpression);
                         var member = memberExpression2.Member;
-                        SqlClauseParametersInfo param = ConditionBuilder.BuildCondition(member, adhesive, comparison);
+                        SqlClauseParametersInfo param = ConditionBuilder.BuildCondition(memberExpression2, member, adhesive, comparison);
                         return new ParseResult()
                         {
                             WhereClause = new StringBuilder(param.SqlClause),
@@ -210,7 +210,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 {
                     if (unaryExpression.Operand is MemberExpression operandMemberExpression)
                     {
-                        SqlClauseParametersInfo param = ConditionBuilder.BuildCondition(operandMemberExpression.Member, adhesive, comparison);
+                        SqlClauseParametersInfo param = ConditionBuilder.BuildCondition(operandMemberExpression, operandMemberExpression.Member, adhesive, comparison);
                         return new ParseResult()
                         {
                             WhereClause = new StringBuilder(param.SqlClause),

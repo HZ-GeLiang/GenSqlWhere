@@ -6,18 +6,19 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 
     public class TestSqlAdapter : DefaultSqlAdapter
     {
-        public override string FormatColumnName(MemberInfo memberInfo)
+        public override string FormatColumnName(string name)
         {
-            //return memberInfo.Name.ToLower();
-            return base.FormatColumnName(memberInfo);
+            //return name.ToLower();
+            return base.FormatColumnName(name);
         }
     }
 
     public class ToLowerSqlAdapter : DefaultSqlAdapter
     {
-        public override string FormatColumnName(MemberInfo memberInfo)
+        /// <inheritdoc/>
+        public override string FormatColumnName(string name)
         {
-            return memberInfo.Name.ToLower();
+            return name.ToLower();
         }
     }
 }

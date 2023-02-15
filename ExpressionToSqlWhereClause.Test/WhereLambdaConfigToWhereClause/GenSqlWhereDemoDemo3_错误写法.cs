@@ -46,7 +46,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Id", 1);//Month()返回的是int ,所以1 是int类型的才对
             expectedParameters.Add("@Id1", 1);//Month()返回的是int ,所以1 是int类型的才对
-            Assert.AreEqual(whereClause, "Id = @Id And Id <> @Id1");
+            Assert.AreEqual(whereClause, "(((Id = @Id)) And ((Id <> @Id1)))");
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
 
@@ -69,7 +69,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Id", 1);
-            Assert.AreEqual(whereClause, "Id = @Id");
+            Assert.AreEqual(whereClause, "((Id = @Id))");
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
     }

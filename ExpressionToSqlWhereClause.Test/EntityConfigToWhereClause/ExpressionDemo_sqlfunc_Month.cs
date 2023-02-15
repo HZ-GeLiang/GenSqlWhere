@@ -32,7 +32,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             {
                 { "@Month", 5 }
             };
-            Assert.AreEqual("Month(CreateAt) = @Month", whereClause);
+            Assert.AreEqual("((Month[CreateAt] = @Month))", whereClause);
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
 
@@ -48,7 +48,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             {
                 { "@MonthIn", "5,6" }
             };
-            Assert.AreEqual("((Month(CreateAt) In (@MonthIn)))", whereClause);
+            Assert.AreEqual("((Month[CreateAt] In (@MonthIn)))", whereClause);
 
             DictionaryAssert.AreEqual(expectedParameters, parameters);
 
