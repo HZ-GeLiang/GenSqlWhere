@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ExpressionToSqlWhereClause.ExpressionTree;
 using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 // ReSharper disable once CheckNamespace
 namespace ExpressionToSqlWhereClause.ExtensionMethod
@@ -112,24 +113,31 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
 
             #region 处理 parseResult.WhereClause
 
-            var whereClause = parseResult.WhereClause;
+            #region 去掉 关系条件 全为 and 时的() 
+            //能力有限: 只能去掉全是 and 语句的 ()
+            //注:
+            //1. in ()  的  () 不能去掉
+            //2.函数() 的()  不能去掉
+            //
+            bool canReplace_kh = true;
 
-            #region 去掉 关系条件 全为 and 时 ,sql 语句的 () 可以优化
-            //能力有限: 只能去掉全是 and 语句的 ()  注 in ()  的  () 不能排除, 所以,还要去掉 in
-            var containsOr = whereClause.Contains(SqlKeys.or);
-            if (!containsOr)
+            if (parseResult.WhereClause.Contains(SqlKeys.or) ||
+                parseResult.WhereClause.Contains(SqlKeys.@in) ||
+                new Regex("[a-zA-Z]\\(").IsMatch(parseResult.WhereClause)
+                )
             {
-                var containsin = whereClause.Contains(SqlKeys.@in);
-                if (!containsin)
+                canReplace_kh = false;
+            }
+
+            if (canReplace_kh)
+            {
+                if (parseResult.WhereClause.Contains("("))
                 {
-                    if (whereClause.Contains("("))
-                    {
-                        whereClause = whereClause.Replace("(", string.Empty);
-                    }
-                    if (whereClause.Contains(")"))
-                    {
-                        whereClause = whereClause.Replace(")", string.Empty);
-                    }
+                    parseResult.WhereClause = parseResult.WhereClause.Replace("(", string.Empty);
+                }
+                if (parseResult.WhereClause.Contains(")"))
+                {
+                    parseResult.WhereClause = parseResult.WhereClause.Replace(")", string.Empty);
                 }
             }
             #endregion

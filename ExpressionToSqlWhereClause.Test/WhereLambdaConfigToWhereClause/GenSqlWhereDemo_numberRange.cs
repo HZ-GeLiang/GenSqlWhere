@@ -52,7 +52,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 var expression = whereLambda.ToExpression();
                 (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
 
-                Assert.AreEqual(sql, "(((Id >= @Id)) And ((Id <= @Id1)))");
+                Assert.AreEqual(sql, "Id >= @Id And Id <= @Id1");
                 var dict = new Dictionary<string, object>
                 {
                     { "@Id",searchModel.IdLeft},
@@ -78,7 +78,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 var expression = whereLambda.ToExpression();
                 (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
 
-                Assert.AreEqual(sql, "(((Id >= @Id)) And ((Id <= @Id1)))");
+                Assert.AreEqual(sql, "Id >= @Id And Id <= @Id1");
                 var dict = new Dictionary<string, object>
                 {
                     { "@Id",searchModel.Id},
