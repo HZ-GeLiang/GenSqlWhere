@@ -134,40 +134,6 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
             }
             #endregion
 
-            #region 函数的[] 变成 ()
-
-            if (whereClause.Contains("[") && whereClause.Contains("]"))
-            {
-                //需要注意, mssql下, 系统保留字是  [] 包裹的
-
-                var syste_buildIn_names = alias.Values.Where(a => a.StartsWith("[") && a.EndsWith("]")).ToList();
-
-                //把 []  包裹的用其他字符替换
-                foreach (var item in syste_buildIn_names)
-                {
-                    var newValue = $@",{item.Substring(1, item.Length - 2)},";
-                    whereClause = whereClause.Replace(item, newValue);
-                }
-
-
-                if (whereClause.Contains("[") && whereClause.Contains("]"))
-                {
-                    //这里是无脑替换.
-                    whereClause = whereClause.Replace("[", "(");
-                    whereClause = whereClause.Replace("]", ")");
-                }
-
-                //然后替换回来
-                foreach (var item in syste_buildIn_names)
-                {
-                    var oldValue = $@",{item.Substring(1, item.Length - 2)},";
-                    whereClause = whereClause.Replace(oldValue, item);
-                }
-
-            }
-
-            #endregion
-
             #endregion
 
             var parameters = new Dictionary<string, object>(0);

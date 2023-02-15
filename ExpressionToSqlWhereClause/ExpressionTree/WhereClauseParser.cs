@@ -402,8 +402,22 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                     }
                 }
                 #endregion
-
                 return sqlBuilder;
+
+                //想优化()太多的问题, 边际成本太低, 算了. 
+                //if (sqlBuilder.IndexOf('(', 1) == -1) //只有一组内置的 ()
+                //{
+                //    //掐头去尾, 去掉内置的()
+                //    sqlBuilder.Remove(0, 1);
+                //    sqlBuilder.Remove(sqlBuilder.Length - 1, 1);
+                //    return sqlBuilder;
+                //}
+                //else
+                //{
+                //    int a = 1; //有多组()
+                //    return sqlBuilder;
+                //}
+
             }
 
             #region  这边的 if 好像进不来了, 先注释
@@ -474,9 +488,9 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
             switch (expressionType)
             {
                 case ExpressionType.AndAlso:
-                    return "AND";
+                    return "And";
                 case ExpressionType.OrElse:
-                    return "OR";
+                    return "Or";
                 default:
                     throw new NotSupportedException($"Unknown ExpressionType {expressionType}");
             }
