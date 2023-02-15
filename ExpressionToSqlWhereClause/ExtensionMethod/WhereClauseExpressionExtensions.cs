@@ -59,7 +59,7 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
                 var para = parseResult.Adhesive.GetParameter(key);
                 var val = para.Value;
 
-                #region 处理 val ==null 的情况
+                #region 处理 val == null 的情况
 
                 if (val == null)
                 {

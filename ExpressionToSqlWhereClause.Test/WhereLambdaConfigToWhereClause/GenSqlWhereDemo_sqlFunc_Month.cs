@@ -74,7 +74,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Month", 1);//Month()返回的是int ,所以1 是int类型的才对
-            Assert.AreEqual(whereClause, "Month(DataCreatedAt) = @Month");
+            Assert.AreEqual(whereClause, "((Month(DataCreatedAt) = @Month))");
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
 
@@ -93,7 +93,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Month", 1);//Month()返回的是int ,所以1 是int类型的才对
-            Assert.AreEqual(whereClause, "Month(DataCreatedAt) <> @Month");
+            Assert.AreEqual(whereClause, "((Month(DataCreatedAt) <> @Month))");
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
         [TestMethod]

@@ -8,6 +8,7 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
 {
     internal static class TypeExtensions
     {
+
         public static IList MakeList(this Type t, params object[] items)
         {
             Type type = typeof(List<>).MakeGenericType(t);

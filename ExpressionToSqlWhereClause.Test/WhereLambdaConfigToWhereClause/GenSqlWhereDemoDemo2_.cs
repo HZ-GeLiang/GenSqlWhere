@@ -60,7 +60,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             var whereLambda = searchModel.CrateWhereLambda();
             var expression = whereLambda.ToExpression();
             (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
-            Assert.AreEqual(sql, "Url Like @Url");
+            Assert.AreEqual(sql, "(Url Like @Url)");
             var dict = new Dictionary<string, object>
             {
                 { "@Url", "%123%" }
@@ -89,7 +89,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             var expression = whereLambda.ToExpression();
             (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
 
-            Assert.AreEqual(sql, "Url Like @Url");
+            Assert.AreEqual(sql, "(Url Like @Url)");
             var dict = new Dictionary<string, object>
             {
                 { "@Url", "%123%" }

@@ -118,9 +118,9 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             Expression<Func<Model_People, bool>> exp = whereLambda.ToExpression();
             (string sql, Dictionary<string, object> param) = exp.ToWhereClause();
 
-            Assert.AreEqual(sql, "IsDel = @IsDel And Url = @Url");
+            Assert.AreEqual(sql, "(((IsDel = @IsDel)) And ((Url = @Url)))");
             sql = WhereClauseHelper.ParamNameToNumber(sql);
-            Assert.AreEqual(sql, "IsDel = @0 And Url = @1");
+            Assert.AreEqual(sql, "(((IsDel = @0)) And ((Url = @1)))");
 
         }
 

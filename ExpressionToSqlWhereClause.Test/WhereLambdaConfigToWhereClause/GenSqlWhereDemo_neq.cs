@@ -37,7 +37,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             var expression = whereLambda.ToExpression();
             (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
 
-            Assert.AreEqual(sql, "IsDel <> @IsDel");
+            Assert.AreEqual(sql, "((IsDel <> @IsDel))");
             var dict = new Dictionary<string, object>
             {
                 { "@IsDel", searchModel.IsDel }

@@ -4,10 +4,12 @@ namespace ExpressionToSqlWhereClause.ExpressionTree.Adapter
 {
     public class DefaultSqlAdapter : ISqlAdapter
     {
-        public virtual string FormatColumnName(MemberInfo memberInfo)
+
+        /// <inheritdoc/>
+        public virtual string FormatColumnName(string name)
         {
-           // System.Diagnostics.Debugger.Break();
-            return memberInfo.Name;
+            // System.Diagnostics.Debugger.Break();
+            return name;
         }
     }
 }

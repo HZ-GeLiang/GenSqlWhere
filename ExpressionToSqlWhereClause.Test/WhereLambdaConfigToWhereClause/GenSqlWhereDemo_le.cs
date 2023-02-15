@@ -43,7 +43,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             var expression = whereLambda.ToExpression();
             (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
 
-            Assert.AreEqual(sql, "Id <= @Id And DataCreatedAt <= @DataCreatedAt");
+            Assert.AreEqual(sql, "(((Id <= @Id)) And ((DataCreatedAt <= @DataCreatedAt)))");
             var dict = new Dictionary<string, object>
             {
                 { "@Id", 5 },//取 domain 的类型
