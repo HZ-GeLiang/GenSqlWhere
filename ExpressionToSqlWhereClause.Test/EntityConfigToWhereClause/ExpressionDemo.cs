@@ -1,103 +1,16 @@
-﻿using System;
+﻿using ExpressionToSqlWhereClause.ExtensionMethod;
+using ExpressionToSqlWhereClause.Helper;
+using ExpressionToSqlWhereClause.Test.ExtensionMethod;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SqlWhere.ExtensionMethod;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Linq.Expressions;
-using ExpressionToSqlWhereClause.Helper;
-using ExpressionToSqlWhereClause.Test.ExtensionMethod;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 {
-    public class UserFilter
-    {
-        public string Name { get; set; }
-
-        public bool Sex { get; set; }
-
-        public int Age { get; set; }
-
-        public Internal Internal { get; set; } = new Internal();
-
-        public static int GetInt(int i)
-        {
-            return i;
-        }
-    }
-    public class Internal
-    {
-        public int Age { get; set; }
-    }
-
-    public class UserCreateTime
-    {
-        public int Age { get; set; }
-        public DateTime? CreateStart { get; set; }
-        public DateTime? CreateEnd { get; set; }
-
-    }
-    public class User_columnAttr
-    {
-        [Column("UserAge")]
-        public int Age { get; set; }
-    }
-    public class User
-    {
-        public string Name { get; set; }
-
-        public bool Sex { get; set; }
-
-        public Sex Sex2 { get; set; }
-
-        public int Age { get; set; }
-    }
-    public class Student
-    {
-        public int Id { get; set; }
-
-        public string Url { get; set; }
-
-        public sbyte Sex { get; set; }
-        public bool IsDel { get; set; }
-        public string DataRemark { get; set; }
-        public DateTime DataCreatedAt { get; set; }
-        public DateTime DataUpdatedAt { get; set; }
-
-    }
-
-    public class Student_Alias
-    {
-        public int Id { get; set; }
-    }
-
-    public class Student_mssql_buildIn_name  
-    {
-        public int Index { get; set; }
-    }
-    public enum Sex
-    {
-        Male = 1,
-        Female = 2
-    }
-
-    public class ShopInfoInput
-    {
-
-        public DateTime? DateStart { get; set; }
-        public DateTime? DateEnd { get; set; }
-
-        internal DateTime? Date { get; set; } //冗余的
-
-        public string Production { get; set; }
-
-        public int? Unit { get; set; }
-        public string Unit_Name { get; set; }
-
-        public string Remarks { get; set; }
-        public long? CreateUserID { get; set; }
-
-
-    }
 
     [TestClass]
     public class ExpressionDemo
@@ -601,5 +514,124 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             Assert.AreEqual("(((Age <> @Age)) Or (((CreateStart > @CreateStart)) And ((CreateEnd < @CreateEnd))))", whereClause);
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
+
+        [TestMethod]
+        public void 测试_表达式的生成_new一个DateTime()
+        {
+            //var v3 = new DateTime(2023, 1, 1);
+            var v4 = Guid.Parse("DEA5B56C-D1B1-4513-83E7-B58B9D3EBB81");
+            var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
+                .WhereIf(true, a => a.Id == 1)
+                .WhereIf(true, a => a.Name == "abc")
+                .WhereIf(true, a => a.CreateAt > new DateTime(2023, 1, 1))
+                //.WhereIf(true, a => a.Flag.Value == Guid.Parse("DEA5B56C-D1B1-4513-83E7-B58B9D3EBB81"))
+                .WhereIf(true, a => a.CreateAt > v3)
+                //.WhereIf(true, a => a.Flag.Value == v4)
+                .WhereIf(true, a => a.Flag == v4)
+                ;
+
+            var where = WhereClauseHelper.ToFormattableString(expression.ToWhereClause());
+        }
+    }
+
+
+    public record class ExpressionSqlTest
+    {
+
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public DateTime? CreateAt { get; set; }
+        public Guid? Flag { get; set; }
+    }
+
+
+    public class UserFilter
+    {
+        public string Name { get; set; }
+
+        public bool Sex { get; set; }
+
+        public int Age { get; set; }
+
+        public Internal Internal { get; set; } = new Internal();
+
+        public static int GetInt(int i)
+        {
+            return i;
+        }
+    }
+    public class Internal
+    {
+        public int Age { get; set; }
+    }
+
+    public class UserCreateTime
+    {
+        public int Age { get; set; }
+        public DateTime? CreateStart { get; set; }
+        public DateTime? CreateEnd { get; set; }
+
+    }
+    public class User_columnAttr
+    {
+        [Column("UserAge")]
+        public int Age { get; set; }
+    }
+    public class User
+    {
+        public string Name { get; set; }
+
+        public bool Sex { get; set; }
+
+        public Sex Sex2 { get; set; }
+
+        public int Age { get; set; }
+    }
+    public class Student
+    {
+        public int Id { get; set; }
+
+        public string Url { get; set; }
+
+        public sbyte Sex { get; set; }
+        public bool IsDel { get; set; }
+        public string DataRemark { get; set; }
+        public DateTime DataCreatedAt { get; set; }
+        public DateTime DataUpdatedAt { get; set; }
+
+    }
+
+    public class Student_Alias
+    {
+        public int Id { get; set; }
+    }
+
+    public class Student_mssql_buildIn_name
+    {
+        public int Index { get; set; }
+    }
+    public enum Sex
+    {
+        Male = 1,
+        Female = 2
+    }
+
+    public class ShopInfoInput
+    {
+
+        public DateTime? DateStart { get; set; }
+        public DateTime? DateEnd { get; set; }
+
+        internal DateTime? Date { get; set; } //冗余的
+
+        public string Production { get; set; }
+
+        public int? Unit { get; set; }
+        public string Unit_Name { get; set; }
+
+        public string Remarks { get; set; }
+        public long? CreateUserID { get; set; }
+
+
     }
 }

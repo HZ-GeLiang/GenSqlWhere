@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using ExpressionToSqlWhereClause.EntityConfig;
+using ExpressionToSqlWhereClause.ExtensionMethod;
 using ExpressionToSqlWhereClause.Test.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

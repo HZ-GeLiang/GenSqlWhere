@@ -9,7 +9,7 @@ using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
 using System.Linq;
 
 // ReSharper disable once CheckNamespace
-namespace ExpressionToSqlWhereClause
+namespace ExpressionToSqlWhereClause.ExtensionMethod
 {
     public static class WhereClauseExpressionExtensions
     {

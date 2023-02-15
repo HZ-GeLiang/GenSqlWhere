@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ExpressionToSqlWhereClause.EntityConfig;
+using ExpressionToSqlWhereClause.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
