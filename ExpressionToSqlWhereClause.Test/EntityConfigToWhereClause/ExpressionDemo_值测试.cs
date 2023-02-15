@@ -16,7 +16,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 
             Expression<Func<Student, bool>> expOr = a => a.Url == null;
             (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause();
-            Assert.AreEqual(WhereClause, "((Url Is Null))");
+            Assert.AreEqual(WhereClause, "Url Is Null");
 
             var para = new Dictionary<string, object>();
             CollectionAssert.AreEqual(Parameters, para);
@@ -28,7 +28,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 
             Expression<Func<Student, bool>> expOr = a => a.Url != null;
             (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause();
-            Assert.AreEqual(WhereClause, "((Url Is Not Null))");
+            Assert.AreEqual(WhereClause, "Url Is Not Null");
 
             var para = new Dictionary<string, object>();
             CollectionAssert.AreEqual(Parameters, para);
