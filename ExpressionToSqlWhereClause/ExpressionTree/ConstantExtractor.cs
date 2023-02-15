@@ -64,7 +64,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
             }
 
             //else  loopCount > 0
-            
+
             StringBuilder sb = new StringBuilder();
             foreach (var obj in loopObj)
             {
@@ -134,7 +134,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
             {
                 if (expression.NodeType == ExpressionType.Convert)
                 {
-                    return ParseConvertExpression(convertExpression);
+                    return ConstantExtractor.ParseConvertExpression(convertExpression);
                 }
                 else
                 {
@@ -142,13 +142,26 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 }
             }
 
-            //不支持的有:
+            else if (expression is System.Linq.Expressions.NewExpression newExpression)
+            {
+                if (expression.NodeType == ExpressionType.New)
+                {
+                    return ConstantExtractor.ParseNewExpression(newExpression);
+                }
+                else
+                {
+                    throw new NotSupportedException($"Unknow expression {expression.GetType()}");
+                }
+            }
+
+
+            //已知的不支持的有:
             //if (expression.GetType().FullName == ExpressionFullNameSpaceConst.TypedParameter)
             //{
             //    throw new NotSupportedException($"Unknow expression {expression.GetType()}");
             //}
-            var ex_msg = $"Unknow expression {expression.GetType()}";
-            throw new NotSupportedException(ex_msg);
+
+            throw new NotSupportedException($"Unknow expression {expression.GetType()}");
 
         }
 
@@ -298,7 +311,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
             }
             else
             {
-                return new NotSupportedException();
+                throw new NotSupportedException();
             }
         }
 
@@ -314,5 +327,54 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
 
             return ChangeType(value, convertExpression.Type);
         }
+
+
+        private static object ParseNewExpression(NewExpression newExpression)
+        {
+            Type type = newExpression.Type;
+            ConstructorInfo constructor = newExpression.Constructor;
+            object[] arguments = new object[newExpression.Arguments.Count];
+
+            // 解析参数列表
+            for (int i = 0; i < newExpression.Arguments.Count; i++)
+            {
+                Expression argument = newExpression.Arguments[i];
+                arguments[i] = GetValueFromExpression(argument);
+            }
+
+            // 创建新的对象
+            object instance = constructor.Invoke(arguments);
+            return instance;
+        }
+
+        private static object GetValueFromExpression(Expression expression)
+        {
+            if (expression is ConstantExpression constant)
+            {
+                return constant.Value;
+            }
+            else if (expression is MemberExpression member)
+            {
+                object instance = GetValueFromExpression(member.Expression);
+                return member.Member is FieldInfo field ? field.GetValue(instance) : ((PropertyInfo)member.Member).GetValue(instance);
+            }
+            else if (expression is NewExpression newExpression)
+            {
+                Type type = newExpression.Type;
+                ConstructorInfo constructor = newExpression.Constructor;
+                object[] arguments = new object[newExpression.Arguments.Count];
+
+                for (int i = 0; i < newExpression.Arguments.Count; i++)
+                {
+                    Expression argument = newExpression.Arguments[i];
+                    arguments[i] = GetValueFromExpression(argument);
+                }
+
+                return constructor.Invoke(arguments);
+            }
+
+            throw new NotSupportedException("Unsupported expression type: " + expression.GetType().Name);
+        }
+
     }
 }

@@ -34,7 +34,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
                .WhereIf(input.DateEnd.HasValue, a => a.Date <= input.DateEnd)
             ;
 
-             
+
             //MergeParametersIntoSql 的 2种使用方式
             {
                 var whereClause = expression.ToWhereClause();
@@ -516,56 +516,66 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
 
-        //[TestMethod]
-        //public void 测试_表达式的生成_new一个DateTime()
-        //{
-        //    //var v3 = new DateTime(2023, 1, 1);
-        //    var v4 = Guid.Parse("DEA5B56C-D1B1-4513-83E7-B58B9D3EBB81");
-        //    var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
-        //        .WhereIf(true, a => a.CreateAt > new DateTime(2023, 1, 1))
-        //        //.WhereIf(true, a => a.Flag.Value == Guid.Parse("DEA5B56C-D1B1-4513-83E7-B58B9D3EBB81"))
-        //        //.WhereIf(true, a => a.Flag.Value == v4)
-        //        .WhereIf(true, a => a.Flag == v4)
-        //        ;
+        [TestMethod]
+        public void 测试_表达式的生成_new一个DateTime()
+        {
+            var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
+                .WhereIf(true, a => a.CreateAt > new DateTime(2023, 1, 1))
+                ;
+            var where = expression.ToWhereClause();
+            Dictionary<string, object> expectedParameters = new Dictionary<string, object>
+            {
+                { "@CreateAt", new DateTime(2023, 1, 1)}
+            };
 
-        //    expression.ToWhereClause();
-        //}
+            Assert.AreEqual("((CreateAt > @CreateAt))", where.WhereClause);
+            DictionaryAssert.AreEqual(expectedParameters, where.Parameters);
+        }
 
-        //[TestMethod]
-        //public void 测试_表达式的生成_new一个Guid()
-        //{
-        //    var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
-        //        .WhereIf(true, a => a.CreateAt > new DateTime(2023, 1, 1))
-        //        .WhereIf(true, a => a.Flag.Value == Guid.Parse("DEA5B56C-D1B1-4513-83E7-B58B9D3EBB81"))
-        //        //.WhereIf(true, a => a.Flag.Value == v4)
+        [TestMethod]
+        public void 测试_表达式的生成_new一个Guid()
+        {
+            var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
+                .WhereIf(true, a => a.Flag.Value == Guid.Parse("DEA5B56C-D1B1-4513-83E7-B58B9D3EBB81"))
+                ;
 
-        //        ;
+            var where = expression.ToWhereClause();
+            Dictionary<string, object> expectedParameters = new Dictionary<string, object>
+            {
+                { "@CreateAt", new DateTime(2023, 1, 1)}
+            };
 
-        //    expression.ToWhereClause();
-        //}
+            Assert.AreEqual("((Flag = @Flag))", where.WhereClause);
+            DictionaryAssert.AreEqual(expectedParameters, where.Parameters);
+             
+        }
 
         [TestMethod]
         public void 测试_解析nullable的sql()
         {
+            var v4 = Guid.Parse("DEA5B56C-D1B1-4513-83E7-B58B9D3EBB81");
+            Dictionary<string, object> expectedParameters = new Dictionary<string, object>
             {
-                var v4 = Guid.Parse("DEA5B56C-D1B1-4513-83E7-B58B9D3EBB81");
+                { "@Flag", v4}
+            };
+
+            {
                 var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
                     .WhereIf(true, a => a.Flag.Value == v4)
                     ;
-                var str = expression.ToWhereClause().WhereClause;
+                var where = expression.ToWhereClause();
 
-                Assert.AreEqual("((Flag = @Flag))", str);
+                Assert.AreEqual("((Flag = @Flag))", where.WhereClause);
+                DictionaryAssert.AreEqual(expectedParameters, where.Parameters);
             }
             {
-                {
-                    var v4 = Guid.Parse("DEA5B56C-D1B1-4513-83E7-B58B9D3EBB81");
-                    var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
-                        .WhereIf(true, a => a.Flag == v4)
-                        ;
-                    var str = expression.ToWhereClause().WhereClause;
+                var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
+                    .WhereIf(true, a => a.Flag == v4)
+                    ;
+                var where = expression.ToWhereClause();
 
-                    Assert.AreEqual("((Flag = @Flag))", str);
-                }
+                Assert.AreEqual("((Flag = @Flag))", where.WhereClause);
+                DictionaryAssert.AreEqual(expectedParameters, where.Parameters);
             }
         }
 
