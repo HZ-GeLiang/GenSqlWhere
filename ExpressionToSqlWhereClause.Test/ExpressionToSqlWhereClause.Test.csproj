@@ -4,6 +4,7 @@
 		<TargetFramework>net5.0</TargetFramework>
 		<IsPackable>false</IsPackable>
 		<AssemblyName>ExpressionToSqlWhereClause.Test</AssemblyName>
+		<LangVersion>10.0</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -12,9 +13,9 @@
 		<PackageReference Include="MSTest.TestFramework" Version="2.2.3" />
 		<PackageReference Include="coverlet.collector" Version="3.0.2" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
-	  <ProjectReference Include="..\ExpressionToSqlWhereClause\ExpressionToSqlWhereClause.csproj" />
+		<ProjectReference Include="..\ExpressionToSqlWhereClause\ExpressionToSqlWhereClause.csproj" />
 		<!--<PackageReference Include="ExpressionToSqlWhereClause" Version="1.5.1" />-->
 	</ItemGroup>
 

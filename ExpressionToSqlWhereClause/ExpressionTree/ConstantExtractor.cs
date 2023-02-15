@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using ExpressionToSqlWhereClause.Consts;
+using ExpressionToSqlWhereClause.ExtensionMethod;
 using ExpressionToSqlWhereClause.Helper;
 
 namespace ExpressionToSqlWhereClause.ExpressionTree

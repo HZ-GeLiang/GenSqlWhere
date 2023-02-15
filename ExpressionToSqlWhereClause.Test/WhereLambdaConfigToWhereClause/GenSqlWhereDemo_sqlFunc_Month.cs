@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ExpressionToSqlWhereClause.EntityConfig;
+using ExpressionToSqlWhereClause.ExtensionMethod;
 using ExpressionToSqlWhereClause.SqlFunc.EntityConfig;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

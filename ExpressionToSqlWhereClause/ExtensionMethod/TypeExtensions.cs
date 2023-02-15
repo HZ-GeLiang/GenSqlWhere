@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 
 // ReSharper disable once CheckNamespace
-namespace ExpressionToSqlWhereClause 
+namespace ExpressionToSqlWhereClause.ExtensionMethod
 {
     internal static class TypeExtensions
     {
@@ -13,7 +13,7 @@ namespace ExpressionToSqlWhereClause
             Type type = typeof(List<>).MakeGenericType(t);
 
             object list = Activator.CreateInstance(type);
-            System.Collections.IList ilist = list as System.Collections.IList;
+            IList ilist = list as IList;
             if (ilist != null)
             {
                 foreach (object o in items)
@@ -72,17 +72,17 @@ namespace ExpressionToSqlWhereClause
 
         }
 
-        public static bool IsObjectCollection(this Type type) => IsObjectCollection(type, out _, null);
+        public static bool IsObjectCollection(this Type type) => type.IsObjectCollection(out _, null);
 
         public static bool IsObjectCollection(this Type type, out Type objectType) =>
-            IsObjectCollection(type, out objectType, null);
+            type.IsObjectCollection(out objectType, null);
 
         public static bool IsObjectCollection(this Type type, Type objectTypeEqual) =>
-            IsObjectCollection(type, out _, objectTypeEqual);
+            type.IsObjectCollection(out _, objectTypeEqual);
 
         #endregion
 
-  
+
         public static bool IsSubClassOfRawGeneric(this Type type, Type generic)
         {
             if (type == null) throw new ArgumentNullException(nameof(type));
@@ -102,7 +102,7 @@ namespace ExpressionToSqlWhereClause
         }
 
 
- 
+
 
         /// <summary>
         /// 返回Nullable&lt;T&gt;里的T类型

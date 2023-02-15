@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
+using ExpressionToSqlWhereClause.ExtensionMethod;
 using ExpressionToSqlWhereClause.Helper;
 using ExpressionToSqlWhereClause.SqlFunc;
 
