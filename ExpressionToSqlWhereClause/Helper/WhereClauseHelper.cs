@@ -1,6 +1,8 @@
-﻿using System;
+﻿using ExpressionToSqlWhereClause.ExtensionMethod;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 
 namespace ExpressionToSqlWhereClause.Helper
@@ -159,6 +161,14 @@ namespace ExpressionToSqlWhereClause.Helper
             return whereClause;
         }
 
+
+        public static (string whereClause, object[] parameters) ToWhereClause<T>(
+              Expression<Func<T, bool>> expression) where T : class
+        {
+            var sqlAndParam = WhereClauseExpressionExtensions.ToWhereClause<T>(expression);
+             
+            return ToFormattableString(sqlAndParam.Item1, sqlAndParam.Item2);
+        }
 
         public static (string whereClause, object[] parameters) ToFormattableString(ValueTuple<string, Dictionary<string, object>> sqlAndParam)
         {
