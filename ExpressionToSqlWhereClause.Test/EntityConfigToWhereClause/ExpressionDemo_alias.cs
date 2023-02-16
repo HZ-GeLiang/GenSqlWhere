@@ -21,7 +21,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             };
             (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause(alias: dict);
 
-            Assert.AreEqual(WhereClause, "((([Index] = @Index)) Or (([Index] = @Index1)))");
+            Assert.AreEqual(WhereClause, "[Index] = @Index Or [Index] = @Index1");
 
             var para = new Dictionary<string, object>()
             {
@@ -42,7 +42,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             };
             (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause(alias: dict);
 
-            Assert.AreEqual(WhereClause, "(((RouteId = @Id)) Or ((RouteId = @Id1)))");
+            Assert.AreEqual(WhereClause, "RouteId = @Id Or RouteId = @Id1");
 
             var para = new Dictionary<string, object>()
             {
@@ -65,9 +65,8 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             };
             (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause(alias: dict);
 
-            Assert.AreEqual(WhereClause, "((((RouteId = @Id)) Or ((RouteId = @Id1))) And ((IsDel = @IsDel)))");
-            //((((RouteId = @Id)) Or ((RouteId = @Id1))) And (IsDel = @IsDel))
-            //((((RouteId = @Id)) Or ((RouteId = @Id1))) And ((IsDel = @IsDel)))
+            Assert.AreEqual(WhereClause, "(RouteId = @Id Or RouteId = @Id1) And IsDel = @IsDel");
+       
             var para = new Dictionary<string, object>()
             {
                 {"@Id", 1},
@@ -91,7 +90,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             };
             (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause(alias: dict);
 
-            Assert.AreEqual(WhereClause, "((((RouteId = @Id)) Or ((RouteId = @Id1))) And ((b.IsDel = @IsDel)))");
+            Assert.AreEqual(WhereClause, "(RouteId = @Id Or RouteId = @Id1) And b.IsDel = @IsDel");
 
             var para = new Dictionary<string, object>()
             {

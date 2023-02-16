@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Text;
 
-// ReSharper disable once CheckNamespace
 namespace ExpressionToSqlWhereClause.ExtensionMethod
 {
     internal static class StringBuilderExtensions

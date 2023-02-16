@@ -513,7 +513,6 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                     continue;
                 }
 
-                // ReSharper disable once AssignNullToNotNullAttribute
                 if (!Regex.IsMatch(value.ToString(), @"^(-?\d+)(\.\d+)?$")) //是否是数字(整数+浮点数)
                 {
                     throw new ExpressionToSqlWhereClauseException($"当前值({value})不是数字类型.");

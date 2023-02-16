@@ -47,7 +47,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
             (string sql, Dictionary<string, object> param) = exp.ToWhereClause();
 
-            Assert.AreEqual(sql, "((((((Id In (@Id)) And (Sex In (@Sex))) And ((IsDel = @IsDel))) And ((DataCreatedAt >= @DataCreatedAt))) And ((DataCreatedAt < @DataCreatedAt1))) And (Url Like @Url))");
+            Assert.AreEqual(sql, "Id In (@Id) And Sex In (@Sex) And IsDel = @IsDel And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
         }
 
         [TestMethod]

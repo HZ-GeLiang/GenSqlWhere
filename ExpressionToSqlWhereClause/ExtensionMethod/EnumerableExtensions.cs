@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace ExpressionToSqlWhereClause.ExtensionMethod
 {
@@ -64,5 +65,48 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
             => splits.Select(split => (char?)char.Parse(split));
         public static IEnumerable<char> ToChar(this IEnumerable<string> splits)
             => splits.Select(split => Convert.ToChar(split));
+    }
+
+
+    //项目内部使用的
+    internal static class PrivateEnumerableExtensions
+    {
+        public static string AggregateToString<TSource>(this IEnumerable<TSource> source, string separator)
+        {
+            if (source is null) throw new ArgumentNullException($"{nameof(source)}参数不能为空", nameof(source));
+            if (!source.Any())
+            {
+                return string.Empty;
+            }
+
+            var sb = new StringBuilder();
+            var separatorhasValue = !string.IsNullOrEmpty(separator);
+
+            if (separatorhasValue)
+            {
+                foreach (var item in source)
+                {
+                    sb.Append(item).Append(separator);
+                }
+            }
+            else
+            {
+                foreach (var item in source)
+                {
+                    sb.Append(item);
+                }
+            }
+            if (sb.Length <= 0)
+            {
+                return string.Empty;
+            }
+
+            if (separatorhasValue)
+            {
+                sb.Replace(separator, string.Empty, sb.Length - separator.Length, separator.Length);
+            }
+            var txt = sb.ToString();
+            return txt;
+        }
     }
 }
