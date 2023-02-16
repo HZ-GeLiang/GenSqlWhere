@@ -1,15 +1,13 @@
-﻿using ExpressionToSqlWhereClause.Helper;
+﻿using ExpressionToSqlWhereClause.ExpressionTree;
+using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
+using ExpressionToSqlWhereClause.Helper;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
-using ExpressionToSqlWhereClause.ExpressionTree;
-using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
-using System.Linq;
 using System.Text.RegularExpressions;
 
-// ReSharper disable once CheckNamespace
+
 namespace ExpressionToSqlWhereClause.ExtensionMethod
 {
     public static class WhereClauseExpressionExtensions
@@ -60,8 +58,7 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
                 var para = parseResult.Adhesive.GetParameter(key);
                 var val = para.Value;
 
-                #region 处理 val == null 的情况
-
+                // 处理 val == null 的情况
                 if (val == null)
                 {
                     if (para.Symbol == SqlKeys.Equal || para.Symbol == SqlKeys.NotEqual)
@@ -97,50 +94,33 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
                     //else 没有处理 
                 }
 
-                #endregion
-
-                #region 翻译IEnumerable的值
+                //翻译IEnumerable的值
                 var parseValue = ConstantExtractor.ConstantExpressionValueToString(val, out var isIEnumerableObj);
                 if (isIEnumerableObj)
                 {
                     para.Value = parseValue;
                     continue;
                 }
-                #endregion
+
             }
 
             #endregion
 
             #region 处理 parseResult.WhereClause
 
-            #region 去掉 关系条件 全为 and 时的() 
-            //能力有限: 只能去掉全是 and 语句的 ()
-            //注:
-            //1. in ()  的  () 不能去掉
-            //2.函数() 的()  不能去掉
-            //
-            bool canReplace_kh = true;
+            //去掉 关系条件 全为 and 时的() 
 
-            if (parseResult.WhereClause.Contains(SqlKeys.or) ||
-                parseResult.WhereClause.Contains(SqlKeys.@in) ||
-                new Regex("[a-zA-Z]\\(").IsMatch(parseResult.WhereClause)
+            if (parseResult.WhereClause.Contains(SqlKeys.or) ||  //Or语句
+                parseResult.WhereClause.Contains(SqlKeys.@in) || //In语句
+                new Regex("[a-zA-Z]\\(").IsMatch(parseResult.WhereClause) //函数语句
                 )
             {
-                canReplace_kh = false;
+                parseResult.WhereClause = ParenthesesTrimHelper.ParseTrimAll(parseResult.WhereClause);
             }
-
-            if (canReplace_kh)
+            else
             {
-                if (parseResult.WhereClause.Contains("("))
-                {
-                    parseResult.WhereClause = parseResult.WhereClause.Replace("(", string.Empty);
-                }
-                if (parseResult.WhereClause.Contains(")"))
-                {
-                    parseResult.WhereClause = parseResult.WhereClause.Replace(")", string.Empty);
-                }
+                parseResult.WhereClause = ParenthesesTrimHelper.TrimAll(parseResult.WhereClause);
             }
-            #endregion
 
             #endregion
 
