@@ -3,9 +3,6 @@ using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
 
 namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 {
-    /// <summary>
-    /// sqlserver
-    /// </summary>
     public class MySqlAdapter : ISqlAdapter
     {
         /// <inheritdoc/>
