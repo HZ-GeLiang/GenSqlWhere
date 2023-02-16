@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using ExpressionToSqlWhereClause.EntityConfig;
 using ExpressionToSqlWhereClause.ExtensionMethod;
@@ -11,46 +11,46 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
     {
         [Month]
         [SearchType(SearchType.eq)]
-        public int DataCreatedAt { get; set; } // ±ØĞëºÍ Entity µÄÊôĞÔÃûÒ»ÖÂ
+        public int DataCreatedAt { get; set; } // å¿…é¡»å’Œ Entity çš„å±æ€§åä¸€è‡´
     }
     public class Input_sqlFun_Month_neq
     {
         [Month]
         [SearchType(SearchType.neq)]
-        public int DataCreatedAt { get; set; } // ±ØĞëºÍ Entity µÄÊôĞÔÃûÒ»ÖÂ
+        public int DataCreatedAt { get; set; } // å¿…é¡»å’Œ Entity çš„å±æ€§åä¸€è‡´
     }
     public class Input_sqlFun_Month_in
     {
         [Month]
         [SearchType(SearchType.@in)]
-        public int DataCreatedAt { get; set; } // ±ØĞëºÍ Entity µÄÊôĞÔÃûÒ»ÖÂ
+        public int DataCreatedAt { get; set; } // å¿…é¡»å’Œ Entity çš„å±æ€§åä¸€è‡´
     }
 
     public class Model_sqlFun_Month
     {
-        public DateTime DataCreatedAt { get; set; } // ±ØĞëºÍ Entity µÄÊôĞÔÃûÒ»ÖÂ
+        public DateTime DataCreatedAt { get; set; } // å¿…é¡»å’Œ Entity çš„å±æ€§åä¸€è‡´
     }
 
-    #region ´ıÊµÏÖ
+    #region å¾…å®ç°
 
-    //todo: Ìá¹©demo
+    //todo: æä¾›demo
 
     public class Input_sqlFun_MonthIn1
     {
         [MonthIn]
-        public int DataCreatedAt { get; set; } //×îºóÒª·­ÒëÎª List<int> 
+        public int DataCreatedAt { get; set; } //æœ€åè¦ç¿»è¯‘ä¸º List<int> 
     }
 
     public class Input_sqlFun_MonthIn2
     {
         [MonthIn]
-        public string DataCreatedAt { get; set; } //×îºóÒª·­ÒëÎª List<int> 
+        public string DataCreatedAt { get; set; } //æœ€åè¦ç¿»è¯‘ä¸º List<int> 
     }
 
     public class Input_sqlFun_MonthIn3
     {
         [MonthIn]
-        public List<int> DataCreatedAt { get; set; } // ±ØĞëºÍ Entity µÄÊôĞÔÃûÒ»ÖÂ
+        public List<int> DataCreatedAt { get; set; } // å¿…é¡»å’Œ Entity çš„å±æ€§åä¸€è‡´
     }
 
     #endregion
@@ -62,7 +62,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
         [TestMethod]
         public void Month_eq()
         {
-            var searchModel = new Input_sqlFun_Month_eq() //ÕâÀï²»ÄÜÊÇÄäÃûÀàĞÍ
+            var searchModel = new Input_sqlFun_Month_eq() //è¿™é‡Œä¸èƒ½æ˜¯åŒ¿åç±»å‹
             {
                 DataCreatedAt = 1
             };
@@ -73,8 +73,8 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             (string whereClause, Dictionary<string, object> parameters) = exp.ToWhereClause();
 
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
-            expectedParameters.Add("@Month", 1);//Month()·µ»ØµÄÊÇint ,ËùÒÔ1 ÊÇintÀàĞÍµÄ²Å¶Ô
-            Assert.AreEqual(whereClause, "((Month(DataCreatedAt) = @Month))");
+            expectedParameters.Add("@Month", 1);//Month()è¿”å›çš„æ˜¯int ,æ‰€ä»¥1 æ˜¯intç±»å‹çš„æ‰å¯¹
+            Assert.AreEqual(whereClause, "Month(DataCreatedAt) = @Month");
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
 
@@ -92,8 +92,8 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             (string whereClause, Dictionary<string, object> parameters) = exp.ToWhereClause();
 
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
-            expectedParameters.Add("@Month", 1);//Month()·µ»ØµÄÊÇint ,ËùÒÔ1 ÊÇintÀàĞÍµÄ²Å¶Ô
-            Assert.AreEqual(whereClause, "((Month(DataCreatedAt) <> @Month))");
+            expectedParameters.Add("@Month", 1);//Month()è¿”å›çš„æ˜¯int ,æ‰€ä»¥1 æ˜¯intç±»å‹çš„æ‰å¯¹
+            Assert.AreEqual(whereClause, "Month(DataCreatedAt) <> @Month");
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
         [TestMethod]
@@ -105,8 +105,8 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
             var whereLambda = searchModel.CrateWhereLambda((Model_sqlFun_Month p) => { });
 
-            //SearchType:in,²Ù×÷Óöµ½²»Ö§³ÖµÄÊôĞÔÀàĞÍ:System.DateTime
-            var exMsg = $"SearchType:{nameof(SearchType.@in)},²Ù×÷Óöµ½²»Ö§³ÖµÄÊôĞÔÀàĞÍ:{typeof(DateTime).FullName}";
+            //SearchType:in,æ“ä½œé‡åˆ°ä¸æ”¯æŒçš„å±æ€§ç±»å‹:System.DateTime
+            var exMsg = $"SearchType:{nameof(SearchType.@in)},æ“ä½œé‡åˆ°ä¸æ”¯æŒçš„å±æ€§ç±»å‹:{typeof(DateTime).FullName}";
 
             Assert.ThrowsException<ExpressionToSqlWhereClauseException>(() => whereLambda.ToExpression().ToWhereClause(), exMsg);
 
@@ -130,8 +130,8 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             (string whereClause, Dictionary<string, object> parameters) = exp.ToWhereClause();
 
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
-            expectedParameters.Add("@MonthIn", "1"); //sql µÄ in(±äÁ¿), Õâ¸ö±äÁ¿Ö»ÄÜĞ´Ò»¸ö, ËùÒÔ,ÕâÀïÊÇstring
-            Assert.AreEqual("((Month(DataCreatedAt) In (@MonthIn)))", whereClause);
+            expectedParameters.Add("@MonthIn", "1"); //sql çš„ in(å˜é‡), è¿™ä¸ªå˜é‡åªèƒ½å†™ä¸€ä¸ª, æ‰€ä»¥,è¿™é‡Œæ˜¯string
+            Assert.AreEqual("Month(DataCreatedAt) In (@MonthIn)", whereClause);
 
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
@@ -153,8 +153,8 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             (string whereClause, Dictionary<string, object> parameters) = exp.ToWhereClause();
 
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
-            expectedParameters.Add("@MonthIn", "1,2,3"); //sql µÄ in(±äÁ¿), Õâ¸ö±äÁ¿Ö»ÄÜĞ´Ò»¸ö, ËùÒÔ,ÕâÀïÊÇstring
-            Assert.AreEqual("((Month(DataCreatedAt) In (@MonthIn)))", whereClause);
+            expectedParameters.Add("@MonthIn", "1,2,3"); //sql çš„ in(å˜é‡), è¿™ä¸ªå˜é‡åªèƒ½å†™ä¸€ä¸ª, æ‰€ä»¥,è¿™é‡Œæ˜¯string
+            Assert.AreEqual("Month(DataCreatedAt) In (@MonthIn)", whereClause);
 
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }
@@ -176,8 +176,8 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             (string whereClause, Dictionary<string, object> parameters) = exp.ToWhereClause();
 
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
-            expectedParameters.Add("@MonthIn", "1,2,3"); //sql µÄ in(±äÁ¿), Õâ¸ö±äÁ¿Ö»ÄÜĞ´Ò»¸ö, ËùÒÔ,ÕâÀïÊÇstring
-            Assert.AreEqual("((Month(DataCreatedAt) In (@MonthIn)))", whereClause);
+            expectedParameters.Add("@MonthIn", "1,2,3"); //sql çš„ in(å˜é‡), è¿™ä¸ªå˜é‡åªèƒ½å†™ä¸€ä¸ª, æ‰€ä»¥,è¿™é‡Œæ˜¯string
+            Assert.AreEqual("Month(DataCreatedAt) In (@MonthIn)", whereClause);
 
             DictionaryAssert.AreEqual(expectedParameters, parameters);
         }

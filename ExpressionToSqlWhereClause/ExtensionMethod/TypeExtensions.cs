@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
-// ReSharper disable once CheckNamespace
 namespace ExpressionToSqlWhereClause.ExtensionMethod
 {
     internal static class TypeExtensions
@@ -82,7 +81,6 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
             type.IsObjectCollection(out _, objectTypeEqual);
 
         #endregion
-
 
         public static bool IsSubClassOfRawGeneric(this Type type, Type generic)
         {
