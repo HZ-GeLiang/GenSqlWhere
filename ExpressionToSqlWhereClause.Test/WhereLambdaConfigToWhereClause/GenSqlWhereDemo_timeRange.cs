@@ -9,26 +9,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
-
-    public class model_timeRange
-    {
-        public DateTime? DataCreatedAt { get; set; }
-        public DateTime? DataUpdatedAt { get; set; }
-    }
-
-    public class Input_timeRange_Attr
-    {
-        [SearchType(SearchType.timeRange)] public DateTime? DataCreatedAtStart { get; set; }
-        [SearchType(SearchType.timeRange)] public DateTime? DataCreatedAtEnd { get; set; }
-        [SearchType(SearchType.timeRange)] public DateTime? DataUpdatedAtStart { get; set; }
-        [SearchType(SearchType.timeRange)] public DateTime? DataUpdatedAtEnd { get; set; }
-    }
-
-    public class Input_timeRange2_Attr
-    {
-        [SearchType(SearchType.timeRange)] public DateTime? DataCreatedAt { get; set; }
-    }
-
     [TestClass]
     public class GenSqlWhereDemo_TimeRange
     {
@@ -53,16 +33,16 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
 
             var expression = whereLambda.ToExpression();
-            (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
+            var searchCondition = expression.ToWhereClause();
 
-            Assert.AreEqual(sql, "DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1");
+            Assert.AreEqual(searchCondition.WhereClause, "DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1");
             var dict = new Dictionary<string, object>
             {
                 { "@DataCreatedAt", searchModel.DataCreatedAtStart},
                 { "@DataCreatedAt1", DateTime.Parse("2021-8-9")},
             };
 
-            DictionaryAssert.AreEqual(param, dict);
+           CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
         }
 
         [TestMethod]
@@ -84,9 +64,9 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
 
             var expression = whereLambda.ToExpression();
-            (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
+            var searchCondition = expression.ToWhereClause();
 
-            Assert.AreEqual(sql, "DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1");
+            Assert.AreEqual(searchCondition.WhereClause, "DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1");
 
             var dict = new Dictionary<string, object>
             {
@@ -94,7 +74,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 { "@DataCreatedAt1", DateTime.Parse("2021-8-9") }
             };
 
-            DictionaryAssert.AreEqual(param, dict);
+           CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
         }
 
         [TestMethod]
@@ -108,11 +88,11 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                   .WhereIf(true, a => a.DataCreatedAt < d2)
                   ;
 
-                (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
+                var searchCondition = expression.ToWhereClause();
 
                 var formatDateTime = new Dictionary<string, string>() { { "@DataCreatedAt1", "yyyy-MM-dd" } };
-                sql = WhereClauseHelper.MergeParametersIntoSql(sql, param, formatDateTime);
-                Assert.AreEqual(sql, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03'");
+                searchCondition.WhereClause = WhereClauseHelper.MergeParametersIntoSql(searchCondition.WhereClause, searchCondition.Parameters, formatDateTime);
+                Assert.AreEqual(searchCondition.WhereClause, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03'");
 
             }
 
@@ -124,12 +104,32 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                   .WhereIf(true, a => a.DataCreatedAt < d2)
                   ;
 
-                (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
+                var searchCondition = expression.ToWhereClause();
 
-                var formatDateTime = WhereClauseHelper.GetDefaultFormatDateTime(param);
-                sql = WhereClauseHelper.MergeParametersIntoSql(sql, param, formatDateTime);
-                Assert.AreEqual(sql, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03 12:34:56'");
+                var formatDateTime = WhereClauseHelper.GetDefaultFormatDateTime(searchCondition.Parameters);
+                searchCondition.WhereClause = WhereClauseHelper.MergeParametersIntoSql(searchCondition, formatDateTime);
+                Assert.AreEqual(searchCondition.WhereClause, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03 12:34:56'");
             }
         }
     }
+
+    public class model_timeRange
+    {
+        public DateTime? DataCreatedAt { get; set; }
+        public DateTime? DataUpdatedAt { get; set; }
+    }
+
+    public class Input_timeRange_Attr
+    {
+        [SearchType(SearchType.timeRange)] public DateTime? DataCreatedAtStart { get; set; }
+        [SearchType(SearchType.timeRange)] public DateTime? DataCreatedAtEnd { get; set; }
+        [SearchType(SearchType.timeRange)] public DateTime? DataUpdatedAtStart { get; set; }
+        [SearchType(SearchType.timeRange)] public DateTime? DataUpdatedAtEnd { get; set; }
+    }
+
+    public class Input_timeRange2_Attr
+    {
+        [SearchType(SearchType.timeRange)] public DateTime? DataCreatedAt { get; set; }
+    }
+
 }

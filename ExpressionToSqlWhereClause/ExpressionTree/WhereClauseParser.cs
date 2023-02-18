@@ -15,7 +15,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
     /// </summary>
     internal static class WhereClauseParser
     {
-        internal static (string WhereClause, WhereClauseAdhesive Adhesive) Parse(
+        internal static ClauseParserResult Parse(
             Expression body,
             Dictionary<string, string> aliasDict,
             ISqlAdapter sqlAdapter = default)
@@ -25,12 +25,21 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
             if (body is BinaryExpression binaryExpression)
             {
                 string whereClause = ParseBinaryExpression(adhesive, binaryExpression, aliasDict).ToString();
-                return ($"({whereClause})", adhesive);
+
+                return new ClauseParserResult()
+                {
+                    WhereClause = $"({whereClause})",
+                    Adhesive = adhesive
+                };
             }
             if (body is MethodCallExpression methodCallExpression)
             {
                 var whereClause = ParseMethodCallExpression(adhesive, methodCallExpression);
-                return ($"({whereClause.SqlClause})", adhesive);
+                return new ClauseParserResult()
+                {
+                    WhereClause = $"({whereClause.SqlClause})",
+                    Adhesive = adhesive
+                };
             }
             if (body is UnaryExpression unaryExpression)// UnaryExpression : Expression
             {
@@ -49,14 +58,22 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                                 pageResult.SqlClauseParametersInfo.Value = !Convert.ToBoolean(val);
                                 pageResult.SqlClauseParametersInfo.Symbol = SqlKeys.NotEqual;
 
-                                return ($"({pageResult.WhereClause})", adhesive);
+                                return new ClauseParserResult()
+                                {
+                                    WhereClause = $"({pageResult.WhereClause})",
+                                    Adhesive = adhesive
+                                };
                             }
                         }
                     }
                 }
                 else
-                {
-                    return ($"({pageResult.WhereClause})", adhesive);
+                { 
+                    return new ClauseParserResult()
+                    {
+                        WhereClause = $"({pageResult.WhereClause})",
+                        Adhesive = adhesive
+                    };
                 }
             }
             if (body is Expression)
@@ -480,5 +497,11 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                     throw new NotSupportedException($"Unknown ExpressionType {expressionType}");
             }
         }
+    }
+
+    internal class ClauseParserResult
+    {
+        public string WhereClause { get; set; }
+        public WhereClauseAdhesive Adhesive { get; set; }
     }
 }

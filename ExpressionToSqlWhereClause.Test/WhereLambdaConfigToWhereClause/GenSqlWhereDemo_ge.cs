@@ -41,16 +41,16 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
 
             var expression = whereLambda.ToExpression();
-            (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
+           var searchCondition = expression.ToWhereClause();
 
-            Assert.AreEqual(sql, "Id >= @Id And DataCreatedAt >= @DataCreatedAt");
+          Assert.AreEqual(searchCondition.WhereClause, "Id >= @Id And DataCreatedAt >= @DataCreatedAt");
             var dict = new Dictionary<string, object>
             {
                 { "@Id", 5 },//取 domain 的类型
                 { "@DataCreatedAt", searchModel.DataCreatedAt }
             };
 
-            DictionaryAssert.AreEqual(param, dict);
+    CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
         }
 
     }

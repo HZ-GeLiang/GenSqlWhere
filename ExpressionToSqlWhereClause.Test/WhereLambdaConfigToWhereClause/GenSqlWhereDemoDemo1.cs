@@ -79,9 +79,9 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             //List<Expression<Func<Route, bool>>> listExp = whereLambda;
             //Expression<Func<Route, bool>> exp = whereLambda;
 
-            (string sql, Dictionary<string, object> param) = exp.ToWhereClause();
+            var searchCondition = exp.ToWhereClause();
 
-            Assert.AreEqual(sql, "Id In (@Id) And Sex In (@Sex) And IsDel = @IsDel And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
+            Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id) And Sex In (@Sex) And IsDel = @IsDel And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
 
 
             var dict = new Dictionary<string, object>
@@ -94,7 +94,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 { "@Url", $@"%{searchModel.Url}%" },
             };
 
-            DictionaryAssert.AreEqual(param, dict);
+           CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
         }
 
         [TestMethod]
@@ -116,11 +116,11 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
 
             Expression<Func<Model_People, bool>> exp = whereLambda.ToExpression();
-            (string sql, Dictionary<string, object> param) = exp.ToWhereClause();
+            var searchCondition = exp.ToWhereClause();
 
-            Assert.AreEqual(sql, "IsDel = @IsDel And Url = @Url");
-            sql = WhereClauseHelper.ParamNameToNumber(sql);
-            Assert.AreEqual(sql, "IsDel = @0 And Url = @1");
+            Assert.AreEqual(searchCondition.WhereClause, "IsDel = @IsDel And Url = @Url");
+            searchCondition.WhereClause = WhereClauseHelper.ParamNameToNumber(searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "IsDel = @0 And Url = @1");
 
         }
 
@@ -162,9 +162,9 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 nameof(searchModel.DataCreatedAtEnd),
             };
 
-            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+            var searchCondition = whereLambda.ToExpression().ToWhereClause();
 
-            Assert.AreEqual(sql, "Id In (@Id) And Sex In (@Sex) And IsDel = @IsDel And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
+            Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id) And Sex In (@Sex) And IsDel = @IsDel And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
         }
 
         [TestMethod]

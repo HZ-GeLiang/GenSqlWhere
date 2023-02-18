@@ -8,26 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
-    public class Input_eq
-    {
-        [SearchType(SearchType.eq)] public bool IsDel { get; set; }
-    }
-
-    public class Input_eq2
-    {
-        [SearchType(SearchType.eq)] public long? Id { get; set; }
-    }
-
-
-    public class Model_eq
-    {
-        public bool IsDel { get; set; }
-    }
-
-    public class Model_eq2
-    {
-        public int Id { get; set; }
-    }
+    
 
     [TestClass]
     public class GenSqlWhereDemo_eq
@@ -49,15 +30,15 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
 
             var expression = whereLambda.ToExpression();
-            (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
+            var searchCondition = expression.ToWhereClause();
 
-            Assert.AreEqual(sql, "IsDel = @IsDel");
+            Assert.AreEqual(searchCondition.WhereClause, "IsDel = @IsDel");
             var dict = new Dictionary<string, object>
             {
                 { "@IsDel", searchModel.IsDel }
             };
 
-            DictionaryAssert.AreEqual(param, dict);
+           CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
         }
 
         [TestMethod]
@@ -71,9 +52,30 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             var expression = default(Expression<Func<Input_eq2, bool>>)
              .WhereIf(true, a => a.Id == searchModel.Id)
              ;
-            (string clause, Dictionary<string, object> param) = expression.ToWhereClause();
+            var searchCondition = expression.ToWhereClause();
 
         }
 
+    }
+
+    public class Input_eq
+    {
+        [SearchType(SearchType.eq)] public bool IsDel { get; set; }
+    }
+
+    public class Input_eq2
+    {
+        [SearchType(SearchType.eq)] public long? Id { get; set; }
+    }
+
+
+    public class Model_eq
+    {
+        public bool IsDel { get; set; }
+    }
+
+    public class Model_eq2
+    {
+        public int Id { get; set; }
     }
 }
