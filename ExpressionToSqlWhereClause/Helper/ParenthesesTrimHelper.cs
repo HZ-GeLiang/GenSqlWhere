@@ -160,73 +160,77 @@ namespace ExpressionToSqlWhereClause.Helper
                 return result;
             }
 
-            List<Position> positions = GetPositions(result, out var _);
+            var positions = GetPositions(result, out var _);
             if (positions.Count == 0)
             {
                 return result;
             }
+
             if (IsParenthesesWarp(positions.First(), result)) // () 包裹的
             {
                 result = TrimParenthesesWarp(result);
-                return result;
+
+                //场景: case_复杂版的表达式解析4 的 todo: 这里还存在可优化的场景: 顶层条件全为 or ,且or的数量大于2个时, 还能有 () 要去掉
+                return result; //这个 return 是不包含 场景: case_复杂版的表达式解析4  的处理
+
+                // 因为  被改动了, 所以 需要重新算  
+                //positions = GetPositions(result, out var _); //因为上面行的 return ,所以,该行释了,解决编译器的提示
             }
-            else
+
+            #region 某种if条件
+            //单元测试:  case_复杂版的表达式解析3
+            //提取每个有()包裹的顶层条件,然后解析每个顶层是否可以继续拆分出顶层, 如果可以, 去掉当前顶层的()包裹
+
+            List<Position> positionsLv0 = GetPositionsLv0(positions);
+            if (positionsLv0.Count > 1)
             {
-                //单元测试:  case_复杂版的表达式解析3
-
-                //提取每个有()包裹的顶层条件,然后解析每个顶层是否可以继续拆分出顶层, 如果可以, 去掉当前顶层的()包裹
-
-                List<Position> positionsLv0 = GetPositionsLv0(positions);
-                if (positionsLv0.Count > 1)
+                var isAllAnd = true;
+                for (int i = 0; i < positionsLv0.Count - 1; i++)
                 {
-                    var isAllAnd = true;
+                    var position = positionsLv0[i];
+                    var nextPosition = positionsLv0[i + 1];
+                    var condition = position.GetIntervalContent(nextPosition);
+                    if (condition != SqlKeys.And)
+                    {
+                        isAllAnd = false;
+                        break;
+                    }
+                }
+                if (isAllAnd)
+                {
+                    var haveTrimParenthesesWarp = false;
                     for (int i = 0; i < positionsLv0.Count - 1; i++)
                     {
                         var position = positionsLv0[i];
-                        var nextPosition = positionsLv0[i + 1];
-                        var condition = position.GetIntervalContent(nextPosition);
-                        if (condition != SqlKeys.And)
-                        {
-                            isAllAnd = false;
-                            break;
-                        }
-                    }
-                    if (isAllAnd)
-                    {
-                        var haveTrimParenthesesWarp = false;
-                        for (int i = 0; i < positionsLv0.Count - 1; i++)
-                        {
-                            var position = positionsLv0[i];
-                            var content = position.GetContent();
+                        var content = position.GetContent();
 
-                            if (IsParenthesesWarp(content))
+                        if (IsParenthesesWarp(content))
+                        {
+                            var compositeConditions = positions.Where(a => a.Left > position.Left && a.Right < position.Right); //有()包裹的算 组合条件
+
+                            var compositeConditionCount = 1;
+                            foreach (var compositeCondition in compositeConditions)
                             {
-                                var compositeConditions = positions.Where(a => a.Left > position.Left && a.Right < position.Right); //有()包裹的算 组合条件
-
-                                var compositeConditionCount = 1;
-                                foreach (var compositeCondition in compositeConditions)
-                                {
-                                    content = content.Replace(compositeCondition.GetContent(), $@"Condition{compositeConditionCount}");
-                                }
-                                if (content.Contains(SqlKeys.Or) == false)
-                                {
-                                    var oldStr = position.GetContent();
-                                    var newStr = TrimParenthesesWarp(oldStr);
-                                    result = result.Replace(oldStr, newStr);
-                                    haveTrimParenthesesWarp = true; ;
-                                }
+                                content = content.Replace(compositeCondition.GetContent(), $@"Condition{compositeConditionCount}");
+                            }
+                            if (content.Contains(SqlKeys.Or) == false)
+                            {
+                                var oldStr = position.GetContent();
+                                var newStr = TrimParenthesesWarp(oldStr);
+                                result = result.Replace(oldStr, newStr);
+                                haveTrimParenthesesWarp = true; ;
                             }
                         }
-                        if (haveTrimParenthesesWarp)
-                        {
-                            return result;
-                        }
+                    }
+                    if (haveTrimParenthesesWarp)
+                    {
+                        return result;
                     }
                 }
-
-                return result; //不在单元测试中, 应该是太复杂了, 不知道怎么处理  
             }
 
+            #endregion
+            return result; //不在单元测试中, 应该是太复杂了, 不知道怎么处理  
         }
 
         private static List<Position> GetPositionsLv0(List<Position> positions)
