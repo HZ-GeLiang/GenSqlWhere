@@ -464,12 +464,13 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             filter.Name = "Gary";
 
             Expression<Func<User, bool>> expression =
-                u => u.Age > 10 &&
-                 (u.Sex && u.Age > 18 || u.Sex == false && u.Age > filter.Internal.Age)
-                  && (u.Name == filter.Name || u.Name.Contains(filter.Name.Substring(1, 2)));
+                u => u.Age > 10
+                      && (u.Sex && u.Age > 18 || u.Sex == false && u.Age > filter.Internal.Age)
+                      && (u.Name == filter.Name || u.Name.Contains(filter.Name.Substring(1, 2)))
+                      ;
             var where = expression.ToWhereClause();
-            //todo:这个还能优化, 实现太复杂了, 放弃
-            Assert.AreEqual("(Age > @Age And ((Sex = @Sex And Age > @Age1) Or (Sex = @Sex1 And Age > @Age2))) And (Name = @Name Or Name Like @Name1)", where.WhereClause);
+   
+            Assert.AreEqual("Age > @Age And ((Sex = @Sex And Age > @Age1) Or (Sex = @Sex1 And Age > @Age2)) And (Name = @Name Or Name Like @Name1)", where.WhereClause);
         }
 
 

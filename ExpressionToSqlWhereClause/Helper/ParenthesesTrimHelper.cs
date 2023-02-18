@@ -94,11 +94,11 @@ namespace ExpressionToSqlWhereClause.Helper
         /// <returns></returns>
         private static bool ContainsAndWithOr(string str)
         {
-            if (str.Contains(SqlKeys.and))
+            if (str.Contains(SqlKeys.And))
             {
                 return true;
             }
-            if (str.Contains(SqlKeys.or))
+            if (str.Contains(SqlKeys.Or))
             {
                 return true;
             }
@@ -126,7 +126,7 @@ namespace ExpressionToSqlWhereClause.Helper
         /// <returns>当 str 只包含 and 且没有 in / 函数 时  返回true</returns>
         public static bool CanTrimAll(string str)
         {
-            if (str.Contains(SqlKeys.or)) //Or语句
+            if (str.Contains(SqlKeys.Or)) //Or语句
             {
                 return false;
             }
@@ -160,7 +160,7 @@ namespace ExpressionToSqlWhereClause.Helper
                 return result;
             }
 
-            var positions = GetPositions(result, out var _);
+            List<Position> positions = GetPositions(result, out var _);
             if (positions.Count == 0)
             {
                 return result;
@@ -172,56 +172,78 @@ namespace ExpressionToSqlWhereClause.Helper
             }
             else
             {
-                #region 判断 顶层的个个条件是不是都是 and 组成, 如果是, 处理一下, 参见 case_复杂版的表达式解析3
-                //实现有问题, 不处理了.
-                //List<Position> positionslv1 = new List<Position>() {
-                //    positions[0]
-                //};
+                //单元测试:  case_复杂版的表达式解析3
 
-                //for (int i = 1; i < positions.Count; i++)
-                //{
-                //    if (positions[i].Left > positionslv1.Last().Right)
-                //    {
-                //        positionslv1.Add(positions[i]);
-                //    }
-                //}
+                //提取每个有()包裹的顶层条件,然后解析每个顶层是否可以继续拆分出顶层, 如果可以, 去掉当前顶层的()包裹
 
-                //if (positionslv1.Count <= 1)
-                //{
-                //    return result;
-                //}
+                List<Position> positionsLv0 = GetPositionsLv0(positions);
+                if (positionsLv0.Count > 1)
+                {
+                    var isAllAnd = true;
+                    for (int i = 0; i < positionsLv0.Count - 1; i++)
+                    {
+                        var position = positionsLv0[i];
+                        var nextPosition = positionsLv0[i + 1];
+                        var condition = position.GetIntervalContent(nextPosition);
+                        if (condition != SqlKeys.And)
+                        {
+                            isAllAnd = false;
+                            break;
+                        }
+                    }
+                    if (isAllAnd)
+                    {
+                        var haveTrimParenthesesWarp = false;
+                        for (int i = 0; i < positionsLv0.Count - 1; i++)
+                        {
+                            var position = positionsLv0[i];
+                            var content = position.GetContent();
 
-                //var relationCondition = result;
-                //for (int i = positionslv1.Count - 1; i >= 0; i--)
-                //{
-                //    relationCondition = relationCondition.Remove(positionslv1[i].Left, positionslv1[i].Right - positionslv1[i].Left + 1);
-                //}
-                //if (relationCondition.Contains(SqlKeys.or) == false)//positionslv1 之间都是 and 关联的
-                //{
-                //    StringBuilder sbResult = new StringBuilder();
-                //    for (int i = 0; i < positionslv1.Count; i++)
-                //    {
-                //        if (IsParenthesesWarp(positionslv1[i].GetContent))
-                //        {
-                //            sbResult.Append(TrimParenthesesWarp(positionslv1[i].GetContent));
-                //        }
-                //        else
-                //        {
-                //            sbResult.Append(positionslv1[i].GetContent);
-                //        }
-                //        if (i != positionslv1.Count - 1)
-                //        {
-                //            sbResult.Append(SqlKeys.and);
-                //        }
-                //    }
+                            if (IsParenthesesWarp(content))
+                            {
+                                var compositeConditions = positions.Where(a => a.Left > position.Left && a.Right < position.Right); //有()包裹的算 组合条件
 
-                //    result = sbResult.ToString();
-                //    return result;
-                //}
-                #endregion
+                                var compositeConditionCount = 1;
+                                foreach (var compositeCondition in compositeConditions)
+                                {
+                                    content = content.Replace(compositeCondition.GetContent(), $@"Condition{compositeConditionCount}");
+                                }
+                                if (content.Contains(SqlKeys.Or) == false)
+                                {
+                                    var oldStr = position.GetContent();
+                                    var newStr = TrimParenthesesWarp(oldStr);
+                                    result = result.Replace(oldStr, newStr);
+                                    haveTrimParenthesesWarp = true; ;
+                                }
+                            }
+                        }
+                        if (haveTrimParenthesesWarp)
+                        {
+                            return result;
+                        }
+                    }
+                }
 
                 return result; //不在单元测试中, 应该是太复杂了, 不知道怎么处理  
             }
+
+        }
+
+        private static List<Position> GetPositionsLv0(List<Position> positions)
+        {
+            List<Position> positionslv0 = new List<Position>() {
+                positions[0]
+            };
+
+            for (int i = 1; i < positions.Count; i++)
+            {
+                if (positions[i].Left > positionslv0.Last().Right)
+                {
+                    positionslv0.Add(positions[i]);
+                }
+            }
+
+            return positionslv0;
 
         }
 
@@ -260,12 +282,7 @@ namespace ExpressionToSqlWhereClause.Helper
 
                 parts.Add(part);
 
-#if DEBUG
-                var leftContent = positions[i].GetContent;//方便调试的时候查看
-
-#endif
                 int partLinkLeft = positions[i].Right + 1;
-
                 var nextPosition = positions.FirstOrDefault(a => a.Left > partLinkLeft);
 
                 /*
@@ -282,10 +299,6 @@ namespace ExpressionToSqlWhereClause.Helper
 
                 if (nextPosition.HasValue())//最后一个是没有的.所以有可能是 default
                 {
-#if DEBUG
-                    var rightContent = nextPosition.GetContent; //方便调试的时候查看
-#endif
-
                     int partLinkCount = nextPosition.Left - partLinkLeft;
                     string partLink = where.Substring(partLinkLeft, partLinkCount);
                     partLinks.Add(partLink);
@@ -309,7 +322,7 @@ namespace ExpressionToSqlWhereClause.Helper
 
             var result = sb.ToString();
 
-            if (result.Contains(SqlKeys.or) == false)
+            if (result.Contains(SqlKeys.Or) == false)//不包含or
             {
                 result = result.Replace(sc, "");
                 return result;
@@ -318,7 +331,7 @@ namespace ExpressionToSqlWhereClause.Helper
             {
                 sb.Clear();
                 ParseWhere(positions, where, out var parts, out var partLinks);//  //获得各个部分的
-                var partLinksContainsOr = partLinks.Contains(SqlKeys.or);
+                var partLinksContainsOr = partLinks.Contains(SqlKeys.Or);
                 for (int i = 0; i < parts.Count; i++)
                 {
                     if (i > 0)
@@ -327,7 +340,7 @@ namespace ExpressionToSqlWhereClause.Helper
                     }
                     var trimResult = ParseTrimAllCore(parts[i]);
 
-                    if (partLinksContainsOr || trimResult.Contains(SqlKeys.or))
+                    if (partLinksContainsOr || trimResult.Contains(SqlKeys.Or))
                     {
                         if (partLinksContainsOr == true && (ContainsAndWithOr(trimResult) == false))
                         {
@@ -422,11 +435,9 @@ namespace ExpressionToSqlWhereClause.Helper
                         }
 
                         //Console.WriteLine($"Left: {index}, Right: {i}");
-#if DEBUG
+
                         list.Add(new Position(index, i, str));
-#else
-                        list.Add(new Position(index, i));
-#endif
+
                     }
                     else
                     {
@@ -462,7 +473,8 @@ namespace ExpressionToSqlWhereClause.Helper
             public int Right { get; set; }
 
 #if DEBUG
-            //DEBUG是为了方便调试用的
+            public string Content => GetContent();//调试查询内容
+#endif
 
             public Position(int left, int right, string str)
             {
@@ -471,21 +483,36 @@ namespace ExpressionToSqlWhereClause.Helper
                 this.Str = str;
             }
 
-            public string GetContent => this.Str.Substring(this.Left, this.Right - this.Left + 1);
-
-
             public string Str { get; set; }
 
-#else
-            public Position(int left, int right)
+            public string GetContent()
             {
-                this.Left = left;
-                this.Right = right;
+                var str = this.Str.Substring(this.Left, this.Right - this.Left + 1);
+                return str;
             }
-#endif
+
             public bool HasValue()
             {
                 return this.Left != this.Right;
+            }
+
+            /// <summary>
+            /// 获得间隔内容( 当前.Right 到 下一个.Left 之间的内容)
+            /// </summary>
+            /// <param name="next"></param>
+            /// <returns></returns>
+
+            public string GetIntervalContent(Position next)
+            {
+                if (this.Str.Length - 1 > next.Left)
+                {
+                    var str = this.Str.Substring(this.Right + 1, next.Left - this.Right - 1);
+                    return str;
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
     }

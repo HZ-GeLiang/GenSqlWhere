@@ -4,8 +4,8 @@
     internal class SqlKeys
     {
         //关系
-        public const string and = " And ";
-        public const string or = " Or ";
+        public const string And = " And ";
+        public const string Or = " Or ";
 
         //比较
         public const string Equal = "=";

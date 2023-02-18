@@ -137,8 +137,12 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
             return searchCondition;
         }
 
-        
 
+        /// <summary>
+        /// 去掉()
+        /// </summary>
+        /// <param name="WhereClause"></param>
+        /// <returns></returns>
         private static string TrimParentheses(string WhereClause)
         {
             string str;
@@ -154,6 +158,11 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
             return str;
         }
 
+        /// <summary>
+        /// 获得参数
+        /// </summary>
+        /// <param name="Adhesive"></param>
+        /// <returns></returns>
         private static Dictionary<string, object> GetParameters(WhereClauseAdhesive Adhesive)
         {
             var parameters = new Dictionary<string, object>(0);
