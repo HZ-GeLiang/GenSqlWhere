@@ -94,7 +94,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 { "@Url", $@"%{searchModel.Url}%" },
             };
 
-           CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
+            CollectionAssert.AreEqual(searchCondition.Parameters, dict);
         }
 
         [TestMethod]
@@ -116,11 +116,21 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
 
             Expression<Func<Model_People, bool>> exp = whereLambda.ToExpression();
-            var searchCondition = exp.ToWhereClause();
 
-            Assert.AreEqual(searchCondition.WhereClause, "IsDel = @IsDel And Url = @Url");
-            searchCondition.WhereClause = WhereClauseHelper.ParamNameToNumber(searchCondition.WhereClause);
-            Assert.AreEqual(searchCondition.WhereClause, "IsDel = @0 And Url = @1");
+            {
+                //调用方式1
+                var searchCondition = exp.ToNumberParamNameWhereClause();
+                Assert.AreEqual(searchCondition.WhereClause, "IsDel = @0 And Url = @1");
+            }
+
+            {
+                //调用方式2
+                var searchCondition = exp.ToWhereClause();
+
+                Assert.AreEqual(searchCondition.WhereClause, "IsDel = @IsDel And Url = @Url");
+                var str = WhereClauseHelper.ParamNameToNumber(searchCondition.WhereClause);
+                Assert.AreEqual(str, "IsDel = @0 And Url = @1");
+            }
 
         }
 

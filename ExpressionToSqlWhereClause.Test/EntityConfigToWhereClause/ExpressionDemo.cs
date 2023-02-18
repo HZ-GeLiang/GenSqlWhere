@@ -25,25 +25,60 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 
             var expression = default(Expression<Func<ShopInfoInput, bool>>)
                .WhereIf(!string.IsNullOrEmpty(input.Production), a => a.Production.Contains(input.Production))
-               .WhereIf(input.Unit.HasValue, a => a.Unit == input.Unit)
-               //    .WhereIf(input.Unit.HasValue, a => a.Unit == input.Unit.Value)//todo:支持Nullbale<>
-               .WhereIf(!string.IsNullOrEmpty(input.Unit_Name), a => a.Unit_Name.Contains(input.Unit_Name))
-               .WhereIf(!string.IsNullOrEmpty(input.Remarks), a => a.Remarks.Contains(input.Remarks))
-               .WhereIf(input.CreateUserID.HasValue, a => a.CreateUserID == input.CreateUserID)
-               .WhereIf(input.DateStart.HasValue, a => a.Date >= input.DateStart)
-               .WhereIf(input.DateEnd.HasValue, a => a.Date <= input.DateEnd)
             ;
 
-
-            //这个更加直观
             var searchCondition = expression.ToWhereClause();
-            var sql2 = WhereClauseHelper.MergeParametersIntoSql(searchCondition);
-            Assert.AreEqual(sql2, "Production Like '%aa%'");
-
-            var sql3 = WhereClauseHelper.ToFormattableString(searchCondition);
-            Assert.AreEqual(sql3.whereClause, "Production Like {0}");
+            WhereClauseHelper.MergeParametersIntoSql(searchCondition);
+            Assert.AreEqual(searchCondition.WhereClause, "Production Like '%aa%'");
 
 
+
+
+        }
+
+        [TestMethod]
+        public void 获得sql_不使用sql参数_使用EF的直接查询()
+        {
+            var input = new ShopInfoInput()
+            {
+                Production = "aa",
+            };
+
+            var expression = default(Expression<Func<ShopInfoInput, bool>>)
+               .WhereIf(!string.IsNullOrEmpty(input.Production), a => a.Production.Contains(input.Production))
+            ;
+
+            var searchCondition = expression.ToWhereClause();
+            WhereClauseHelper.ToFormattableString(searchCondition);
+            Assert.AreEqual(searchCondition.WhereClause, "Production Like {0}");
+
+
+            /*一个示例
+
+
+                var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
+                    .WhereIf(true, a => a.Id == 1)
+                    .WhereIf(true, a => a.Name == "abc")
+                    .WhereIf(true, a => a.CreateAt > new DateTime(2023, 1, 1))
+                    .WhereIf(true, a => a.Flag.Value == Guid.Parse("DEA5B56C-D1B1-4513-83E7-B58B9D3EBB81"))
+                    ;
+
+                var searchCondition = expression.ToFormattableWhereClause();
+
+                string sql = $@"select * from ExpressionSqlTest where {searchCondition.WhereClause} ";
+
+                //var formattableStr = FormattableStringFactory.Create(sql, searchCondition.FormattableParameters);
+                var formattableStr = searchCondition.GetFormattableString(sql);
+
+                using var db = new TestContext();
+
+                var list = db.ExpressionSqlTests.FromSqlInterpolated(formattableStr);
+                foreach (var item in list)
+                {
+                    Console.WriteLine(item);
+                }
+
+            */
         }
 
         [TestMethod]
