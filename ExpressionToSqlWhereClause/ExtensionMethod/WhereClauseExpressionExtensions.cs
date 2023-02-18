@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Drawing;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 
@@ -28,7 +29,7 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
         {
             if (expression == null)
             {
-                return SearchCondition.CreateDefault(); 
+                return new SearchCondition();
             }
 
             #region 处理 alias
@@ -106,14 +107,37 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
 
             #endregion
 
-            var result = new SearchCondition();
-            result.WhereClauseRaw = parseResult.WhereClause;
-            result.WhereClause = TrimParentheses(parseResult.WhereClause);
-            result.Parameters = GetParameters(parseResult.Adhesive);
+            var result = new SearchCondition(
+                  parseResult.WhereClause,
+                  TrimParentheses(parseResult.WhereClause),
+                  GetParameters(parseResult.Adhesive)
+                );
 
             return result;
         }
 
+        public static SearchCondition ToNumberParamNameWhereClause<T>(
+           this Expression<Func<T, bool>> expression,
+           Dictionary<string, string> alias = null,
+           ISqlAdapter sqlAdapter = default) where T : class
+        {
+            var searchCondition = expression.ToWhereClause();
+            WhereClauseHelper.ParamNameToNumber(searchCondition);//使用 FormattableParameters 有值
+            return searchCondition;
+        }
+
+
+        public static SearchCondition ToFormattableWhereClause<T>(
+            this Expression<Func<T, bool>> expression,
+            Dictionary<string, string> alias = null,
+            ISqlAdapter sqlAdapter = default) where T : class
+        {
+            var searchCondition = expression.ToWhereClause();
+            WhereClauseHelper.ToFormattableString(searchCondition);//使用 FormattableParameters 有值
+            return searchCondition;
+        }
+
+        
 
         private static string TrimParentheses(string WhereClause)
         {
@@ -137,7 +161,6 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
             {
                 parameters.Add(key, Adhesive.GetParameter(key).Value);
             }
-
             return parameters;
         }
 
@@ -145,23 +168,59 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
 
     public class SearchCondition
     {
-        public string WhereClause { get; set; }
-        public Dictionary<string, object> Parameters { get; set; }
+        public SearchCondition()
+        {
+            this.WhereClauseRaw = string.Empty;
+            this.WhereClause = string.Empty;
+            this.Parameters = new Dictionary<string, object>();
+            this.FormattableParameters = null;
+        }
+
+        public SearchCondition(string whereClauseRaw, string whereClause, Dictionary<string, object> parameters)
+        {
+            this.WhereClauseRaw = whereClauseRaw;
+            this.WhereClause = whereClause;
+            this.Parameters = parameters;
+        }
+
+        /// <summary>
+        /// where子句
+        /// </summary>
+        public string WhereClause { get; private set; }
+
+
+        /// <summary>
+        /// 查询参数
+        /// </summary>
+        public Dictionary<string, object> Parameters { get; private set; }
+
+        /// <summary>
+        /// FormattableStringd的
+        /// </summary>
+        public object[] FormattableParameters { get; private set; }
 
         /// <summary>
         /// 未加工处理的 WhereClause
         /// </summary>
-        public string WhereClauseRaw { get; set; }
+        public string WhereClauseRaw { get; private set; }
 
-        public static SearchCondition CreateDefault()
+        public void SetWhereClause(string whereClause)
         {
-            return new SearchCondition
-            {
-                WhereClauseRaw = string.Empty,
-                WhereClause = string.Empty,
-                Parameters = new Dictionary<string, object>(),
-            };
+            this.WhereClause = whereClause;
         }
+
+        public void SetFormattableStringParameters(string whereClause, object[] fmtParameters)
+        {
+            this.WhereClause = whereClause;
+            this.FormattableParameters = fmtParameters;
+        }
+
+        public FormattableString GetFormattableString(string querySql)
+        {
+            var formattableStr = FormattableStringFactory.Create(querySql, this.FormattableParameters);
+            return formattableStr;
+        }
+
 
     }
 }

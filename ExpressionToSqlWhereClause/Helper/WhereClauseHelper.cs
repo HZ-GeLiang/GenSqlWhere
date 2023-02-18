@@ -12,7 +12,8 @@ namespace ExpressionToSqlWhereClause.Helper
         /// <inheritdoc cref="ParamNameToNumber(string)"/>
         public static void ParamNameToNumber(SearchCondition searchCondition)
         {
-            searchCondition.WhereClause = ParamNameToNumber(searchCondition.WhereClause);
+            var newWhereClause = ParamNameToNumber(searchCondition.WhereClause);
+            searchCondition.SetWhereClause(newWhereClause);
         }
 
         /// <summary>
@@ -71,10 +72,18 @@ namespace ExpressionToSqlWhereClause.Helper
         }
 
         /// <inheritdoc cref="MergeParametersIntoSql(string, Dictionary{string, object}, Dictionary{string, string})"/>
-        public static string MergeParametersIntoSql(SearchCondition searchCondition)
+        public static void MergeParametersIntoSql(SearchCondition searchCondition)
         {
             Dictionary<string, string> formatDateTime = GetDefaultFormatDateTime(searchCondition.Parameters);
-            return MergeParametersIntoSql(searchCondition.WhereClause, searchCondition.Parameters, formatDateTime);
+            var newWhereClause = MergeParametersIntoSql(searchCondition.WhereClause, searchCondition.Parameters, formatDateTime);
+            searchCondition.SetWhereClause(newWhereClause);
+        }
+
+        /// <inheritdoc cref="MergeParametersIntoSql(string, Dictionary{string, object}, Dictionary{string, string})"/>
+        public static void MergeParametersIntoSql(SearchCondition searchCondition, Dictionary<string, string> formatDateTime)
+        {
+            var newWhereClause = MergeParametersIntoSql(searchCondition.WhereClause, searchCondition.Parameters, formatDateTime);
+            searchCondition.SetWhereClause(newWhereClause);
         }
 
         /// <inheritdoc cref="MergeParametersIntoSql(string, Dictionary{string, object}, Dictionary{string, string})"/>
@@ -83,12 +92,6 @@ namespace ExpressionToSqlWhereClause.Helper
             Dictionary<string, string> formatDateTime = GetDefaultFormatDateTime(parameters);
             var whreCaluse = MergeParametersIntoSql(whereClause, parameters, formatDateTime);
             return whreCaluse;
-        }
-
-        /// <inheritdoc cref="MergeParametersIntoSql(string, Dictionary{string, object}, Dictionary{string, string})"/>
-        public static string MergeParametersIntoSql(SearchCondition searchCondition, Dictionary<string, string> formatDateTime)
-        {
-            return MergeParametersIntoSql(searchCondition.WhereClause, searchCondition.Parameters, formatDateTime);
         }
 
         /// <summary>
@@ -162,15 +165,11 @@ namespace ExpressionToSqlWhereClause.Helper
         }
 
 
-        public static (string whereClause, object[] parameters) ToWhereClause<T>(
-              Expression<Func<T, bool>> expression) where T : class
-        {
-            return ToFormattableString(WhereClauseExpressionExtensions.ToWhereClause<T>(expression));
-        }
 
-        public static (string whereClause, object[] parameters) ToFormattableString(SearchCondition searchCondition)
+        public static void ToFormattableString(SearchCondition searchCondition)
         {
-            return ToFormattableString(searchCondition.WhereClause, searchCondition.Parameters);
+            var result = ToFormattableString(searchCondition.WhereClause, searchCondition.Parameters);
+            searchCondition.SetFormattableStringParameters(result.whereClause, result.parameters);
         }
 
         public static (string whereClause, object[] parameters) ToFormattableString(string whereClause, Dictionary<string, object> parameters)
@@ -213,7 +212,8 @@ namespace ExpressionToSqlWhereClause.Helper
                 //}
             }
 
-            return (whereClause, parameters?.Values.ToArray() ?? new object[] { });
+            var result = (whereClause, parameters?.Values.ToArray() ?? new object[] { });
+            return result;
         }
 
 
