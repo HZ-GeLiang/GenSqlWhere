@@ -382,12 +382,12 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 var needParseRight = false;
                 if (binaryExpression.NodeType == ExpressionType.OrElse) // {((a.Id == 1) OrElse (a.Id == 2))}
                 {
-                    sqlBuilder.Append(SqlKeys.or);
+                    sqlBuilder.Append(SqlKeys.Or);
                     needParseRight = true;
                 }
                 else if (binaryExpression.NodeType == ExpressionType.AndAlso) //{(((a.Id == 1) OrElse (a.Id == 2)) AndAlso a.IsDel == true )}
                 {
-                    sqlBuilder.Append(SqlKeys.and);
+                    sqlBuilder.Append(SqlKeys.And);
                     needParseRight = true;
                 }
 
