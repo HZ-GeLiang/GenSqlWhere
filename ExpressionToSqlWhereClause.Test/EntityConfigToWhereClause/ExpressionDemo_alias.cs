@@ -19,16 +19,17 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             {
                 { "Index", "[Index]" }
             };
-            (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause(alias: dict);
+            
+          var searchCondition = expOr.ToWhereClause(alias: dict);
 
-            Assert.AreEqual(WhereClause, "[Index] = @Index Or [Index] = @Index1");
+            Assert.AreEqual(searchCondition.WhereClause, "[Index] = @Index Or [Index] = @Index1");
 
             var para = new Dictionary<string, object>()
             {
                 {"@Index", 1},
                 {"@Index1", 2},
             };
-            CollectionAssert.AreEqual(Parameters, para);
+            CollectionAssert.AreEqual(searchCondition.Parameters, para);
         }
 
         [TestMethod]
@@ -40,16 +41,16 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             {
                 { "Id", "RouteId" }
             };
-            (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause(alias: dict);
+          var searchCondition = expOr.ToWhereClause(alias: dict);
 
-            Assert.AreEqual(WhereClause, "RouteId = @Id Or RouteId = @Id1");
+            Assert.AreEqual(searchCondition.WhereClause, "RouteId = @Id Or RouteId = @Id1");
 
             var para = new Dictionary<string, object>()
             {
                 {"@Id", 1},
                 {"@Id1", 2},
             };
-            CollectionAssert.AreEqual(Parameters, para);
+            CollectionAssert.AreEqual(searchCondition.Parameters, para);
         }
 
         [TestMethod]
@@ -63,9 +64,9 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             {
                 { "Id", "RouteId" }
             };
-            (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause(alias: dict);
+          var searchCondition = expOr.ToWhereClause(alias: dict);
 
-            Assert.AreEqual(WhereClause, "(RouteId = @Id Or RouteId = @Id1) And IsDel = @IsDel");
+            Assert.AreEqual(searchCondition.WhereClause, "(RouteId = @Id Or RouteId = @Id1) And IsDel = @IsDel");
        
             var para = new Dictionary<string, object>()
             {
@@ -73,7 +74,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
                 {"@Id1", 2},
                 {"@IsDel", true},
             };
-            CollectionAssert.AreEqual(Parameters, para);
+            CollectionAssert.AreEqual(searchCondition.Parameters, para);
         }
 
         [TestMethod]
@@ -88,9 +89,9 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
                 { "Id", "RouteId" },
                 { "IsDel", "b.IsDel" }
             };
-            (string WhereClause, Dictionary<string, object> Parameters) = expOr.ToWhereClause(alias: dict);
+          var searchCondition = expOr.ToWhereClause(alias: dict);
 
-            Assert.AreEqual(WhereClause, "(RouteId = @Id Or RouteId = @Id1) And b.IsDel = @IsDel");
+            Assert.AreEqual(searchCondition.WhereClause, "(RouteId = @Id Or RouteId = @Id1) And b.IsDel = @IsDel");
 
             var para = new Dictionary<string, object>()
             {
@@ -98,7 +99,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
                 {"@Id1", 2},
                 {"@IsDel", true},
             };
-            CollectionAssert.AreEqual(Parameters, para);
+            CollectionAssert.AreEqual(searchCondition.Parameters, para);
         }
     }
 }

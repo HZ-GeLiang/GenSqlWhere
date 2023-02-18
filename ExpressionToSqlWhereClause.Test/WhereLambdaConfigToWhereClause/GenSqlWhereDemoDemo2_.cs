@@ -45,9 +45,9 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
             Expression<Func<Model_People, bool>> exp = whereLambda.ToExpression();
 
-            (string sql, Dictionary<string, object> param) = exp.ToWhereClause();
+           var searchCondition = exp.ToWhereClause();
 
-            Assert.AreEqual(sql, "Id In (@Id) And Sex In (@Sex) And IsDel = @IsDel And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
+          Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id) And Sex In (@Sex) And IsDel = @IsDel And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
         }
 
         [TestMethod]
@@ -59,14 +59,14 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
             var whereLambda = searchModel.CrateWhereLambda();
             var expression = whereLambda.ToExpression();
-            (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
-            Assert.AreEqual(sql, "Url Like @Url");
+           var searchCondition = expression.ToWhereClause();
+          Assert.AreEqual(searchCondition.WhereClause, "Url Like @Url");
             var dict = new Dictionary<string, object>
             {
                 { "@Url", "%123%" }
             };
 
-            DictionaryAssert.AreEqual(param, dict);
+    CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
         }
 
         [TestMethod]
@@ -87,15 +87,15 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
 
             var expression = whereLambda.ToExpression();
-            (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
+           var searchCondition = expression.ToWhereClause();
 
-            Assert.AreEqual(sql, "Url Like @Url");
+          Assert.AreEqual(searchCondition.WhereClause, "Url Like @Url");
             var dict = new Dictionary<string, object>
             {
                 { "@Url", "%123%" }
             };
 
-            DictionaryAssert.AreEqual(param, dict);
+    CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
         }
 
     }

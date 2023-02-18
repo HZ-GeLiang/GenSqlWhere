@@ -7,12 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 {
-    public class User_SqlFunc_Entity
-    {
-        public DateTime CreateAt { get; set; }
-        public DateTime DelAt { get; set; }
-        public int Month { get; set; }
-    }
+    
 
     [TestClass]
     public class ExpressionDemo_sqlfunc_Month
@@ -27,13 +22,13 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
         public void SqlFunc_Month_eq()
         {
             Expression<Func<User_SqlFunc_Entity, bool>> expression = u => DbFunctions.Month(u.CreateAt) == 5;
-            (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
+            var searchCondition = expression.ToWhereClause();
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>
             {
                 { "@Month", 5 }
             };
-            Assert.AreEqual("Month(CreateAt) = @Month", whereClause);
-            DictionaryAssert.AreEqual(expectedParameters, parameters);
+            Assert.AreEqual("Month(CreateAt) = @Month", searchCondition.WhereClause);
+            DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
 
@@ -43,17 +38,24 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             //EntityToSqlWherecClauseConfig 的 in 
             Expression<Func<User_SqlFunc_Entity, bool>> expression =
                 u => DbFunctions.MonthIn(u.CreateAt) == new List<int> { 5, 6 };//string 需要自己转成 List<int> , 这里略,直接写死
-            (string whereClause, Dictionary<string, object> parameters) = expression.ToWhereClause();
+            var searchCondition = expression.ToWhereClause();
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>
             {
                 { "@MonthIn", "5,6" }
             };
-            Assert.AreEqual("Month(CreateAt) In (@MonthIn)", whereClause);
+            Assert.AreEqual("Month(CreateAt) In (@MonthIn)", searchCondition.WhereClause);
 
-            DictionaryAssert.AreEqual(expectedParameters, parameters);
+            DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
 
         }
 
+    }
+
+    public class User_SqlFunc_Entity
+    {
+        public DateTime CreateAt { get; set; }
+        public DateTime DelAt { get; set; }
+        public int Month { get; set; }
     }
 
 }

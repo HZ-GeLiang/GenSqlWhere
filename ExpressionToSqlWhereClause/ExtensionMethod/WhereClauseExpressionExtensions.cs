@@ -21,14 +21,14 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
         /// <param name="alias">别名</param>
         /// <param name="sqlAdapter">适配器</param>
         /// <returns></returns>
-        public static (string WhereClause, Dictionary<string, object> Parameters) ToWhereClause<T>(
+        public static SearchCondition ToWhereClause<T>(
             this Expression<Func<T, bool>> expression,
             Dictionary<string, string> alias = null,
             ISqlAdapter sqlAdapter = default) where T : class
         {
             if (expression == null)
             {
-                return (string.Empty, new Dictionary<string, object>(0));
+                return SearchCondition.CreateDefault(); 
             }
 
             #region 处理 alias
@@ -52,7 +52,7 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
             var body = expression.Body;
             var parseResult = WhereClauseParser.Parse(body, alias, sqlAdapter);
 
-            #region 处理 parseResult.Parameters
+            #region 处理 parseResult 的  Adhesive  和 WhereClause
 
             foreach (var key in parseResult.Adhesive.GetParameterKeys())
             {
@@ -106,28 +106,62 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
 
             #endregion
 
-            #region 处理 parseResult.WhereClause
+            var result = new SearchCondition();
+            result.WhereClauseRaw = parseResult.WhereClause;
+            result.WhereClause = TrimParentheses(parseResult.WhereClause);
+            result.Parameters = GetParameters(parseResult.Adhesive);
 
-            //去掉 关系条件 全为 and 时的() 
+            return result;
+        }
 
-            if (ParenthesesTrimHelper.CanTrimAll(parseResult.WhereClause))
+
+        private static string TrimParentheses(string WhereClause)
+        {
+            string str;
+            if (ParenthesesTrimHelper.CanTrimAll(WhereClause)) //去掉 关系条件 全为 and 时的 () 
             {
-                parseResult.WhereClause = ParenthesesTrimHelper.TrimAll(parseResult.WhereClause);//全是and 的
+                str = ParenthesesTrimHelper.TrimAll(WhereClause);//全是and 的
             }
             else
             {
-                parseResult.WhereClause = ParenthesesTrimHelper.ParseTrimAll(parseResult.WhereClause);
+                str = ParenthesesTrimHelper.ParseTrimAll(WhereClause);
             }
 
-            #endregion
-
-            var parameters = new Dictionary<string, object>(0);
-            foreach (var key in parseResult.Adhesive.GetParameterKeys())
-            {
-                parameters.Add(key, parseResult.Adhesive.GetParameter(key).Value);
-            }
-            var result = (parseResult.WhereClause, parameters);
-            return result;
+            return str;
         }
+
+        private static Dictionary<string, object> GetParameters(WhereClauseAdhesive Adhesive)
+        {
+            var parameters = new Dictionary<string, object>(0);
+            foreach (var key in Adhesive.GetParameterKeys())
+            {
+                parameters.Add(key, Adhesive.GetParameter(key).Value);
+            }
+
+            return parameters;
+        }
+
+    }
+
+    public class SearchCondition
+    {
+        public string WhereClause { get; set; }
+        public Dictionary<string, object> Parameters { get; set; }
+
+        /// <summary>
+        /// 未加工处理的 WhereClause
+        /// </summary>
+        public string WhereClauseRaw { get; set; }
+
+        public static SearchCondition CreateDefault()
+        {
+            return new SearchCondition
+            {
+                WhereClauseRaw = string.Empty,
+                WhereClause = string.Empty,
+                Parameters = new Dictionary<string, object>(),
+            };
+        }
+
     }
 }

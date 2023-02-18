@@ -7,15 +7,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
 
-    public class model_expection1
-    {
-        public int Id { get; set; }
-    }
-    public class model_expection2
-    {
-        public int? Id { get; set; }
-    }
-
     [TestClass]
     public class GenSqlWhereDemo_exception
     {
@@ -37,11 +28,11 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                     nameof(searchModel.Id),
                 };
 
-                (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+                var searchCondition = whereLambda.ToExpression().ToWhereClause();
 
-                Assert.AreEqual(sql, string.Empty);
+                Assert.AreEqual(searchCondition.WhereClause, string.Empty);
 
-                DictionaryAssert.AreEqual(param, new Dictionary<string, object>());
+               CollectionAssert.AreEqual(searchCondition.Parameters,  new Dictionary<string, object>());
             }
 
             {
@@ -58,11 +49,11 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                     nameof(searchModel.Id),
                 };
 
-                (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+                var searchCondition = whereLambda.ToExpression().ToWhereClause();
 
-                Assert.AreEqual(sql, "");
+                Assert.AreEqual(searchCondition.WhereClause, "");
 
-                DictionaryAssert.AreEqual(param, new Dictionary<string, object>());
+               CollectionAssert.AreEqual(searchCondition.Parameters,  new Dictionary<string, object>());
 
             }
 
@@ -80,11 +71,11 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                     nameof(searchModel.Id),
                 };
 
-                (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+                var searchCondition = whereLambda.ToExpression().ToWhereClause();
 
-                Assert.AreEqual(sql, "");
+                Assert.AreEqual(searchCondition.WhereClause, "");
 
-                DictionaryAssert.AreEqual(param, new Dictionary<string, object>());
+               CollectionAssert.AreEqual(searchCondition.Parameters,  new Dictionary<string, object>());
             }
         }
 
@@ -106,11 +97,22 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
 
 
-            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+            var searchCondition = whereLambda.ToExpression().ToWhereClause();
 
-            Assert.AreEqual(sql, string.Empty);
-            DictionaryAssert.AreEqual(param, new Dictionary<string, object>(0));
+            Assert.AreEqual(searchCondition.WhereClause, string.Empty);
+           CollectionAssert.AreEqual(searchCondition.Parameters,  new Dictionary<string, object>(0));
 
         }
     }
+
+
+    public class model_expection1
+    {
+        public int Id { get; set; }
+    }
+    public class model_expection2
+    {
+        public int? Id { get; set; }
+    }
+
 }

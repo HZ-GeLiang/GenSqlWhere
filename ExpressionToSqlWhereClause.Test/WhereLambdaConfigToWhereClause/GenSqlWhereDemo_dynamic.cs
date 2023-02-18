@@ -35,16 +35,16 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 nameof(searchModel.DataCreatedAt),
             };
 
-            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+           var searchCondition = whereLambda.ToExpression().ToWhereClause();
 
-            Assert.AreEqual(sql, "Id <= @Id And DataCreatedAt <= @DataCreatedAt");
+          Assert.AreEqual(searchCondition.WhereClause, "Id <= @Id And DataCreatedAt <= @DataCreatedAt");
             var dict = new Dictionary<string, object>
             {
                 { "@Id", 5 },//取 domain 的类型
                 { "@DataCreatedAt", searchModel.DataCreatedAt }
             };
 
-            DictionaryAssert.AreEqual(param, dict);
+    CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
         }
 
         [TestMethod]
@@ -58,11 +58,11 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
             var whereLambda = searchModel.CrateWhereLambda((model_dynamic _) => { });
 
-            (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+           var searchCondition = whereLambda.ToExpression().ToWhereClause();
 
-            Assert.AreEqual(sql, "");
+          Assert.AreEqual(searchCondition.WhereClause, "");
             var dict = new Dictionary<string, object>();
-            DictionaryAssert.AreEqual(param, dict);
+    CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
         }
 
         [TestMethod]
@@ -82,14 +82,14 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                     nameof(searchModel.IsDel),
                 };
 
-                (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+               var searchCondition = whereLambda.ToExpression().ToWhereClause();
 
-                Assert.AreEqual(sql, "IsDel = @IsDel");
+              Assert.AreEqual(searchCondition.WhereClause, "IsDel = @IsDel");
                 var dict = new Dictionary<string, object>
                 {
                     { "@IsDel", false },
                 };
-                DictionaryAssert.AreEqual(param, dict);
+        CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
             }
             {
                 var searchModel = new
@@ -103,14 +103,14 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                     nameof(searchModel.IsDel),
                 };
 
-                (string sql, Dictionary<string, object> param) = whereLambda.ToExpression().ToWhereClause();
+               var searchCondition = whereLambda.ToExpression().ToWhereClause();
 
-                Assert.AreEqual(sql, "IsDel = @IsDel");
+              Assert.AreEqual(searchCondition.WhereClause, "IsDel = @IsDel");
                 var dict = new Dictionary<string, object>
                 {
                     { "@IsDel", true },
                 };
-                DictionaryAssert.AreEqual(param, dict);
+        CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
             }
         }
     }

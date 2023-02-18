@@ -5,15 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
-    public class model_neq
-    {
-        public bool IsDel { get; set; }
-    }
-
-    public class Input_neq_Attr
-    {
-        [SearchType(SearchType.neq)] public bool IsDel { get; set; }
-    }
+ 
     [TestClass]
     public class GenSqlWhereDemo_neq
     {
@@ -35,15 +27,24 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
 
             var expression = whereLambda.ToExpression();
-            (string sql, Dictionary<string, object> param) = expression.ToWhereClause();
+            var searchCondition = expression.ToWhereClause();
 
-            Assert.AreEqual(sql, "IsDel <> @IsDel");
+            Assert.AreEqual(searchCondition.WhereClause, "IsDel <> @IsDel");
             var dict = new Dictionary<string, object>
             {
                 { "@IsDel", searchModel.IsDel }
             };
 
-            DictionaryAssert.AreEqual(param, dict);
+           CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
         }
+    }
+    public class model_neq
+    {
+        public bool IsDel { get; set; }
+    }
+
+    public class Input_neq_Attr
+    {
+        [SearchType(SearchType.neq)] public bool IsDel { get; set; }
     }
 }

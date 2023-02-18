@@ -5,22 +5,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
-    public class Input_Demo3_不同配置
-    {
-        [SearchType(SearchType.eq)]
-        public int Id { get; set; }
-    }
-    public class Input_Demo3_相同配置
-    {
-        [SearchType(SearchType.eq)]
-        public int Id { get; set; }
-    }
-    public class model_Demo3
-    {
-        [SearchType(SearchType.eq)]
-        public int Id { get; set; }
-    }
-
     [TestClass]
     public class UseDemo3
     {
@@ -41,13 +25,13 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
 
             var exp = whereLambda.ToExpression();
-            (string whereClause, Dictionary<string, object> parameters) = exp.ToWhereClause();
+            var searchCondition = exp.ToWhereClause();
 
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Id", 1);//Month()返回的是int ,所以1 是int类型的才对
             expectedParameters.Add("@Id1", 1);//Month()返回的是int ,所以1 是int类型的才对
-            Assert.AreEqual(whereClause, "Id = @Id And Id <> @Id1");
-            DictionaryAssert.AreEqual(expectedParameters, parameters);
+            Assert.AreEqual(searchCondition.WhereClause, "Id = @Id And Id <> @Id1");
+            DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
         [TestMethod]
@@ -65,12 +49,28 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
 
             var exp = whereLambda.ToExpression();
-            (string whereClause, Dictionary<string, object> parameters) = exp.ToWhereClause();
+            var searchCondition = exp.ToWhereClause();
 
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Id", 1);
-            Assert.AreEqual(whereClause, "Id = @Id");
-            DictionaryAssert.AreEqual(expectedParameters, parameters);
+            Assert.AreEqual(searchCondition.WhereClause, "Id = @Id");
+            DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
+        }
+
+        public class Input_Demo3_不同配置
+        {
+            [SearchType(SearchType.eq)]
+            public int Id { get; set; }
+        }
+        public class Input_Demo3_相同配置
+        {
+            [SearchType(SearchType.eq)]
+            public int Id { get; set; }
+        }
+        public class model_Demo3
+        {
+            [SearchType(SearchType.eq)]
+            public int Id { get; set; }
         }
     }
 }
