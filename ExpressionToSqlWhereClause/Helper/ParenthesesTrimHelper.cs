@@ -438,9 +438,15 @@ namespace ExpressionToSqlWhereClause.Helper
             //string str = "((A + B) * (C - D) + E) / F";
 
             List<Position> list = new List<Position>();
-            Stack<int> stack = new Stack<int>();
-            //List<int> unmatched = new List<int>();
+
             unmatched = new List<int>();
+
+            if (!str.Contains("(") && !str.Contains(")"))
+            {
+                return list;
+            }
+
+            Stack<int> stack = new Stack<int>();
 
             var inSql = $" {SqlKeys.@in} ";
             for (int i = 0; i < str.Length; i++)
