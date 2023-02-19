@@ -3,7 +3,6 @@ using ExpressionToSqlWhereClause.ExtensionMethod;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -139,18 +138,19 @@ namespace ExpressionToSqlWhereClause.Helper
             return str;
         }
 
+
         /// <summary>
         /// 可以无脑的直接去掉所有的()
         /// </summary>
         /// <param name="str"></param>
+        /// <param name="orWhereCanTrim"></param>
         /// <returns>当 str 只包含 and 且没有 in / 函数 时  返回true</returns>
-        internal static bool CanTrimAll(string str)
+        internal static bool CanTrimAll(string str, Func<string, bool> orWhereCanTrim = null)
         {
             if (str.Contains("(") == false && str.Contains(")") == false)
             {
                 return false;//没有 (), 即不需要进行 去() 操作 
             }
-
             if (str.Contains(SqlKeys.@in)) //In语句
             {
                 return false;
@@ -159,10 +159,13 @@ namespace ExpressionToSqlWhereClause.Helper
             {
                 return false;
             }
-
             if (str.Contains(SqlKeys.Or)) //Or语句 
             {
-                //全为or的这里不考虑
+                //全为or的这里不考虑 ,根据 委托来决策
+                if (orWhereCanTrim?.Invoke(str) == true)
+                {
+                    return true;
+                }
                 return false;
             }
 
@@ -195,6 +198,60 @@ namespace ExpressionToSqlWhereClause.Helper
             {
                 result = TrimParenthesesWarp(result);
 
+                #region  判断顶层条件是否全为 or(只能判断3个)  
+
+                //positions = GetPositions(result, out var _);
+
+                //List<Position> positionsLv0 = GetPositionsLv0(positions);
+                //if (positionsLv0.Count > 0)
+                //{
+                //    var isAllOr = true;
+                //    for (int i = 0; i < positionsLv0.Count - 1; i++)
+                //    {
+                //        var position = positionsLv0[i];
+                //        var nextPosition = positionsLv0[i + 1];
+                //        var condition = position.GetIntervalContent(nextPosition);
+                //        if (condition != SqlKeys.Or)
+                //        {
+                //            isAllOr = false;
+                //            break;
+                //        }
+                //    }
+                //    if (isAllOr)
+                //    {
+                //        var haveTrimParenthesesWarp = false;
+                //        for (int i = 0; i < positionsLv0.Count; i++)
+                //        {
+                //            var position = positionsLv0[i];
+                //            var content = position.GetContent();
+
+                //            if (IsParenthesesWarp(content))
+                //            {
+                //                var compositeConditions = positions.Where(a => a.Left > position.Left && a.Right < position.Right); //有()包裹的算 组合条件
+
+                //                var compositeConditionCount = 1;
+                //                foreach (var compositeCondition in compositeConditions)
+                //                {
+                //                    content = content.Replace(compositeCondition.GetContent(), $@"Condition{compositeConditionCount}");
+                //                }
+                //                if (content.Contains(SqlKeys.And) == false)
+                //                {
+                //                    var oldStr = position.GetContent();
+                //                    var newStr = TrimParenthesesWarp(oldStr);
+                //                    result = result.Replace(oldStr, newStr);
+                //                    haveTrimParenthesesWarp = true;
+                //                }
+                //            }
+                //        }
+                //        if (haveTrimParenthesesWarp)
+                //        {
+                //            return result;
+                //        }
+                //    }
+                //}
+                #endregion
+
+
                 //场景: case_复杂版的表达式解析4 的 todo: 这里还存在可优化的场景: 顶层条件全为 or ,且or的数量大于2个时, 还能有 () 要去掉
                 return result; //这个 return 是不包含 场景: case_复杂版的表达式解析4  的处理
 
@@ -203,53 +260,55 @@ namespace ExpressionToSqlWhereClause.Helper
             }
 
             #region 某种if条件
-            //单元测试:  case_复杂版的表达式解析3
-            //提取每个有()包裹的顶层条件,然后解析每个顶层是否可以继续拆分出顶层, 如果可以, 去掉当前顶层的()包裹
-
-            List<Position> positionsLv0 = GetPositionsLv0(positions);
-            if (positionsLv0.Count > 1)
             {
-                var isAllAnd = true;
-                for (int i = 0; i < positionsLv0.Count - 1; i++)
+                //单元测试:  case_复杂版的表达式解析3
+                //提取每个有()包裹的顶层条件,然后解析每个顶层是否可以继续拆分出顶层, 如果可以, 去掉当前顶层的()包裹
+
+                List<Position> positionsLv0 = GetPositionsLv0(positions);
+                if (positionsLv0.Count > 1)
                 {
-                    var position = positionsLv0[i];
-                    var nextPosition = positionsLv0[i + 1];
-                    var condition = position.GetIntervalContent(nextPosition);
-                    if (condition != SqlKeys.And)
-                    {
-                        isAllAnd = false;
-                        break;
-                    }
-                }
-                if (isAllAnd)
-                {
-                    var haveTrimParenthesesWarp = false;
+                    var isAllAnd = true;
                     for (int i = 0; i < positionsLv0.Count - 1; i++)
                     {
                         var position = positionsLv0[i];
-                        var content = position.GetContent();
-
-                        if (IsParenthesesWarp(content))
+                        var nextPosition = positionsLv0[i + 1];
+                        var condition = position.GetIntervalContent(nextPosition);
+                        if (condition != SqlKeys.And)
                         {
-                            var compositeConditions = positions.Where(a => a.Left > position.Left && a.Right < position.Right); //有()包裹的算 组合条件
-
-                            var compositeConditionCount = 1;
-                            foreach (var compositeCondition in compositeConditions)
-                            {
-                                content = content.Replace(compositeCondition.GetContent(), $@"Condition{compositeConditionCount}");
-                            }
-                            if (content.Contains(SqlKeys.Or) == false)
-                            {
-                                var oldStr = position.GetContent();
-                                var newStr = TrimParenthesesWarp(oldStr);
-                                result = result.Replace(oldStr, newStr);
-                                haveTrimParenthesesWarp = true; ;
-                            }
+                            isAllAnd = false;
+                            break;
                         }
                     }
-                    if (haveTrimParenthesesWarp)
+                    if (isAllAnd)
                     {
-                        return result;
+                        var haveTrimParenthesesWarp = false;
+                        for (int i = 0; i < positionsLv0.Count - 1; i++)
+                        {
+                            var position = positionsLv0[i];
+                            var content = position.GetContent();
+
+                            if (IsParenthesesWarp(content))
+                            {
+                                var compositeConditions = positions.Where(a => a.Left > position.Left && a.Right < position.Right); //有()包裹的算 组合条件
+
+                                var compositeConditionCount = 1;
+                                foreach (var compositeCondition in compositeConditions)
+                                {
+                                    content = content.Replace(compositeCondition.GetContent(), $@"Condition{compositeConditionCount}");
+                                }
+                                if (content.Contains(SqlKeys.Or) == false)
+                                {
+                                    var oldStr = position.GetContent();
+                                    var newStr = TrimParenthesesWarp(oldStr);
+                                    result = result.Replace(oldStr, newStr);
+                                    haveTrimParenthesesWarp = true;
+                                }
+                            }
+                        }
+                        if (haveTrimParenthesesWarp)
+                        {
+                            return result;
+                        }
                     }
                 }
             }

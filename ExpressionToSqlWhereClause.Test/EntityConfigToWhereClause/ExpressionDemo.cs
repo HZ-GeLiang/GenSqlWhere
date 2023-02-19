@@ -469,7 +469,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
                       && (u.Name == filter.Name || u.Name.Contains(filter.Name.Substring(1, 2)))
                       ;
             var where = expression.ToWhereClause();
-   
+
             Assert.AreEqual("Age > @Age And ((Sex = @Sex And Age > @Age1) Or (Sex = @Sex1 And Age > @Age2)) And (Name = @Name Or Name Like @Name1)", where.WhereClause);
         }
 
@@ -509,6 +509,43 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 
             Assert.AreEqual("太复杂的去掉()的成本太高, 不写了...", where.WhereClause);
         }
+
+
+        [TestMethod]
+        public void case_去掉括号_3个or()
+        {
+            UserFilter filter = new UserFilter();
+            filter.Internal.Age = 20;
+
+            Expression<Func<User, bool>> expression =
+                u => u.Age > 10
+                      || u.Age > 11
+                      || u.Age > 12
+                      ;
+            var where = expression.ToWhereClause();
+
+            Assert.AreEqual("Age > @Age Or Age > @Age1 Or Age > @Age2", where.WhereClause);
+
+        }
+
+
+        [TestMethod]
+        public void case_去掉括号_4个or()
+        {
+            UserFilter filter = new UserFilter();
+            filter.Internal.Age = 20;
+
+            Expression<Func<User, bool>> expression =
+                u => u.Age > 10
+                      || u.Age > 11
+                      || u.Age > 12
+                      || u.Age > 13
+                      ;
+            var where = expression.ToWhereClause();
+
+            Assert.AreEqual("Age > @Age Or Age > @Age1 Or Age > @Age2 Or Age > @Age3", where.WhereClause);
+        }
+
 
 
         [TestMethod]
