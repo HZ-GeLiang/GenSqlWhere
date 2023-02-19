@@ -140,16 +140,17 @@ namespace ExpressionToSqlWhereClause.Helper
         }
 
         /// <summary>
-        /// 
+        /// 可以无脑的直接去掉所有的()
         /// </summary>
         /// <param name="str"></param>
         /// <returns>当 str 只包含 and 且没有 in / 函数 时  返回true</returns>
-        public static bool CanTrimAll(string str)
+        internal static bool CanTrimAll(string str)
         {
-            if (str.Contains(SqlKeys.Or)) //Or语句
+            if (str.Contains("(") == false && str.Contains(")") == false)
             {
-                return false;
+                return false;//没有 (), 即不需要进行 去() 操作 
             }
+
             if (str.Contains(SqlKeys.@in)) //In语句
             {
                 return false;
@@ -158,10 +159,14 @@ namespace ExpressionToSqlWhereClause.Helper
             {
                 return false;
             }
-            if (str.Contains("(") == false && str.Contains(")") == false) //没有 () 的str
+
+            if (str.Contains(SqlKeys.Or)) //Or语句 
             {
+                //全为or的这里不考虑
                 return false;
             }
+
+            //else 全为 and 的语句
             return true;
         }
 
