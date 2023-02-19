@@ -198,10 +198,8 @@ namespace ExpressionToSqlWhereClause.Helper
             {
                 result = TrimParenthesesWarp(result);
 
-                #region  判断顶层条件是否全为 or(只能判断3个)  
-
+                #region  判断顶层条件是否全为 or(只能判断3个) , 取消注释, 可以通过 case_复杂版的表达式解析4 的测试, ,注释的原因: 只能判断3个.
                 //positions = GetPositions(result, out var _);
-
                 //List<Position> positionsLv0 = GetPositionsLv0(positions);
                 //if (positionsLv0.Count > 0)
                 //{
@@ -251,12 +249,8 @@ namespace ExpressionToSqlWhereClause.Helper
                 //}
                 #endregion
 
-
                 //场景: case_复杂版的表达式解析4 的 todo: 这里还存在可优化的场景: 顶层条件全为 or ,且or的数量大于2个时, 还能有 () 要去掉
                 return result; //这个 return 是不包含 场景: case_复杂版的表达式解析4  的处理
-
-                // 因为  被改动了, 所以 需要重新算  
-                //positions = GetPositions(result, out var _); //因为上面行的 return ,所以,该行释了,解决编译器的提示
             }
 
             #region 某种if条件
