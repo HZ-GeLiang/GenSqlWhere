@@ -145,17 +145,22 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
         /// <returns></returns>
         private static string TrimParentheses(string WhereClause)
         {
-            string str;
-            if (ParenthesesTrimHelper.CanTrimAll(WhereClause)) //去掉 关系条件 全为 and 时的 () 
+            var canTrimAll = ParenthesesTrimHelper.CanTrimAll(WhereClause, str =>
             {
-                str = ParenthesesTrimHelper.TrimAll(WhereClause);//全是and 的
+                //CanTrimAll的基础上 在增加一个, 如果全部为Or 的, 那么可以去掉所有的 ()
+                return str.Contains(SqlKeys.And) == false;
+            });
+
+            if (canTrimAll) //去掉 关系条件 全为 and 时的 () 
+            {
+                var str = ParenthesesTrimHelper.TrimAll(WhereClause);//全是and 的
+                return str;
             }
             else
             {
-                str = ParenthesesTrimHelper.ParseTrimAll(WhereClause);
+                var str = ParenthesesTrimHelper.ParseTrimAll(WhereClause);
+                return str;
             }
-
-            return str;
         }
 
         /// <summary>
