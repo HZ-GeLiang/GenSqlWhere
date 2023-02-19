@@ -487,7 +487,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
                       ;
             var where = expression.ToWhereClause();
 
-            Assert.AreEqual("Age > @Age Or ((Sex = @Sex And Age > @Age1) Or (Sex = @Sex1 And Age > @Age2)) Or (Name = @Name Or Name Like @Name1)", where.WhereClause);
+            Assert.AreEqual("Age > @Age Or ((Sex = @Sex And Age > @Age1) Or (Sex = @Sex1 And Age > @Age2)) Or Name = @Name Or Name Like @Name1", where.WhereClause);
         }
 
         //[TestMethod]
