@@ -21,15 +21,35 @@ namespace ExpressionToSqlWhereClause.Helper
         /// <returns></returns>
         public static string TrimAll(string where)
         {
-            if (where.Contains("("))
+            if (where == null)
             {
-                where = where.Replace("(", string.Empty);
+                return where;
             }
-            if (where.Contains(")"))
+
+            //if (where.Contains("("))
+            //{
+            //    where = where.Replace("(", string.Empty);
+            //}
+            //if (where.Contains(")"))
+            //{
+            //    where = where.Replace(")", string.Empty);
+            //}
+            //return where;
+
+            //快一倍多
+            StringBuilder stringBuilder = new StringBuilder();
+
+            foreach (char c in where)
             {
-                where = where.Replace(")", string.Empty);
+                if (c == '(' || c == ')')
+                {
+                    continue;
+                }
+                stringBuilder.Append(c);
             }
-            return where;
+
+            var str = stringBuilder.ToString();
+            return str; ;
         }
 
         /// <summary>
