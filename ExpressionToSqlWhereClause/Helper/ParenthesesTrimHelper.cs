@@ -255,15 +255,23 @@ namespace ExpressionToSqlWhereClause.Helper
 
         private static List<Position> GetPositionsLv0(List<Position> positions)
         {
-            List<Position> positionslv0 = new List<Position>() {
-                positions[0]
-            };
+            List<Position> positionslv0 = new List<Position>();
+
+            if (positions.Count <= 0)
+            {
+                return positionslv0;
+            }
+            positionslv0.Add(positions[0]);
 
             for (int i = 1; i < positions.Count; i++)
             {
-                if (positions[i].Left > positionslv0.Last().Right)
+                var currentPosition = positions[i];
+                var prevPosition = positionslv0.Last();
+
+                if (currentPosition.Left > prevPosition.Right)
                 {
-                    positionslv0.Add(positions[i]);
+                    positionslv0.Add(currentPosition);
+                    continue;
                 }
             }
 
