@@ -153,7 +153,7 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
 
             if (canTrimAll) //去掉 关系条件 全为 and 时的 () 
             {
-                var str = ParenthesesTrimHelper.TrimAll(WhereClause);//全是and 的
+                var str = ParenthesesTrimHelper.TrimAll(WhereClause, new char[] { '(', ')' });//全是and 的
                 return str;
             }
             else

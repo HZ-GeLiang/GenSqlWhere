@@ -18,29 +18,17 @@ namespace ExpressionToSqlWhereClause.Helper
         /// </summary>
         /// <param name="where"></param>
         /// <returns></returns>
-        public static string TrimAll(string where)
+        public static string TrimAll(string where, char[] trimChars)
         {
             if (where == null)
             {
                 return where;
             }
-
-            //if (where.Contains("("))
-            //{
-            //    where = where.Replace("(", string.Empty);
-            //}
-            //if (where.Contains(")"))
-            //{
-            //    where = where.Replace(")", string.Empty);
-            //}
-            //return where;
-
-            //快一倍多
             StringBuilder stringBuilder = new StringBuilder();
 
             foreach (char c in where)
             {
-                if (c == '(' || c == ')')
+                if (trimChars.Contains(c))
                 {
                     continue;
                 }
@@ -50,6 +38,7 @@ namespace ExpressionToSqlWhereClause.Helper
             var str = stringBuilder.ToString();
             return str; ;
         }
+
 
         /// <summary>
         /// 特殊占位符
@@ -70,7 +59,7 @@ namespace ExpressionToSqlWhereClause.Helper
             if (str[0] == '(' && str[str.Length - 1] == ')')
             {
                 //符合这个的不一定是 (...)  有可能是 (...) Or (...)
-                if (GetPositions(str, out var _)[0].Right == str.Length - 1)
+                if (GetPositions(str)[0].Right == str.Length - 1)
                 {
                     return true;
                 }
@@ -184,11 +173,11 @@ namespace ExpressionToSqlWhereClause.Helper
 
             if (CanTrimAll(result))
             {
-                result = TrimAll(str);
+                result = TrimAll(str, new char[] { '(', ')' });
                 return result;
             }
 
-            var positions = GetPositions(result, out var _);
+            var positions = GetPositions(result);
             if (positions.Count == 0)
             {
                 return result;
@@ -400,7 +389,7 @@ namespace ExpressionToSqlWhereClause.Helper
 
         private static string ParseTrimAllCore(string where)
         {
-            var positions = GetPositions(where, out var _);
+            var positions = GetPositions(where);
 
             StringBuilder sb = new StringBuilder(where);
 
@@ -414,7 +403,8 @@ namespace ExpressionToSqlWhereClause.Helper
 
             if (result.Contains(SqlKeys.Or) == false)//不包含or
             {
-                result = result.Replace(sc, "");
+                //result = result.Replace(sc, "");
+                result = TrimAll(result, new char[] { sc[0] } );
                 return result;
             }
             else
@@ -470,7 +460,8 @@ namespace ExpressionToSqlWhereClause.Helper
 
                     if (result.Contains(sc))
                     {
-                        result = result.Replace(sc, "");
+                        //result = result.Replace(sc, "");
+                        result = TrimAll(result, new char[] { sc[0] });
                     }
 
                     return result;
@@ -483,16 +474,17 @@ namespace ExpressionToSqlWhereClause.Helper
         /// <summary>
         /// 获得 () 的位置信息
         /// </summary>
-        /// <param name="str"></param>
-        /// <param name="unmatched"></param>
+        /// <param name="str"></param> 
         /// <returns></returns>
-        private static List<Position> GetPositions(string str, out List<int> unmatched)
+        private static List<Position> GetPositions(string str)
         {
             //string str = "((A + B) * (C - D) + E) / F";
 
             List<Position> list = new List<Position>();
 
-            unmatched = new List<int>();
+#if DEBUG
+            var unmatched = new List<int>();
+#endif
 
             if (!str.Contains("(") && !str.Contains(")"))
             {
@@ -537,22 +529,27 @@ namespace ExpressionToSqlWhereClause.Helper
                     }
                     else
                     {
+#if DEBUG
                         unmatched.Add(i);
+#endif
                     }
                 }
             }
 
+#if DEBUG
             while (stack.Count > 0)
             {
                 int index = stack.Pop();
                 unmatched.Add(index);
             }
-            //Console.WriteLine("Unmatched: " + string.Join(", ", unmatched));
 
-            if (unmatched.Any()) //str 有误
+            if (unmatched.Any())
             {
-                return new List<Position>();
+                var msg = "有未匹配的(): " + string.Join(", ", unmatched);
+                throw new Exception(msg);
             }
+
+#endif
 
 
             var result = list.OrderBy(a => a.Left).ToList();
