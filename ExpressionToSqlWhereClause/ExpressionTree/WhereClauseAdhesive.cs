@@ -9,7 +9,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
     public class SqlClauseParametersInfo
     {
         /// <summary>
-        /// 参数化的key
+        /// 参数化的标志符key
         /// </summary>
         public string Key { get; set; }
 
