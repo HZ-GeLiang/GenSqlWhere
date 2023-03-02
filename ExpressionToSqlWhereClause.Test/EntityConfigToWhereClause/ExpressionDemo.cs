@@ -122,7 +122,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             //这个是   WhereClauseHelper.ConvertParameters 使用示例
             var pms = WhereClauseHelper.ConvertParameters(searchCondition.Parameters, (key, val) =>
             {
-                return new { ParameterName = key, Value = val };
+                return new /*SqlParameter*/ { ParameterName = key, Value = val };
             });
         }
 
