@@ -30,10 +30,6 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var searchCondition = expression.ToWhereClause();
             WhereClauseHelper.MergeParametersIntoSql(searchCondition);
             Assert.AreEqual(searchCondition.WhereClause, "Production Like '%aa%'");
-
-
-
-
         }
 
         [TestMethod]
@@ -133,7 +129,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var searchCondition = expression.ToWhereClause(null, new TestSqlAdapter());
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Name", "aa");
-            Assert.AreEqual("Name <> @Name", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Name <> @Name");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -145,7 +141,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var searchCondition = expression.ToWhereClause(null, new TestSqlAdapter());
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Sex", false);
-            Assert.AreEqual("Sex <> @Sex", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Sex <> @Sex");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -157,7 +153,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Sex", true);
             expectedParameters.Add("@Name", "Foo%");
-            Assert.AreEqual("Sex = @Sex And Name Like @Name", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Sex = @Sex And Name Like @Name");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
 
         }
@@ -170,7 +166,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var searchCondition = expression.ToWhereClause(null, new TestSqlAdapter());
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Sex", true);
-            Assert.AreEqual("Sex <> @Sex", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Sex <> @Sex");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -181,7 +177,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var searchCondition = expression.ToWhereClause(null, new TestSqlAdapter());
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Sex", false);
-            Assert.AreEqual("Sex <> @Sex", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Sex <> @Sex");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -193,7 +189,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var searchCondition = expression.ToWhereClause(null, new TestSqlAdapter());
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Age", 20);
-            Assert.AreEqual("Age >= @Age", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Age >= @Age");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -205,7 +201,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var searchCondition = expression.ToWhereClause(null, new TestSqlAdapter());
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Age", 20);
-            Assert.AreEqual("Age >= @Age", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Age >= @Age");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -218,7 +214,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Sex", true);
             expectedParameters.Add("@Age", 20);
-            Assert.AreEqual("Sex = @Sex And Age > @Age", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Sex = @Sex And Age > @Age");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -231,7 +227,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Sex", true);
             expectedParameters.Add("@Age", 20);
-            Assert.AreEqual("Sex = @Sex Or Age > @Age", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Sex = @Sex Or Age > @Age");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -244,7 +240,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Age", 15);
             expectedParameters.Add("@Age1", 20);
-            Assert.AreEqual("Age < @Age Or Age > @Age1", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Age < @Age Or Age > @Age1");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -257,7 +253,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var searchCondition = expression.ToWhereClause(null, new TestSqlAdapter());
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Age", 20);
-            Assert.AreEqual("Age < @Age", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Age < @Age");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -271,7 +267,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var searchCondition = expression.ToWhereClause(sqlAdapter: new ToLowerSqlAdapter());
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@age", 20);
-            Assert.AreEqual("age < @age", searchCondition.WhereClause);//因为 ToLowerSqlAdapter
+            Assert.AreEqual(searchCondition.WhereClause, "age < @age");//因为 ToLowerSqlAdapter
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -282,7 +278,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var searchCondition = expression.ToWhereClause(null, new TestSqlAdapter());
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Age", 20);
-            Assert.AreEqual("Age < @Age", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Age < @Age");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -293,7 +289,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var searchCondition = expression.ToWhereClause(null, new TestSqlAdapter());
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Age", 20);
-            Assert.AreEqual("Age < @Age", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Age < @Age");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -306,7 +302,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var searchCondition = expression.ToWhereClause(null, new TestSqlAdapter());
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Age", 20);
-            Assert.AreEqual("Age < @Age", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Age < @Age");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -317,7 +313,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var searchCondition = expression.ToWhereClause(null, new TestSqlAdapter());
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Age", 20);
-            Assert.AreEqual("Age < @Age", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Age < @Age");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -330,7 +326,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var searchCondition = expression.ToWhereClause(null, new TestSqlAdapter());
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Name", "ame");
-            Assert.AreEqual("Name = @Name", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Name = @Name");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -342,7 +338,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var searchCondition = expression.ToWhereClause(null, new TestSqlAdapter());
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Name", "Gary");
-            Assert.AreEqual("Name = @Name", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Name = @Name");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -353,7 +349,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var searchCondition = expression.ToWhereClause(null, new TestSqlAdapter());
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Age", 20);
-            Assert.AreEqual("Age <> @Age", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Age <> @Age");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -366,7 +362,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var searchCondition = expression.ToWhereClause(null, new TestSqlAdapter());
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Name", "Name%");
-            Assert.AreEqual("Name Like @Name", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Name Like @Name");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -380,7 +376,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Name", "Name%");
             expectedParameters.Add("@Name1", "%Start%");
-            Assert.AreEqual("Name Like @Name Or Name Like @Name1", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Name Like @Name Or Name Like @Name1");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -393,7 +389,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var searchCondition = expression.ToWhereClause(null, new TestSqlAdapter());
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Name", "%Name");
-            Assert.AreEqual("Name Like @Name", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Name Like @Name");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -406,7 +402,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var searchCondition = expression.ToWhereClause(null, new TestSqlAdapter());
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
             expectedParameters.Add("@Name", "%Name%");
-            Assert.AreEqual("Name Like @Name", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Name Like @Name");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -434,9 +430,9 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             //  (========left======) || (==================right====================)
             u => u.Sex && u.Age > 18 || u.Sex == false && u.Age > filter.Internal.Age;
 
-            var where = expression.ToWhereClause();
+            var searchCondition = expression.ToWhereClause();
 
-            Assert.AreEqual("(Sex = @Sex And Age > @Age) Or (Sex = @Sex1 And Age > @Age1)", where.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "(Sex = @Sex And Age > @Age) Or (Sex = @Sex1 And Age > @Age1)");
         }
 
         [TestMethod]
@@ -450,9 +446,9 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             //              (==left==)  ||(====================right====================)
             u => u.Sex && (u.Age > 18 || u.Sex == false && u.Age > filter.Internal.Age);
 
-            var where = expression.ToWhereClause();
+            var searchCondition = expression.ToWhereClause();
 
-            Assert.AreEqual("Sex = @Sex And (Age > @Age Or (Sex = @Sex1 And Age > @Age1))", where.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Sex = @Sex And (Age > @Age Or (Sex = @Sex1 And Age > @Age1))");
         }
 
 
@@ -468,9 +464,9 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
                       && (u.Sex && u.Age > 18 || u.Sex == false && u.Age > filter.Internal.Age)
                       && (u.Name == filter.Name || u.Name.Contains(filter.Name.Substring(1, 2)))
                       ;
-            var where = expression.ToWhereClause();
+            var searchCondition = expression.ToWhereClause();
 
-            Assert.AreEqual("Age > @Age And ((Sex = @Sex And Age > @Age1) Or (Sex = @Sex1 And Age > @Age2)) And (Name = @Name Or Name Like @Name1)", where.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Age > @Age And ((Sex = @Sex And Age > @Age1) Or (Sex = @Sex1 And Age > @Age2)) And (Name = @Name Or Name Like @Name1)");
         }
 
         //[TestMethod]
@@ -485,9 +481,9 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
                       || (u.Sex && u.Age > 18 || u.Sex == false && u.Age > filter.Internal.Age)
                       || (u.Name == filter.Name || u.Name.Contains(filter.Name.Substring(1, 2)))
                       ;
-            var where = expression.ToWhereClause();
+            var searchCondition = expression.ToWhereClause();
 
-            Assert.AreEqual("Age > @Age Or ((Sex = @Sex And Age > @Age1) Or (Sex = @Sex1 And Age > @Age2)) Or Name = @Name Or Name Like @Name1", where.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Age > @Age Or ((Sex = @Sex And Age > @Age1) Or (Sex = @Sex1 And Age > @Age2)) Or Name = @Name Or Name Like @Name1");
         }
 
         //[TestMethod]
@@ -505,9 +501,9 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
                              && (u.Name == filter.Name || u.Name.Contains(filter.Name.Substring(1, 2)))
                           )
                       ;
-            var where = expression.ToWhereClause();
+            var searchCondition = expression.ToWhereClause();
 
-            Assert.AreEqual("太复杂的去掉()的成本太高, 不写了...", where.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "太复杂的去掉()的成本太高, 不写了...");
         }
 
 
@@ -522,9 +518,9 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
                       || u.Age > 11
                       || u.Age > 12
                       ;
-            var where = expression.ToWhereClause();
+            var searchCondition = expression.ToWhereClause();
 
-            Assert.AreEqual("Age > @Age Or Age > @Age1 Or Age > @Age2", where.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Age > @Age Or Age > @Age1 Or Age > @Age2");
 
         }
 
@@ -541,9 +537,9 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
                       || u.Age > 12
                       || u.Age > 13
                       ;
-            var where = expression.ToWhereClause();
+            var searchCondition = expression.ToWhereClause();
 
-            Assert.AreEqual("Age > @Age Or Age > @Age1 Or Age > @Age2 Or Age > @Age3", where.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Age > @Age Or Age > @Age1 Or Age > @Age2 Or Age > @Age3");
         }
 
 
@@ -566,7 +562,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             expectedParameters.Add("@Age1", 20);
             expectedParameters.Add("@Name", "Gary");
             expectedParameters.Add("@Name1", "%ar%");
-            Assert.AreEqual("((Sex = @Sex And Age > @Age) Or (Sex = @Sex1 And Age > @Age1)) And (Name = @Name Or Name Like @Name1)", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "((Sex = @Sex And Age > @Age) Or (Sex = @Sex1 And Age > @Age1)) And (Name = @Name Or Name Like @Name1)");
 
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
@@ -578,7 +574,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             List<string> values = new List<string> { "a", "b" };
             Expression<Func<User, bool>> expression = u => values.Contains(u.Name);
             var searchCondition = expression.ToWhereClause(sqlAdapter: new TestSqlAdapter());
-            Assert.AreEqual("Name In (@Name)", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Name In (@Name)");
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>
             {
                 { "@Name", "'a','b'" }
@@ -592,7 +588,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             string[] values = new string[] { "a", "b" };
             Expression<Func<User, bool>> expression = u => values.Contains(u.Name);
             var searchCondition = expression.ToWhereClause(sqlAdapter: new TestSqlAdapter());
-            Assert.AreEqual("Name In (@Name)", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Name In (@Name)");
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>
             {
                 { "@Name", "'a','b'" }
@@ -605,7 +601,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
         {
             Expression<Func<User, bool>> expression = u => u.Sex2 == Sex.Female;
             var searchCondition = expression.ToWhereClause(null, new TestSqlAdapter());
-            Assert.AreEqual("Sex2 = @Sex2", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Sex2 = @Sex2");
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>
             {
                 { "@Sex2", (int)Sex.Female }
@@ -619,7 +615,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             Sex[] sexes = new Sex[] { Sex.Female, Sex.Female };
             Expression<Func<User, bool>> expression = u => u.Sex2 == sexes[1];
             var searchCondition = expression.ToWhereClause(null, new TestSqlAdapter());
-            Assert.AreEqual("Sex2 = @Sex2", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Sex2 = @Sex2");
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>
             {
                 { "@Sex2", (int)Sex.Female }
@@ -641,7 +637,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             {
                 { "@Age", 20 }
             };
-            Assert.AreEqual("UserAge <> @Age", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "UserAge <> @Age");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -661,7 +657,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
                 { "@CreateStart", d1 },
                 { "@CreateEnd", d2 },
             };
-            Assert.AreEqual("Age <> @Age Or (CreateStart > @CreateStart And CreateEnd < @CreateEnd)", searchCondition.WhereClause);
+            Assert.AreEqual(searchCondition.WhereClause, "Age <> @Age Or (CreateStart > @CreateStart And CreateEnd < @CreateEnd)");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
@@ -671,14 +667,14 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
                 .WhereIf(true, a => a.CreateAt > new DateTime(2023, 1, 1))
                 ;
-            var where = expression.ToWhereClause();
+            var searchCondition = expression.ToWhereClause();
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>
             {
                 { "@CreateAt", new DateTime(2023, 1, 1)}
             };
 
-            Assert.AreEqual("CreateAt > @CreateAt", where.WhereClause);
-            DictionaryAssert.AreEqual(expectedParameters, where.Parameters);
+            Assert.AreEqual(searchCondition.WhereClause, "CreateAt > @CreateAt");
+            DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
         [TestMethod]
@@ -688,14 +684,14 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
                 .WhereIf(true, a => a.Flag.Value == Guid.Parse("DEA5B56C-D1B1-4513-83E7-B58B9D3EBB81"))
                 ;
 
-            var where = expression.ToWhereClause();
+            var searchCondition = expression.ToWhereClause();
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>
             {
                 { "@Flag", Guid.Parse("DEA5B56C-D1B1-4513-83E7-B58B9D3EBB81")}
             };
 
-            Assert.AreEqual("Flag = @Flag", where.WhereClause);
-            DictionaryAssert.AreEqual(expectedParameters, where.Parameters);
+            Assert.AreEqual(searchCondition.WhereClause, "Flag = @Flag");
+            DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
 
         }
 
@@ -712,20 +708,39 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
                 var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
                     .WhereIf(true, a => a.Flag.Value == v4)
                     ;
-                var where = expression.ToWhereClause();
+                var searchCondition = expression.ToWhereClause();
 
-                Assert.AreEqual("Flag = @Flag", where.WhereClause);
-                DictionaryAssert.AreEqual(expectedParameters, where.Parameters);
+                Assert.AreEqual(searchCondition.WhereClause, "Flag = @Flag");
+                DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
             }
             {
                 var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
                     .WhereIf(true, a => a.Flag == v4)
                     ;
-                var where = expression.ToWhereClause();
+                var searchCondition = expression.ToWhereClause();
 
-                Assert.AreEqual("Flag = @Flag", where.WhereClause);
-                DictionaryAssert.AreEqual(expectedParameters, where.Parameters);
+                Assert.AreEqual(searchCondition.WhereClause, "Flag = @Flag");
+                DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
             }
+        }
+
+
+        [TestMethod]
+        public void 测试_别名的替换()
+        {
+
+            var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
+                .WhereIf(true, a => a.CreateAtDay > 1)
+                ;
+            var searchCondition = expression.ToWhereClause(new Dictionary<string, string>()
+            {
+                { "CreateAtDay","datediff(day, CreateAt, GETDATE())"}
+            });
+
+
+            Assert.AreEqual(searchCondition.WhereClause, "datediff(day, CreateAt, GETDATE()) > @CreateAtDay");
+            //DictionaryAssert.AreEqual(expectedParameters, where.Parameters);
+
         }
 
     }
@@ -737,6 +752,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
         public int Id { get; set; }
         public string Name { get; set; }
         public DateTime? CreateAt { get; set; }
+        public int? CreateAtDay { get; set; }
         public Guid? Flag { get; set; }
     }
 
