@@ -41,34 +41,12 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 return Default<TEntity>();
             }
 
-            //保留代码,提示可以转换成linq
-            //List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
-            //foreach (var prop in props)
-            //{
-            //    var propertyValue = new PropertyValue<TSearch>(searchModel);
-            //    object value = propertyValue.Get(prop);
-            //    if (value == null)
-            //    {
-            //        continue;
-            //    }
-            //    if (value is string)
-            //    {
-            //        string valueStr = (string)value;
-            //        if (!string.IsNullOrWhiteSpace(valueStr))
-            //        {
-            //            var exp = WhereLambdaHelper.GetExpression_Contains<TEntity>(prop, valueStr);
-            //            whereLambdas.Add(exp);
-            //        }
-            //    }  
-            //}
-            //return whereLambdas;
-
             List<Expression<Func<TEntity, bool>>> whereLambdas = new();
             foreach (var prop in props)
             {
                 var propertyValue = new PropertyValue<TSearch>(that.Search);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
-                if (value == null)
+                if (ContinueAdd(that, prop, value))
                 {
                     continue;
                 }
@@ -134,7 +112,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             {
                 var propertyValue = new PropertyValue<TSearch>(that.Search);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
-                if (value == null)
+                if (ContinueAdd(that, prop, value))
                 {
                     continue;
                 }
@@ -146,6 +124,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                         whereLambdas.Add(exp);
                     }
                 }
+
             }
             return whereLambdas;
         }
@@ -201,7 +180,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             {
                 var propertyValue = new PropertyValue<TSearch>(that.Search);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
-                if (value == null)
+                if (ContinueAdd(that, prop, value))
                 {
                     continue;
                 }
@@ -238,70 +217,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #endregion
 
-        #region AddEqual版本1 (最开始的代码) 后来根据 AddInOrEuqal 衍生出 AddEqual版本2
-        /*
-        public static List<Expression<Func<TEntity, bool>>> AddEqual<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
-            where TEntity : class
-            where TSearch : class
-        {
-            var props = that.SearchCondition[searchType]?.ToArray();
-            if (HaveCount(props) == false)
-            {
-                return Default<TEntity>();
-            }
-            return AddEqual<TEntity, TSearch>(that, props.ToArray())
-        }
-
-        public static List<Expression<Func<TEntity, bool>>> AddEqual<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that,  params string[] props)
-            where TEntity : class
-            where TSearch : class
-        {
-            if (!HaveCount(props))
-            {
-                return Default<TEntity>();
-            }
-
-            List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
-            foreach (var prop in props)
-            {
-                var propertyValue = new PropertyValue<TSearch>(searchModel);
-                object value = propertyValue.Get(prop, out var propType);
-                if (value == null)
-                {
-                    continue;
-                }
-                if (value.GetType().IsClass)
-                {
-                    if (!(value is string) || string.IsNullOrWhiteSpace((string)value))
-                    {
-                        throw new ExpressionToSqlWhereClauseException("不支持的引用类型");
-                    }
-                }
-                else
-                {
-                    if (value is DateTime)
-                    {
-                        throw new ExpressionToSqlWhereClauseException("不支持DateTime类型");
-                    }
-                }
-                //值类型(DateTime) + 非string的引用类型 不给翻译.直接报错
-
-                var parameterExp = Expression.Parameter(type_TEntity, "a");
-                var propertyExp = Expression.Property(parameterExp, prop);//a.UserNickName
-                var left = Expression.Convert(propertyExp, value.GetType());
-                var right = Expression.Constant(value, value.GetType());
-                var body = Expression.Equal(left, right);
-                var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
-
-                whereLambdas.Add(lambda);
-            }
-            return whereLambdas;
-        }
-        */
-
-        #endregion
-
-        #region AddEqual版本2
+        #region AddEqual版本2 : 根据: AddInOrEuqal 衍生出来的
 
         public static List<Expression<Func<TEntity, bool>>> AddEqual<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
             where TEntity : class
@@ -331,22 +247,12 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 var propertyValue = new PropertyValue<TSearch>(that.Search);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
 
-                if (ExistsWhereIf(that, prop))
+                if (ContinueAdd(that, prop, value))
                 {
-                    if (InvokeWhereIf(that, prop) == false)
-                    {
-                        continue;
-                    }
+                    continue;
                 }
-                else
-                {
-                    if (value == null)
-                    {
-                        continue;
-                    }
-                }
-
                 AddEqualCore<TEntity, TSearch>(prop, valuePropType, value, whereLambdas);
+
             }
             return whereLambdas;
         }
@@ -452,12 +358,12 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             {
                 var propertyValue = new PropertyValue<TSearch>(that.Search);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
-                if (value == null)
+                if (ContinueAdd(that, prop, value))
                 {
                     continue;
                 }
-
                 AddNotEqualCore<TEntity, TSearch>(prop, valuePropType, value, whereLambdas);
+
             }
             return whereLambdas;
         }
@@ -478,7 +384,6 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             var parameterExp = Expression.Parameter(type_TEntity, "a");
             var propertyExp = Expression.Property(parameterExp, propertyName); //a.AuditStateId
             Type propType_TEntity = propertyExp.Type; //a.AuditStateId 的type(Dto中定义的属性类型)
-
 
             var attr_SqlFuncArray = ReflectionHelper.GetAttributeForProperty<SqlFuncAttribute>(typeof(TSearch).GetProperty(propertyName), true);
             var haveAttr_SqlFunc = attr_SqlFuncArray.Length > 0;
@@ -573,7 +478,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 var propertyValue = new PropertyValue<TSearch>(that.Search);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
 
-                if (value == null)
+                if (ContinueAdd(that, prop, value))
                 {
                     continue;
                 }
@@ -807,7 +712,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 var propertyValue = new PropertyValue<TSearch>(that.Search);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
 
-                if (value == null)
+                if (ContinueAdd(that, prop, value))
                 {
                     continue;
                 }
@@ -1197,7 +1102,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             {
                 var propertyValue = new PropertyValue<TSearch>(that.Search);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(propertyName);
-                if (value == null)
+                if (ContinueAdd(that, propertyName, value))
                 {
                     continue;
                 }
@@ -1227,10 +1132,16 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                     splits = value.ToString().Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct();
                 }
 
-                if (!splits.Any()) { continue; }
+                if (!splits.Any())
+                {
+                    continue;
+                }
 
                 var prop_Info = type_TEntity.GetProperty(propertyName);
-                if (prop_Info == null) { continue; }
+                if (prop_Info == null)
+                {
+                    continue;
+                }
 
                 var parameterExp = Expression.Parameter(type_TEntity, "a");//pe
                 var propertyExp = Expression.Property(parameterExp, propertyName); //a.AuditStateId  //me
@@ -1487,7 +1398,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             {
                 var propertyValue = new PropertyValue<TSearch>(that.Search);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
-                if (value == null || type_TEntity.GetProperty(prop) == null)
+                if (ContinueAdd(that, prop, value) || type_TEntity.GetProperty(prop) == null)
                 {
                     continue;
                 }
@@ -1565,7 +1476,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             {
                 var propertyValue = new PropertyValue<TSearch>(that.Search);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
-                if (value == null || type_TEntity.GetProperty(prop) == null)
+                if (ContinueAdd(that, prop, value) || type_TEntity.GetProperty(prop) == null)
                 {
                     continue;
                 }
@@ -1643,7 +1554,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             {
                 var propertyValue = new PropertyValue<TSearch>(that.Search);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
-                if (value == null || type_TEntity.GetProperty(prop) == null)
+                if (ContinueAdd(that, prop, value) || type_TEntity.GetProperty(prop) == null)
                 {
                     continue;
                 }
@@ -1721,7 +1632,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             {
                 var propertyValue = new PropertyValue<TSearch>(that.Search);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
-                if (value == null || type_TEntity.GetProperty(prop) == null)
+                if (ContinueAdd(that, prop, value) || type_TEntity.GetProperty(prop) == null)
                 {
                     continue;
                 }
@@ -1774,6 +1685,24 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         private static bool HaveCount(string[] props) => props != null && props.Length > 0;
 
         private static List<Expression<Func<TEntity, bool>>> Default<TEntity>() => new();
+
+        private static bool ContinueAdd<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, string prop, object value)
+            where TEntity : class
+            where TSearch : class
+        {
+
+            if (ExistsWhereIf(that, prop) && InvokeWhereIf(that, prop) == false)
+            {
+                return true;
+            }
+
+            if (value == null)
+            {
+                return true;
+            }
+
+            return false;
+        }
 
         private static bool ExistsWhereIf<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, string propName)
             where TEntity : class
