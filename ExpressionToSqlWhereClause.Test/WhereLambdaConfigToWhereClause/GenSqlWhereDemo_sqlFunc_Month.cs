@@ -1,4 +1,5 @@
 ﻿using ExpressionToSqlWhereClause.EntityConfig;
+using ExpressionToSqlWhereClause.Exceptions;
 using ExpressionToSqlWhereClause.ExtensionMethod;
 using ExpressionToSqlWhereClause.SqlFunc.EntityConfig;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -61,7 +62,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             //SearchType:in,操作遇到不支持的属性类型:System.DateTime
             var exMsg = $"SearchType:{nameof(SearchType.In)},操作遇到不支持的属性类型:{typeof(DateTime).FullName}";
 
-            Assert.ThrowsException<ExpressionToSqlWhereClauseException>(() => whereLambda.ToExpression().ToWhereClause(), exMsg);
+            Assert.ThrowsException<FrameException>(() => whereLambda.ToExpression().ToWhereClause(), exMsg);
 
         }
 

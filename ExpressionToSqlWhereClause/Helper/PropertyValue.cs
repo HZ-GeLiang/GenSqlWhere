@@ -1,3 +1,4 @@
+using ExpressionToSqlWhereClause.Exceptions;
 using System;
 using System.Collections.Concurrent;
 using System.Reflection;
@@ -28,7 +29,7 @@ namespace ExpressionToSqlWhereClause.Helper
         {
             if (typeof(T) != Target.GetType())
             {
-                throw new ExpressionToSqlWhereClauseException("当前类不能使用多态这个特性");
+                throw new FrameException("当前类不能使用多态这个特性");
             }
 
             Type type = typeof(T);

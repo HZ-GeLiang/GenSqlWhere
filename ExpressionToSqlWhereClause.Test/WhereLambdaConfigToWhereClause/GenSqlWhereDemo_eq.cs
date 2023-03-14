@@ -16,7 +16,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
         {
             var searchModel = new Model_eq()
             {
-                IsDel = true,//todo://计划:添加当其他值为xx时,当前值才生效
+                IsDel = true,
             };
 
             var whereLambda = new WhereLambda<Input_eq, Model_eq>();
@@ -39,6 +39,8 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             CollectionAssert.AreEqual(searchCondition.Parameters, dict);
         }
 
+
+
         [TestMethod]
         public void Test_eq2()
         {
@@ -51,6 +53,36 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
              .WhereIf(true, a => a.Id == searchModel.Id)
              ;
             var searchCondition = expression.ToWhereClause();
+
+        }
+
+        [TestMethod]
+        public void Test_eq_HasValue()
+        {
+            var searchModel = new Model_eq()
+            {
+                Id = 1
+            };
+
+            var whereLambda = new WhereLambda<Input_eq, Model_eq>();
+            whereLambda.Search = searchModel;
+            whereLambda.WhereIf[nameof(searchModel.IsDel)] = a => a.Id > 0;/// 添加满足 Id>0的 条件时 ,当前值才生效
+
+            whereLambda[SearchType.Eq] = new List<string>
+            {
+                nameof(searchModel.IsDel),
+            };
+
+            var expression = whereLambda.ToExpression();
+            var searchCondition = expression.ToWhereClause();
+
+            Assert.AreEqual(searchCondition.WhereClause, "IsDel = @IsDel");
+            var dict = new Dictionary<string, object>
+            {
+                { "@IsDel", searchModel.IsDel }
+            };
+
+            CollectionAssert.AreEqual(searchCondition.Parameters, dict);
 
         }
 
@@ -70,6 +102,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
     public class Model_eq
     {
         public bool IsDel { get; set; }
+        public int Id { get; set; }
     }
 
     public class Model_eq2
