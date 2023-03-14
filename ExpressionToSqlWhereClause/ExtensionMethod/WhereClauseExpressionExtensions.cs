@@ -4,10 +4,8 @@ using ExpressionToSqlWhereClause.Helper;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Drawing;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
 
 
 namespace ExpressionToSqlWhereClause.ExtensionMethod

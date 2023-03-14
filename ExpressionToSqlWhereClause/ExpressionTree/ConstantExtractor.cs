@@ -1,12 +1,12 @@
-﻿using System;
+﻿using ExpressionToSqlWhereClause.Consts;
+using ExpressionToSqlWhereClause.ExtensionMethod;
+using ExpressionToSqlWhereClause.Helper;
+using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using ExpressionToSqlWhereClause.Consts;
-using ExpressionToSqlWhereClause.ExtensionMethod;
-using ExpressionToSqlWhereClause.Helper;
 
 namespace ExpressionToSqlWhereClause.ExpressionTree
 {

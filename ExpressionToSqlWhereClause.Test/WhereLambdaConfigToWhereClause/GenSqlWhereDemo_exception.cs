@@ -1,8 +1,7 @@
-using System;
-using System.Collections.Generic;
 using ExpressionToSqlWhereClause.EntityConfig;
 using ExpressionToSqlWhereClause.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 
 namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
@@ -23,7 +22,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
                 var whereLambda = searchModel.CrateWhereLambda((model_expection1 _) => { });
 
-                whereLambda[SearchType.eq] = new List<string>
+                whereLambda[SearchType.Eq] = new List<string>
                 {
                     nameof(searchModel.Id),
                 };
@@ -32,7 +31,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
                 Assert.AreEqual(searchCondition.WhereClause, string.Empty);
 
-               CollectionAssert.AreEqual(searchCondition.Parameters,  new Dictionary<string, object>());
+                CollectionAssert.AreEqual(searchCondition.Parameters, new Dictionary<string, object>());
             }
 
             {
@@ -44,7 +43,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
                 var whereLambda = searchModel.CrateWhereLambda((model_expection1 _) => { });
 
-                whereLambda[SearchType.eq] = new List<string>
+                whereLambda[SearchType.Eq] = new List<string>
                 {
                     nameof(searchModel.Id),
                 };
@@ -53,7 +52,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
                 Assert.AreEqual(searchCondition.WhereClause, "");
 
-               CollectionAssert.AreEqual(searchCondition.Parameters,  new Dictionary<string, object>());
+                CollectionAssert.AreEqual(searchCondition.Parameters, new Dictionary<string, object>());
 
             }
 
@@ -66,7 +65,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
                 var whereLambda = searchModel.CrateWhereLambda((model_expection2 _) => { });
 
-                whereLambda[SearchType.eq] = new List<string>
+                whereLambda[SearchType.Eq] = new List<string>
                 {
                     nameof(searchModel.Id),
                 };
@@ -75,7 +74,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
                 Assert.AreEqual(searchCondition.WhereClause, "");
 
-               CollectionAssert.AreEqual(searchCondition.Parameters,  new Dictionary<string, object>());
+                CollectionAssert.AreEqual(searchCondition.Parameters, new Dictionary<string, object>());
             }
         }
 
@@ -88,9 +87,9 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
 
             var whereLambda = new WhereLambda<Model_People, model_lt>();
-            whereLambda.SearchModel = searchModel;
+            whereLambda.Search = searchModel;
 
-            whereLambda[SearchType.lt] = new List<string>
+            whereLambda[SearchType.Lt] = new List<string>
             {
                 nameof(searchModel.Id),
                 nameof(searchModel.DataCreatedAt),
@@ -100,7 +99,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             var searchCondition = whereLambda.ToExpression().ToWhereClause();
 
             Assert.AreEqual(searchCondition.WhereClause, string.Empty);
-           CollectionAssert.AreEqual(searchCondition.Parameters,  new Dictionary<string, object>(0));
+            CollectionAssert.AreEqual(searchCondition.Parameters, new Dictionary<string, object>(0));
 
         }
     }

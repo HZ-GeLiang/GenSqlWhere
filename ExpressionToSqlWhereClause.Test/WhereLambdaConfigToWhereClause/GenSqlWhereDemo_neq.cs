@@ -1,11 +1,11 @@
-using System.Collections.Generic;
 using ExpressionToSqlWhereClause.EntityConfig;
 using ExpressionToSqlWhereClause.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 
 namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
- 
+
     [TestClass]
     public class GenSqlWhereDemo_neq
     {
@@ -19,9 +19,9 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
 
             var whereLambda = new WhereLambda<Model_People, model_neq>();
-            whereLambda.SearchModel = searchModel;
+            whereLambda.Search = searchModel;
 
-            whereLambda[SearchType.neq] = new List<string>
+            whereLambda[SearchType.Neq] = new List<string>
             {
                 nameof(searchModel.IsDel),
             };
@@ -35,7 +35,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 { "@IsDel", searchModel.IsDel }
             };
 
-           CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
+            CollectionAssert.AreEqual(searchCondition.Parameters, dict);
         }
     }
     public class model_neq
@@ -45,6 +45,6 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
     public class Input_neq_Attr
     {
-        [SearchType(SearchType.neq)] public bool IsDel { get; set; }
+        [SearchType(SearchType.Neq)] public bool IsDel { get; set; }
     }
 }

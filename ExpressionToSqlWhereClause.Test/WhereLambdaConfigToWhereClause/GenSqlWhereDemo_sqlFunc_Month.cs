@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using ExpressionToSqlWhereClause.EntityConfig;
+﻿using ExpressionToSqlWhereClause.EntityConfig;
 using ExpressionToSqlWhereClause.ExtensionMethod;
 using ExpressionToSqlWhereClause.SqlFunc.EntityConfig;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
 
 namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
@@ -59,7 +59,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             var whereLambda = searchModel.CrateWhereLambda((Model_sqlFun_Month p) => { });
 
             //SearchType:in,操作遇到不支持的属性类型:System.DateTime
-            var exMsg = $"SearchType:{nameof(SearchType.@in)},操作遇到不支持的属性类型:{typeof(DateTime).FullName}";
+            var exMsg = $"SearchType:{nameof(SearchType.In)},操作遇到不支持的属性类型:{typeof(DateTime).FullName}";
 
             Assert.ThrowsException<ExpressionToSqlWhereClauseException>(() => whereLambda.ToExpression().ToWhereClause(), exMsg);
 
@@ -74,7 +74,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 DataCreatedAt = 1
             };
             var whereLambda = searchModel.CrateWhereLambda((Model_sqlFun_Month p) => { });
-            whereLambda[SearchType.@in] = new List<string>
+            whereLambda[SearchType.In] = new List<string>
             {
                 nameof(searchModel.DataCreatedAt),
             };
@@ -97,7 +97,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 DataCreatedAt = "1,2,3"
             };
             var whereLambda = searchModel.CrateWhereLambda((Model_sqlFun_Month p) => { });
-            whereLambda[SearchType.@in] = new List<string>
+            whereLambda[SearchType.In] = new List<string>
             {
                 nameof(searchModel.DataCreatedAt),
             };
@@ -120,7 +120,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 DataCreatedAt = new List<int> { 1, 2, 3 }
             };
             var whereLambda = searchModel.CrateWhereLambda((Model_sqlFun_Month p) => { });
-            whereLambda[SearchType.@in] = new List<string>
+            whereLambda[SearchType.In] = new List<string>
             {
                 nameof(searchModel.DataCreatedAt),
             };
@@ -140,19 +140,19 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
     public class Input_sqlFun_Month_eq
     {
         [Month]
-        [SearchType(SearchType.eq)]
+        [SearchType(SearchType.Eq)]
         public int DataCreatedAt { get; set; } // 必须和 Entity 的属性名一致
     }
     public class Input_sqlFun_Month_neq
     {
         [Month]
-        [SearchType(SearchType.neq)]
+        [SearchType(SearchType.Neq)]
         public int DataCreatedAt { get; set; } // 必须和 Entity 的属性名一致
     }
     public class Input_sqlFun_Month_in
     {
         [Month]
-        [SearchType(SearchType.@in)]
+        [SearchType(SearchType.In)]
         public int DataCreatedAt { get; set; } // 必须和 Entity 的属性名一致
     }
 

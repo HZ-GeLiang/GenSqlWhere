@@ -1,8 +1,8 @@
-using System;
-using System.Collections.Generic;
 using ExpressionToSqlWhereClause.EntityConfig;
 using ExpressionToSqlWhereClause.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
 
 namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
@@ -14,8 +14,8 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
     public class Input_ge_Attr
     {
-        [SearchType(SearchType.ge)] public long? Id { get; set; }
-        [SearchType(SearchType.ge)] public DateTime? DataCreatedAt { get; set; }
+        [SearchType(SearchType.Ge)] public long? Id { get; set; }
+        [SearchType(SearchType.Ge)] public DateTime? DataCreatedAt { get; set; }
     }
 
     [TestClass]
@@ -32,25 +32,25 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
 
             var whereLambda = new WhereLambda<Model_People, model_ge>();
-            whereLambda.SearchModel = searchModel;
+            whereLambda.Search = searchModel;
 
-            whereLambda[SearchType.ge] = new List<string>
+            whereLambda[SearchType.Ge] = new List<string>
             {
                 nameof(searchModel.Id),
                 nameof(searchModel.DataCreatedAt),
             };
 
             var expression = whereLambda.ToExpression();
-           var searchCondition = expression.ToWhereClause();
+            var searchCondition = expression.ToWhereClause();
 
-          Assert.AreEqual(searchCondition.WhereClause, "Id >= @Id And DataCreatedAt >= @DataCreatedAt");
+            Assert.AreEqual(searchCondition.WhereClause, "Id >= @Id And DataCreatedAt >= @DataCreatedAt");
             var dict = new Dictionary<string, object>
             {
                 { "@Id", 5 },//取 domain 的类型
                 { "@DataCreatedAt", searchModel.DataCreatedAt }
             };
 
-    CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
+            CollectionAssert.AreEqual(searchCondition.Parameters, dict);
         }
 
     }

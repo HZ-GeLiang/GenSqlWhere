@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 using ExpressionToSqlWhereClause.EntityConfig;
 using ExpressionToSqlWhereClause.ExtensionMethod;
 using ExpressionToSqlWhereClause.Helper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
@@ -43,25 +43,25 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
 
             var whereLambda = new WhereLambda<Model_People, Input_Demo>();
-            whereLambda.SearchModel = searchModel;
+            whereLambda.Search = searchModel;
 
-            whereLambda[SearchType.like] = new List<string>
+            whereLambda[SearchType.Like] = new List<string>
             {
                 nameof(searchModel.Url),
                 nameof(searchModel.Data_Remark),
             };
 
-            whereLambda[SearchType.eq] = new List<string>
+            whereLambda[SearchType.Eq] = new List<string>
             {
                 nameof(searchModel.IsDel),
             };
-            whereLambda[SearchType.@in] = new List<string>
+            whereLambda[SearchType.In] = new List<string>
             {
                 nameof(searchModel.Id),
                 nameof(searchModel.Sex),
             };
 
-            whereLambda[SearchType.timeRange] = new List<string>
+            whereLambda[SearchType.TimeRange] = new List<string>
             {
                 nameof(searchModel.DataCreatedAtStart),
                 nameof(searchModel.DataCreatedAtEnd),
@@ -69,7 +69,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 nameof(searchModel.DataUpdatedAtEnd),
             };
 
-            whereLambda[SearchType.numberRange] = new List<string>
+            whereLambda[SearchType.NumberRange] = new List<string>
             {
             };
 
@@ -107,9 +107,9 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
 
             var whereLambda = new WhereLambda<Model_People, Input_Demo>();
-            whereLambda.SearchModel = searchModel;
+            whereLambda.Search = searchModel;
 
-            whereLambda[SearchType.eq] = new List<string>
+            whereLambda[SearchType.Eq] = new List<string>
             {
                 nameof(searchModel.IsDel),
                 nameof(searchModel.Url),
@@ -151,22 +151,22 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
             var whereLambda = searchModel.CrateWhereLambda((Model_People p) => { }); //这个 People 类型 和上面的匿名类型有关联的
 
-            whereLambda[SearchType.like] = new List<string>
+            whereLambda[SearchType.Like] = new List<string>
             {
                 nameof(searchModel.Url),
             };
 
-            whereLambda[SearchType.eq] = new List<string>
+            whereLambda[SearchType.Eq] = new List<string>
             {
                 nameof(searchModel.IsDel),
             };
-            whereLambda[SearchType.@in] = new List<string>
+            whereLambda[SearchType.In] = new List<string>
             {
                 nameof(searchModel.Id),
                 nameof(searchModel.Sex),
             };
 
-            whereLambda[SearchType.timeRange] = new List<string>
+            whereLambda[SearchType.TimeRange] = new List<string>
             {
                 nameof(searchModel.DataCreatedAtStart),
                 nameof(searchModel.DataCreatedAtEnd),
@@ -189,7 +189,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
             var whereLambda = searchModel.CrateWhereLambda((Model_People p) => { });//这个 People 类型 和上面的匿名类型有关联的
 
-            whereLambda[SearchType.like] = new List<string>
+            whereLambda[SearchType.Like] = new List<string>
             {
                 "balabala"
             };
@@ -213,25 +213,25 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
 
             var whereLambda = new WhereLambda<Model_People, Input_Demo>();
-            whereLambda.SearchModel = searchModel;
+            whereLambda.Search = searchModel;
 
-            whereLambda[SearchType.like] = new List<string>
+            whereLambda[SearchType.Like] = new List<string>
             {
                 nameof(searchModel.Url),
                 nameof(searchModel.Data_Remark),
             };
 
-            whereLambda[SearchType.eq] = new List<string>
+            whereLambda[SearchType.Eq] = new List<string>
             {
                 nameof(searchModel.IsDel),
             };
-            whereLambda[SearchType.@in] = new List<string>
+            whereLambda[SearchType.In] = new List<string>
             {
                 nameof(searchModel.Id),
                 nameof(searchModel.Sex),
             };
 
-            whereLambda[SearchType.timeRange] = new List<string>
+            whereLambda[SearchType.TimeRange] = new List<string>
             {
                 nameof(searchModel.DataCreatedAtStart),
                 nameof(searchModel.DataCreatedAtEnd),
@@ -239,11 +239,11 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 nameof(searchModel.DataUpdatedAtEnd),
             };
 
-            whereLambda[SearchType.numberRange] = new List<string>
+            whereLambda[SearchType.NumberRange] = new List<string>
             {
             };
 
-            var listExp = whereLambda.ToExpressionListForEf(); //可以给ef用
+            var listExp = whereLambda.ToExpressionListForEF(); //可以给ef用
 
         }
 

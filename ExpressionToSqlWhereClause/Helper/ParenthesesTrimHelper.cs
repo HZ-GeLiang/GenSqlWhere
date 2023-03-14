@@ -404,7 +404,7 @@ namespace ExpressionToSqlWhereClause.Helper
             if (result.Contains(SqlKeys.Or) == false)//不包含or
             {
                 //result = result.Replace(sc, "");
-                result = TrimAll(result, new char[] { sc[0] } );
+                result = TrimAll(result, new char[] { sc[0] });
                 return result;
             }
             else

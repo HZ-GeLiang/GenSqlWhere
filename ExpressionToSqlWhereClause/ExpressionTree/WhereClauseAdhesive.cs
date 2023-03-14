@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
+﻿using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
+using System.Collections.Generic;
 
 namespace ExpressionToSqlWhereClause.ExpressionTree
 {
@@ -9,7 +9,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
     public class SqlClauseParametersInfo
     {
         /// <summary>
-        /// 参数化的标志符key
+        /// 参数化的key
         /// </summary>
         public string Key { get; set; }
 

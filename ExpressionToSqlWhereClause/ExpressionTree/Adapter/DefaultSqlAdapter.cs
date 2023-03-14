@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace ExpressionToSqlWhereClause.ExpressionTree.Adapter
+﻿namespace ExpressionToSqlWhereClause.ExpressionTree.Adapter
 {
     public class DefaultSqlAdapter : ISqlAdapter
     {

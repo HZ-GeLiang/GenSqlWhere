@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
+﻿using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
 
 namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause.SqlAdapter
 {

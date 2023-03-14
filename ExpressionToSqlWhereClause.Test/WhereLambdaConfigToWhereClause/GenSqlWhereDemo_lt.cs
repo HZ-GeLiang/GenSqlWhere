@@ -1,8 +1,8 @@
-using System;
-using System.Collections.Generic;
 using ExpressionToSqlWhereClause.EntityConfig;
 using ExpressionToSqlWhereClause.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
 
 namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
@@ -14,8 +14,8 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
     public class Input_lt_Attr
     {
-        [SearchType(SearchType.lt)] public long? Id { get; set; }
-        [SearchType(SearchType.lt)] public DateTime? DataCreatedAt { get; set; }
+        [SearchType(SearchType.Lt)] public long? Id { get; set; }
+        [SearchType(SearchType.Lt)] public DateTime? DataCreatedAt { get; set; }
     }
 
     [TestClass]
@@ -31,9 +31,9 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
 
             var whereLambda = new WhereLambda<Model_People, model_lt>();
-            whereLambda.SearchModel = searchModel;
+            whereLambda.Search = searchModel;
 
-            whereLambda[SearchType.lt] = new List<string>
+            whereLambda[SearchType.Lt] = new List<string>
             {
                 nameof(searchModel.Id),
                 nameof(searchModel.DataCreatedAt),
@@ -41,16 +41,16 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
 
             var expression = whereLambda.ToExpression();
-           var searchCondition = expression.ToWhereClause();
+            var searchCondition = expression.ToWhereClause();
 
-          Assert.AreEqual(searchCondition.WhereClause, "Id < @Id And DataCreatedAt < @DataCreatedAt");
+            Assert.AreEqual(searchCondition.WhereClause, "Id < @Id And DataCreatedAt < @DataCreatedAt");
             var dict = new Dictionary<string, object>
             {
                 { "@Id", 5 },//取 domain 的类型
                 { "@DataCreatedAt", searchModel.DataCreatedAt }
             };
 
-    CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
+            CollectionAssert.AreEqual(searchCondition.Parameters, dict);
         }
 
     }

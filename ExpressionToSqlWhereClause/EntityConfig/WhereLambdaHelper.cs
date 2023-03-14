@@ -1,13 +1,13 @@
+using ExpressionToSqlWhereClause.ExtensionMethod;
+using ExpressionToSqlWhereClause.Helper;
+using ExpressionToSqlWhereClause.SqlFunc;
+using ExpressionToSqlWhereClause.SqlFunc.EntityConfig;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using ExpressionToSqlWhereClause.ExtensionMethod;
-using ExpressionToSqlWhereClause.Helper;
-using ExpressionToSqlWhereClause.SqlFunc;
-using ExpressionToSqlWhereClause.SqlFunc.EntityConfig;
 
 namespace ExpressionToSqlWhereClause.EntityConfig
 {
@@ -1362,7 +1362,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
                 if (lambda == null)
                 {
-                    var exMsg = $"SearchType:{nameof(SearchType.@in)},操作遇到不支持的属性类型:{propType_TEntity}";
+                    var exMsg = $"SearchType:{nameof(SearchType.In)},操作遇到不支持的属性类型:{propType_TEntity}";
                     throw new ExpressionToSqlWhereClauseException(exMsg);
                 }
 
@@ -1687,5 +1687,5 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         #endregion
     }
 
-  
+
 }

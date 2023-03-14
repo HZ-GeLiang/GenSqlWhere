@@ -1,90 +1,79 @@
-namespace ExpressionToSqlWhereClause.EntityConfig
+ï»¿namespace ExpressionToSqlWhereClause.EntityConfig
 {
-    public class SearchTypeAttribute : System.Attribute
-    {
-        public SearchType SearchType { get; private set; }
-
-        public SearchTypeAttribute(SearchType searchType)
-        {
-            this.SearchType = searchType;
-        }
-    }
-
     /// <summary>
-    /// ËÑË÷ÀàĞÍ
+    /// æœç´¢ç±»å‹
     /// </summary>
     public enum SearchType
     {
         /// <summary>
-        /// Î´ÅäÖÃ
+        /// æœªé…ç½®
         /// </summary>
-        none = 0,
+        None = 0,
 
         /// <summary>
         /// like %%
         /// </summary>
-        like,
+        Like,
 
         /// <summary>
-        /// Ö»»á·­Òë³É Equal(=ºÅ) µ±Êı¾İ¿âµÄÖµ°üº¬,ºÅÊ±ÇÒÓÃEqual²éÑ¯Ê±, ¾ÍÖ»ÄÜÓÃÕâ¸ö
+        /// åªä¼šç¿»è¯‘æˆ Equal(=å·) å½“æ•°æ®åº“çš„å€¼åŒ…å«,å·æ—¶ä¸”ç”¨EqualæŸ¥è¯¢æ—¶, å°±åªèƒ½ç”¨è¿™ä¸ª
         /// </summary>
-        eq,
+        Eq,
 
         /// <summary>
-        /// Êµ¼Ê·­Òë³É in »¹ÊÇ Equal , ¸ù¾İ split() ºóµÄ¸öÊı¶ø¶¨ (sqlFunc³ıÍâ)
+        /// å®é™…ç¿»è¯‘æˆ in è¿˜æ˜¯ Equal , æ ¹æ® split() åçš„ä¸ªæ•°è€Œå®š (sqlFuncé™¤å¤–)
         /// </summary>
-        @in,
+        In,
 
         /// <summary>
-        /// Ê±¼ä·¶Î§(Ö»½ÓÊÜÈÕÆÚ), day /hour /minute /sec
-        /// ½áÊøÊ±¼ä»áÔÚµ±Ç°¾«¶È+1(×îĞ¡ÎªÃë, È»ºóÃëµÄ¾«¶ÈÊ¶±ğÓĞÎÊÌâ), È»ºóÊ¹ÓÃ Ğ¡ÓÚ·ûºÅ, ¼´: >=@xxx And < @xxx1
-        /// 1:ÓĞÇø¼ä·¶Î§ [xxxStart, xxxEnd] => °üº¬¿ªÊ¼Öµ,°üº¬½áÊøÖµ
-        /// 2:Ã»ÓĞÇø¼ä·¶Î§  xxx =>(È¡µ±Ç°Ê±¼ä¾«¶È: Èç µ±Ç°ÕâÌì, µ±Ç°ÕâÒ»Ğ¡Ê±, µ±Ç°ÕâÒ»·ÖÖÓ, µ±Ç°ÕâÒ»Ãë)
+        /// æ—¶é—´èŒƒå›´(åªæ¥å—æ—¥æœŸ), day /hour /minute /sec
+        /// ç»“æŸæ—¶é—´ä¼šåœ¨å½“å‰ç²¾åº¦+1(æœ€å°ä¸ºç§’, ç„¶åç§’çš„ç²¾åº¦è¯†åˆ«æœ‰é—®é¢˜), ç„¶åä½¿ç”¨ å°äºç¬¦å·, å³: >=@xxx And ï¼œ @xxx1
+        /// 1:æœ‰åŒºé—´èŒƒå›´ [xxxStart, xxxEnd] => åŒ…å«å¼€å§‹å€¼,åŒ…å«ç»“æŸå€¼
+        /// 2:æ²¡æœ‰åŒºé—´èŒƒå›´  xxx =>(å–å½“å‰æ—¶é—´ç²¾åº¦: å¦‚ å½“å‰è¿™å¤©, å½“å‰è¿™ä¸€å°æ—¶, å½“å‰è¿™ä¸€åˆ†é’Ÿ, å½“å‰è¿™ä¸€ç§’)
         /// </summary>
-        timeRange,
+        TimeRange,
 
         /// <summary>
-        /// ÊıÖµµÄ·¶Î§(Ö»½ÓÊÜÊı×Ö)
-        /// 1:ÓĞÇø¼ä·¶Î§ [xxxLeft, xxxRight]=> °üº¬¿ªÊ¼Öµ,°üº¬½áÊøÖµ
-        /// 2:Ã»ÓĞÇø¼ä·¶Î§  xxx => »¹ÊÇÉÏÃæµÄ¹æÔò, ¼´: >=@xxx And <= @xxx1
+        /// æ•°å€¼çš„èŒƒå›´(åªæ¥å—æ•°å­—)
+        /// 1:æœ‰åŒºé—´èŒƒå›´ [xxxLeft, xxxRight]=> åŒ…å«å¼€å§‹å€¼,åŒ…å«ç»“æŸå€¼
+        /// 2:æ²¡æœ‰åŒºé—´èŒƒå›´  xxx => è¿˜æ˜¯ä¸Šé¢çš„è§„åˆ™, å³: >=@xxx And <= @xxx1
         /// </summary>
-        numberRange,
+        NumberRange,
 
         /// <summary>
         ///  greater than
         /// </summary>
-        gt,
-
+        Gt,
 
         /// <summary>
-        /// ´óÓÚ»òµÈÓÚ(LE)
+        /// å¤§äºæˆ–ç­‰äº(GE)
         /// </summary>
-        ge,
+        Ge,
 
         /// <summary>
         ///  less Than
         /// </summary>
-        lt,
+        Lt,
 
         /// <summary>
-        /// Ğ¡ÓÚ»òµÈÓÚ(LE)
+        /// å°äºæˆ–ç­‰äº(LE)
         /// </summary>
-        le,
+        Le,
 
         /// <summary>
         /// not equal
         /// </summary>
-        neq,
+        Neq,
 
         /// <summary>
-        /// ·­Òë³É like '%xxx'
+        /// ç¿»è¯‘æˆ like '%xxx'
         /// </summary>
-        likeLeft,
+        LikeLeft,
 
         /// <summary>
-        /// ·­Òë³É like 'xxx%'
+        /// ç¿»è¯‘æˆ like 'xxx%'
         /// </summary>
-        likeRight,
+        LikeRight,
 
     }
 }

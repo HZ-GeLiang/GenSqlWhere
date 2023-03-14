@@ -4,27 +4,33 @@ using System.Linq.Expressions;
 
 namespace ExpressionToSqlWhereClause.EntityConfig
 {
+    /// <summary>
+    /// 扩展方法
+    /// </summary>
     public static class WhereLambdaExtensions
     {
         internal static List<Expression<Func<TEntity, bool>>> AddRange<TEntity, TSearchModel>(
             this List<Expression<Func<TEntity, bool>>> whereLambdas,
-            TSearchModel searchModel, SearchType searchType, List<string> props)
+            TSearchModel searchModel,
+            SearchType searchType,
+            List<string> props
+            )
         {
             List<Expression<Func<TEntity, bool>>> expressionList = searchType switch
             {
-                SearchType.none => throw new ExpressionToSqlWhereClauseException($"未指定{nameof(searchType)}", (System.Exception)new ArgumentException()),
-                SearchType.like => WhereLambdaHelper.AddLike<TEntity, TSearchModel>(searchModel, props),
-                SearchType.likeLeft => WhereLambdaHelper.AddLikeLeft<TEntity, TSearchModel>(searchModel, props),
-                SearchType.likeRight => WhereLambdaHelper.AddLikeRight<TEntity, TSearchModel>(searchModel, props),
-                SearchType.eq => WhereLambdaHelper.AddEqual<TEntity, TSearchModel>(searchModel, props),
-                SearchType.neq => WhereLambdaHelper.AddNotEqual<TEntity, TSearchModel>(searchModel, props),
-                SearchType.@in => WhereLambdaHelper.AddIn<TEntity, TSearchModel>(searchModel, props),
-                SearchType.timeRange => WhereLambdaHelper.AddTimeRange<TEntity, TSearchModel>(searchModel, props),
-                SearchType.numberRange => WhereLambdaHelper.AddNumberRange<TEntity, TSearchModel>(searchModel, props),
-                SearchType.gt => WhereLambdaHelper.AddGt<TEntity, TSearchModel>(searchModel, props),
-                SearchType.ge => WhereLambdaHelper.AddGe<TEntity, TSearchModel>(searchModel, props),
-                SearchType.lt => WhereLambdaHelper.AddLt<TEntity, TSearchModel>(searchModel, props),
-                SearchType.le => WhereLambdaHelper.AddLe<TEntity, TSearchModel>(searchModel, props),
+                SearchType.Like => WhereLambdaHelper.AddLike<TEntity, TSearchModel>(searchModel, props),
+                SearchType.LikeLeft => WhereLambdaHelper.AddLikeLeft<TEntity, TSearchModel>(searchModel, props),
+                SearchType.LikeRight => WhereLambdaHelper.AddLikeRight<TEntity, TSearchModel>(searchModel, props),
+                SearchType.Eq => WhereLambdaHelper.AddEqual<TEntity, TSearchModel>(searchModel, props),
+                SearchType.Neq => WhereLambdaHelper.AddNotEqual<TEntity, TSearchModel>(searchModel, props),
+                SearchType.In => WhereLambdaHelper.AddIn<TEntity, TSearchModel>(searchModel, props),
+                SearchType.TimeRange => WhereLambdaHelper.AddTimeRange<TEntity, TSearchModel>(searchModel, props),
+                SearchType.NumberRange => WhereLambdaHelper.AddNumberRange<TEntity, TSearchModel>(searchModel, props),
+                SearchType.Gt => WhereLambdaHelper.AddGt<TEntity, TSearchModel>(searchModel, props),
+                SearchType.Ge => WhereLambdaHelper.AddGe<TEntity, TSearchModel>(searchModel, props),
+                SearchType.Lt => WhereLambdaHelper.AddLt<TEntity, TSearchModel>(searchModel, props),
+                SearchType.Le => WhereLambdaHelper.AddLe<TEntity, TSearchModel>(searchModel, props),
+                SearchType.None => throw new ExpressionToSqlWhereClauseException($"未指定{nameof(searchType)}", new ArgumentException()),
                 _ => throw new ArgumentOutOfRangeException(nameof(searchType), searchType, null),
             };
 
@@ -33,6 +39,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return whereLambdas;
         }
 
+        ///
         public static WhereLambda<TEntity, TSearchModel> CrateWhereLambda<TEntity, TSearchModel>(this TSearchModel searchModel, Action<TEntity> _)
             where TSearchModel : class
             where TEntity : class
@@ -53,6 +60,4 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         }
 
     }
-
-    
 }
