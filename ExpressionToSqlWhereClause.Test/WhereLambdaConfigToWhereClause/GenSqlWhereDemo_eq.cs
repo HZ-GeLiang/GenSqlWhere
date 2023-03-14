@@ -42,7 +42,6 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
         }
 
 
-
         [TestMethod]
         public void Test_eq2()
         {
@@ -59,34 +58,60 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
         }
 
         [TestMethod]
-        public void Test_eq_HasValue()
+        public void Test_eq_WhereIf()
         {
-            var searchModel = new Model_eq()
+            var searchModel = new InputModel_eq()
             {
                 Id = 1
             };
 
-            var whereLambda = new WhereLambda<Input_eq, Model_eq>
             {
-                Search = searchModel
-            };
-            whereLambda.WhereIf[nameof(searchModel.IsDel)] = a => a.Id > 0;/// 添加满足 Id>0的 条件时 ,当前值才生效
+                var whereLambda = new WhereLambda<Model_eq, InputModel_eq>
+                {
+                    Search = searchModel
+                };
+                whereLambda.WhereIf[nameof(searchModel.Id)] = a => a.Id > 0;// 添加满足 Id>0的 条件时 ,当前值才生效
 
-            whereLambda[SearchType.Eq] = new List<string>
+                whereLambda[SearchType.Eq] = new List<string>
+                {
+                    nameof(searchModel.Id),
+                };
+
+                var expression = whereLambda.ToExpression();
+                var searchCondition = expression.ToWhereClause();
+
+                Assert.AreEqual(searchCondition.WhereClause, "Id = @Id");
+                var dict = new Dictionary<string, object>
+                {
+                    { "@Id", searchModel.Id }
+                };
+
+                CollectionAssert.AreEqual(searchCondition.Parameters, dict);
+            }
+
+
             {
-                nameof(searchModel.IsDel),
-            };
+                var whereLambda = new WhereLambda<Model_eq, InputModel_eq>
+                {
+                    Search = searchModel
+                };
+                whereLambda.WhereIf[nameof(searchModel.Id)] = a => a.Id > 10;// 添加满足 Id>0的 条件时 ,当前值才生效
 
-            var expression = whereLambda.ToExpression();
-            var searchCondition = expression.ToWhereClause();
+                whereLambda[SearchType.Eq] = new List<string>
+                {
+                    nameof(searchModel.Id),
+                };
 
-            Assert.AreEqual(searchCondition.WhereClause, "IsDel = @IsDel");
-            var dict = new Dictionary<string, object>
-            {
-                { "@IsDel", searchModel.IsDel }
-            };
+                var expression = whereLambda.ToExpression();
+                var searchCondition = expression.ToWhereClause();
 
-            CollectionAssert.AreEqual(searchCondition.Parameters, dict);
+                Assert.AreEqual(searchCondition.WhereClause, "");
+                var dict = new Dictionary<string, object>
+                { 
+                };
+
+                CollectionAssert.AreEqual(searchCondition.Parameters, dict);
+            }
 
         }
 
@@ -109,6 +134,11 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
         public int Id { get; set; }
     }
 
+
+    public class InputModel_eq
+    {
+        public int Id { get; set; }
+    }
     public class Model_eq2
     {
         public int Id { get; set; }
