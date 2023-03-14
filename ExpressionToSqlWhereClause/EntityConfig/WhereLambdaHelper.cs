@@ -1690,18 +1690,28 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             where TEntity : class
             where TSearch : class
         {
-
-            if (ExistsWhereIf(that, prop) && InvokeWhereIf(that, prop) == false)
+            if (ExistsWhereIf(that, prop))
             {
-                return true;
+                if (InvokeWhereIf(that, prop) == false)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-
-            if (value == null)
+            else
             {
-                return true;
+                if (value == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-
-            return false;
         }
 
         private static bool ExistsWhereIf<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, string propName)
