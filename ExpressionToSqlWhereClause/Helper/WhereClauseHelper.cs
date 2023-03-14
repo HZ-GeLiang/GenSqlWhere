@@ -158,13 +158,9 @@ namespace ExpressionToSqlWhereClause.Helper
                         whereClause = whereClause.Replace(sqlParameterName, $"{sqlParameterValue}");
                     }
                 }
-
             }
-
             return whereClause;
         }
-
-
 
         public static void ToFormattableString(SearchCondition searchCondition)
         {
@@ -242,5 +238,27 @@ namespace ExpressionToSqlWhereClause.Helper
             return tArray;
         }
 
+        /*
+        /// <summary>
+        /// sqlserver 使用的
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        public static System.Data.SqlClient.SqlParameter[] ParamToSqlParameter(Dictionary<string, object> param)
+        {
+            if (param == null)
+            {
+                return new System.Data.SqlClient.SqlParameter[0];
+            }
+            var cmdParms = new System.Data.SqlClient.SqlParameter[param.Keys.Count];
+            var i = 0;
+            foreach (var key in param.Keys)
+            {
+                cmdParms[i] = new System.Data.SqlClient.SqlParameter(key, param[key]);
+                i++;
+            }
+            return cmdParms;
+        }
+        */
     }
 }
