@@ -86,8 +86,10 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
             };
 
-            var whereLambda = new WhereLambda<Model_People, model_lt>();
-            whereLambda.Search = searchModel;
+            var whereLambda = new WhereLambda<Model_People, model_lt>
+            {
+                Search = searchModel
+            };
 
             whereLambda[SearchType.Lt] = new List<string>
             {

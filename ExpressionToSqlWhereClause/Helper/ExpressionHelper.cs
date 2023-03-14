@@ -11,10 +11,10 @@ namespace ExpressionToSqlWhereClause.Helper
             public object Value { get; set; }
             protected override Expression VisitMember(MemberExpression member)
             {
-                if (member.Expression is ConstantExpression && member.Member is FieldInfo)
+                if (member.Expression is ConstantExpression constantExpression && member.Member is FieldInfo fieldInfo)
                 {
-                    object container = ((ConstantExpression)member.Expression).Value;
-                    object value = ((FieldInfo)member.Member).GetValue(container);
+                    object container = constantExpression.Value;
+                    object value = fieldInfo.GetValue(container);
                     this.Value = value;
                     //Console.WriteLine("Got value: {0}", value);
                 }

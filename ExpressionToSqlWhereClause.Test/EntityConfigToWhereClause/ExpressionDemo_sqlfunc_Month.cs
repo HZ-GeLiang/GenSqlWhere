@@ -7,8 +7,6 @@ using System.Linq.Expressions;
 
 namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 {
-
-
     [TestClass]
     public class ExpressionDemo_sqlfunc_Month
     {
@@ -23,7 +21,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
         {
             Expression<Func<User_SqlFunc_Entity, bool>> expression = u => DbFunctions.Month(u.CreateAt) == 5;
             var searchCondition = expression.ToWhereClause();
-            Dictionary<string, object> expectedParameters = new Dictionary<string, object>
+            Dictionary<string, object> expectedParameters = new()
             {
                 { "@Month", 5 }
             };
@@ -39,7 +37,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             Expression<Func<User_SqlFunc_Entity, bool>> expression =
                 u => DbFunctions.MonthIn(u.CreateAt) == new List<int> { 5, 6 };//string 需要自己转成 List<int> , 这里略,直接写死
             var searchCondition = expression.ToWhereClause();
-            Dictionary<string, object> expectedParameters = new Dictionary<string, object>
+            Dictionary<string, object> expectedParameters = new()
             {
                 { "@MonthIn", "5,6" }
             };

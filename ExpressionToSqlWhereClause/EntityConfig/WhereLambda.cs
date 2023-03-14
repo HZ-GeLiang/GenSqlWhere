@@ -73,7 +73,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         /// <summary>
         /// 检索对象的配置
         /// </summary>
-        private Dictionary<SearchType, List<string>> _dictSearhType = new Dictionary<SearchType, List<string>>();
+        private Dictionary<SearchType, List<string>> _dictSearhType = new();
 
         public List<string> this[SearchType searchType]
         {
@@ -94,6 +94,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return expression;
         }
 
+        ///
         public static implicit operator Expression<Func<TEntity, bool>>(WhereLambda<TEntity, TSearch> that)
         {
             var whereLambdas = ToExpressionList(that);
@@ -101,7 +102,9 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return expression;
         }
 
+        ///
         internal static Expression<Func<TEntity, bool>> ToExpression<TEntity>(List<Expression<Func<TEntity, bool>>> whereLambdas)
+            where TEntity : class 
         {
             if (!whereLambdas.Any())
             {

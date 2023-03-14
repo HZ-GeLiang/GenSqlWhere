@@ -26,8 +26,10 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
             var searchCondition = exp.ToWhereClause();
 
-            Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
-            expectedParameters.Add("@Month", 1);//Month()返回的是int ,所以1 是int类型的才对
+            Dictionary<string, object> expectedParameters = new()
+            {
+                { "@Month", 1 }//Month()返回的是int ,所以1 是int类型的才对
+            };
             Assert.AreEqual(searchCondition.WhereClause, "Month(DataCreatedAt) = @Month");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
@@ -45,8 +47,10 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
             var searchCondition = exp.ToWhereClause();
 
-            Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
-            expectedParameters.Add("@Month", 1);//Month()返回的是int ,所以1 是int类型的才对
+            Dictionary<string, object> expectedParameters = new()
+            {
+                { "@Month", 1 }//Month()返回的是int ,所以1 是int类型的才对
+            };
             Assert.AreEqual(searchCondition.WhereClause, "Month(DataCreatedAt) <> @Month");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
@@ -83,8 +87,10 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
             var searchCondition = exp.ToWhereClause();
 
-            Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
-            expectedParameters.Add("@MonthIn", "1"); //sql 的 in(变量), 这个变量只能写一个, 所以,这里是string
+            Dictionary<string, object> expectedParameters = new()
+            {
+                { "@MonthIn", "1" } //sql 的 in(变量), 这个变量只能写一个, 所以,这里是string
+            };
             Assert.AreEqual(searchCondition.WhereClause, "Month(DataCreatedAt) In (@MonthIn)");
 
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
@@ -106,8 +112,10 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
             var searchCondition = exp.ToWhereClause();
 
-            Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
-            expectedParameters.Add("@MonthIn", "1,2,3"); //sql 的 in(变量), 这个变量只能写一个, 所以,这里是string
+            Dictionary<string, object> expectedParameters = new()
+            {
+                { "@MonthIn", "1,2,3" } //sql 的 in(变量), 这个变量只能写一个, 所以,这里是string
+            };
             Assert.AreEqual(searchCondition.WhereClause, "Month(DataCreatedAt) In (@MonthIn)");
 
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
@@ -129,8 +137,10 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
             var searchCondition = exp.ToWhereClause();
 
-            Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
-            expectedParameters.Add("@MonthIn", "1,2,3"); //sql 的 in(变量), 这个变量只能写一个, 所以,这里是string
+            Dictionary<string, object> expectedParameters = new()
+            {
+                { "@MonthIn", "1,2,3" } //sql 的 in(变量), 这个变量只能写一个, 所以,这里是string
+            };
             Assert.AreEqual(searchCondition.WhereClause, "Month(DataCreatedAt) In (@MonthIn)");
 
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);

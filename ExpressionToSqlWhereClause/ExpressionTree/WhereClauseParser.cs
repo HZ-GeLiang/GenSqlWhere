@@ -333,7 +333,8 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                  ExpressionType.GreaterThan or
                  ExpressionType.GreaterThanOrEqual or
                  ExpressionType.LessThan or
-                 ExpressionType.LessThanOrEqual)
+                 ExpressionType.LessThanOrEqual
+                )
             {
                 var sqlBuilder = new StringBuilder();
 
@@ -393,20 +394,12 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
 
                 if (needParseRight)
                 {
-                    ParseResult rightParseResult;
-
-                    switch (binaryExpression.Right.NodeType)
+                    ParseResult rightParseResult = binaryExpression.Right.NodeType switch
                     {
-                        case ExpressionType.MemberAccess:
-                            rightParseResult = Parse(binaryExpression.NodeType, binaryExpression.Right, adhesive, aliasDict); //调用自身
-                            break;
-                        case ExpressionType.Constant:// {(a.Id == 1)} 
-                            rightParseResult = Parse(binaryExpression.NodeType, binaryExpression.Right, adhesive, aliasDict); //调用自身
-                            break;
-                        default:
-                            rightParseResult = Parse(binaryExpression.Right.NodeType, binaryExpression.Right, adhesive, aliasDict); //调用自身
-                            break;
-                    }
+                        ExpressionType.MemberAccess => Parse(binaryExpression.NodeType, binaryExpression.Right, adhesive, aliasDict),//调用自身  
+                        ExpressionType.Constant => Parse(binaryExpression.NodeType, binaryExpression.Right, adhesive, aliasDict),//调用自身, {(a.Id == 1)} 
+                        _ => Parse(binaryExpression.Right.NodeType, binaryExpression.Right, adhesive, aliasDict),//调用自身
+                    };
 
                     var rightClause = $"({ReplaceAlias(rightParseResult)})";
                     sqlBuilder.Append(rightClause);
@@ -453,9 +446,8 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
             }
             */
             #endregion
-            var msg = $"Unknow Left:{binaryExpression.Left.GetType()}, Right:{binaryExpression.Right.GetType()},  NodeType:{binaryExpression.NodeType}";
+            var msg = $"Unknow Left:{binaryExpression.Left.GetType()} ,Right:{binaryExpression.Right.GetType()} ,NodeType:{binaryExpression.NodeType}";
             throw new NotSupportedException(msg);
-
         }
 
         /// <summary>
@@ -476,7 +468,6 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 return true;
             }
             return false;
-
         }
 
 
@@ -487,21 +478,14 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
         /// <returns></returns>
         private static string ToLogicSymbol(this ExpressionType expressionType)
         {
-            switch (expressionType)
+            return expressionType switch
             {
-                case ExpressionType.AndAlso:
-                    return "And";
-                case ExpressionType.OrElse:
-                    return "Or";
-                default:
-                    throw new NotSupportedException($"Unknown ExpressionType {expressionType}");
-            }
+                ExpressionType.AndAlso => SqlKeys.LogicSymbolAnd,
+                ExpressionType.OrElse => SqlKeys.LogicSymbolOr,
+                _ => throw new NotSupportedException($"Unknown ExpressionType {expressionType}"),
+            };
         }
     }
 
-    internal class ClauseParserResult
-    {
-        public string WhereClause { get; set; }
-        public WhereClauseAdhesive Adhesive { get; set; }
-    }
+   
 }
