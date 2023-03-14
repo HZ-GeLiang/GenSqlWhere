@@ -65,7 +65,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
 
             //else  loopCount > 0
 
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             foreach (var obj in loopObj)
             {
                 if (obj.GetType().IsStructType())
@@ -90,7 +90,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
         public static object ParseConstant(Expression expression)
         {
 #if DEBUG
-            StackFrame frame = new StackFrame(1, true);
+            StackFrame frame = new(1, true);
             var method = frame.GetMethod();
             var fileName = frame.GetFileName();
             var lineNumber = frame.GetFileLineNumber();
@@ -212,7 +212,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                     return propertyInfo.GetValue(value);
                 default:
 #if DEBUG
-                    StackFrame frame = new StackFrame(1, true);
+                    StackFrame frame = new(1, true);
                     var method = frame.GetMethod();
                     var fileName = frame.GetFileName();
                     var lineNumber = frame.GetFileLineNumber();
@@ -308,6 +308,27 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 var array = ParseConstant(simpleBinaryExpression.Left) as Array;
                 var index = (int)ParseConstant(simpleBinaryExpression.Right);
                 return array.GetValue(index);
+            }
+            else if (simpleBinaryExpression.NodeType == ExpressionType.Coalesce)
+            {
+                var left = simpleBinaryExpression.Left;
+                var right = simpleBinaryExpression.Right;
+
+                // 编译表达式树为委托
+                var leftFunc = Expression.Lambda(left).Compile();
+                var rightFunc = Expression.Lambda(right).Compile();
+
+                // 计算左右子表达式的值
+                var leftValue = leftFunc.DynamicInvoke();
+                if (leftValue == null)
+                {
+                    var rightValue = rightFunc.DynamicInvoke();
+                    return rightValue;
+                }
+                else
+                {
+                    return leftValue;
+                }
             }
             else
             {

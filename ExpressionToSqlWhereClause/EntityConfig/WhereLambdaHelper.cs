@@ -64,7 +64,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             //}
             //return whereLambdas;
 
-            List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            List<Expression<Func<TEntity, bool>>> whereLambdas = new();
             foreach (var prop in props)
             {
                 var propertyValue = new PropertyValue<TSearch>(searchModel);
@@ -73,9 +73,9 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 {
                     continue;
                 }
-                if (value is string && !string.IsNullOrWhiteSpace((string)value))
+                if (value is string valueStr && !string.IsNullOrWhiteSpace(valueStr))
                 {
-                    var exp = WhereLambdaHelper.GetExpression_Contains<TEntity>(prop, (string)value);
+                    var exp = WhereLambdaHelper.GetExpression_Contains<TEntity>(prop, valueStr);
                     if (exp != null)
                     {
                         whereLambdas.Add(exp);
@@ -130,7 +130,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 return Default<TEntity>();
             }
 
-            List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            List<Expression<Func<TEntity, bool>>> whereLambdas = new();
             foreach (var prop in props)
             {
                 var propertyValue = new PropertyValue<TSearch>(searchModel);
@@ -139,9 +139,9 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 {
                     continue;
                 }
-                if (value is string && !string.IsNullOrWhiteSpace((string)value))
+                if (value is string valueStr && !string.IsNullOrWhiteSpace(valueStr))
                 {
-                    var exp = WhereLambdaHelper.GetExpression_StartsWith<TEntity>(prop, (string)value);
+                    var exp = WhereLambdaHelper.GetExpression_StartsWith<TEntity>(prop, valueStr);
                     if (exp != null)
                     {
                         whereLambdas.Add(exp);
@@ -184,7 +184,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             {
                 return Default<TEntity>();
             }
-            return AddLikeRight<TEntity, TSearch>(that.Search, props); 
+            return AddLikeRight<TEntity, TSearch>(that.Search, props);
         }
 
         ///
@@ -197,7 +197,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 return Default<TEntity>();
             }
 
-            List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            List<Expression<Func<TEntity, bool>>> whereLambdas = new();
             foreach (var prop in props)
             {
                 var propertyValue = new PropertyValue<TSearch>(searchModel);
@@ -206,9 +206,9 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 {
                     continue;
                 }
-                if (value is string && !string.IsNullOrWhiteSpace((string)value))
+                if (value is string valueStr && !string.IsNullOrWhiteSpace(valueStr))
                 {
-                    var exp = WhereLambdaHelper.GetExpression_EndsWith<TEntity>(prop, (string)value);
+                    var exp = WhereLambdaHelper.GetExpression_EndsWith<TEntity>(prop, valueStr);
                     if (exp != null)
                     {
                         whereLambdas.Add(exp);
@@ -326,7 +326,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 return Default<TEntity>();
             }
 
-            List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            List<Expression<Func<TEntity, bool>>> whereLambdas = new();
             //todo:这里可以获得 TSearch 的属性的 Attribute
             foreach (var prop in props)
             {
@@ -439,7 +439,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 return Default<TEntity>();
             }
 
-            List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            List<Expression<Func<TEntity, bool>>> whereLambdas = new();
             foreach (var prop in props)
             {
                 var propertyValue = new PropertyValue<TSearch>(searchModel);
@@ -674,9 +674,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                         bool needSwap = (dynamic)numbers.NumberRange[0] > (dynamic)numbers.NumberRange[1]; //比较大小,小在放前面 
                         if (needSwap)
                         {
-                            object t = numbers.NumberRange[0];
-                            numbers.NumberRange[0] = numbers.NumberRange[1];
-                            numbers.NumberRange[1] = t;
+                            (numbers.NumberRange[1], numbers.NumberRange[0]) = (numbers.NumberRange[0], numbers.NumberRange[1]);
                         }
                     }
                 }
@@ -689,7 +687,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             //true       有值(包含)     无值
             //true       无值          有值(含)
 
-            List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            List<Expression<Func<TEntity, bool>>> whereLambdas = new();
 
             foreach (var key in numberDict.Keys)
             {
@@ -804,7 +802,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 {
                     continue;
                 }
-                if (!(value is DateTime))
+                if (value is not DateTime)
                 {
                     throw new FrameException("当前值不是 datetime 类型");
                 }
@@ -929,9 +927,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
                         if (Comparer<DateTime>.Default.Compare(d1, d2) > 0)
                         {
-                            var t = d1;
-                            d1 = d2;
-                            d2 = t;
+                            (d2, d1) = (d1, d2);
                         }
 
                         if (d1 == d2)//效果等价于 只有一个字段 给查询的时间范围  
@@ -971,7 +967,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             //true       有值(包含)     无值
             //true       无值          有值(不含)
 
-            List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            List<Expression<Func<TEntity, bool>>> whereLambdas = new();
 
             foreach (var key in timeDict.Keys)
             {
@@ -1186,7 +1182,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             }
             var type_TEntity = typeof(TEntity);
 
-            List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            List<Expression<Func<TEntity, bool>>> whereLambdas = new();
             foreach (var propertyName in propertyNames)
             {
                 var propertyValue = new PropertyValue<TSearch>(searchModel);
@@ -1474,7 +1470,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 return Default<TEntity>();
             }
 
-            List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            List<Expression<Func<TEntity, bool>>> whereLambdas = new();
 
             var type_TEntity = typeof(TEntity);
             foreach (string prop in props)
@@ -1553,7 +1549,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 return Default<TEntity>();
             }
 
-            List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            List<Expression<Func<TEntity, bool>>> whereLambdas = new();
             var type_TEntity = typeof(TEntity);
             foreach (string prop in props)
             {
@@ -1631,7 +1627,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 return Default<TEntity>();
             }
 
-            List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            List<Expression<Func<TEntity, bool>>> whereLambdas = new();
             var type_TEntity = typeof(TEntity);
             foreach (string prop in props)
             {
@@ -1709,7 +1705,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 return Default<TEntity>();
             }
 
-            List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
+            List<Expression<Func<TEntity, bool>>> whereLambdas = new();
             var type_TEntity = typeof(TEntity);
             foreach (string prop in props)
             {
@@ -1767,7 +1763,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         private static bool HaveCount(List<string> props) => props != null && props.Count > 0;
         private static bool HaveCount(string[] props) => props != null && props.Length > 0;
 
-        private static List<Expression<Func<TEntity, bool>>> Default<TEntity>() => new List<Expression<Func<TEntity, bool>>>();
+        private static List<Expression<Func<TEntity, bool>>> Default<TEntity>() => new();
 
         private static bool ExistsWhereIf<TSearch>(TSearch searchModel)
         {

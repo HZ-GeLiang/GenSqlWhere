@@ -6,7 +6,7 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
     {
         public static Dictionary<TKey, TValue> DeepClone<TKey, TValue>(this IDictionary<TKey, TValue> dict)
         {
-            Dictionary<TKey, TValue> clone = new Dictionary<TKey, TValue>();
+            Dictionary<TKey, TValue> clone = new();
             foreach (var key in dict.Keys)
             {
                 clone.Add(key, dict[key]);

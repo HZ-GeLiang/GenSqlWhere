@@ -19,8 +19,10 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 IsDel = true,
             };
 
-            var whereLambda = new WhereLambda<Input_eq, Model_eq>();
-            whereLambda.Search = searchModel;
+            var whereLambda = new WhereLambda<Input_eq, Model_eq>
+            {
+                Search = searchModel
+            };
 
             whereLambda[SearchType.Eq] = new List<string>
             {
@@ -64,8 +66,10 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 Id = 1
             };
 
-            var whereLambda = new WhereLambda<Input_eq, Model_eq>();
-            whereLambda.Search = searchModel;
+            var whereLambda = new WhereLambda<Input_eq, Model_eq>
+            {
+                Search = searchModel
+            };
             whereLambda.WhereIf[nameof(searchModel.IsDel)] = a => a.Id > 0;/// 添加满足 Id>0的 条件时 ,当前值才生效
 
             whereLambda[SearchType.Eq] = new List<string>

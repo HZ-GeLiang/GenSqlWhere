@@ -14,8 +14,10 @@ namespace ExpressionToSqlWhereClause.Helper
     //快速的动态获取属性值
     internal sealed class PropertyValue<T>
     {
-        private static ConcurrentDictionary<string, MemberGetDelegate> _memberGetDelegate = new ConcurrentDictionary<string, MemberGetDelegate>();
+        private static ConcurrentDictionary<string, MemberGetDelegate> _memberGetDelegate = new();
+
         delegate object MemberGetDelegate(T target);
+
         public PropertyValue(T target)
         {
             if (target == null)
@@ -24,7 +26,9 @@ namespace ExpressionToSqlWhereClause.Helper
             }
             Target = target;
         }
+
         public T Target { get; private set; }
+
         public (PropertyInfo property_info, object value, Type valuePropType) Get(string name)
         {
             if (typeof(T) != Target.GetType())
@@ -34,11 +38,7 @@ namespace ExpressionToSqlWhereClause.Helper
 
             Type type = typeof(T);
             //Type type = Target.GetType();//如使用多态,这里获得的是实际类型
-            PropertyInfo property = type.GetProperty(name);
-            if (property == null)
-            {
-                throw new ArgumentException($"类'{type.FullName}'中不存在名为'{name}'的属性");
-            }
+            PropertyInfo property = type.GetProperty(name) ?? throw new ArgumentException($"类'{type.FullName}'中不存在名为'{name}'的属性");
 
             if (property.PropertyType.IsClass)
             {
@@ -55,6 +55,7 @@ namespace ExpressionToSqlWhereClause.Helper
             //MemberGetDelegate memberGet = _memberGetDelegate.GetOrAdd(name, BuildDelegate);
             //return memberGet(Target);
         }
+
         private MemberGetDelegate BuildDelegate(string name)
         {
             Type type = typeof(T);

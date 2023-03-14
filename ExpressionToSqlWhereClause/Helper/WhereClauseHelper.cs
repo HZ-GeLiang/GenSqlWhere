@@ -55,7 +55,7 @@ namespace ExpressionToSqlWhereClause.Helper
         /// <returns></returns>
         public static Dictionary<string, string> GetDefaultFormatDateTime(Dictionary<string, object> parameters, string format)
         {
-            Dictionary<string, string> formatDateTime = new Dictionary<string, string>();
+            Dictionary<string, string> formatDateTime = new();
             if (parameters != null)
             {
                 foreach (var parameter in parameters)

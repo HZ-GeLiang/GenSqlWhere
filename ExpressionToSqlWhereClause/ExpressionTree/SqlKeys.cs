@@ -3,6 +3,10 @@
 
     internal class SqlKeys
     {
+        //逻辑
+        public const string LogicSymbolAnd = "And";
+        public const string LogicSymbolOr = "Or";
+
         //关系
         public const string And = " And ";
         public const string Or = " Or ";
