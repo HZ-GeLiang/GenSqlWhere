@@ -1,3 +1,4 @@
+using ExpressionToSqlWhereClause.Exceptions;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -34,7 +35,7 @@ namespace ExpressionToSqlWhereClause.Helper
 
             if (string.IsNullOrEmpty(leftMemberName))
             {
-                throw new ExpressionToSqlWhereClauseException("解析表达式的代码有问题,请修改程序");
+                throw new FrameException("解析表达式的代码有问题,请修改程序");
             }
             return leftMemberName;
         }
@@ -80,7 +81,7 @@ namespace ExpressionToSqlWhereClause.Helper
             //object value = Expression.Lambda<Func<object>>(Expression.Convert(node, typeof(object))).Compile().Invoke();
             #endregion
 
-            throw new ExpressionToSqlWhereClauseException("解析表达式的代码有问题,请修改程序");
+            throw new FrameException("解析表达式的代码有问题,请修改程序");
         }
     }
 }

@@ -1,3 +1,4 @@
+using ExpressionToSqlWhereClause.Exceptions;
 using ExpressionToSqlWhereClause.ExtensionMethod;
 using ExpressionToSqlWhereClause.Helper;
 using ExpressionToSqlWhereClause.SqlFunc;
@@ -11,23 +12,30 @@ using System.Text.RegularExpressions;
 
 namespace ExpressionToSqlWhereClause.EntityConfig
 {
+    ///
     public static class WhereLambdaHelper
     {
-        private static bool HaveCount(List<string> props) => props != null && props.Count > 0;
-        private static bool HaveCount(string[] props) => props != null && props.Length > 0;
-
-        private static List<Expression<Func<TEntity, bool>>> Default<TEntity>() => new List<Expression<Func<TEntity, bool>>>();
 
         #region AddLike
 
-        public static List<Expression<Func<TEntity, bool>>> AddLike<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
+        public static List<Expression<Func<TEntity, bool>>> AddLike<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
+            where TEntity : class
+            where TSearch : class
         {
-            return HaveCount(props)
-                ? AddLike<TEntity, TSearchModel>(searchModel, props.ToArray())
-                : Default<TEntity>();
+            var props = that.SearchCondition[searchType]?.ToArray();
+            if (HaveCount(props))
+            {
+                return AddLike<TEntity, TSearch>(that.Search, props);
+            }
+            else
+            {
+                return Default<TEntity>();
+            }
         }
 
-        public static List<Expression<Func<TEntity, bool>>> AddLike<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
+        public static List<Expression<Func<TEntity, bool>>> AddLike<TEntity, TSearch>(TSearch searchModel, params string[] props)
+            where TEntity : class
+            where TSearch : class
         {
             if (!HaveCount(props))
             {
@@ -38,7 +46,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             //List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
             //foreach (var prop in props)
             //{
-            //    var propertyValue = new PropertyValue<TSearchModel>(searchModel);
+            //    var propertyValue = new PropertyValue<TSearch>(searchModel);
             //    object value = propertyValue.Get(prop);
             //    if (value == null)
             //    {
@@ -59,7 +67,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
             foreach (var prop in props)
             {
-                var propertyValue = new PropertyValue<TSearchModel>(searchModel);
+                var propertyValue = new PropertyValue<TSearch>(searchModel);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
                 if (value == null)
                 {
@@ -75,13 +83,12 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 }
             }
             return whereLambdas;
-
         }
 
         // t.SomeProperty.Contains("stringValue");
         private static Expression<Func<TEntity, bool>> GetExpression_Contains<TEntity>(string propertyName, string propertyValue)
+            where TEntity : class
         {
-
             var type_TEntity = typeof(TEntity);
             var prop_Info = type_TEntity.GetProperty(propertyName);
             if (prop_Info == null)
@@ -101,14 +108,22 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #region AddLikeLeft
 
-        public static List<Expression<Func<TEntity, bool>>> AddLikeLeft<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
+        public static List<Expression<Func<TEntity, bool>>> AddLikeLeft<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
+            where TEntity : class
+            where TSearch : class
         {
-            return HaveCount(props)
-                ? AddLikeLeft<TEntity, TSearchModel>(searchModel, props.ToArray())
-                : Default<TEntity>();
+            var props = that.SearchCondition[searchType]?.ToArray();
+
+            if (HaveCount(props) == false)
+            {
+                return Default<TEntity>();
+            }
+            return AddLikeLeft<TEntity, TSearch>(that.Search, props);
         }
 
-        public static List<Expression<Func<TEntity, bool>>> AddLikeLeft<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
+        public static List<Expression<Func<TEntity, bool>>> AddLikeLeft<TEntity, TSearch>(TSearch searchModel, params string[] props)
+            where TEntity : class
+            where TSearch : class
         {
             if (!HaveCount(props))
             {
@@ -118,7 +133,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
             foreach (var prop in props)
             {
-                var propertyValue = new PropertyValue<TSearchModel>(searchModel);
+                var propertyValue = new PropertyValue<TSearch>(searchModel);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
                 if (value == null)
                 {
@@ -159,14 +174,23 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #region AddLikeRight
 
-        public static List<Expression<Func<TEntity, bool>>> AddLikeRight<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
+        ///
+        public static List<Expression<Func<TEntity, bool>>> AddLikeRight<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
+            where TEntity : class
+            where TSearch : class
         {
-            return HaveCount(props)
-                ? AddLikeRight<TEntity, TSearchModel>(searchModel, props.ToArray())
-                : Default<TEntity>();
+            var props = that.SearchCondition[searchType]?.ToArray();
+            if (HaveCount(props) == false)
+            {
+                return Default<TEntity>();
+            }
+            return AddLikeRight<TEntity, TSearch>(that.Search, props); 
         }
 
-        public static List<Expression<Func<TEntity, bool>>> AddLikeRight<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
+        ///
+        public static List<Expression<Func<TEntity, bool>>> AddLikeRight<TEntity, TSearch>(TSearch searchModel, params string[] props)
+            where TEntity : class
+            where TSearch : class
         {
             if (!HaveCount(props))
             {
@@ -176,7 +200,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
             foreach (var prop in props)
             {
-                var propertyValue = new PropertyValue<TSearchModel>(searchModel);
+                var propertyValue = new PropertyValue<TSearch>(searchModel);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
                 if (value == null)
                 {
@@ -217,13 +241,22 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #region AddEqual版本1 (最开始的代码) 后来根据 AddInOrEuqal 衍生出 AddEqual版本2
         /*
-        public static List<Expression<Func<TEntity, bool>>> AddEqual<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
+        public static List<Expression<Func<TEntity, bool>>> AddEqual<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
+            where TEntity : class
+            where TSearch : class
         {
-            return HaveCount(props)
-                ? AddEqual<TEntity, TSearchModel>(searchModel, props.ToArray())
-                : Default<TEntity>();
+            var props = that.SearchCondition[searchType]?.ToArray();
+            if (HaveCount(props) == false)
+            {
+                return Default<TEntity>();
+            }
+
+            return AddEqual<TEntity, TSearch>(searchModel, props.ToArray())
         }
-        public static List<Expression<Func<TEntity, bool>>> AddEqual<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
+
+        public static List<Expression<Func<TEntity, bool>>> AddEqual<TEntity, TSearch>(TSearch searchModel, params string[] props)
+            where TEntity : class
+            where TSearch : class
         {
             if (!HaveCount(props))
             {
@@ -233,7 +266,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
             foreach (var prop in props)
             {
-                var propertyValue = new PropertyValue<TSearchModel>(searchModel);
+                var propertyValue = new PropertyValue<TSearch>(searchModel);
                 object value = propertyValue.Get(prop, out var propType);
                 if (value == null)
                 {
@@ -265,7 +298,6 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 whereLambdas.Add(lambda);
             }
             return whereLambdas;
-
         }
         */
 
@@ -273,14 +305,21 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #region AddEqual版本2
 
-        public static List<Expression<Func<TEntity, bool>>> AddEqual<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
+        public static List<Expression<Func<TEntity, bool>>> AddEqual<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
+            where TEntity : class
+            where TSearch : class
         {
-            return HaveCount(props)
-                ? AddEqual<TEntity, TSearchModel>(searchModel, props.ToArray())
-                : Default<TEntity>();
+            var props = that.SearchCondition[searchType]?.ToArray();
+            if (HaveCount(props) == false)
+            {
+                return Default<TEntity>();
+            }
+            return AddEqual<TEntity, TSearch>(that.Search, props);
         }
 
-        public static List<Expression<Func<TEntity, bool>>> AddEqual<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
+        public static List<Expression<Func<TEntity, bool>>> AddEqual<TEntity, TSearch>(TSearch searchModel, params string[] props)
+            where TEntity : class
+            where TSearch : class
         {
             if (!HaveCount(props))
             {
@@ -288,23 +327,26 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             }
 
             List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
-            //todo:这里可以获得 TSearchModel 的属性的 Attribute
+            //todo:这里可以获得 TSearch 的属性的 Attribute
             foreach (var prop in props)
             {
-                var propertyValue = new PropertyValue<TSearchModel>(searchModel);
+                var propertyValue = new PropertyValue<TSearch>(searchModel);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
+
                 if (value == null)
                 {
                     continue;
                 }
 
-                AddEqualCore<TEntity, TSearchModel>(prop, valuePropType, value, whereLambdas);
+                AddEqualCore<TEntity, TSearch>(prop, valuePropType, value, whereLambdas);
             }
             return whereLambdas;
         }
 
         //核心-equal
-        private static void AddEqualCore<TEntity, TSearchModel>(string propertyName, Type valuePropType, object propertyValue, List<Expression<Func<TEntity, bool>>> whereLambdas)
+        private static void AddEqualCore<TEntity, TSearch>(string propertyName, Type valuePropType, object propertyValue, List<Expression<Func<TEntity, bool>>> whereLambdas)
+            where TEntity : class
+            where TSearch : class
         {
             var type_TEntity = typeof(TEntity);
             var prop_Info = type_TEntity.GetProperty(propertyName);
@@ -318,14 +360,13 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             var propertyExp = Expression.Property(parameterExp, propertyName); //a.AuditStateId
             Type propType_TEntity = propertyExp.Type; //a.AuditStateId 的type(Dto中定义的属性类型)
 
-
-            var attr_SqlFuncArray = ReflectionHelper.GetAttributeForProperty<SqlFuncAttribute>(typeof(TSearchModel).GetProperty(propertyName), true);
+            var attr_SqlFuncArray = ReflectionHelper.GetAttributeForProperty<SqlFuncAttribute>(typeof(TSearch).GetProperty(propertyName), true);
             var haveAttr_SqlFunc = attr_SqlFuncArray.Length > 0;
             if (haveAttr_SqlFunc)
             {
                 if (attr_SqlFuncArray.Length > 1)
                 {
-                    throw new ExpressionToSqlWhereClauseException($"特性:{nameof(SqlFuncAttribute)}不能标记多个.");
+                    throw new FrameException($"特性:{nameof(SqlFuncAttribute)}不能标记多个.");
                 }
 
                 var attr_SqlFunc = attr_SqlFuncArray[0];
@@ -377,14 +418,21 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #region AddNotEqual-基于Equal的版本2
 
-        public static List<Expression<Func<TEntity, bool>>> AddNotEqual<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
+        public static List<Expression<Func<TEntity, bool>>> AddNotEqual<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
+            where TEntity : class
+            where TSearch : class
         {
-            return HaveCount(props)
-                ? AddNotEqual<TEntity, TSearchModel>(searchModel, props.ToArray())
-                : Default<TEntity>();
+            var props = that.SearchCondition[searchType]?.ToArray();
+            if (HaveCount(props) == false)
+            {
+                return Default<TEntity>();
+            }
+            return AddNotEqual<TEntity, TSearch>(that.Search, props);
         }
 
-        public static List<Expression<Func<TEntity, bool>>> AddNotEqual<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
+        public static List<Expression<Func<TEntity, bool>>> AddNotEqual<TEntity, TSearch>(TSearch searchModel, params string[] props)
+            where TEntity : class
+            where TSearch : class
         {
             if (!HaveCount(props))
             {
@@ -394,20 +442,22 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
             foreach (var prop in props)
             {
-                var propertyValue = new PropertyValue<TSearchModel>(searchModel);
+                var propertyValue = new PropertyValue<TSearch>(searchModel);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
                 if (value == null)
                 {
                     continue;
                 }
 
-                AddNotEqualCore<TEntity, TSearchModel>(prop, valuePropType, value, whereLambdas);
+                AddNotEqualCore<TEntity, TSearch>(prop, valuePropType, value, whereLambdas);
             }
             return whereLambdas;
         }
 
         //核心
-        private static void AddNotEqualCore<TEntity, TSearchModel>(string propertyName, Type valuePropType, object propertyValue, List<Expression<Func<TEntity, bool>>> whereLambdas)
+        private static void AddNotEqualCore<TEntity, TSearch>(string propertyName, Type valuePropType, object propertyValue, List<Expression<Func<TEntity, bool>>> whereLambdas)
+            where TEntity : class
+            where TSearch : class
         {
             var type_TEntity = typeof(TEntity);
             var prop_Info = type_TEntity.GetProperty(propertyName);
@@ -422,13 +472,13 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             Type propType_TEntity = propertyExp.Type; //a.AuditStateId 的type(Dto中定义的属性类型)
 
 
-            var attr_SqlFuncArray = ReflectionHelper.GetAttributeForProperty<SqlFuncAttribute>(typeof(TSearchModel).GetProperty(propertyName), true);
+            var attr_SqlFuncArray = ReflectionHelper.GetAttributeForProperty<SqlFuncAttribute>(typeof(TSearch).GetProperty(propertyName), true);
             var haveAttr_SqlFunc = attr_SqlFuncArray.Length > 0;
             if (haveAttr_SqlFunc)
             {
                 if (attr_SqlFuncArray.Length > 1)
                 {
-                    throw new ExpressionToSqlWhereClauseException($"特性:{nameof(SqlFuncAttribute)}不能标记多个.");
+                    throw new FrameException($"特性:{nameof(SqlFuncAttribute)}不能标记多个.");
                 }
                 var attr_SqlFunc = attr_SqlFuncArray[0];
                 if (attr_SqlFunc is MonthAttribute)
@@ -484,14 +534,21 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         }
 
-        public static List<Expression<Func<TEntity, bool>>> AddNumberRange<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
+        public static List<Expression<Func<TEntity, bool>>> AddNumberRange<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
+            where TEntity : class
+            where TSearch : class
         {
-            return HaveCount(props)
-                ? AddNumberRange<TEntity, TSearchModel>(searchModel, props.ToArray())
-                : Default<TEntity>();
+            var props = that.SearchCondition[searchType]?.ToArray();
+            if (HaveCount(props) == false)
+            {
+                return Default<TEntity>();
+            }
+            return AddNumberRange<TEntity, TSearch>(that.Search, props);
         }
 
-        public static List<Expression<Func<TEntity, bool>>> AddNumberRange<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
+        public static List<Expression<Func<TEntity, bool>>> AddNumberRange<TEntity, TSearch>(TSearch searchModel, params string[] props)
+            where TEntity : class
+            where TSearch : class
         {
             if (!HaveCount(props))
             {
@@ -505,7 +562,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             #region 初始化 timeDict
             foreach (var prop in props)
             {
-                var propertyValue = new PropertyValue<TSearchModel>(searchModel);
+                var propertyValue = new PropertyValue<TSearch>(searchModel);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
 
                 if (value == null)
@@ -515,7 +572,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
                 if (!Regex.IsMatch(value.ToString(), @"^(-?\d+)(\.\d+)?$")) //是否是数字(整数+浮点数)
                 {
-                    throw new ExpressionToSqlWhereClauseException($"当前值({value})不是数字类型.");
+                    throw new FrameException($"当前值({value})不是数字类型.");
                 }
 
                 if (prop != "Left" && prop.EndsWith("Left"))
@@ -535,7 +592,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                     {
                         if (numberDict[key].IsPair != true)
                         {
-                            throw new ExpressionToSqlWhereClauseException("重复赋值");
+                            throw new FrameException("重复赋值");
                         }
                     }
                 }
@@ -555,7 +612,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                     {
                         if (numberDict[key].IsPair != true)
                         {
-                            throw new ExpressionToSqlWhereClauseException("重复赋值");
+                            throw new FrameException("重复赋值");
                         }
                     }
                 }
@@ -575,7 +632,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                     }
                     else
                     {
-                        throw new ExpressionToSqlWhereClauseException("重复赋值");
+                        throw new FrameException("重复赋值");
                     }
                 }
 
@@ -661,7 +718,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 }
                 else
                 {
-                    throw new ExpressionToSqlWhereClauseException("代码逻辑有问题, 不应该进入这个分支");
+                    throw new FrameException("代码逻辑有问题, 不应该进入这个分支");
                 }
 
                 if (d1 != null) //>=
@@ -702,24 +759,21 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #region AddTimeRange
 
-        internal class TimeSearch
+        public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
+            where TEntity : class
+            where TSearch : class
         {
-            public string Prop { get; set; }
-
-            public DateTime?[] StartAndEnd { get; set; }
-
-            public bool? IsPair { get; set; }
-
+            var props = that.SearchCondition[searchType]?.ToArray();
+            if (HaveCount(props) == false)
+            {
+                return Default<TEntity>();
+            }
+            return AddTimeRange<TEntity, TSearch>(that.Search, props);
         }
 
-        public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
-        {
-            return HaveCount(props)
-                ? AddTimeRange<TEntity, TSearchModel>(searchModel, props.ToArray())
-                : Default<TEntity>();
-        }
-
-        public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
+        public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearch>(TSearch searchModel, params string[] props)
+            where TEntity : class
+            where TSearch : class
         {
             if (!HaveCount(props))
             {
@@ -734,7 +788,8 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return whereLambdas;
         }
 
-        private static Dictionary<string, TimeSearch> AddTimeRange_GetTimeDict<TSearchModel>(TSearchModel searchModel, string[] props)
+        private static Dictionary<string, TimeSearch> AddTimeRange_GetTimeDict<TSearch>(TSearch searchModel, string[] props)
+            where TSearch : class
         {
             //key : 字段 value : 开始时间(包含), 结束时间(不含)
             var timeDict = new Dictionary<string, TimeSearch>();
@@ -742,7 +797,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             #region 初始化 timeDict
             foreach (var prop in props)
             {
-                var propertyValue = new PropertyValue<TSearchModel>(searchModel);
+                var propertyValue = new PropertyValue<TSearch>(searchModel);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
 
                 if (value == null)
@@ -751,7 +806,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 }
                 if (!(value is DateTime))
                 {
-                    throw new ExpressionToSqlWhereClauseException("当前值不是 datetime 类型");
+                    throw new FrameException("当前值不是 datetime 类型");
                 }
 
                 if (prop != "Start" && prop.EndsWith("Start"))
@@ -771,7 +826,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                     {
                         if (timeDict[key].IsPair != true)
                         {
-                            throw new ExpressionToSqlWhereClauseException("重复赋值");
+                            throw new FrameException("重复赋值");
                         }
                     }
                 }
@@ -792,7 +847,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                     {
                         if (timeDict[key].IsPair != true)
                         {
-                            throw new ExpressionToSqlWhereClauseException("重复赋值");
+                            throw new FrameException("重复赋值");
                         }
                     }
                 }
@@ -810,7 +865,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                     }
                     else
                     {
-                        throw new ExpressionToSqlWhereClauseException("重复赋值");
+                        throw new FrameException("重复赋值");
                     }
                 }
 
@@ -837,7 +892,6 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             #endregion
             return timeDict;
         }
-
 
         /// <summary>
         /// 处理时间精度
@@ -907,6 +961,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         }
 
         private static List<Expression<Func<TEntity, bool>>> AddTimeRange_GetWhereLambdas<TEntity>(Dictionary<string, TimeSearch> timeDict)
+            where TEntity : class
         {
             var type_TEntity = typeof(TEntity);
             //根据 TimePeriod 创建表达式(一共是下面4钟情况)
@@ -945,7 +1000,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 }
                 else
                 {
-                    throw new ExpressionToSqlWhereClauseException("代码逻辑有问题, 不应该进入这个分支");
+                    throw new FrameException("代码逻辑有问题, 不应该进入这个分支");
                 }
 
                 if (d1 != null) //>=
@@ -981,23 +1036,28 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         }
 
         #region 指定 period 的
+
         /// <summary>
         /// 
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
-        /// <typeparam name="TSearchModel"></typeparam>
+        /// <typeparam name="TSearch"></typeparam>
         /// <param name="period">当为秒的时候需要调用这个方法</param>
         /// <param name="searchModel"></param>
         /// <param name="props"></param>
         /// <returns></returns>
-        public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearchModel>(TimePeriod period, TSearchModel searchModel, List<string> props)
+        public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearch>(TimePeriod period, TSearch searchModel, List<string> props)
+            where TEntity : class
+            where TSearch : class
         {
             return HaveCount(props)
-                ? AddTimeRange<TEntity, TSearchModel>(period, searchModel, props.ToArray())
+                ? AddTimeRange<TEntity, TSearch>(period, searchModel, props.ToArray())
                 : Default<TEntity>();
         }
 
-        public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearchModel>(TimePeriod period, TSearchModel searchModel, params string[] props)
+        public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearch>(TimePeriod period, TSearch searchModel, params string[] props)
+            where TEntity : class
+            where TSearch : class
         {
             if (!HaveCount(props))
             {
@@ -1011,6 +1071,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             var whereLambdas = AddTimeRange_GetWhereLambdas<TEntity>(timeDict);
             return whereLambdas;
         }
+
         #endregion
 
         private static DateTime GetEndTime(TimePeriod period, DateTime time)
@@ -1032,33 +1093,8 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 return new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Minute).AddSeconds(1);
             }
 
-            throw new ExpressionToSqlWhereClauseException("后续开发修改过代码逻辑, 但是此处却未修改,需要修改代码");
+            throw new FrameException("后续开发修改过代码逻辑, 但是此处却未修改,需要修改代码");
 
-        }
-
-
-        /// <summary>
-        /// 时间周期
-        /// </summary>
-        public enum TimePeriod
-        {
-            //None,
-            /// <summary>
-            /// 天
-            /// </summary>
-            Day = 1,
-            /// <summary>
-            /// 小时
-            /// </summary>
-            Hour,
-            /// <summary>
-            /// 分钟
-            /// </summary>
-            Minute,
-            /// <summary>
-            /// 秒
-            /// </summary>
-            Second,
         }
 
         /// <summary>
@@ -1116,25 +1152,33 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         /// 实际翻译成in 还是 Euqal , 根据 split() 后的个数而定
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
-        /// <typeparam name="TSearchModel"></typeparam>
+        /// <typeparam name="TSearch"></typeparam>
         /// <param name="searchModel"></param>
         /// <param name="props"></param>
         /// <returns></returns>
-        public static List<Expression<Func<TEntity, bool>>> AddIn<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
+        public static List<Expression<Func<TEntity, bool>>> AddIn<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
+            where TEntity : class
+            where TSearch : class
         {
-            return HaveCount(props)
-                ? AddIn<TEntity, TSearchModel>(searchModel, props.ToArray())
-                : Default<TEntity>();
+            var props = that.SearchCondition[searchType]?.ToArray();
+            if (HaveCount(props) == false)
+            {
+                return Default<TEntity>();
+            }
+            return AddIn<TEntity, TSearch>(that.Search, props);
         }
+
         /// <summary>
         /// 实际翻译成in 还是 Euqal , 根据 split() 后的个数而定
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
-        /// <typeparam name="TSearchModel"></typeparam>
+        /// <typeparam name="TSearch"></typeparam>
         /// <param name="searchModel"></param>
         /// <param name="propertyNames"></param>
         /// <returns></returns>
-        public static List<Expression<Func<TEntity, bool>>> AddIn<TEntity, TSearchModel>(TSearchModel searchModel, params string[] propertyNames)
+        public static List<Expression<Func<TEntity, bool>>> AddIn<TEntity, TSearch>(TSearch searchModel, params string[] propertyNames)
+            where TEntity : class
+            where TSearch : class
         {
             if (!HaveCount(propertyNames))
             {
@@ -1145,7 +1189,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             List<Expression<Func<TEntity, bool>>> whereLambdas = new List<Expression<Func<TEntity, bool>>>();
             foreach (var propertyName in propertyNames)
             {
-                var propertyValue = new PropertyValue<TSearchModel>(searchModel);
+                var propertyValue = new PropertyValue<TSearch>(searchModel);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(propertyName);
                 if (value == null)
                 {
@@ -1193,14 +1237,14 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 //1          1          1       1       1      1         1       1         1       1         1        0
 
                 Expression<Func<TEntity, bool>> lambda = null;
-                SqlFuncAttribute[] attr_SqlFuncArray = ReflectionHelper.GetAttributeForProperty<SqlFuncAttribute>(typeof(TSearchModel).GetProperty(propertyName), true);
+                SqlFuncAttribute[] attr_SqlFuncArray = ReflectionHelper.GetAttributeForProperty<SqlFuncAttribute>(typeof(TSearch).GetProperty(propertyName), true);
                 var haveAttr_SqlFunc = attr_SqlFuncArray.Length > 0;
                 if (haveAttr_SqlFunc)
                 {
                     if (attr_SqlFuncArray.Length > 1)
                     {
                         var exMsg = $"特性:{nameof(SqlFuncAttribute)}不能标记多个.";
-                        throw new ExpressionToSqlWhereClauseException(exMsg);
+                        throw new FrameException(exMsg);
                     }
 
                     var attr_SqlFunc = attr_SqlFuncArray[0];
@@ -1363,7 +1407,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 if (lambda == null)
                 {
                     var exMsg = $"SearchType:{nameof(SearchType.In)},操作遇到不支持的属性类型:{propType_TEntity}";
-                    throw new ExpressionToSqlWhereClauseException(exMsg);
+                    throw new FrameException(exMsg);
                 }
 
                 whereLambdas.Add(lambda);
@@ -1373,6 +1417,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         }
 
         private static Expression<Func<TEntity, bool>> GetExpression_In<TEntity>(ParameterExpression parameterExp, MemberExpression propertyExp, object listObj)
+            where TEntity : class
         {
             //参考
             //https://stackoverflow.com/questions/18491610/dynamic-linq-expression-for-ienumerableint-containsmemberexpression
@@ -1407,14 +1452,22 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #region AddGt
 
-        public static List<Expression<Func<TEntity, bool>>> AddGt<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
+        public static List<Expression<Func<TEntity, bool>>> AddGt<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
+            where TEntity : class
+            where TSearch : class
         {
-            return HaveCount(props)
-                ? AddGt<TEntity, TSearchModel>(searchModel, props.ToArray())
-                : Default<TEntity>();
+            var props = that.SearchCondition[searchType]?.ToArray();
+            if (HaveCount(props) == false)
+            {
+                return Default<TEntity>();
+            }
+
+            return AddGt<TEntity, TSearch>(that.Search, props);
         }
 
-        public static List<Expression<Func<TEntity, bool>>> AddGt<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
+        public static List<Expression<Func<TEntity, bool>>> AddGt<TEntity, TSearch>(TSearch searchModel, params string[] props)
+            where TEntity : class
+            where TSearch : class
         {
             if (!HaveCount(props))
             {
@@ -1426,7 +1479,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             var type_TEntity = typeof(TEntity);
             foreach (string prop in props)
             {
-                var propertyValue = new PropertyValue<TSearchModel>(searchModel);
+                var propertyValue = new PropertyValue<TSearch>(searchModel);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
                 if (value == null || type_TEntity.GetProperty(prop) == null)
                 {
@@ -1447,6 +1500,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         // t.SomeProperty > 5
         private static Expression<Func<TEntity, bool>> GetExpression_gt<TEntity>(string propertyName, object propertyValue)
+            where TEntity : class
         {
             var type_TEntity = typeof(TEntity);
             var prop_Info = type_TEntity.GetProperty(propertyName);
@@ -1478,14 +1532,21 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #region AddGe
 
-        public static List<Expression<Func<TEntity, bool>>> AddGe<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
+        public static List<Expression<Func<TEntity, bool>>> AddGe<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
+            where TEntity : class
+            where TSearch : class
         {
-            return HaveCount(props)
-                ? AddGe<TEntity, TSearchModel>(searchModel, props.ToArray())
-                : Default<TEntity>();
+            var props = that.SearchCondition[searchType]?.ToArray();
+            if (HaveCount(props) == false)
+            {
+                return Default<TEntity>();
+            }
+            return AddGe<TEntity, TSearch>(that.Search, props);
         }
 
-        public static List<Expression<Func<TEntity, bool>>> AddGe<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
+        public static List<Expression<Func<TEntity, bool>>> AddGe<TEntity, TSearch>(TSearch searchModel, params string[] props)
+            where TEntity : class
+            where TSearch : class
         {
             if (!HaveCount(props))
             {
@@ -1496,7 +1557,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             var type_TEntity = typeof(TEntity);
             foreach (string prop in props)
             {
-                var propertyValue = new PropertyValue<TSearchModel>(searchModel);
+                var propertyValue = new PropertyValue<TSearch>(searchModel);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
                 if (value == null || type_TEntity.GetProperty(prop) == null)
                 {
@@ -1517,6 +1578,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         // t.SomeProperty >= 5
         private static Expression<Func<TEntity, bool>> GetExpression_ge<TEntity>(string propertyName, object propertyValue)
+            where TEntity : class
         {
             var type_TEntity = typeof(TEntity);
             var prop_Info = type_TEntity.GetProperty(propertyName);
@@ -1548,14 +1610,21 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #region AddLt
 
-        public static List<Expression<Func<TEntity, bool>>> AddLt<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
+        public static List<Expression<Func<TEntity, bool>>> AddLt<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
+            where TEntity : class
+            where TSearch : class
         {
-            return HaveCount(props)
-                ? AddLt<TEntity, TSearchModel>(searchModel, props.ToArray())
-                : Default<TEntity>();
+            var props = that.SearchCondition[searchType]?.ToArray();
+            if (HaveCount(props) == false)
+            {
+                return Default<TEntity>();
+            }
+            return AddLt<TEntity, TSearch>(that.Search, props);
         }
 
-        public static List<Expression<Func<TEntity, bool>>> AddLt<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
+        public static List<Expression<Func<TEntity, bool>>> AddLt<TEntity, TSearch>(TSearch searchModel, params string[] props)
+            where TEntity : class
+            where TSearch : class
         {
             if (!HaveCount(props))
             {
@@ -1566,7 +1635,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             var type_TEntity = typeof(TEntity);
             foreach (string prop in props)
             {
-                var propertyValue = new PropertyValue<TSearchModel>(searchModel);
+                var propertyValue = new PropertyValue<TSearch>(searchModel);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
                 if (value == null || type_TEntity.GetProperty(prop) == null)
                 {
@@ -1587,6 +1656,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         // t.SomeProperty < 5
         private static Expression<Func<TEntity, bool>> GetExpression_lt<TEntity>(string propertyName, object propertyValue)
+            where TEntity : class
         {
             var type_TEntity = typeof(TEntity);
             var prop_Info = type_TEntity.GetProperty(propertyName);
@@ -1618,14 +1688,21 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #region AddLe
 
-        public static List<Expression<Func<TEntity, bool>>> AddLe<TEntity, TSearchModel>(TSearchModel searchModel, List<string> props)
+        public static List<Expression<Func<TEntity, bool>>> AddLe<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
+            where TEntity : class
+            where TSearch : class
         {
-            return HaveCount(props)
-                ? AddLe<TEntity, TSearchModel>(searchModel, props.ToArray())
-                : Default<TEntity>();
+            var props = that.SearchCondition[searchType]?.ToArray();
+            if (HaveCount(props) == false)
+            {
+                return Default<TEntity>();
+            }
+            return AddLe<TEntity, TSearch>(that.Search, props);
         }
 
-        public static List<Expression<Func<TEntity, bool>>> AddLe<TEntity, TSearchModel>(TSearchModel searchModel, params string[] props)
+        public static List<Expression<Func<TEntity, bool>>> AddLe<TEntity, TSearch>(TSearch searchModel, params string[] props)
+            where TEntity : class
+            where TSearch : class
         {
             if (!HaveCount(props))
             {
@@ -1636,7 +1713,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             var type_TEntity = typeof(TEntity);
             foreach (string prop in props)
             {
-                var propertyValue = new PropertyValue<TSearchModel>(searchModel);
+                var propertyValue = new PropertyValue<TSearch>(searchModel);
                 (PropertyInfo property_info, object value, Type valuePropType) = propertyValue.Get(prop);
                 if (value == null || type_TEntity.GetProperty(prop) == null)
                 {
@@ -1657,6 +1734,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         // t.SomeProperty <= 5
         private static Expression<Func<TEntity, bool>> GetExpression_le<TEntity>(string propertyName, object propertyValue)
+            where TEntity : class
         {
             var type_TEntity = typeof(TEntity);
             var prop_Info = type_TEntity.GetProperty(propertyName);
@@ -1685,7 +1763,21 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         }
 
         #endregion
+
+        private static bool HaveCount(List<string> props) => props != null && props.Count > 0;
+        private static bool HaveCount(string[] props) => props != null && props.Length > 0;
+
+        private static List<Expression<Func<TEntity, bool>>> Default<TEntity>() => new List<Expression<Func<TEntity, bool>>>();
+
+        private static bool ExistsWhereIf<TSearch>(TSearch searchModel)
+        {
+            if (searchModel == null)
+            {
+                return false;
+            }
+
+            return false;
+        }
+
     }
-
-
 }

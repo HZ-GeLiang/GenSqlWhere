@@ -51,7 +51,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
         }
 
         [TestMethod]
-        public void Test_like_Sef_Attr() //TEntity ==  TSearchModel
+        public void Test_like_Sef_Attr() //TEntity ==  TSearch
         {
             var searchModel = new Input_like_Attr()
             {

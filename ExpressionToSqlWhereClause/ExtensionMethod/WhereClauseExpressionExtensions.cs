@@ -1,4 +1,5 @@
-﻿using ExpressionToSqlWhereClause.ExpressionTree;
+﻿using ExpressionToSqlWhereClause.Exceptions;
+using ExpressionToSqlWhereClause.ExpressionTree;
 using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
 using ExpressionToSqlWhereClause.Helper;
 using System;
@@ -80,7 +81,7 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
                             }
                             else
                             {
-                                throw new ExpressionToSqlWhereClauseException("逻辑错误,需要调整");
+                                throw new FrameException("逻辑错误,需要调整");
                             }
 
                             parseResult.WhereClause = parseResult.WhereClause.Replace(sqlClauseOrigin, sqlClauseNew);
