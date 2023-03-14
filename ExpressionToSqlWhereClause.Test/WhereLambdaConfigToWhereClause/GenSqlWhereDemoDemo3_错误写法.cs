@@ -1,7 +1,7 @@
-using System.Collections.Generic;
 using ExpressionToSqlWhereClause.EntityConfig;
 using ExpressionToSqlWhereClause.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 
 namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
@@ -19,7 +19,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
             var whereLambda = searchModel.CrateWhereLambda((model_Demo3 p) => { });
             // 已经在 input 模型上标注了
-            whereLambda[SearchType.neq] = new List<string>
+            whereLambda[SearchType.Neq] = new List<string>
             {
                 nameof(searchModel.Id),
             };
@@ -43,7 +43,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
             var whereLambda = searchModel.CrateWhereLambda((model_Demo3 p) => { });
             // 已经在 input 模型上标注了
-            whereLambda[SearchType.eq] = new List<string>
+            whereLambda[SearchType.Eq] = new List<string>
             {
                 nameof(searchModel.Id),
             };
@@ -59,17 +59,17 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
         public class Input_Demo3_不同配置
         {
-            [SearchType(SearchType.eq)]
+            [SearchType(SearchType.Eq)]
             public int Id { get; set; }
         }
         public class Input_Demo3_相同配置
         {
-            [SearchType(SearchType.eq)]
+            [SearchType(SearchType.Eq)]
             public int Id { get; set; }
         }
         public class model_Demo3
         {
-            [SearchType(SearchType.eq)]
+            [SearchType(SearchType.Eq)]
             public int Id { get; set; }
         }
     }

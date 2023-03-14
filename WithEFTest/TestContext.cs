@@ -12,7 +12,7 @@ public partial class TestContext : DbContext
     {
     }
 
-    public DbSet<ExpressionSqlTest> ExpressionSqlTests { get; set; } 
+    public DbSet<ExpressionSqlTest> ExpressionSqlTests { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -22,7 +22,7 @@ public partial class TestContext : DbContext
             optionsBuilder.UseSqlServer(connStr);
         }
     }
-     
+
 }
 
 public record class ExpressionSqlTest

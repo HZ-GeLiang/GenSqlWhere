@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using ExpressionToSqlWhereClause.ExtensionMethod;
+﻿using ExpressionToSqlWhereClause.ExtensionMethod;
 using ExpressionToSqlWhereClause.Test.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 {

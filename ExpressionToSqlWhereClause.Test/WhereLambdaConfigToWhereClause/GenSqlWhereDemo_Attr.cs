@@ -1,9 +1,8 @@
-using System;
-using System.Collections.Generic;
 using ExpressionToSqlWhereClause.EntityConfig;
 using ExpressionToSqlWhereClause.ExtensionMethod;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.DataCollection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
 
 namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {

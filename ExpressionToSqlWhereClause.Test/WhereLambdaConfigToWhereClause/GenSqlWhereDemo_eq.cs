@@ -1,15 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 using ExpressionToSqlWhereClause.EntityConfig;
 using ExpressionToSqlWhereClause.ExtensionMethod;
 using ExpressionToSqlWhereClause.Test.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
-    
-
     [TestClass]
     public class GenSqlWhereDemo_eq
     {
@@ -22,9 +20,9 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
 
             var whereLambda = new WhereLambda<Input_eq, Model_eq>();
-            whereLambda.SearchModel = searchModel;
+            whereLambda.Search = searchModel;
 
-            whereLambda[SearchType.eq] = new List<string>
+            whereLambda[SearchType.Eq] = new List<string>
             {
                 nameof(searchModel.IsDel),
             };
@@ -38,7 +36,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 { "@IsDel", searchModel.IsDel }
             };
 
-           CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
+            CollectionAssert.AreEqual(searchCondition.Parameters, dict);
         }
 
         [TestMethod]
@@ -60,12 +58,12 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
     public class Input_eq
     {
-        [SearchType(SearchType.eq)] public bool IsDel { get; set; }
+        [SearchType(SearchType.Eq)] public bool IsDel { get; set; }
     }
 
     public class Input_eq2
     {
-        [SearchType(SearchType.eq)] public long? Id { get; set; }
+        [SearchType(SearchType.Eq)] public long? Id { get; set; }
     }
 
 

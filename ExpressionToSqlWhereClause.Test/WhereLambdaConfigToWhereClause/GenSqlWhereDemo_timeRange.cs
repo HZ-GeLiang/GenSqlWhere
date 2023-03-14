@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using ExpressionToSqlWhereClause.EntityConfig;
+﻿using ExpressionToSqlWhereClause.EntityConfig;
 using ExpressionToSqlWhereClause.ExtensionMethod;
 using ExpressionToSqlWhereClause.Helper;
 using ExpressionToSqlWhereClause.Test.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
@@ -22,9 +22,9 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
             };
             var whereLambda = new WhereLambda<model_timeRange, Input_timeRange_Attr>();
-            whereLambda.SearchModel = searchModel;
+            whereLambda.Search = searchModel;
 
-            whereLambda[SearchType.timeRange] = new List<string>
+            whereLambda[SearchType.TimeRange] = new List<string>
             {
                 nameof(searchModel.DataCreatedAtStart),
                 nameof(searchModel.DataCreatedAtEnd),
@@ -55,9 +55,9 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
 
             var whereLambda = new WhereLambda<Model_People, Input_timeRange2_Attr>();
-            whereLambda.SearchModel = searchModel;
+            whereLambda.Search = searchModel;
 
-            whereLambda[SearchType.timeRange] = new List<string>
+            whereLambda[SearchType.TimeRange] = new List<string>
             {
                 nameof(searchModel.DataCreatedAt)
             };
@@ -121,15 +121,15 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
     public class Input_timeRange_Attr
     {
-        [SearchType(SearchType.timeRange)] public DateTime? DataCreatedAtStart { get; set; }
-        [SearchType(SearchType.timeRange)] public DateTime? DataCreatedAtEnd { get; set; }
-        [SearchType(SearchType.timeRange)] public DateTime? DataUpdatedAtStart { get; set; }
-        [SearchType(SearchType.timeRange)] public DateTime? DataUpdatedAtEnd { get; set; }
+        [SearchType(SearchType.TimeRange)] public DateTime? DataCreatedAtStart { get; set; }
+        [SearchType(SearchType.TimeRange)] public DateTime? DataCreatedAtEnd { get; set; }
+        [SearchType(SearchType.TimeRange)] public DateTime? DataUpdatedAtStart { get; set; }
+        [SearchType(SearchType.TimeRange)] public DateTime? DataUpdatedAtEnd { get; set; }
     }
 
     public class Input_timeRange2_Attr
     {
-        [SearchType(SearchType.timeRange)] public DateTime? DataCreatedAt { get; set; }
+        [SearchType(SearchType.TimeRange)] public DateTime? DataCreatedAt { get; set; }
     }
 
 }

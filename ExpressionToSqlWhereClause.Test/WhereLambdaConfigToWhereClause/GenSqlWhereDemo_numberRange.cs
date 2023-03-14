@@ -1,7 +1,7 @@
-using System.Collections.Generic;
 using ExpressionToSqlWhereClause.EntityConfig;
 using ExpressionToSqlWhereClause.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 
 namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
@@ -18,8 +18,8 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                     IdRight = 9
                 };
                 var whereLambda = new WhereLambda<Model_People, Input_numberRange_Attr>();
-                whereLambda.SearchModel = searchModel;
-                whereLambda[SearchType.numberRange] = new List<string>
+                whereLambda.Search = searchModel;
+                whereLambda[SearchType.NumberRange] = new List<string>
                 {
                     nameof(searchModel.IdLeft),
                     nameof(searchModel.IdRight),
@@ -28,7 +28,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 var expression = whereLambda.ToExpression();
                 var searchCondition = expression.ToWhereClause();
 
-              Assert.AreEqual(searchCondition.WhereClause, "Id >= @Id And Id <= @Id1");
+                Assert.AreEqual(searchCondition.WhereClause, "Id >= @Id And Id <= @Id1");
                 var dict = new Dictionary<string, object>
                 {
                     { "@Id",searchModel.IdLeft},
@@ -44,8 +44,8 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                     Id = 5
                 };
                 var whereLambda = new WhereLambda<Model_People, Input_numberRange2>();
-                whereLambda.SearchModel = searchModel;
-                whereLambda[SearchType.numberRange] = new List<string>
+                whereLambda.Search = searchModel;
+                whereLambda[SearchType.NumberRange] = new List<string>
                 {
                     nameof(searchModel.Id),
                 };
@@ -54,7 +54,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 var expression = whereLambda.ToExpression();
                 var searchCondition = expression.ToWhereClause();
 
-              Assert.AreEqual(searchCondition.WhereClause, "Id >= @Id And Id <= @Id1");
+                Assert.AreEqual(searchCondition.WhereClause, "Id >= @Id And Id <= @Id1");
                 var dict = new Dictionary<string, object>
                 {
                     { "@Id",searchModel.Id},
@@ -73,8 +73,8 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
     public class Input_numberRange_Attr
     {
-        [SearchType(SearchType.numberRange)] public int? IdLeft { get; set; }
-        [SearchType(SearchType.numberRange)] public int? IdRight { get; set; }
+        [SearchType(SearchType.NumberRange)] public int? IdLeft { get; set; }
+        [SearchType(SearchType.NumberRange)] public int? IdRight { get; set; }
     }
 
 
@@ -85,7 +85,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
     }
     public class Input_numberRange2_Attr
     {
-        [SearchType(SearchType.numberRange)] public int? Id { get; set; }
+        [SearchType(SearchType.NumberRange)] public int? Id { get; set; }
 
     }
 }

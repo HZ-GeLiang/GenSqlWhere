@@ -1,9 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 using ExpressionToSqlWhereClause.EntityConfig;
 using ExpressionToSqlWhereClause.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
@@ -11,15 +11,15 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
     //注: demo1 和demo2 如果写重复, 那么都会生效
     public class Input_Demo_Attr
     {
-        [SearchType(SearchType.@in)] public string Id { get; set; }
-        [SearchType(SearchType.like)] public string Url { get; set; }
-        [SearchType(SearchType.@in)] public string Sex { get; set; }
-        [SearchType(SearchType.eq)] public bool IsDel { get; set; }
-        [SearchType(SearchType.like)] public string Data_Remark { get; set; }
-        [SearchType(SearchType.timeRange)] public DateTime? DataCreatedAtStart { get; set; }
-        [SearchType(SearchType.timeRange)] public DateTime? DataCreatedAtEnd { get; set; }
-        [SearchType(SearchType.timeRange)] public DateTime? DataUpdatedAtStart { get; set; }
-        [SearchType(SearchType.timeRange)] public DateTime? DataUpdatedAtEnd { get; set; }
+        [SearchType(SearchType.In)] public string Id { get; set; }
+        [SearchType(SearchType.Like)] public string Url { get; set; }
+        [SearchType(SearchType.In)] public string Sex { get; set; }
+        [SearchType(SearchType.Eq)] public bool IsDel { get; set; }
+        [SearchType(SearchType.Like)] public string Data_Remark { get; set; }
+        [SearchType(SearchType.TimeRange)] public DateTime? DataCreatedAtStart { get; set; }
+        [SearchType(SearchType.TimeRange)] public DateTime? DataCreatedAtEnd { get; set; }
+        [SearchType(SearchType.TimeRange)] public DateTime? DataUpdatedAtStart { get; set; }
+        [SearchType(SearchType.TimeRange)] public DateTime? DataUpdatedAtEnd { get; set; }
     }
 
 
@@ -45,9 +45,9 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
             Expression<Func<Model_People, bool>> exp = whereLambda.ToExpression();
 
-           var searchCondition = exp.ToWhereClause();
+            var searchCondition = exp.ToWhereClause();
 
-          Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id) And Sex In (@Sex) And IsDel = @IsDel And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
+            Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id) And Sex In (@Sex) And IsDel = @IsDel And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
         }
 
         [TestMethod]
@@ -59,14 +59,14 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
             var whereLambda = searchModel.CrateWhereLambda();
             var expression = whereLambda.ToExpression();
-           var searchCondition = expression.ToWhereClause();
-          Assert.AreEqual(searchCondition.WhereClause, "Url Like @Url");
+            var searchCondition = expression.ToWhereClause();
+            Assert.AreEqual(searchCondition.WhereClause, "Url Like @Url");
             var dict = new Dictionary<string, object>
             {
                 { "@Url", "%123%" }
             };
 
-    CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
+            CollectionAssert.AreEqual(searchCondition.Parameters, dict);
         }
 
         [TestMethod]
@@ -77,9 +77,9 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 Url = "123",
             };
             var whereLambda = new WhereLambda<model_like>();
-            whereLambda.SearchModel = searchModel;
+            whereLambda.Search = searchModel;
 
-            whereLambda[SearchType.like] = new List<string>
+            whereLambda[SearchType.Like] = new List<string>
             {
                 nameof(searchModel.Url),
                 nameof(searchModel.Data_Remark),
@@ -87,15 +87,15 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
 
             var expression = whereLambda.ToExpression();
-           var searchCondition = expression.ToWhereClause();
+            var searchCondition = expression.ToWhereClause();
 
-          Assert.AreEqual(searchCondition.WhereClause, "Url Like @Url");
+            Assert.AreEqual(searchCondition.WhereClause, "Url Like @Url");
             var dict = new Dictionary<string, object>
             {
                 { "@Url", "%123%" }
             };
 
-    CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
+            CollectionAssert.AreEqual(searchCondition.Parameters, dict);
         }
 
     }

@@ -1,66 +1,76 @@
+using ExpressionToSqlWhereClause.ExtensionMethod;
+using ExpressionToSqlWhereClause.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using ExpressionToSqlWhereClause.ExtensionMethod;
-using ExpressionToSqlWhereClause.Helper;
 
 namespace ExpressionToSqlWhereClause.EntityConfig
 {
     /// <summary>
-    /// 适合TEntity ==  TSearchModel,
-    /// 这种方式的, 没法用dataRange 和 timeRange
+    /// 适合TEntity ==  TSearch,
+    /// 这种方式的, 没法用 dataRange 和 timeRange
     /// </summary>
-    /// <typeparam name="TSearchModel"></typeparam>
-    public class WhereLambda<TSearchModel> : WhereLambda<TSearchModel, TSearchModel>
+    /// <typeparam name="TSearch"></typeparam>
+    public class WhereLambda<TSearch> : WhereLambda<TSearch, TSearch>
+        where TSearch : class
     {
 
     }
 
 
     /// <summary>
-    /// SearchModel 转 Entity的表达式树的配置
+    /// TSearch 转 TEntity 的表达式树的配置
     /// </summary>
     /// <typeparam name="TEntity">数据表实体类型</typeparam>
-    /// <typeparam name="TSearchModel">搜索Input类型, 不要使用多态,会报错的</typeparam>
-    public class WhereLambda<TEntity, TSearchModel>
+    /// <typeparam name="TSearch">检索对象 ,一般是 xxInput 对象, 注: 不要使用多态,会报错的</typeparam>
+    public class WhereLambda<TEntity, TSearch>
+        where TEntity : class
+        where TSearch : class
     {
+        //添加where的排序顺序: 目的是尽可能的让索引生效(也就是like必须是最后的,其他只能随意)
+        private static readonly SearchType[] _addOrder = {
+            SearchType.None,
+            SearchType.In,
+            SearchType.Eq,
+            SearchType.TimeRange,
+            SearchType.NumberRange,
+            SearchType.Gt,
+            SearchType.Ge,
+            SearchType.Lt,
+            SearchType.Le,
+            SearchType.Neq,
+            SearchType.LikeRight,
+            SearchType.LikeLeft,
+            SearchType.Like,
+        };
+
         /// <summary>
         /// 构造器创建,需要 赋值 SearchModel 属性才能使用
         /// </summary>
         public WhereLambda() { }
 
-        public WhereLambda(TSearchModel searchModel)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="search">检索对象</param>
+        public WhereLambda(TSearch search)
         {
-            this.SearchModel = searchModel;
+            this.Search = search;
         }
 
-        public TSearchModel SearchModel { get; set; }
+        /// <summary>
+        /// 检索对象
+        /// </summary>
+        public TSearch Search { get; set; }
 
-        internal Dictionary<SearchType, List<string>> _dictSearhType = new Dictionary<SearchType, List<string>>();
+        private Dictionary<SearchType, List<string>> _dictSearhType = new Dictionary<SearchType, List<string>>();
 
         public List<string> this[SearchType searchType]
         {
             get { return _dictSearhType[searchType]; }
             set { _dictSearhType[searchType] = value; }
         }
-
-        //添加where的排序顺序: 目的是尽可能的让索引生效(也就是like必须是最后的,其他只能随意)
-        private static readonly SearchType[] _addOrder = {
-            SearchType.none,
-            SearchType.@in,
-            SearchType.eq,
-            SearchType.timeRange,
-            SearchType.numberRange,
-            SearchType.gt,
-            SearchType.ge,
-            SearchType.lt,
-            SearchType.le,
-            SearchType.neq,
-            SearchType.likeRight,
-            SearchType.likeLeft,
-            SearchType.like,
-        };
 
         #region ToExpression
 
@@ -70,22 +80,22 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         /// <returns></returns>
         public Expression<Func<TEntity, bool>> ToExpression()
         {
-            var searchCondition = GetSearchCondition(this.SearchModel, this._dictSearhType);
-            var whereLambdas = WhereLambda<TEntity, TSearchModel>.ToExpressionList(this.SearchModel, searchCondition);
-            var expression = WhereLambda<TEntity, TSearchModel>.ToExpression(whereLambdas);
+            var searchCondition = GetSearchCondition(this._dictSearhType);
+            var whereLambdas = ToExpressionList(this.Search, searchCondition);
+            var expression = ToExpression(whereLambdas);
             return expression;
         }
 
-
-        public static implicit operator Expression<Func<TEntity, bool>>(WhereLambda<TEntity, TSearchModel> that)
+        public static implicit operator Expression<Func<TEntity, bool>>(WhereLambda<TEntity, TSearch> that)
         {
-            var searchCondition = GetSearchCondition(that.SearchModel, that._dictSearhType);
-            var whereLambdas = WhereLambda<TEntity, TSearchModel>.ToExpressionList(that.SearchModel, searchCondition);
-            var expression = WhereLambda<TEntity, TSearchModel>.ToExpression(whereLambdas);
+            var searchCondition = GetSearchCondition(that._dictSearhType);
+            var whereLambdas = ToExpressionList(that.Search, searchCondition);
+            var expression = ToExpression(whereLambdas);
             return expression;
         }
 
-        internal static Expression<Func<TEntity, bool>> ToExpression(List<Expression<Func<TEntity, bool>>> whereLambdas)
+
+        internal static Expression<Func<TEntity, bool>> ToExpression<TEntity>(List<Expression<Func<TEntity, bool>>> whereLambdas)
         {
             if (!whereLambdas.Any())
             {
@@ -102,14 +112,21 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             {
                 exp = exp.And(whereLambdas[i]);
             }
-            return exp;
 
+            return exp;
         }
 
-        internal static Dictionary<SearchType, List<string>> GetSearchCondition(TSearchModel searchModel, Dictionary<SearchType, List<string>> searchTypeConfig)
+        #endregion
+
+        /// <summary>
+        /// 从模型属性的 SearchTypeAttribute 获得 SearchCondition
+        /// </summary>
+        /// <param name="searchTypeConfig"></param>
+        /// <returns></returns>
+        internal static Dictionary<SearchType, List<string>> GetSearchCondition(Dictionary<SearchType, List<string>> searchTypeConfig)
         {
-            var config = searchTypeConfig.Clone();
-            var props = ReflectionHelper.GetProperties(typeof(TSearchModel));
+            var config = searchTypeConfig.DeepClone();
+            var props = ReflectionHelper.GetProperties(typeof(TSearch));
             foreach (System.Reflection.PropertyInfo prop in props)
             {
                 var attrs = ReflectionHelper.GetAttributeForProperty<SearchTypeAttribute>(prop, false);
@@ -119,6 +136,8 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                     {
                         config.Add(item.SearchType, new List<string>());
                     }
+
+                    //优先级比 手动写的要低
                     if (!config[item.SearchType].Contains(prop.Name))
                     {
                         config[item.SearchType].Add(prop.Name);
@@ -128,16 +147,8 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
             return config;
         }
-        #endregion
 
         #region ToExpressionList
-
-        public static implicit operator List<Expression<Func<TEntity, bool>>>(WhereLambda<TEntity, TSearchModel> that)
-        {
-            var searchCondition = GetSearchCondition(that.SearchModel, that._dictSearhType);
-            var whereLambdas = ToExpressionList(that.SearchModel, searchCondition);
-            return whereLambdas;
-        }
 
         /// <summary>
         /// 获得表达式树的写法,可以给ef用(不含sql内置函数的那种)
@@ -145,15 +156,15 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         /// <param name="searchModel">input对象</param>
         /// <param name="searchCondition">input对象的搜索条件配置</param>
         /// <returns></returns>
-        internal static List<Expression<Func<TEntity, bool>>> ToExpressionList(TSearchModel searchModel, Dictionary<SearchType, List<string>> searchCondition)
+        internal static List<Expression<Func<TEntity, bool>>> ToExpressionList(TSearch searchModel, Dictionary<SearchType, List<string>> searchCondition)
         {
-            searchCondition = GetSearchCondition(searchModel, searchCondition);
+            searchCondition = GetSearchCondition(searchCondition);
 
             var whereLambdas = new List<Expression<Func<TEntity, bool>>>();
 
             foreach (var searchType in _addOrder)
             {
-                if (searchType == SearchType.none || !searchCondition.ContainsKey(searchType))
+                if (searchType == SearchType.None || !searchCondition.ContainsKey(searchType))
                 {
                     //throw new ExpressionToSqlWhereClauseException($"参数{nameof(dict)}不包含{nameof(searchType)}值:{searchType}");
                     continue;
@@ -168,11 +179,17 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return whereLambdas;
         }
 
-        public List<Expression<Func<TEntity, bool>>> ToExpressionListForEf()
+        public static implicit operator List<Expression<Func<TEntity, bool>>>(WhereLambda<TEntity, TSearch> that)
         {
-            return ToExpressionList(this.SearchModel, this._dictSearhType);
+            var searchCondition = GetSearchCondition(that._dictSearhType);
+            var whereLambdas = ToExpressionList(that.Search, searchCondition);
+            return whereLambdas;
         }
 
+        public List<Expression<Func<TEntity, bool>>> ToExpressionListForEF()
+        {
+            return ToExpressionList(this.Search, this._dictSearhType);
+        }
 
         #endregion
     }

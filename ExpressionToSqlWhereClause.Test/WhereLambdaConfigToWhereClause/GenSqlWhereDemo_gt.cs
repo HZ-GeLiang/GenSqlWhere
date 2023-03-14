@@ -1,12 +1,12 @@
-using System;
-using System.Collections.Generic;
 using ExpressionToSqlWhereClause.EntityConfig;
 using ExpressionToSqlWhereClause.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
 
 namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
-   
+
     [TestClass]
     public class GenSqlWhereDemo_gt
     {
@@ -21,9 +21,9 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
 
             var whereLambda = new WhereLambda<Model_People, model_gt>();
-            whereLambda.SearchModel = searchModel;
+            whereLambda.Search = searchModel;
 
-            whereLambda[SearchType.gt] = new List<string>
+            whereLambda[SearchType.Gt] = new List<string>
             {
                 nameof(searchModel.Id),
                 nameof(searchModel.DataCreatedAt),
@@ -39,7 +39,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 { "@DataCreatedAt", searchModel.DataCreatedAt }
             };
 
-           CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
+            CollectionAssert.AreEqual(searchCondition.Parameters, dict);
         }
     }
 
@@ -50,9 +50,9 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
     }
     public class Input_gt_Attr
     {
-        [SearchType(SearchType.gt)]
+        [SearchType(SearchType.Gt)]
         public long? Id { get; set; }
-        [SearchType(SearchType.gt)]
+        [SearchType(SearchType.Gt)]
         public DateTime? DataCreatedAt { get; set; }
     }
 }

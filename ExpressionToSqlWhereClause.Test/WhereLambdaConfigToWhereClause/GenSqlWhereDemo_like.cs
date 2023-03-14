@@ -1,7 +1,7 @@
-using System.Collections.Generic;
 using ExpressionToSqlWhereClause.EntityConfig;
 using ExpressionToSqlWhereClause.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 
 namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
@@ -18,14 +18,14 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 Url = "123",
             };
             var whereLambda = new WhereLambda<Model_People, model_like>();
-            whereLambda.SearchModel = searchModel;
+            whereLambda.Search = searchModel;
 
-            whereLambda[SearchType.like] = new List<string>
+            whereLambda[SearchType.Like] = new List<string>
             {
                 nameof(searchModel.Url),
                 nameof(searchModel.Data_Remark),
             };
-            
+
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
 
@@ -35,7 +35,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 { "@Url", "%123%" }
             };
 
-           CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
+            CollectionAssert.AreEqual(searchCondition.Parameters, dict);
         }
 
         [TestMethod]
@@ -46,9 +46,9 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 Url = "123",
             };
             var whereLambda = new WhereLambda<Model_People, Input_likeLeft>();
-            whereLambda.SearchModel = searchModel;
+            whereLambda.Search = searchModel;
 
-            whereLambda[SearchType.likeLeft] = new List<string>
+            whereLambda[SearchType.LikeLeft] = new List<string>
             {
                 nameof(searchModel.Url),
                 nameof(searchModel.Data_Remark),
@@ -64,7 +64,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 { "@Url", "123%" }
             };
 
-           CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
+            CollectionAssert.AreEqual(searchCondition.Parameters, dict);
         }
 
         [TestMethod]
@@ -75,9 +75,9 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 Url = "123",
             };
             var whereLambda = new WhereLambda<Model_People, Input_likeRight>();
-            whereLambda.SearchModel = searchModel;
+            whereLambda.Search = searchModel;
 
-            whereLambda[SearchType.likeRight] = new List<string>
+            whereLambda[SearchType.LikeRight] = new List<string>
             {
                 nameof(searchModel.Url),
                 nameof(searchModel.Data_Remark),
@@ -92,7 +92,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 { "@Url", "%123" }
             };
 
-           CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
+            CollectionAssert.AreEqual(searchCondition.Parameters, dict);
         }
     }
 
@@ -106,8 +106,8 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
     public class Input_like_Attr
     {
-        [SearchType(SearchType.like)] public string Url { get; set; }
-        [SearchType(SearchType.like)] public string Data_Remark { get; set; }
+        [SearchType(SearchType.Like)] public string Url { get; set; }
+        [SearchType(SearchType.Like)] public string Data_Remark { get; set; }
     }
 
     public class Input_likeLeft
@@ -118,8 +118,8 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
     public class Input_likeLeft_Attr
     {
-        [SearchType(SearchType.likeLeft)] public string Url { get; set; }
-        [SearchType(SearchType.likeLeft)] public string Data_Remark { get; set; }
+        [SearchType(SearchType.LikeLeft)] public string Url { get; set; }
+        [SearchType(SearchType.LikeLeft)] public string Data_Remark { get; set; }
     }
 
     public class Input_likeRight
@@ -130,7 +130,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
     public class Input_likeRight_Attr
     {
-        [SearchType(SearchType.likeRight)] public string Url { get; set; }
-        [SearchType(SearchType.likeRight)] public string Data_Remark { get; set; }
+        [SearchType(SearchType.LikeRight)] public string Url { get; set; }
+        [SearchType(SearchType.LikeRight)] public string Data_Remark { get; set; }
     }
 }

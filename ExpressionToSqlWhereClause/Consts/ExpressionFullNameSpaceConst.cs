@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ExpressionToSqlWhereClause.Consts
+﻿namespace ExpressionToSqlWhereClause.Consts
 {
     internal class ExpressionFullNameSpaceConst
     {

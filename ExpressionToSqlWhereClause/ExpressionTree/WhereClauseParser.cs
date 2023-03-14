@@ -1,12 +1,12 @@
-﻿using System;
+﻿using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
+using ExpressionToSqlWhereClause.ExtensionMethod;
+using ExpressionToSqlWhereClause.Helper;
+using ExpressionToSqlWhereClause.SqlFunc;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
-using ExpressionToSqlWhereClause.ExtensionMethod;
-using ExpressionToSqlWhereClause.Helper;
-using ExpressionToSqlWhereClause.SqlFunc;
 
 namespace ExpressionToSqlWhereClause.ExpressionTree
 {
@@ -68,7 +68,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                     }
                 }
                 else
-                { 
+                {
                     return new ClauseParserResult()
                     {
                         WhereClause = $"({pageResult.WhereClause})",

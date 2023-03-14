@@ -1,7 +1,7 @@
-using System.Collections.Generic;
 using ExpressionToSqlWhereClause.EntityConfig;
 using ExpressionToSqlWhereClause.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 
 namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 {
@@ -20,13 +20,13 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
     public class Input_in_Attr
     {
-        [SearchType(SearchType.@in)] public string Id { get; set; }
-        [SearchType(SearchType.@in)] public string Sex { get; set; }
+        [SearchType(SearchType.In)] public string Id { get; set; }
+        [SearchType(SearchType.In)] public string Sex { get; set; }
 
     }
     public class Input_in2_Attr
     {
-        [SearchType(SearchType.@in)] public int? Id { get; set; }
+        [SearchType(SearchType.In)] public int? Id { get; set; }
 
     }
 
@@ -44,9 +44,9 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
 
             var whereLambda = new WhereLambda<Model_People, model_in>();
-            whereLambda.SearchModel = searchModel;
+            whereLambda.Search = searchModel;
 
-            whereLambda[SearchType.@in] = new List<string>
+            whereLambda[SearchType.In] = new List<string>
             {
                 nameof(searchModel.Id),
                 nameof(searchModel.Sex),
@@ -54,16 +54,16 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
 
             var expression = whereLambda.ToExpression();
-           var searchCondition = expression.ToWhereClause();
+            var searchCondition = expression.ToWhereClause();
 
-          Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id) And Sex In (@Sex)");
+            Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id) And Sex In (@Sex)");
             var dict = new Dictionary<string, object>
             {
                 { "@Id", searchModel.Id},
                 { "@Sex", searchModel.Sex}
             };
 
-    CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
+            CollectionAssert.AreEqual(searchCondition.Parameters, dict);
         }
 
         [TestMethod]
@@ -75,23 +75,23 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             };
 
             var whereLambda = new WhereLambda<Model_People, model_in2>();
-            whereLambda.SearchModel = searchModel;
+            whereLambda.Search = searchModel;
 
-            whereLambda[SearchType.@in] = new List<string>
+            whereLambda[SearchType.In] = new List<string>
             {
                 nameof(searchModel.Id),
             };
 
             var expression = whereLambda.ToExpression();
-           var searchCondition = expression.ToWhereClause();
+            var searchCondition = expression.ToWhereClause();
 
-          Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id)");
+            Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id)");
             var dict = new Dictionary<string, object>
             {
                 { "@Id", "1"},//in 可以有多个值,所以这个值就是stirng类型的
             };
 
-    CollectionAssert.AreEqual(searchCondition.Parameters,  dict);
+            CollectionAssert.AreEqual(searchCondition.Parameters, dict);
         }
     }
 }
