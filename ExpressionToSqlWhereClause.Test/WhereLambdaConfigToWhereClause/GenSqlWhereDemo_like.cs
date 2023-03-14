@@ -25,8 +25,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 nameof(searchModel.Url),
                 nameof(searchModel.Data_Remark),
             };
-
-
+            
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
 

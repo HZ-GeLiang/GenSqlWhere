@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 {
-    
+
 
     [TestClass]
     public class ExpressionDemo_sqlfunc_Month

@@ -19,8 +19,8 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             {
                 { "Index", "[Index]" }
             };
-            
-          var searchCondition = expOr.ToWhereClause(alias: dict);
+
+            var searchCondition = expOr.ToWhereClause(alias: dict);
 
             Assert.AreEqual(searchCondition.WhereClause, "[Index] = @Index Or [Index] = @Index1");
 
@@ -41,7 +41,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             {
                 { "Id", "RouteId" }
             };
-          var searchCondition = expOr.ToWhereClause(alias: dict);
+            var searchCondition = expOr.ToWhereClause(alias: dict);
 
             Assert.AreEqual(searchCondition.WhereClause, "RouteId = @Id Or RouteId = @Id1");
 
@@ -64,10 +64,10 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             {
                 { "Id", "RouteId" }
             };
-          var searchCondition = expOr.ToWhereClause(alias: dict);
+            var searchCondition = expOr.ToWhereClause(alias: dict);
 
             Assert.AreEqual(searchCondition.WhereClause, "(RouteId = @Id Or RouteId = @Id1) And IsDel = @IsDel");
-       
+
             var para = new Dictionary<string, object>()
             {
                 {"@Id", 1},
@@ -89,7 +89,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
                 { "Id", "RouteId" },
                 { "IsDel", "b.IsDel" }
             };
-          var searchCondition = expOr.ToWhereClause(alias: dict);
+            var searchCondition = expOr.ToWhereClause(alias: dict);
 
             Assert.AreEqual(searchCondition.WhereClause, "(RouteId = @Id Or RouteId = @Id1) And b.IsDel = @IsDel");
 
