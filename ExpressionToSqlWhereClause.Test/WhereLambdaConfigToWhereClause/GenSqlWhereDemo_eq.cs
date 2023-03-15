@@ -4,6 +4,7 @@ using ExpressionToSqlWhereClause.Test.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 
 namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
@@ -95,7 +96,13 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 {
                     Search = searchModel
                 };
-                whereLambda.WhereIf[nameof(searchModel.Id)] = a => a.Id > 10;// 添加满足 Id>0的 条件时 ,当前值才生效
+
+
+                //whereLambda.WhereIf[nameof(searchModel.Id)] = a => a.Id > 10;// 添加满足 Id>0的 条件时 ,当前值才生效
+
+                //或者这样写
+                Expression<Func<InputModel_eq, bool>> exp = a => a.Id > 10;
+                whereLambda.WhereIf[nameof(searchModel.Id)] = exp;// 添加满足 Id>0的 条件时 ,当前值才生效
 
                 whereLambda[SearchType.Eq] = new List<string>
                 {
@@ -107,7 +114,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
                 Assert.AreEqual(searchCondition.WhereClause, "");
                 var dict = new Dictionary<string, object>
-                { 
+                {
                 };
 
                 CollectionAssert.AreEqual(searchCondition.Parameters, dict);
@@ -115,6 +122,53 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
         }
 
+
+
+        [TestMethod]
+        public void Test_eq_WhereIf_parseExpressionStr()
+        {
+            var searchModel = new InputModel_eq()
+            {
+                Id = 1
+            };
+
+            {
+                var whereLambda = new WhereLambda<Model_eq, InputModel_eq>
+                {
+                    Search = searchModel
+                };
+
+                //或者这样写
+                //Expression<Func<InputModel_eq, bool>> exp = a => a.Id > 10;
+                //whereLambda.WhereIf[nameof(searchModel.Id)] = exp;// 添加满足 Id>0的 条件时 ,当前值才生效
+
+                //在或者这样写
+
+                string expressionStr = "Id > 0";
+                LambdaExpression lambda = DynamicExpressionParser.ParseLambda(typeof(InputModel_eq), typeof(bool), expressionStr);
+                //string expressionStr = "Id > 0 && Age>0";//如果有多个表达式, 可以这样写
+                //LambdaExpression lambda = DynamicExpressionParser.ParseLambda(typeof(InputModel_eq), typeof(bool), expressionStr, new object[] { }); //这个也可以
+                whereLambda.WhereIf[nameof(searchModel.Id)] = (Expression<Func<InputModel_eq, bool>>)lambda;
+
+                //c#将字符串 a => a.Id > 10 && a.Name="A"  解析为表达式树, 使用 System.Linq.Dynamic.Core
+
+                whereLambda[SearchType.Eq] = new List<string>
+                {
+                    nameof(searchModel.Id),
+                };
+
+                var expression = whereLambda.ToExpression();
+                var searchCondition = expression.ToWhereClause();
+
+                Assert.AreEqual(searchCondition.WhereClause, "Id = @Id");
+                var dict = new Dictionary<string, object>
+                {
+                    { "@Id", searchModel.Id }
+                };
+
+                CollectionAssert.AreEqual(searchCondition.Parameters, dict);
+            }
+        }
     }
 
     public class Input_eq
@@ -138,6 +192,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
     public class InputModel_eq
     {
         public int Id { get; set; }
+        public int Age { get; set; }
     }
     public class Model_eq2
     {
