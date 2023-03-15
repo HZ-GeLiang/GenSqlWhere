@@ -63,6 +63,38 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
 
                 DictionaryAssert.AreEqual(searchCondition.Parameters, dict);
             }
+
+
+        }
+
+        [TestMethod]
+        public void Test_numberRange_whereif()
+        {
+            {
+                var searchModel = new Input_numberRange2()
+                {
+                    Id = 5
+                };
+                var whereLambda = new WhereLambda<Model_People, Input_numberRange2>();
+                whereLambda.Search = searchModel;
+                whereLambda[SearchType.NumberRange] = new List<string>
+                {
+                    nameof(searchModel.Id),
+                };
+
+                whereLambda.WhereIf[nameof(searchModel.Id)] = a => a.Id > 6;// 满足 条件时 生效
+
+                var expression = whereLambda.ToExpression();
+                var searchCondition = expression.ToWhereClause();
+
+                Assert.AreEqual(searchCondition.WhereClause, "");
+                var dict = new Dictionary<string, object>
+                {
+                };
+
+                DictionaryAssert.AreEqual(searchCondition.Parameters, dict);
+            }
+
         }
     }
 
