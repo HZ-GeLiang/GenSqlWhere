@@ -8,7 +8,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
-
 namespace ExpressionToSqlWhereClause.ExtensionMethod
 {
     public static class WhereClauseExpressionExtensions
@@ -176,7 +175,6 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
             }
             return parameters;
         }
-
     }
 
     public class SearchCondition
@@ -200,7 +198,6 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
         /// where子句
         /// </summary>
         public string WhereClause { get; private set; }
-
 
         /// <summary>
         /// 查询参数
@@ -233,7 +230,6 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
             var formattableStr = FormattableStringFactory.Create(querySql, this.FormattableParameters);
             return formattableStr;
         }
-
 
     }
 }

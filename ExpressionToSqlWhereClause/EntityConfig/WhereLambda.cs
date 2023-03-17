@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace ExpressionToSqlWhereClause.EntityConfig
 {
@@ -104,7 +105,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         ///
         internal static Expression<Func<TEntity, bool>> ToExpression<TEntity>(List<Expression<Func<TEntity, bool>>> whereLambdas)
-            where TEntity : class 
+            where TEntity : class
         {
             if (!whereLambdas.Any())
             {
@@ -186,7 +187,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         private static Dictionary<SearchType, List<string>> GetSearchCondition(Dictionary<SearchType, List<string>> searchTypeConfig)
         {
             var props = ReflectionHelper.GetProperties(typeof(TSearch));
-            foreach (System.Reflection.PropertyInfo prop in props)
+            foreach (PropertyInfo prop in props)
             {
                 var attrs = ReflectionHelper.GetAttributeForProperty<SearchTypeAttribute>(prop, false);
                 foreach (SearchTypeAttribute item in attrs)

@@ -17,8 +17,11 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
                 Url = "123",
             };
             var whereLambda = searchModel.CrateWhereLambda((model_like _) => { });
+
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
+
+          
             Assert.AreEqual(searchCondition.WhereClause, "Url Like @Url");
             var dict = new Dictionary<string, object>
             {
