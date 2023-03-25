@@ -217,8 +217,10 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         }
 
         /// <summary>
-        /// 从模型标注的 SearchTypeAttribute 中获得 搜索条件, 
-        /// 注:手写 whereLambda[SearchType.xx] =... 的优先级 > SearchTypeAttribute
+        /// 获得搜索条件.
+        /// 注:
+        /// 1. 会从模型标注的 SearchTypeAttribute 中加载一次
+        /// 2. 手写 whereLambda[SearchType.xx] =... 的优先级 > SearchTypeAttribute
         /// </summary>
         /// <param name="searchTypeConfig">默认情况下传入的对象 whereLambda[SearchType.xx] 对象</param>
         /// <returns>(搜索类型, List{对应的属性} )</returns>
