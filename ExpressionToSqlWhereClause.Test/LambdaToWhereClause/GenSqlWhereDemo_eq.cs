@@ -49,7 +49,14 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 //获得 expression 的 写法2
 
                 //var expression = whereLambda.ToExpression();
-                var searchConditionDict = whereLambda.GetSearchCondition();
+                var searchConditionDict = whereLambda.GetSearchConditionDict();
+
+                //手动的删除某个配置
+                //if (searchConditionDict.ContainsKey(SearchType.Eq))
+                //{
+                //    searchConditionDict[SearchType.Eq].Remove(nameof(input.Id));
+                //}
+
                 var whereLambdas = whereLambda.ToExpressionList(searchConditionDict);
                 var expression = whereLambda.ToExpression(whereLambdas);
 
