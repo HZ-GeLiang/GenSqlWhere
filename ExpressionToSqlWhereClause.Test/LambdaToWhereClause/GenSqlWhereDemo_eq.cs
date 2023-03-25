@@ -15,12 +15,12 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
         [TestMethod]
         public void Test_eq()
         {
-            var searchModel = new Model_eq()
+            var searchModel = new Input_eq()
             {
                 IsDel = true,
             };
 
-            var whereLambda = new WhereLambda<Input_eq, Model_eq>
+            var whereLambda = new WhereLambda<Model_eq, Input_eq>
             {
                 Search = searchModel
             };
