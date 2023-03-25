@@ -84,27 +84,36 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #region ToExpression
 
-        /// <summary>
-        /// 转表达式树
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc cref="ToExpressionCore{TEntity}(List{Expression{Func{TEntity, bool}}})"/>
         public Expression<Func<TEntity, bool>> ToExpression()
         {
-            var whereLambdas = ToExpressionList(this);
-            var expression = ToExpression(whereLambdas);
+            List<Expression<Func<TEntity, bool>>> whereLambdas = ToExpressionList(this);
+            var expression = WhereLambda<TEntity, TSearch>.ToExpressionCore(whereLambdas);
             return expression;
         }
 
-        ///
+        /// <inheritdoc cref="ToExpressionCore{TEntity}(List{Expression{Func{TEntity, bool}}})"/> 
         public static implicit operator Expression<Func<TEntity, bool>>(WhereLambda<TEntity, TSearch> that)
         {
             var whereLambdas = ToExpressionList(that);
-            var expression = ToExpression(whereLambdas);
+            var expression = WhereLambda<TEntity, TSearch>.ToExpressionCore(whereLambdas);
             return expression;
         }
 
-        ///
-        internal static Expression<Func<TEntity, bool>> ToExpression<TEntity>(List<Expression<Func<TEntity, bool>>> whereLambdas)
+        /// <inheritdoc cref="ToExpressionCore{TEntity}(List{Expression{Func{TEntity, bool}}})"/>
+        public Expression<Func<TEntity, bool>> ToExpression<TEntity>(List<Expression<Func<TEntity, bool>>> whereLambdas)
+            where TEntity : class
+        {
+            return WhereLambda<TEntity, TSearch>.ToExpressionCore(whereLambdas);
+        }
+
+        /// <summary>
+        /// 转表达式树
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="whereLambdas"></param>
+        /// <returns></returns>
+        private static Expression<Func<TEntity, bool>> ToExpressionCore<TEntity>(List<Expression<Func<TEntity, bool>>> whereLambdas)
             where TEntity : class
         {
             if (!whereLambdas.Any())
@@ -137,11 +146,26 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         /// <returns></returns>
         public static List<Expression<Func<TEntity, bool>>> ToExpressionList(WhereLambda<TEntity, TSearch> that)
         {
-            var searchCondition = GetSearchCondition(that._dictSearhType);
-
-            return ToExpressionList(that, searchCondition);
+            //static  是为了 给 implicit operator 方法使用的
+            var searchConditionDict = GetSearchCondition(that._dictSearhType);
+            return ToExpressionList(that, searchConditionDict);
         }
 
+        /// <inheritdoc cref="ToExpressionList(WhereLambda{TEntity, TSearch})"/>
+        public List<Expression<Func<TEntity, bool>>> ToExpressionList()
+        {
+            var searchConditionDict = GetSearchCondition(this._dictSearhType);
+            return ToExpressionList(this, searchConditionDict);
+        }
+
+        /// <summary>
+        /// 转 ToExpressionList
+        /// </summary>
+        /// <param name="that"></param>
+        /// <param name="searchConditionDict"></param>
+        /// <returns></returns>
+        /// <exception cref="FrameException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static List<Expression<Func<TEntity, bool>>> ToExpressionList(WhereLambda<TEntity, TSearch> that, Dictionary<SearchType, List<string>> searchConditionDict)
         {
             var whereLambdas = new List<Expression<Func<TEntity, bool>>>();
@@ -160,7 +184,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 if (searchCondition == null || !searchCondition.Any())
                 {
                     continue;
-                }                 
+                }
 
                 List<Expression<Func<TEntity, bool>>> expressionList = searchType switch
                 {
@@ -186,12 +210,18 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return whereLambdas;
         }
 
+        /// <inheritdoc cref="ToExpressionList(Dictionary{SearchType, List{string}})"/>
+        public List<Expression<Func<TEntity, bool>>> ToExpressionList(Dictionary<SearchType, List<string>> searchConditionDict)
+        {
+            return ToExpressionList(this, searchConditionDict);
+        }
+
         /// <summary>
         /// 从模型属性的 SearchTypeAttribute 获得 SearchCondition, 然后追加到 searchTypeConfig
         /// </summary>
         /// <param name="searchTypeConfig"></param>
         /// <returns></returns>
-        private static Dictionary<SearchType, List<string>> GetSearchCondition(Dictionary<SearchType, List<string>> searchTypeConfig)
+        public static Dictionary<SearchType, List<string>> GetSearchCondition(Dictionary<SearchType, List<string>> searchTypeConfig)
         {
             var props = ReflectionHelper.GetProperties(typeof(TSearch));
             foreach (PropertyInfo prop in props)
@@ -215,7 +245,17 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return searchTypeConfig;
         }
 
+        /// <inheritdoc cref="GetSearchCondition(Dictionary{SearchType, List{string}})"/> 
+        public Dictionary<SearchType, List<string>> GetSearchCondition()
+        {
+            var searchCondition = GetSearchCondition(this._dictSearhType);
+            return searchCondition;
+        }
 
+        /// <summary>
+        /// implicit 转换
+        /// </summary>
+        /// <param name="that"></param>
         public static implicit operator List<Expression<Func<TEntity, bool>>>(WhereLambda<TEntity, TSearch> that)
         {
             var whereLambdas = ToExpressionList(that);

@@ -30,16 +30,39 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 nameof(searchModel.IsDel),
             };
 
-            var expression = whereLambda.ToExpression();
-            var searchCondition = expression.ToWhereClause();
-
-            Assert.AreEqual(searchCondition.WhereClause, "IsDel = @IsDel");
-            var dict = new Dictionary<string, object>
             {
-                { "@IsDel", searchModel.IsDel }
-            };
+                //获得 expression 的 写法1
+                var expression = whereLambda.ToExpression();
+                var searchCondition = expression.ToWhereClause();
 
-            CollectionAssert.AreEqual(searchCondition.Parameters, dict);
+                Assert.AreEqual(searchCondition.WhereClause, "IsDel = @IsDel");
+                var dict = new Dictionary<string, object>
+                {
+                    { "@IsDel", searchModel.IsDel }
+                };
+
+                CollectionAssert.AreEqual(searchCondition.Parameters, dict);
+            }
+
+
+            {
+                //获得 expression 的 写法2
+
+                //var expression = whereLambda.ToExpression();
+                var searchConditionDict = whereLambda.GetSearchCondition();
+                var whereLambdas = whereLambda.ToExpressionList(searchConditionDict);
+                var expression = whereLambda.ToExpression(whereLambdas);
+
+                var searchCondition = expression.ToWhereClause();
+
+                Assert.AreEqual(searchCondition.WhereClause, "IsDel = @IsDel");
+                var dict = new Dictionary<string, object>
+                {
+                    { "@IsDel", searchModel.IsDel }
+                };
+
+                CollectionAssert.AreEqual(searchCondition.Parameters, dict);
+            }
         }
 
 
@@ -57,6 +80,8 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             var searchCondition = expression.ToWhereClause();
 
         }
+
+
 
         [TestMethod]
         public void Test_eq_WhereIf()
