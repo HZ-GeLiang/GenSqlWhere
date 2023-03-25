@@ -217,10 +217,11 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         }
 
         /// <summary>
-        /// 从模型属性的 SearchTypeAttribute 获得 SearchCondition, 然后追加到 searchTypeConfig
+        /// 从模型标注的 SearchTypeAttribute 中获得 搜索条件, 
+        /// 注:手写 whereLambda[SearchType.xx] =... 的优先级 > SearchTypeAttribute
         /// </summary>
-        /// <param name="searchTypeConfig"></param>
-        /// <returns></returns>
+        /// <param name="searchTypeConfig">默认情况下传入的对象 whereLambda[SearchType.xx] 对象</param>
+        /// <returns>(搜索类型, List{对应的属性} )</returns>
         public static Dictionary<SearchType, List<string>> GetSearchCondition(Dictionary<SearchType, List<string>> searchTypeConfig)
         {
             var props = ReflectionHelper.GetProperties(typeof(TSearch));
@@ -234,7 +235,6 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                         searchTypeConfig.Add(item.SearchType, new List<string>());
                     }
 
-                    //[SearchType]的加载的优先级比手动写的要低
                     if (!searchTypeConfig[item.SearchType].Contains(prop.Name))
                     {
                         searchTypeConfig[item.SearchType].Add(prop.Name);
@@ -246,10 +246,10 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         }
 
         /// <inheritdoc cref="GetSearchCondition(Dictionary{SearchType, List{string}})"/> 
-        public Dictionary<SearchType, List<string>> GetSearchCondition()
+        public Dictionary<SearchType, List<string>> GetSearchConditionDict()
         {
-            var searchCondition = GetSearchCondition(this._dictSearhType);
-            return searchCondition;
+            var searchConditionDict = GetSearchCondition(this._dictSearhType);
+            return searchConditionDict;
         }
 
         /// <summary>
