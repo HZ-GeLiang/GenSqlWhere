@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 
-namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
+namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 {
     [TestClass]
     public class GenSqlWhereDemo_eq

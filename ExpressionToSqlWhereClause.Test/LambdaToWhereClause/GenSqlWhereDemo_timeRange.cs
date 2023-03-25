@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
+namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 {
     [TestClass]
     public class GenSqlWhereDemo_TimeRange
@@ -36,7 +36,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             var searchCondition = expression.ToWhereClause();
 
             Assert.AreEqual(searchCondition.WhereClause, "DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1");
-            Dictionary<string, object> dict = new ()
+            Dictionary<string, object> dict = new()
             {
                 { "@DataCreatedAt", searchModel.DataCreatedAtStart},
                 { "@DataCreatedAt1", DateTime.Parse("2021-8-9")},
@@ -71,7 +71,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             var searchCondition = expression.ToWhereClause();
 
             Assert.AreEqual(searchCondition.WhereClause, "DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1");
-            Dictionary<string, object> dict = new ()
+            Dictionary<string, object> dict = new()
             {
                 { "@DataCreatedAt", searchModel.DataCreatedAtStart},
                 { "@DataCreatedAt1", DateTime.Parse("2021-8-9")},
@@ -114,7 +114,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             var searchCondition = expression.ToWhereClause();
 
             Assert.AreEqual(searchCondition.WhereClause, "");
-            Dictionary<string, object> dict = new ()
+            Dictionary<string, object> dict = new()
             {
             };
 

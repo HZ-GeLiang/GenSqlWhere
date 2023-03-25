@@ -3,7 +3,7 @@ using ExpressionToSqlWhereClause.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 
-namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
+namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 {
     [TestClass]
     public class UseDemo3

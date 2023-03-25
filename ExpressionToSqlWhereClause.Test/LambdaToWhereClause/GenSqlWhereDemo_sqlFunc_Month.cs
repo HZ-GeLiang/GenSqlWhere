@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 
-namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
+namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 {
 
     [TestClass]

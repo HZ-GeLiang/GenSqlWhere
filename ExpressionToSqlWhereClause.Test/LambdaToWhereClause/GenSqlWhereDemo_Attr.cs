@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 
-namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
+namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 {
     [TestClass]
     public class GenSqlWhereDemo_Attr
@@ -21,7 +21,7 @@ namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
 
-          
+
             Assert.AreEqual(searchCondition.WhereClause, "Url Like @Url");
             var dict = new Dictionary<string, object>
             {

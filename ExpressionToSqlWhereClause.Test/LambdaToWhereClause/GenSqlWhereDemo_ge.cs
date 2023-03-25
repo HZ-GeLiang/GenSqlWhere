@@ -4,46 +4,46 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 
-namespace ExpressionToSqlWhereClause.Test.WhereLambdaConfigToWhereClause
+namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 {
-    public class model_lt
+    public class model_ge
     {
         public long? Id { get; set; }
         public DateTime? DataCreatedAt { get; set; }
     }
 
-    public class Input_lt_Attr
+    public class Input_ge_Attr
     {
-        [SearchType(SearchType.Lt)] public long? Id { get; set; }
-        [SearchType(SearchType.Lt)] public DateTime? DataCreatedAt { get; set; }
+        [SearchType(SearchType.Ge)] public long? Id { get; set; }
+        [SearchType(SearchType.Ge)] public DateTime? DataCreatedAt { get; set; }
     }
 
     [TestClass]
-    public class GenSqlWhereDemo_lt
+    public class GenSqlWhereDemo_ge
     {
+
         [TestMethod]
-        public void Test_lt()
+        public void Test_ge()
         {
-            var searchModel = new model_lt()
+            var searchModel = new model_ge()
             {
                 Id = 5,
                 DataCreatedAt = DateTime.Parse("2021-8-8"),
             };
 
-            var whereLambda = new WhereLambda<Model_People, model_lt>();
+            var whereLambda = new WhereLambda<Model_People, model_ge>();
             whereLambda.Search = searchModel;
 
-            whereLambda[SearchType.Lt] = new List<string>
+            whereLambda[SearchType.Ge] = new List<string>
             {
                 nameof(searchModel.Id),
                 nameof(searchModel.DataCreatedAt),
             };
 
-
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
 
-            Assert.AreEqual(searchCondition.WhereClause, "Id < @Id And DataCreatedAt < @DataCreatedAt");
+            Assert.AreEqual(searchCondition.WhereClause, "Id >= @Id And DataCreatedAt >= @DataCreatedAt");
             var dict = new Dictionary<string, object>
             {
                 { "@Id", 5 },//取 domain 的类型
