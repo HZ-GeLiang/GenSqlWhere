@@ -76,7 +76,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             {
                 Url = "123",
             };
-            var whereLambda = new WhereLambda<model_like>(searchModel);
+            var whereLambda = new WhereLambda<model_like, model_like>(searchModel);
 
             whereLambda[SearchType.Like] = new List<string>
             {

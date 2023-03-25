@@ -282,7 +282,6 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
-
         [TestMethod]
         public void ValidateDeepMemberConstant()
         {

@@ -9,24 +9,25 @@ using System.Reflection;
 
 namespace ExpressionToSqlWhereClause.EntityConfig
 {
-    /// <summary>
-    /// 适合TEntity ==  TSearch,
-    /// 这种方式的, 没法用 dataRange 和 timeRange
-    /// </summary>
-    /// <typeparam name="TSearch"></typeparam>
-    public class WhereLambda<TSearch> : WhereLambda<TSearch, TSearch>
-        where TSearch : class
-    {
-        public WhereLambda(TSearch search) : base(search)
-        {
-        }
-    }
+    ///// <summary>
+    ///// 适合TEntity ==  TSearch,
+    ///// 这种方式的, 没法用 dataRange 和 timeRange,
+    ///// 不建议使用这个
+    ///// </summary>
+    ///// <typeparam name="TSearch"></typeparam>
+    //public class WhereLambda<TSearch> : WhereLambda<TSearch, TSearch>
+    //    where TSearch : class
+    //{
+    //    public WhereLambda(TSearch search) : base(search)
+    //    {
+    //    }
+    //}
 
     /// <summary>
     /// TSearch 转 TEntity 的表达式树的配置
     /// </summary>
-    /// <typeparam name="TEntity">数据表实体类型</typeparam>
-    /// <typeparam name="TSearch">检索对象 ,一般是 xxInput 对象, 注: 不要使用多态,会报错的</typeparam>
+    /// <typeparam name="TEntity">一般是数据库实体</typeparam>
+    /// <typeparam name="TSearch">检索条件对象实体,一般为后端定义好后给前端传参的模型对象. 注: 不要使用多态,会报错的</typeparam>
     public class WhereLambda<TEntity, TSearch>
         where TEntity : class
         where TSearch : class
