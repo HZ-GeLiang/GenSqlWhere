@@ -128,8 +128,6 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #endregion
 
-        internal Dictionary<SearchType, List<string>> SearchCondition { get; set; } = null;
-
 
         #region ToExpressionList
 
@@ -137,18 +135,23 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         /// 获得表达式树的写法,可以给ef用(不含sql内置函数的那种)
         /// </summary> 
         /// <returns></returns>
-        internal static List<Expression<Func<TEntity, bool>>> ToExpressionList(WhereLambda<TEntity, TSearch> that)
+        public static List<Expression<Func<TEntity, bool>>> ToExpressionList(WhereLambda<TEntity, TSearch> that)
         {
-            that.SearchCondition = GetSearchCondition(that._dictSearhType);
+            var searchCondition = GetSearchCondition(that._dictSearhType);
 
+            return ToExpressionList(that, searchCondition);
+        }
+
+        public static List<Expression<Func<TEntity, bool>>> ToExpressionList(WhereLambda<TEntity, TSearch> that, Dictionary<SearchType, List<string>> searchCondition)
+        {
             var whereLambdas = new List<Expression<Func<TEntity, bool>>>();
 
             foreach (SearchType searchType in _addOrder)
             {
                 if (searchType == SearchType.None ||
-                    that.SearchCondition.ContainsKey(searchType) == false ||
-                    that.SearchCondition[searchType] == null ||
-                    that.SearchCondition[searchType].Count <= 0
+                    searchCondition.ContainsKey(searchType) == false ||
+                    searchCondition[searchType] == null ||
+                    searchCondition[searchType].Count <= 0
                    )
                 {
                     continue;
@@ -177,7 +180,6 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
             return whereLambdas;
         }
-
 
         /// <summary>
         /// 从模型属性的 SearchTypeAttribute 获得 SearchCondition, 然后追加到 searchTypeConfig
