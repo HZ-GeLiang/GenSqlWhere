@@ -234,7 +234,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                         searchTypeConfig.Add(item.SearchType, new List<string>());
                     }
 
-                    //优先级比 手动写的要低
+                    //[SearchType]的加载的优先级比手动写的要低
                     if (!searchTypeConfig[item.SearchType].Contains(prop.Name))
                     {
                         searchTypeConfig[item.SearchType].Add(prop.Name);
