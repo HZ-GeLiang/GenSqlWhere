@@ -9,20 +9,6 @@ using System.Reflection;
 
 namespace ExpressionToSqlWhereClause.EntityConfig
 {
-    ///// <summary>
-    ///// 适合TEntity ==  TSearch,
-    ///// 这种方式的, 没法用 dataRange 和 timeRange,
-    ///// 不建议使用这个
-    ///// </summary>
-    ///// <typeparam name="TSearch"></typeparam>
-    //public class WhereLambda<TSearch> : WhereLambda<TSearch, TSearch>
-    //    where TSearch : class
-    //{
-    //    public WhereLambda(TSearch search) : base(search)
-    //    {
-    //    }
-    //}
-
     /// <summary>
     /// TSearch 转 TEntity 的表达式树的配置
     /// </summary>
@@ -274,4 +260,18 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #endregion
     }
+
+    ///// <summary>
+    ///// 适合TEntity ==  TSearch,
+    ///// 这种方式的, 没法用 dataRange 和 timeRange,
+    ///// 不建议使用这个
+    ///// </summary>
+    ///// <typeparam name="TSearch"></typeparam>
+    //public class WhereLambda<TSearch> : WhereLambda<TSearch, TSearch>
+    //    where TSearch : class
+    //{
+    //    public WhereLambda(TSearch search) : base(search)
+    //    {
+    //    }
+    //}
 }
