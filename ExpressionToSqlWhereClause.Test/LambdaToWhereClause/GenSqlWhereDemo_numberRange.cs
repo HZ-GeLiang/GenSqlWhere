@@ -17,8 +17,8 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                     IdLeft = 3,
                     IdRight = 9
                 };
-                var whereLambda = new WhereLambda<Model_People, Input_numberRange_Attr>();
-                whereLambda.Search = searchModel;
+                var whereLambda = new WhereLambda<Model_People, Input_numberRange_Attr>(searchModel);
+
                 whereLambda[SearchType.NumberRange] = new List<string>
                 {
                     nameof(searchModel.IdLeft),
@@ -43,8 +43,8 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 {
                     Id = 5
                 };
-                var whereLambda = new WhereLambda<Model_People, Input_numberRange2>();
-                whereLambda.Search = searchModel;
+                var whereLambda = new WhereLambda<Model_People, Input_numberRange2>(searchModel);
+
                 whereLambda[SearchType.NumberRange] = new List<string>
                 {
                     nameof(searchModel.Id),
@@ -75,8 +75,8 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 {
                     Id = 5
                 };
-                var whereLambda = new WhereLambda<Model_People, Input_numberRange2>();
-                whereLambda.Search = searchModel;
+                var whereLambda = new WhereLambda<Model_People, Input_numberRange2>(searchModel);
+
                 whereLambda[SearchType.NumberRange] = new List<string>
                 {
                     nameof(searchModel.Id),

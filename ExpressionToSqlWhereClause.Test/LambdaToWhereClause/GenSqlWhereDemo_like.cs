@@ -17,10 +17,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             {
                 Url = "123",
             };
-            var whereLambda = new WhereLambda<Model_People, model_like>
-            {
-                Search = searchModel
-            };
+            var whereLambda = new WhereLambda<Model_People, model_like>(searchModel);
 
             whereLambda[SearchType.Like] = new List<string>
             {
@@ -47,10 +44,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             {
                 Url = "123",
             };
-            var whereLambda = new WhereLambda<Model_People, Input_likeLeft>
-            {
-                Search = searchModel
-            };
+            var whereLambda = new WhereLambda<Model_People, Input_likeLeft>(searchModel);
 
             whereLambda[SearchType.LikeLeft] = new List<string>
             {
@@ -78,10 +72,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             {
                 Url = "123",
             };
-            var whereLambda = new WhereLambda<Model_People, Input_likeRight>
-            {
-                Search = searchModel
-            };
+            var whereLambda = new WhereLambda<Model_People, Input_likeRight>(searchModel);
 
             whereLambda[SearchType.LikeRight] = new List<string>
             {

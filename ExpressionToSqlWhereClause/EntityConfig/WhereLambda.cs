@@ -17,7 +17,9 @@ namespace ExpressionToSqlWhereClause.EntityConfig
     public class WhereLambda<TSearch> : WhereLambda<TSearch, TSearch>
         where TSearch : class
     {
-
+        public WhereLambda(TSearch search) : base(search)
+        {
+        }
     }
 
     /// <summary>
@@ -46,10 +48,10 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             SearchType.Like,
         };
 
-        /// <summary>
-        /// 构造器创建,需要 赋值 SearchModel 属性才能使用
-        /// </summary>
-        public WhereLambda() { }
+        ///// <summary>
+        ///// 构造器创建,需要 赋值 SearchModel 属性才能使用
+        ///// </summary>
+        //public WhereLambda() { }
 
         /// <summary>
         /// 

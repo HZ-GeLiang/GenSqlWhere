@@ -18,8 +18,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 IsDel = true,//todo://计划:添加当其他值为xx时,当前值才生效
             };
 
-            var whereLambda = new WhereLambda<Model_People, model_neq>();
-            whereLambda.Search = searchModel;
+            var whereLambda = new WhereLambda<Model_People, model_neq>(searchModel);
 
             whereLambda[SearchType.Neq] = new List<string>
             {

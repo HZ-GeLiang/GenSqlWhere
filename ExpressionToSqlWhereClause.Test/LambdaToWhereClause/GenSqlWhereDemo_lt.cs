@@ -30,8 +30,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 DataCreatedAt = DateTime.Parse("2021-8-8"),
             };
 
-            var whereLambda = new WhereLambda<Model_People, model_lt>();
-            whereLambda.Search = searchModel;
+            var whereLambda = new WhereLambda<Model_People, model_lt>(searchModel);
 
             whereLambda[SearchType.Lt] = new List<string>
             {
