@@ -18,21 +18,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #region AddLike
 
-        public static List<Expression<Func<TEntity, bool>>> AddLike<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
-            where TEntity : class
-            where TSearch : class
-        {
-            var searchCondition = that.SearchCondition[searchType]?.ToArray();
-
-            if (HaveCount(searchCondition) == false)
-            {
-                return Default<TEntity>();
-            }
-            return AddLike<TEntity, TSearch>(that, searchCondition);
-
-        }
-
-        public static List<Expression<Func<TEntity, bool>>> AddLike<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, params string[] searchCondition)
+        public static List<Expression<Func<TEntity, bool>>> AddLike<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
             where TEntity : class
             where TSearch : class
         {
@@ -85,20 +71,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #region AddLikeLeft
 
-        public static List<Expression<Func<TEntity, bool>>> AddLikeLeft<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
-            where TEntity : class
-            where TSearch : class
-        {
-            var searchCondition = that.SearchCondition[searchType]?.ToArray();
-
-            if (HaveCount(searchCondition) == false)
-            {
-                return Default<TEntity>();
-            }
-            return AddLikeLeft<TEntity, TSearch>(that, searchCondition);
-        }
-
-        public static List<Expression<Func<TEntity, bool>>> AddLikeLeft<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, params string[] searchCondition)
+        public static List<Expression<Func<TEntity, bool>>> AddLikeLeft<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
             where TEntity : class
             where TSearch : class
         {
@@ -129,7 +102,6 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return whereLambdas;
         }
 
-
         // t.SomeProperty.StartsWith("stringValue");
         private static Expression<Func<TEntity, bool>> GetExpression_StartsWith<TEntity>(string propertyName, string propertyValue)
         {
@@ -153,20 +125,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         #region AddLikeRight
 
         ///
-        public static List<Expression<Func<TEntity, bool>>> AddLikeRight<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
-            where TEntity : class
-            where TSearch : class
-        {
-            var searchCondition = that.SearchCondition[searchType]?.ToArray();
-            if (HaveCount(searchCondition) == false)
-            {
-                return Default<TEntity>();
-            }
-            return AddLikeRight<TEntity, TSearch>(that, searchCondition);
-        }
-
-        ///
-        public static List<Expression<Func<TEntity, bool>>> AddLikeRight<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, params string[] searchCondition)
+        public static List<Expression<Func<TEntity, bool>>> AddLikeRight<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
             where TEntity : class
             where TSearch : class
         {
@@ -219,19 +178,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #region AddEqual版本2 : 根据: AddInOrEuqal 衍生出来的
 
-        public static List<Expression<Func<TEntity, bool>>> AddEqual<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
-            where TEntity : class
-            where TSearch : class
-        {
-            var searchCondition = that.SearchCondition[searchType]?.ToArray();
-            if (HaveCount(searchCondition) == false)
-            {
-                return Default<TEntity>();
-            }
-            return AddEqual<TEntity, TSearch>(that, searchCondition);
-        }
-
-        public static List<Expression<Func<TEntity, bool>>> AddEqual<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, params string[] searchCondition)
+        public static List<Expression<Func<TEntity, bool>>> AddEqual<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
             where TEntity : class
             where TSearch : class
         {
@@ -252,8 +199,8 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                     continue;
                 }
                 AddEqualCore<TEntity, TSearch>(prop, valuePropType, value, whereLambdas);
-
             }
+
             return whereLambdas;
         }
 
@@ -332,19 +279,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #region AddNotEqual-基于Equal的版本2
 
-        public static List<Expression<Func<TEntity, bool>>> AddNotEqual<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
-            where TEntity : class
-            where TSearch : class
-        {
-            var searchCondition = that.SearchCondition[searchType]?.ToArray();
-            if (HaveCount(searchCondition) == false)
-            {
-                return Default<TEntity>();
-            }
-            return AddNotEqual<TEntity, TSearch>(that, searchCondition);
-        }
-
-        public static List<Expression<Func<TEntity, bool>>> AddNotEqual<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, params string[] searchCondition)
+        public static List<Expression<Func<TEntity, bool>>> AddNotEqual<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
             where TEntity : class
             where TSearch : class
         {
@@ -446,19 +381,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         }
 
-        public static List<Expression<Func<TEntity, bool>>> AddNumberRange<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
-            where TEntity : class
-            where TSearch : class
-        {
-            var searchCondition = that.SearchCondition[searchType]?.ToArray();
-            if (HaveCount(searchCondition) == false)
-            {
-                return Default<TEntity>();
-            }
-            return AddNumberRange<TEntity, TSearch>(that, searchCondition);
-        }
-
-        public static List<Expression<Func<TEntity, bool>>> AddNumberRange<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, params string[] searchCondition)
+        public static List<Expression<Func<TEntity, bool>>> AddNumberRange<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
             where TEntity : class
             where TSearch : class
         {
@@ -669,19 +592,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #region AddTimeRange
 
-        public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
-            where TEntity : class
-            where TSearch : class
-        {
-            var searchCondition = that.SearchCondition[searchType]?.ToArray();
-            if (HaveCount(searchCondition) == false)
-            {
-                return Default<TEntity>();
-            }
-            return AddTimeRange<TEntity, TSearch>(that, searchCondition);
-        }
-
-        public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, params string[] searchCondition)
+        public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
             where TEntity : class
             where TSearch : class
         {
@@ -698,7 +609,37 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return whereLambdas;
         }
 
-        private static Dictionary<string, TimeSearch> AddTimeRange_GetTimeDict<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, string[] searchCondition)
+        #region 指定 period 的
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <typeparam name="TSearch"></typeparam>
+        /// <param name="that"></param>
+        /// <param name="searchCondition"></param>
+        /// <param name="period">当为秒的时候需要调用这个方法</param>
+        /// <returns></returns>
+        public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition, TimePeriod period)
+            where TEntity : class
+            where TSearch : class
+        {
+            if (!HaveCount(searchCondition))
+            {
+                return Default<TEntity>();
+            }
+
+            var timeDict = AddTimeRange_GetTimeDict(that, searchCondition);
+
+            Get_TimePeriode(timeDict, () => period);
+
+            var whereLambdas = AddTimeRange_GetWhereLambdas<TEntity>(timeDict);
+            return whereLambdas;
+        }
+
+        #endregion
+
+        private static Dictionary<string, TimeSearch> AddTimeRange_GetTimeDict<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
             where TEntity : class
             where TSearch : class
         {
@@ -945,46 +886,6 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return whereLambdas;
         }
 
-        #region 指定 period 的
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <typeparam name="TSearch"></typeparam>
-        /// <param name="period">当为秒的时候需要调用这个方法</param>
-        /// <param name="that"></param>
-        /// <param name="searchCondition"></param>
-        /// <returns></returns>
-        public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearch>(TimePeriod period, WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
-            where TEntity : class
-            where TSearch : class
-        {
-            return HaveCount(searchCondition)
-                ? AddTimeRange<TEntity, TSearch>(period, that, searchCondition.ToArray())
-                : Default<TEntity>();
-        }
-
-        ///
-        public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearch>(TimePeriod period, WhereLambda<TEntity, TSearch> that, params string[] searchCondition)
-            where TEntity : class
-            where TSearch : class
-        {
-            if (!HaveCount(searchCondition))
-            {
-                return Default<TEntity>();
-            }
-
-            var timeDict = AddTimeRange_GetTimeDict(that, searchCondition);
-
-            Get_TimePeriode(timeDict, () => period);
-
-            var whereLambdas = AddTimeRange_GetWhereLambdas<TEntity>(timeDict);
-            return whereLambdas;
-        }
-
-        #endregion
-
         private static DateTime GetEndTime(TimePeriod period, DateTime time)
         {
             if (period == TimePeriod.Day)
@@ -1005,7 +906,6 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             }
 
             throw new FrameException("后续开发修改过代码逻辑, 但是此处却未修改,需要修改代码");
-
         }
 
         /// <summary>
@@ -1064,29 +964,9 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         /// <typeparam name="TEntity"></typeparam>
         /// <typeparam name="TSearch"></typeparam>
         /// <param name="searchModel"></param>
-        /// <param name="searchCondition"></param>
-        /// <returns></returns>
-        public static List<Expression<Func<TEntity, bool>>> AddIn<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
-            where TEntity : class
-            where TSearch : class
-        {
-            var searchCondition = that.SearchCondition[searchType]?.ToArray();
-            if (HaveCount(searchCondition) == false)
-            {
-                return Default<TEntity>();
-            }
-            return AddIn<TEntity, TSearch>(that, searchCondition);
-        }
-
-        /// <summary>
-        /// 实际翻译成in 还是 Euqal , 根据 split() 后的个数而定
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <typeparam name="TSearch"></typeparam>
-        /// <param name="searchModel"></param>
         /// <param name="propertyNames"></param>
         /// <returns></returns>
-        public static List<Expression<Func<TEntity, bool>>> AddIn<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, params string[] propertyNames)
+        public static List<Expression<Func<TEntity, bool>>> AddIn<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> propertyNames)
             where TEntity : class
             where TSearch : class
         {
@@ -1368,20 +1248,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #region AddGt
 
-        public static List<Expression<Func<TEntity, bool>>> AddGt<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
-            where TEntity : class
-            where TSearch : class
-        {
-            var searchCondition = that.SearchCondition[searchType]?.ToArray();
-            if (HaveCount(searchCondition) == false)
-            {
-                return Default<TEntity>();
-            }
-
-            return AddGt<TEntity, TSearch>(that, searchCondition);
-        }
-
-        public static List<Expression<Func<TEntity, bool>>> AddGt<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, params string[] searchCondition)
+        public static List<Expression<Func<TEntity, bool>>> AddGt<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
             where TEntity : class
             where TSearch : class
         {
@@ -1448,19 +1315,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #region AddGe
 
-        public static List<Expression<Func<TEntity, bool>>> AddGe<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
-            where TEntity : class
-            where TSearch : class
-        {
-            var searchCondition = that.SearchCondition[searchType]?.ToArray();
-            if (HaveCount(searchCondition) == false)
-            {
-                return Default<TEntity>();
-            }
-            return AddGe<TEntity, TSearch>(that, searchCondition);
-        }
-
-        public static List<Expression<Func<TEntity, bool>>> AddGe<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, params string[] searchCondition)
+        public static List<Expression<Func<TEntity, bool>>> AddGe<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
             where TEntity : class
             where TSearch : class
         {
@@ -1526,19 +1381,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #region AddLt
 
-        public static List<Expression<Func<TEntity, bool>>> AddLt<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
-            where TEntity : class
-            where TSearch : class
-        {
-            var searchCondition = that.SearchCondition[searchType]?.ToArray();
-            if (HaveCount(searchCondition) == false)
-            {
-                return Default<TEntity>();
-            }
-            return AddLt<TEntity, TSearch>(that, searchCondition);
-        }
-
-        public static List<Expression<Func<TEntity, bool>>> AddLt<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, params string[] searchCondition)
+        public static List<Expression<Func<TEntity, bool>>> AddLt<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
             where TEntity : class
             where TSearch : class
         {
@@ -1604,19 +1447,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #region AddLe
 
-        public static List<Expression<Func<TEntity, bool>>> AddLe<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, SearchType searchType)
-            where TEntity : class
-            where TSearch : class
-        {
-            var searchCondition = that.SearchCondition[searchType]?.ToArray();
-            if (HaveCount(searchCondition) == false)
-            {
-                return Default<TEntity>();
-            }
-            return AddLe<TEntity, TSearch>(that, searchCondition);
-        }
-
-        public static List<Expression<Func<TEntity, bool>>> AddLe<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, params string[] searchCondition)
+        public static List<Expression<Func<TEntity, bool>>> AddLe<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
             where TEntity : class
             where TSearch : class
         {

@@ -142,35 +142,40 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return ToExpressionList(that, searchCondition);
         }
 
-        public static List<Expression<Func<TEntity, bool>>> ToExpressionList(WhereLambda<TEntity, TSearch> that, Dictionary<SearchType, List<string>> searchCondition)
+        public static List<Expression<Func<TEntity, bool>>> ToExpressionList(WhereLambda<TEntity, TSearch> that, Dictionary<SearchType, List<string>> searchConditionDict)
         {
             var whereLambdas = new List<Expression<Func<TEntity, bool>>>();
 
             foreach (SearchType searchType in _addOrder)
             {
                 if (searchType == SearchType.None ||
-                    searchCondition.ContainsKey(searchType) == false ||
-                    searchCondition[searchType] == null ||
-                    searchCondition[searchType].Count <= 0
+                    searchConditionDict.ContainsKey(searchType) == false ||
+                    searchConditionDict[searchType] == null ||
+                    searchConditionDict[searchType].Count <= 0
                    )
                 {
                     continue;
                 }
+                List<string> searchCondition = searchConditionDict[searchType];
+                if (searchCondition == null || !searchCondition.Any())
+                {
+                    continue;
+                }                 
 
                 List<Expression<Func<TEntity, bool>>> expressionList = searchType switch
                 {
-                    SearchType.Like => WhereLambdaHelper.AddLike<TEntity, TSearch>(that, searchType),
-                    SearchType.LikeLeft => WhereLambdaHelper.AddLikeLeft<TEntity, TSearch>(that, searchType),
-                    SearchType.LikeRight => WhereLambdaHelper.AddLikeRight<TEntity, TSearch>(that, searchType),
-                    SearchType.Eq => WhereLambdaHelper.AddEqual<TEntity, TSearch>(that, searchType),
-                    SearchType.Neq => WhereLambdaHelper.AddNotEqual<TEntity, TSearch>(that, searchType),
-                    SearchType.In => WhereLambdaHelper.AddIn<TEntity, TSearch>(that, searchType),
-                    SearchType.TimeRange => WhereLambdaHelper.AddTimeRange<TEntity, TSearch>(that, searchType),
-                    SearchType.NumberRange => WhereLambdaHelper.AddNumberRange<TEntity, TSearch>(that, searchType),
-                    SearchType.Gt => WhereLambdaHelper.AddGt<TEntity, TSearch>(that, searchType),
-                    SearchType.Ge => WhereLambdaHelper.AddGe<TEntity, TSearch>(that, searchType),
-                    SearchType.Lt => WhereLambdaHelper.AddLt<TEntity, TSearch>(that, searchType),
-                    SearchType.Le => WhereLambdaHelper.AddLe<TEntity, TSearch>(that, searchType),
+                    SearchType.Like => WhereLambdaHelper.AddLike<TEntity, TSearch>(that, searchCondition),
+                    SearchType.LikeLeft => WhereLambdaHelper.AddLikeLeft<TEntity, TSearch>(that, searchCondition),
+                    SearchType.LikeRight => WhereLambdaHelper.AddLikeRight<TEntity, TSearch>(that, searchCondition),
+                    SearchType.Eq => WhereLambdaHelper.AddEqual<TEntity, TSearch>(that, searchCondition),
+                    SearchType.Neq => WhereLambdaHelper.AddNotEqual<TEntity, TSearch>(that, searchCondition),
+                    SearchType.In => WhereLambdaHelper.AddIn<TEntity, TSearch>(that, searchCondition),
+                    SearchType.TimeRange => WhereLambdaHelper.AddTimeRange<TEntity, TSearch>(that, searchCondition),
+                    SearchType.NumberRange => WhereLambdaHelper.AddNumberRange<TEntity, TSearch>(that, searchCondition),
+                    SearchType.Gt => WhereLambdaHelper.AddGt<TEntity, TSearch>(that, searchCondition),
+                    SearchType.Ge => WhereLambdaHelper.AddGe<TEntity, TSearch>(that, searchCondition),
+                    SearchType.Lt => WhereLambdaHelper.AddLt<TEntity, TSearch>(that, searchCondition),
+                    SearchType.Le => WhereLambdaHelper.AddLe<TEntity, TSearch>(that, searchCondition),
                     SearchType.None => throw new FrameException($"未指定{nameof(searchType)}", new ArgumentException()),
                     _ => throw new ArgumentOutOfRangeException(nameof(searchType), searchType, null),
                 };
