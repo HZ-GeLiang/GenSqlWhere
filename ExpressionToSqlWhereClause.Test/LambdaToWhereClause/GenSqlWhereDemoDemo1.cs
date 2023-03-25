@@ -42,10 +42,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 DataCreatedAtEnd = time,
             };
 
-            var whereLambda = new WhereLambda<Model_People, Input_Demo>
-            {
-                Search = searchModel
-            };
+            var whereLambda = new WhereLambda<Model_People, Input_Demo>(searchModel);
 
             whereLambda[SearchType.Like] = new List<string>
             {
@@ -108,10 +105,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 Url = "123",
             };
 
-            var whereLambda = new WhereLambda<Model_People, Input_Demo>
-            {
-                Search = searchModel
-            };
+            var whereLambda = new WhereLambda<Model_People, Input_Demo>(searchModel);
 
             whereLambda[SearchType.Eq] = new List<string>
             {
@@ -216,10 +210,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 DataCreatedAtEnd = time,
             };
 
-            var whereLambda = new WhereLambda<Model_People, Input_Demo>
-            {
-                Search = searchModel
-            };
+            var whereLambda = new WhereLambda<Model_People, Input_Demo>(searchModel);
 
             whereLambda[SearchType.Like] = new List<string>
             {

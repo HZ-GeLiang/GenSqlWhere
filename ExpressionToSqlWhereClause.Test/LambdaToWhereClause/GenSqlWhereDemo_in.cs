@@ -43,8 +43,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 Sex = "1",
             };
 
-            var whereLambda = new WhereLambda<Model_People, model_in>();
-            whereLambda.Search = searchModel;
+            var whereLambda = new WhereLambda<Model_People, model_in>(searchModel);
 
             whereLambda[SearchType.In] = new List<string>
             {
@@ -74,8 +73,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 Id = 1
             };
 
-            var whereLambda = new WhereLambda<Model_People, model_in2>();
-            whereLambda.Search = searchModel;
+            var whereLambda = new WhereLambda<Model_People, model_in2>(searchModel);
 
             whereLambda[SearchType.In] = new List<string>
             {

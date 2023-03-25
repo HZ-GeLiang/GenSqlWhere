@@ -86,10 +86,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 
             };
 
-            var whereLambda = new WhereLambda<Model_People, model_lt>
-            {
-                Search = searchModel
-            };
+            var whereLambda = new WhereLambda<Model_People, model_lt>(searchModel);
 
             whereLambda[SearchType.Lt] = new List<string>
             {
@@ -97,12 +94,10 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 nameof(searchModel.DataCreatedAt),
             };
 
-
             var searchCondition = whereLambda.ToExpression().ToWhereClause();
 
             Assert.AreEqual(searchCondition.WhereClause, string.Empty);
             CollectionAssert.AreEqual(searchCondition.Parameters, new Dictionary<string, object>(0));
-
         }
     }
 

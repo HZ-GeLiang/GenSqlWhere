@@ -20,10 +20,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 IsDel = true,
             };
 
-            var whereLambda = new WhereLambda<Model_eq, Input_eq>
-            {
-                Search = searchModel
-            };
+            var whereLambda = new WhereLambda<Model_eq, Input_eq>(searchModel);
 
             whereLambda[SearchType.Eq] = new List<string>
             {
@@ -99,10 +96,8 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             };
 
             {
-                var whereLambda = new WhereLambda<Model_eq, InputModel_eq>
-                {
-                    Search = searchModel
-                };
+                var whereLambda = new WhereLambda<Model_eq, InputModel_eq>(searchModel);
+
                 whereLambda.WhereIf[nameof(searchModel.Id)] = a => a.Id > 0;// 添加满足 Id>0的 条件时 ,当前值才生效
 
                 whereLambda[SearchType.Eq] = new List<string>
@@ -124,11 +119,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 
 
             {
-                var whereLambda = new WhereLambda<Model_eq, InputModel_eq>
-                {
-                    Search = searchModel
-                };
-
+                var whereLambda = new WhereLambda<Model_eq, InputModel_eq>(searchModel);
 
                 //whereLambda.WhereIf[nameof(searchModel.Id)] = a => a.Id > 10;// 添加满足 Id>0的 条件时 ,当前值才生效
 
@@ -165,10 +156,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             };
 
             {
-                var whereLambda = new WhereLambda<Model_eq, InputModel_eq>
-                {
-                    Search = searchModel
-                };
+                var whereLambda = new WhereLambda<Model_eq, InputModel_eq>(searchModel);
 
                 //或者这样写
                 //Expression<Func<InputModel_eq, bool>> exp = a => a.Id > 10;

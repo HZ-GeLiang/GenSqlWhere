@@ -21,8 +21,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 DataCreatedAtStart = DateTime.Parse("2021-8-7 23:00:00"),
                 DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
             };
-            var whereLambda = new WhereLambda<model_timeRange, Input_timeRange_Attr>();
-            whereLambda.Search = searchModel;
+            var whereLambda = new WhereLambda<model_timeRange, Input_timeRange_Attr>(searchModel);
 
             whereLambda[SearchType.TimeRange] = new List<string>
             {
@@ -56,8 +55,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 DataCreatedAtStart = DateTime.Parse("2021-8-8"),
                 DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
             };
-            var whereLambda = new WhereLambda<model_timeRange, Input_timeRange_Attr>();
-            whereLambda.Search = searchModel;
+            var whereLambda = new WhereLambda<model_timeRange, Input_timeRange_Attr>(searchModel);
 
             whereLambda[SearchType.TimeRange] = new List<string>
             {
@@ -91,8 +89,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 DataCreatedAtStart = DateTime.Parse("2021-8-8"),
                 DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
             };
-            var whereLambda = new WhereLambda<model_timeRange, Input_timeRange_Attr>();
-            whereLambda.Search = searchModel;
+            var whereLambda = new WhereLambda<model_timeRange, Input_timeRange_Attr>(searchModel);
 
             whereLambda[SearchType.TimeRange] = new List<string>
             {
@@ -132,8 +129,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 DataCreatedAt = DateTime.Parse("2021-8-8")
             };
 
-            var whereLambda = new WhereLambda<Model_People, Input_timeRange2_Attr>();
-            whereLambda.Search = searchModel;
+            var whereLambda = new WhereLambda<Model_People, Input_timeRange2_Attr>(searchModel);
 
             whereLambda[SearchType.TimeRange] = new List<string>
             {
