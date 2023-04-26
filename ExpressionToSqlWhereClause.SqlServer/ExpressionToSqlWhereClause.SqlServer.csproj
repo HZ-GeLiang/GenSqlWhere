@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>
+			netstandard2.0;
+		</TargetFrameworks>
+		<DefineConstants>DEBUG;TRACE</DefineConstants>
+		<!--<NoWarn>1701;1702;1591;</NoWarn>-->
+		<DocumentationFile>$(SolutionDir)$(AssemblyName)\$(AssemblyName).xml</DocumentationFile>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<PackageId>ExpressionToSqlWhereClause.SqlServer</PackageId>
+		<Authors>GeLiang</Authors>
+		<Company>GeLiang</Company>
+		<Copyright>Copyright (c) GeLiang</Copyright>
+		<Description>convert expression to sql where clause</Description>
+		<PackageProjectUrl>https://gitee.com/hzgel/GenSqlWhere</PackageProjectUrl>
+		<!--<PackageLicenseUrl>https://gitee.com/hzgel/EpplusHelper/blob/master/LICENSE</PackageLicenseUrl>-->
+		<PackageTags>sql,whereclause,expression,expression2sql,convert2sql</PackageTags>
+		<PackageReleaseNotes></PackageReleaseNotes>
+		<RepositoryType>gitee</RepositoryType>
+		<PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
+		<Version>0.0.1</Version>
+		<LangVersion>10</LangVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\ExpressionToSqlWhereClause\ExpressionToSqlWhereClause.csproj" />
+	</ItemGroup>
+
+</Project>
