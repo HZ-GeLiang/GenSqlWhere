@@ -8,10 +8,10 @@ namespace ExpressionToSqlWhereClause.Helper
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="enumerableObj">可遍历对象</param>
+        /// <param name="collection">可遍历的集合对象</param>
         /// <param name="action">Action 的 object 表示当前 遍历的值 </param>
         /// <returns></returns>
-        public static void Each(object enumerableObj, Action<object> action)
+        public static void Each(object collection, Action<object> action)
         {
             //注: 在这里没有判断 enumerableObj 是否为 IsObjectCollection 
 
@@ -19,19 +19,18 @@ namespace ExpressionToSqlWhereClause.Helper
             {
                 return;
             }
-
-            #region 用一段fore的内部原理来获得当前对象
+            //原理: 参考fore的内部实现
 
             //1.获得迭代器
-            MethodInfo enumerableObj_GetEnumerator = enumerableObj.GetType().GetMethod("GetEnumerator");
-            if (enumerableObj_GetEnumerator == null)
+            MethodInfo enumeratorMethod = collection.GetType().GetMethod("GetEnumerator");
+            if (enumeratorMethod == null)
             {
                 return;
             }
 
+            var itor = enumeratorMethod.Invoke(collection, new object[] { }); //迭代器
             try
             {
-                var itor = enumerableObj_GetEnumerator.Invoke(enumerableObj, new object[] { }); //迭代器
 
                 //2.调用迭代器的MoveNext
                 var typeItor = itor.GetType();
@@ -40,6 +39,7 @@ namespace ExpressionToSqlWhereClause.Helper
                 {
                     return;
                 }
+
                 while (true)
                 {
                     //3.判断是否有下一个
@@ -54,14 +54,9 @@ namespace ExpressionToSqlWhereClause.Helper
             finally
             {
                 // 释放迭代器资源
-                IDisposable disposable = itor as IDisposable;
-                if (disposable != null)
-                {
-                    disposable.Dispose();
-                }
+                var disposable = itor as IDisposable;
+                disposable?.Dispose();
             }
-
-            #endregion
         }
     }
 }
