@@ -28,11 +28,9 @@ namespace ExpressionToSqlWhereClause.Helper
             {
                 return;
             }
-
+            var itor = enumerableObj_GetEnumerator.Invoke(enumerableObj, new object[] { }); //迭代器
             try
             {
-                var itor = enumerableObj_GetEnumerator.Invoke(enumerableObj, new object[] { }); //迭代器
-
                 //2.调用迭代器的MoveNext
                 var typeItor = itor.GetType();
                 var method_MoveNext = typeItor.GetMethod("MoveNext");
