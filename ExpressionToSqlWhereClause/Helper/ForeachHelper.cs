@@ -15,28 +15,50 @@ namespace ExpressionToSqlWhereClause.Helper
         {
             //注: 在这里没有判断 enumerableObj 是否为 IsObjectCollection 
 
-            if (action == null) { return; }
+            if (action == null)
+            {
+                return;
+            }
 
             #region 用一段fore的内部原理来获得当前对象
 
             //1.获得迭代器
             MethodInfo enumerableObj_GetEnumerator = enumerableObj.GetType().GetMethod("GetEnumerator");
-            if (enumerableObj_GetEnumerator == null) { return; }
-            var itor = enumerableObj_GetEnumerator.Invoke(enumerableObj, new object[] { }); //迭代器
-
-            //2.调用迭代器的MoveNext
-            var typeItor = itor.GetType();
-            var method_MoveNext = typeItor.GetMethod("MoveNext");
-            if (method_MoveNext == null) { return; }
-            while (true)
+            if (enumerableObj_GetEnumerator == null)
             {
-                //3.判断是否有下一个
-                bool hasNext = (bool)method_MoveNext.Invoke(itor, new object[] { });
-                if (hasNext == false) break;
-                //4.获得下一个的值
-                var currentProp = typeItor.GetProperty("Current");
-                object currentValue = currentProp.GetValue(itor);
-                action.Invoke(currentValue);
+                return;
+            }
+
+            try
+            {
+                var itor = enumerableObj_GetEnumerator.Invoke(enumerableObj, new object[] { }); //迭代器
+
+                //2.调用迭代器的MoveNext
+                var typeItor = itor.GetType();
+                var method_MoveNext = typeItor.GetMethod("MoveNext");
+                if (method_MoveNext == null)
+                {
+                    return;
+                }
+                while (true)
+                {
+                    //3.判断是否有下一个
+                    bool hasNext = (bool)method_MoveNext.Invoke(itor, new object[] { });
+                    if (hasNext == false) break;
+                    //4.获得下一个的值
+                    var currentProp = typeItor.GetProperty("Current");
+                    object currentValue = currentProp.GetValue(itor);
+                    action.Invoke(currentValue);
+                }
+            }
+            finally
+            {
+                // 释放迭代器资源
+                IDisposable disposable = itor as IDisposable;
+                if (disposable != null)
+                {
+                    disposable.Dispose();
+                }
             }
 
             #endregion
