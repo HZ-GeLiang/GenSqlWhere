@@ -44,6 +44,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 
     public class Input_neq_Attr
     {
-        [SearchType(SearchType.Neq)] public bool IsDel { get; set; }
+        [SearchType(SearchType.Neq)]
+        public bool IsDel { get; set; }
     }
 }
