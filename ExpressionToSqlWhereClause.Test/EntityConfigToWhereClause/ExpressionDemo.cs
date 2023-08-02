@@ -18,18 +18,66 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
         [TestMethod]
         public void IsNull的生成()
         {
-            var input = new ShopInfoInput()
+            //==
             {
-                Production = "aa",
-            };
+                var expression =
+                    default(Expression<Func<ShopInfoInput, bool>>)
+                    .WhereIf(true, a => (a.Production ?? "") == "");
 
-            var expression = default(Expression<Func<ShopInfoInput, bool>>)
-               .WhereIf(true, a => (a.Production ?? "") == "")
-            ;
+                var searchCondition = expression.ToWhereClause();
+                Assert.AreEqual(searchCondition.WhereClause, "IsNull(Production, N'') = ''");
+            }
 
-            var searchCondition = expression.ToWhereClause();
-            WhereClauseHelper.MergeParametersIntoSql(searchCondition);
-            Assert.AreEqual(searchCondition.WhereClause, "Production Like '%aa%'");
+            {
+                var expression =
+                    default(Expression<Func<ShopInfoInput, bool>>)
+                    .WhereIf(true, a => (a.Unit ?? 0) == 0);
+
+                var searchCondition = expression.ToWhereClause();
+                Assert.AreEqual(searchCondition.WhereClause, "IsNull(Unit, 0) = 0");
+            }
+
+            //!=
+            {
+                var expression =
+                    default(Expression<Func<ShopInfoInput, bool>>)
+                    .WhereIf(true, a => (a.Production ?? "") != "");
+
+                var searchCondition = expression.ToWhereClause();
+                Assert.AreEqual(searchCondition.WhereClause, "IsNull(Production, N'') <> ''");
+            }
+
+            {
+                var expression =
+                    default(Expression<Func<ShopInfoInput, bool>>)
+                    .WhereIf(true, a => (a.Unit ?? 0) != 0);
+
+                var searchCondition = expression.ToWhereClause();
+                Assert.AreEqual(searchCondition.WhereClause, "IsNull(Unit, 0) <> 0");
+            }
+
+            //多个条件-and
+            {
+                var expression =
+                    default(Expression<Func<ShopInfoInput, bool>>)
+                    .WhereIf(true, a => (a.Production ?? "") == "")
+                    .WhereIf(true, a => (a.Unit ?? 0) == 0);
+
+                var searchCondition = expression.ToWhereClause();
+                Assert.AreEqual(searchCondition.WhereClause, "IsNull(Production, N'') = '' And IsNull(Unit, 0) = 0");
+            }
+
+            //多个条件-or
+            {
+                var expression =
+                    default(Expression<Func<ShopInfoInput, bool>>)
+                    .WhereIf(true, a => (a.Production ?? "") == "")
+                    .OrIf(true, a => (a.Unit ?? 0) == 0);
+
+                var searchCondition = expression.ToWhereClause();
+                Assert.AreEqual(searchCondition.WhereClause, "IsNull(Production, N'') = '' Or IsNull(Unit, 0) = 0");
+            }
+
         }
 
 

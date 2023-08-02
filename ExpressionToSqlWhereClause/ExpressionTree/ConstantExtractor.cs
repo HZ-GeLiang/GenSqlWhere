@@ -165,7 +165,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
 
         }
 
-        private static object ParseConstantExpression(ConstantExpression constantExpression)
+        public static object ParseConstantExpression(ConstantExpression constantExpression)
         {
             //这里不使用 return ConstantExtractor.ConstantExpressionValueToString(constantExpression.Value,out var _), 由外层去使用
             return constantExpression.Value;
@@ -176,7 +176,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
         /// </summary>
         /// <param name="memberExpression"></param>
         /// <returns></returns>
-        private static object ParseMemberConstantExpression(MemberExpression memberExpression)
+        public static object ParseMemberConstantExpression(MemberExpression memberExpression)
         {
             if (memberExpression.NodeType == ExpressionType.MemberAccess)
             {
