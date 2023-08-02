@@ -15,6 +15,23 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
     [TestClass]
     public class ExpressionDemo
     {
+        [TestMethod]
+        public void IsNull的生成()
+        {
+            var input = new ShopInfoInput()
+            {
+                Production = "aa",
+            };
+
+            var expression = default(Expression<Func<ShopInfoInput, bool>>)
+               .WhereIf(true, a => (a.Production ?? "") == "")
+            ;
+
+            var searchCondition = expression.ToWhereClause();
+            WhereClauseHelper.MergeParametersIntoSql(searchCondition);
+            Assert.AreEqual(searchCondition.WhereClause, "Production Like '%aa%'");
+        }
+
 
         [TestMethod]
         public void 获得sql_不使用sql参数()
