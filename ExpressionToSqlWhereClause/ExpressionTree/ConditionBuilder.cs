@@ -8,7 +8,6 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
 {
     public static class ConditionBuilder
     {
-
         public static SqlClauseParametersInfo BuildCondition(Expression expression, MemberInfo memberInfo, WhereClauseAdhesive adhesive, ExpressionType comparison, object value)
         {
             string fieldName = GetFieldName(expression, memberInfo);
@@ -23,7 +22,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
             return param;
         }
 
-        private static string GetFieldName(Expression expression, MemberInfo memberInfo)
+        public static string GetFieldName(Expression expression, MemberInfo memberInfo)
         {
             if (memberInfo.DeclaringType.IsNullableType() &&
                 "Value" == memberInfo.Name
