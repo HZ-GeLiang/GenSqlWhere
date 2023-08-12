@@ -31,11 +31,15 @@ internal static class ExpressionExtensions
     }
 
     public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> first, Expression<Func<T, bool>> second)
-        => first.Compose(second, Expression.AndAlso);
+    {
+        return first.Compose(second, Expression.AndAlso);
+    }
+
 
     public static Expression<Func<T, bool>> AndIf<T>(this Expression<Func<T, bool>> first, bool condition, Func<Expression<Func<T, bool>>> second)
-        => condition ? first.Compose(second(), Expression.AndAlso) : first;
-
+    {
+        return condition ? first.Compose(second(), Expression.AndAlso) : first;
+    }
 
     private static Expression<T> Compose<T>(this Expression<T> first, Expression<T> second, Func<Expression, Expression, Expression> merge)
     {
@@ -54,6 +58,51 @@ internal static class ExpressionExtensions
         // apply composition of lambda expression bodies to parameters from the first expression 
         var body = merge(first.Body, secondBody);
         return Expression.Lambda<T>(body, first.Parameters);
+    }
+
+    public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> first, Expression<Func<T, bool>> second)
+    {
+        if (first == null)
+        {
+            if (second == null)
+            {
+                return first;
+            }
+            else
+            {
+                return second;
+            }
+        }
+        else
+        {
+            return first.Compose(second, Expression.OrElse);
+        }
+    }
+
+    public static Expression<Func<T, bool>> OrIf<T>(this Expression<Func<T, bool>> first, bool condition, Expression<Func<T, bool>> second)
+    {
+        if (condition)
+        {
+            if (first == null)
+            {
+                if (second == null)
+                {
+                    return first;
+                }
+                else
+                {
+                    return second;
+                }
+            }
+            else
+            {
+                return first.Compose(second, Expression.OrElse);
+            }
+        }
+        else
+        {
+            return first;
+        }
     }
 
 }

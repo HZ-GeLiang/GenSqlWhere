@@ -15,6 +15,71 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
     [TestClass]
     public class ExpressionDemo
     {
+        [TestMethod]
+        public void IsNull的生成()
+        {
+            //==
+            {
+                var expression =
+                    default(Expression<Func<ShopInfoInput, bool>>)
+                    .WhereIf(true, a => (a.Production ?? "") == "");
+
+                var searchCondition = expression.ToWhereClause();
+                Assert.AreEqual(searchCondition.WhereClause, "IsNull(Production, N'') = ''");
+            }
+
+            {
+                var expression =
+                    default(Expression<Func<ShopInfoInput, bool>>)
+                    .WhereIf(true, a => (a.Unit ?? 0) == 0);
+
+                var searchCondition = expression.ToWhereClause();
+                Assert.AreEqual(searchCondition.WhereClause, "IsNull(Unit, 0) = 0");
+            }
+
+            //!=
+            {
+                var expression =
+                    default(Expression<Func<ShopInfoInput, bool>>)
+                    .WhereIf(true, a => (a.Production ?? "") != "");
+
+                var searchCondition = expression.ToWhereClause();
+                Assert.AreEqual(searchCondition.WhereClause, "IsNull(Production, N'') <> ''");
+            }
+
+            {
+                var expression =
+                    default(Expression<Func<ShopInfoInput, bool>>)
+                    .WhereIf(true, a => (a.Unit ?? 0) != 0);
+
+                var searchCondition = expression.ToWhereClause();
+                Assert.AreEqual(searchCondition.WhereClause, "IsNull(Unit, 0) <> 0");
+            }
+
+            //多个条件-and
+            {
+                var expression =
+                    default(Expression<Func<ShopInfoInput, bool>>)
+                    .WhereIf(true, a => (a.Production ?? "") == "")
+                    .WhereIf(true, a => (a.Unit ?? 0) == 0);
+
+                var searchCondition = expression.ToWhereClause();
+                Assert.AreEqual(searchCondition.WhereClause, "IsNull(Production, N'') = '' And IsNull(Unit, 0) = 0");
+            }
+
+            //多个条件-or
+            {
+                var expression =
+                    default(Expression<Func<ShopInfoInput, bool>>)
+                    .WhereIf(true, a => (a.Production ?? "") == "")
+                    .OrIf(true, a => (a.Unit ?? 0) == 0);
+
+                var searchCondition = expression.ToWhereClause();
+                Assert.AreEqual(searchCondition.WhereClause, "IsNull(Production, N'') = '' Or IsNull(Unit, 0) = 0");
+            }
+
+        }
+
 
         [TestMethod]
         public void 获得sql_不使用sql参数()
@@ -89,9 +154,9 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 
             Dictionary<string, object> para = new()
             {
-                {"@Id", 1},
-                {"@Id1", 2},
-                {"@IsDel", true},
+                { "@Id", 1 },
+                { "@Id1", 2 },
+                { "@IsDel", true },
             };
             CollectionAssert.AreEqual(searchCondition.Parameters, para);
         }
@@ -109,9 +174,9 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 
             Dictionary<string, object> para = new()
             {
-                {"@Id", 1},
-                {"@Id1", 2},
-                {"@IsDel", true},
+                { "@Id", 1 },
+                { "@Id1", 2 },
+                { "@IsDel", true },
             };
             CollectionAssert.AreEqual(searchCondition.Parameters, para);
 
@@ -758,7 +823,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var searchCondition = expression.ToWhereClause();
             Dictionary<string, object> expectedParameters = new()
             {
-                { "@CreateAt", new DateTime(2023, 1, 1)}
+                { "@CreateAt", new DateTime(2023, 1, 1) }
             };
 
             Assert.AreEqual(searchCondition.WhereClause, "CreateAt > @CreateAt");
@@ -775,7 +840,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var searchCondition = expression.ToWhereClause();
             Dictionary<string, object> expectedParameters = new()
             {
-                { "@Flag", Guid.Parse("DEA5B56C-D1B1-4513-83E7-B58B9D3EBB81")}
+                { "@Flag", Guid.Parse("DEA5B56C-D1B1-4513-83E7-B58B9D3EBB81") }
             };
 
             Assert.AreEqual(searchCondition.WhereClause, "Flag = @Flag");
@@ -789,7 +854,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var v4 = Guid.Parse("DEA5B56C-D1B1-4513-83E7-B58B9D3EBB81");
             Dictionary<string, object> expectedParameters = new()
             {
-                { "@Flag", v4}
+                { "@Flag", v4 }
             };
 
             {

@@ -161,12 +161,22 @@ namespace ExpressionToSqlWhereClause.Helper
             return whereClause;
         }
 
+        /// <summary>
+        /// 转换为FormattableString
+        /// </summary>
+        /// <param name="searchCondition"></param>
         public static void ToFormattableString(SearchCondition searchCondition)
         {
             var result = ToFormattableString(searchCondition.WhereClause, searchCondition.Parameters);
             searchCondition.SetFormattableStringParameters(result.whereClause, result.parameters);
         }
 
+        /// <summary>
+        /// 转换为FormattableString
+        /// </summary>
+        /// <param name="whereClause"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         public static (string whereClause, object[] parameters) ToFormattableString(string whereClause, Dictionary<string, object> parameters)
         {
             if (string.IsNullOrWhiteSpace(whereClause))

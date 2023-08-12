@@ -4,6 +4,7 @@ using ExpressionToSqlWhereClause.Helper;
 using ExpressionToSqlWhereClause.SqlFunc;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
@@ -106,7 +107,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
             if (expression is MethodCallExpression methodCallExpression)
             {
                 var method = methodCallExpression.Method;
-                if (method.DeclaringType == typeof(ExpressionToSqlWhereClause.SqlFunc.DbFunctions))
+                if (method.DeclaringType == typeof(DbFunctions))
                 {
                     // int Month (datetime dt) => public static Int32 Month(DateTime dt)
                     var methodInfo = methodCallExpression.Method;  //这个静态方法的定义
@@ -238,6 +239,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                     }
                 }
             }
+
 
             //不支持的: 
             //-expression  { Not(u.Name.Contains("Name"))}
@@ -391,6 +393,38 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                     sqlBuilder.Append(SqlKeys.And);
                     needParseRight = true;
                 }
+                else if (
+                    (
+                        binaryExpression.NodeType == ExpressionType.Equal ||
+                        binaryExpression.NodeType == ExpressionType.NotEqual
+                    ) &&
+                    binaryExpression.Right is ConstantExpression constantExpression
+                    )
+                {
+                    var val = ConstantExtractor.ParseConstantExpression(constantExpression);
+                    if (val.GetType() == typeof(string))
+                    {
+                        if (binaryExpression.NodeType == ExpressionType.Equal)
+                        {
+                            sqlBuilder.Append($" {SqlKeys.Equal} '{val}'");
+                        }
+                        else if (binaryExpression.NodeType == ExpressionType.NotEqual)
+                        {
+                            sqlBuilder.Append($" {SqlKeys.NotEqual} '{val}'");
+                        }
+                    }
+                    else
+                    {
+                        if (binaryExpression.NodeType == ExpressionType.Equal)
+                        {
+                            sqlBuilder.Append($" {SqlKeys.Equal} {val}");
+                        }
+                        else if (binaryExpression.NodeType == ExpressionType.NotEqual)
+                        {
+                            sqlBuilder.Append($" {SqlKeys.NotEqual} {val}");
+                        }
+                    }
+                }
 
                 if (needParseRight)
                 {
@@ -413,6 +447,26 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 #endregion
                 return sqlBuilder;
 
+            }
+            else if (binaryExpression.NodeType is ExpressionType.Coalesce)
+            {
+                if (binaryExpression.Left is MemberExpression memberExpression &&
+                    binaryExpression.Right is ConstantExpression constantExpression)
+                {
+                    string fieldName = ConditionBuilder.GetFieldName(memberExpression, memberExpression.Member);
+                    fieldName = adhesive.SqlAdapter.FormatColumnName(fieldName);
+
+                    var isnull_pms2_val = ConstantExtractor.ParseConstantExpression(constantExpression);
+
+                    if (isnull_pms2_val.GetType() == typeof(string))
+                    {
+                        return new StringBuilder($"IsNull({fieldName}, N'{isnull_pms2_val}')");
+                    }
+                    else
+                    {
+                        return new StringBuilder($"IsNull({fieldName}, {isnull_pms2_val})");
+                    }
+                }
             }
 
             #region  这边的 if 好像进不来了, 先注释
@@ -487,5 +541,5 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
         }
     }
 
-   
+
 }

@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpressionToSqlWhereClause.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WithEFTest", "WithEFTest\WithEFTest.csproj", "{16B5461B-8940-44B1-B413-F490C455C7C1}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpressionToSqlWhereClause.SqlServer", "ExpressionToSqlWhereClause.SqlServer\ExpressionToSqlWhereClause.SqlServer.csproj", "{381FCAD1-F4B4-4A67-B45D-04536A1A8782}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{16B5461B-8940-44B1-B413-F490C455C7C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16B5461B-8940-44B1-B413-F490C455C7C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16B5461B-8940-44B1-B413-F490C455C7C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{381FCAD1-F4B4-4A67-B45D-04536A1A8782}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{381FCAD1-F4B4-4A67-B45D-04536A1A8782}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{381FCAD1-F4B4-4A67-B45D-04536A1A8782}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{381FCAD1-F4B4-4A67-B45D-04536A1A8782}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

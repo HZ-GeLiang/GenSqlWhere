@@ -6,40 +6,72 @@ namespace ExpressionToSqlWhereClause.Helper
     internal sealed class ForeachHelper
     {
         /// <summary>
-        /// 
+        /// 遍历集合
         /// </summary>
-        /// <param name="enumerableObj">可遍历对象</param>
-        /// <param name="action">Action 的 object 表示当前 遍历的值 </param>
+        /// <param name="collection">可遍历的集合对象</param>
+        /// <param name="action">object: 表示当前遍历对象 </param>
         /// <returns></returns>
-        public static void Each(object enumerableObj, Action<object> action)
+        public static void Each(object collection, Action<object> action)
         {
-            //注: 在这里没有判断 enumerableObj 是否为 IsObjectCollection 
-
-            if (action == null) { return; }
-
-            #region 用一段fore的内部原理来获得当前对象
-
-            //1.获得迭代器
-            MethodInfo enumerableObj_GetEnumerator = enumerableObj.GetType().GetMethod("GetEnumerator");
-            if (enumerableObj_GetEnumerator == null) { return; }
-            var itor = enumerableObj_GetEnumerator.Invoke(enumerableObj, new object[] { }); //迭代器
-
-            //2.调用迭代器的MoveNext
-            var typeItor = itor.GetType();
-            var method_MoveNext = typeItor.GetMethod("MoveNext");
-            if (method_MoveNext == null) { return; }
-            while (true)
+            //注: 在这里没有判断 enumerableObj 是否为 IsObjectCollection(自己封装的) 
+            //原理: 参考fore的内部实现
+            if (action != null && GetEachContext(collection, out var itor, out var typeItor, out var moveNext))
             {
-                //3.判断是否有下一个
-                bool hasNext = (bool)method_MoveNext.Invoke(itor, new object[] { });
-                if (hasNext == false) break;
-                //4.获得下一个的值
-                var currentProp = typeItor.GetProperty("Current");
-                object currentValue = currentProp.GetValue(itor);
-                action.Invoke(currentValue);
+                try
+                {
+                    var pms_Invoke = Array.Empty<object>();
+                    while (true)
+                    {
+                        //3.判断是否有下一个
+                        bool hasNext = (bool)moveNext.Invoke(itor, pms_Invoke);
+                        if (hasNext == false)
+                        {
+                            break;
+                        }
+                        action.Invoke(typeItor.GetProperty("Current").GetValue(itor));
+
+                    }
+                }
+                finally
+                {
+                    (itor as IDisposable)?.Dispose();   // 释放迭代器资源
+                }
+            }
+        }
+
+        /// <summary>
+        /// 获得遍历对象
+        /// </summary>
+        /// <param name="collection">可遍历的集合对象</param>
+        /// <param name="itor">迭代器</param>
+        /// <param name="typeItor">迭代器类型</param>
+        /// <param name="moveNext">moveNext方法</param>
+        /// <returns></returns>
+        internal static bool GetEachContext(object collection,
+            out object itor,
+            out Type typeItor,
+            out MethodInfo moveNext)
+        {
+            var enumeratorMethod = collection.GetType().GetMethod("GetEnumerator");
+            if (enumeratorMethod != null)
+            {
+                //1.获得迭代器
+                itor = enumeratorMethod.Invoke(collection, new object[] { });
+                if (itor != null)
+                {
+                    typeItor = itor.GetType();
+                    //2.调用迭代器的MoveNext
+                    moveNext = typeItor.GetMethod("MoveNext");
+
+                    return true;
+                }
             }
 
-            #endregion
+            itor = null;
+            typeItor = null;
+            moveNext = null;
+            return false;
         }
+
     }
 }
