@@ -27,7 +27,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 DataCreatedAt = DateTime.Parse("2021-8-8"),
             };
 
-            var whereLambda = searchModel.CrateWhereLambda((model_dynamic _) => { });
+            var whereLambda = searchModel.CreateWhereLambda((model_dynamic _) => { });
 
             whereLambda[SearchType.Le] = new List<string>
             {
@@ -56,7 +56,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 DataCreatedAt = DateTime.Parse("2021-8-8"),
             };
 
-            var whereLambda = searchModel.CrateWhereLambda((model_dynamic _) => { });
+            var whereLambda = searchModel.CreateWhereLambda((model_dynamic _) => { });
 
             var searchCondition = whereLambda.ToExpression().ToWhereClause();
 
@@ -76,7 +76,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                     IsDel = 0,
                 };
 
-                var whereLambda = searchModel.CrateWhereLambda((model_dynamic _) => { });
+                var whereLambda = searchModel.CreateWhereLambda((model_dynamic _) => { });
                 whereLambda[SearchType.Eq] = new List<string>
                 {
                     nameof(searchModel.IsDel),
@@ -97,7 +97,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                     IsDel = 1,
                 };
 
-                var whereLambda = searchModel.CrateWhereLambda((model_dynamic _) => { });
+                var whereLambda = searchModel.CreateWhereLambda((model_dynamic _) => { });
                 whereLambda[SearchType.Eq] = new List<string>
                 {
                     nameof(searchModel.IsDel),

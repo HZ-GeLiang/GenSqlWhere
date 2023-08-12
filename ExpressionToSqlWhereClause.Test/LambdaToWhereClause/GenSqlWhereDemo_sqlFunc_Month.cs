@@ -20,7 +20,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             {
                 DataCreatedAt = 1
             };
-            var whereLambda = searchModel.CrateWhereLambda((Model_sqlFun_Month p) => { });
+            var whereLambda = searchModel.CreateWhereLambda((Model_sqlFun_Month p) => { });
 
             var exp = whereLambda.ToExpression();
 
@@ -41,7 +41,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             {
                 DataCreatedAt = 1
             };
-            var whereLambda = searchModel.CrateWhereLambda((Model_sqlFun_Month p) => { });
+            var whereLambda = searchModel.CreateWhereLambda((Model_sqlFun_Month p) => { });
 
             var exp = whereLambda.ToExpression();
 
@@ -61,7 +61,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             {
                 DataCreatedAt = 1
             };
-            var whereLambda = searchModel.CrateWhereLambda((Model_sqlFun_Month p) => { });
+            var whereLambda = searchModel.CreateWhereLambda((Model_sqlFun_Month p) => { });
 
             //SearchType:in,操作遇到不支持的属性类型:System.DateTime
             var exMsg = $"SearchType:{nameof(SearchType.In)},操作遇到不支持的属性类型:{typeof(DateTime).FullName}";
@@ -78,7 +78,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             {
                 DataCreatedAt = 1
             };
-            var whereLambda = searchModel.CrateWhereLambda((Model_sqlFun_Month p) => { });
+            var whereLambda = searchModel.CreateWhereLambda((Model_sqlFun_Month p) => { });
             whereLambda[SearchType.In] = new List<string>
             {
                 nameof(searchModel.DataCreatedAt),
@@ -103,7 +103,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             {
                 DataCreatedAt = "1,2,3"
             };
-            var whereLambda = searchModel.CrateWhereLambda((Model_sqlFun_Month p) => { });
+            var whereLambda = searchModel.CreateWhereLambda((Model_sqlFun_Month p) => { });
             whereLambda[SearchType.In] = new List<string>
             {
                 nameof(searchModel.DataCreatedAt),
@@ -128,7 +128,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             {
                 DataCreatedAt = new List<int> { 1, 2, 3 }
             };
-            var whereLambda = searchModel.CrateWhereLambda((Model_sqlFun_Month p) => { });
+            var whereLambda = searchModel.CreateWhereLambda((Model_sqlFun_Month p) => { });
             whereLambda[SearchType.In] = new List<string>
             {
                 nameof(searchModel.DataCreatedAt),

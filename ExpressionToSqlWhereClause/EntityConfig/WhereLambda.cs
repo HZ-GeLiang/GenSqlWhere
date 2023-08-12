@@ -12,8 +12,8 @@ namespace ExpressionToSqlWhereClause.EntityConfig
     /// <summary>
     /// TSearch 转 TEntity 的表达式树的配置
     /// </summary>
-    /// <typeparam name="TEntity">一般是数据库实体</typeparam>
-    /// <typeparam name="TSearch">检索条件对象实体,一般为后端定义好后给前端传参的模型对象. 注: 不要使用多态,会报错的</typeparam>
+    /// <typeparam name="TEntity">一般是数据库实体对象</typeparam>
+    /// <typeparam name="TSearch">检索对象,一般为后端定义好后给前端传参的模型对象. 注: 不要使用多态,会报错的</typeparam>
     public class WhereLambda<TEntity, TSearch>
         where TEntity : class
         where TSearch : class
@@ -57,7 +57,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         /// <summary>
         /// 属性的值是否有值
         /// </summary>
-        public Dictionary<string, Expression<Func<TSearch, bool>>> WhereIf { get; set; } = new Dictionary<string, Expression<Func<TSearch, bool>>>();
+        public Dictionary<string, Expression<Func<TSearch, bool>>> WhereIf { get; set; } = new();
 
 
         /// <summary>

@@ -20,7 +20,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                     Id = (string)null,
                 };
 
-                var whereLambda = searchModel.CrateWhereLambda((model_expection1 _) => { });
+                var whereLambda = searchModel.CreateWhereLambda((model_expection1 _) => { });
 
                 whereLambda[SearchType.Eq] = new List<string>
                 {
@@ -41,7 +41,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                     Id = string.Empty,
                 };
 
-                var whereLambda = searchModel.CrateWhereLambda((model_expection1 _) => { });
+                var whereLambda = searchModel.CreateWhereLambda((model_expection1 _) => { });
 
                 whereLambda[SearchType.Eq] = new List<string>
                 {
@@ -63,7 +63,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                     Id = string.Empty,
                 };
 
-                var whereLambda = searchModel.CrateWhereLambda((model_expection2 _) => { });
+                var whereLambda = searchModel.CreateWhereLambda((model_expection2 _) => { });
 
                 whereLambda[SearchType.Eq] = new List<string>
                 {

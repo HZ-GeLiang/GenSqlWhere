@@ -16,7 +16,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             {
                 Url = "123",
             };
-            var whereLambda = searchModel.CrateWhereLambda((model_like _) => { });
+            var whereLambda = searchModel.CreateWhereLambda((model_like _) => { });
 
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
@@ -37,7 +37,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             {
                 Url = "123",
             };
-            var whereLambda = searchModel.CrateWhereLambda((Input_likeLeft _) => { });
+            var whereLambda = searchModel.CreateWhereLambda((Input_likeLeft _) => { });
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
             Assert.AreEqual(searchCondition.WhereClause, "Url Like @Url");
@@ -56,7 +56,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             {
                 Url = "123",
             };
-            var whereLambda = searchModel.CrateWhereLambda((Input_likeRight _) => { });
+            var whereLambda = searchModel.CreateWhereLambda((Input_likeRight _) => { });
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
             Assert.AreEqual(searchCondition.WhereClause, "Url Like @Url");
@@ -76,7 +76,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 IsDel = true,
             };
 
-            var whereLambda = searchModel.CrateWhereLambda((Model_eq _) => { });
+            var whereLambda = searchModel.CreateWhereLambda((Model_eq _) => { });
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
 
@@ -97,7 +97,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 IsDel = true,//todo://计划:添加当其他值为xx时,当前值才生效
             };
 
-            var whereLambda = searchModel.CrateWhereLambda((model_neq _) => { });
+            var whereLambda = searchModel.CreateWhereLambda((model_neq _) => { });
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
             Assert.AreEqual(searchCondition.WhereClause, "IsDel <> @IsDel");
@@ -118,7 +118,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 Sex = "1",
             };
 
-            var whereLambda = searchModel.CrateWhereLambda((model_in _) => { });
+            var whereLambda = searchModel.CreateWhereLambda((model_in _) => { });
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
             Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id) And Sex In (@Sex)");
@@ -138,7 +138,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             {
                 Id = 1
             };
-            var whereLambda = searchModel.CrateWhereLambda((model_in2 _) => { });
+            var whereLambda = searchModel.CreateWhereLambda((model_in2 _) => { });
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
             Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id)");
@@ -159,7 +159,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                     DataCreatedAtStart = DateTime.Parse("2021-8-7 23:00:00"),
                     DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
                 };
-                var whereLambda = searchModel.CrateWhereLambda((model_timeRange _) => { });
+                var whereLambda = searchModel.CreateWhereLambda((model_timeRange _) => { });
                 var expression = whereLambda.ToExpression();
                 var searchCondition = expression.ToWhereClause();
                 Assert.AreEqual(searchCondition.WhereClause, "DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1");
@@ -179,7 +179,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                     DataCreatedAt = DateTime.Parse("2021-8-8")
                 };
 
-                var whereLambda = searchModel.CrateWhereLambda((Input_timeRange2_Attr _) => { });
+                var whereLambda = searchModel.CreateWhereLambda((Input_timeRange2_Attr _) => { });
                 var expression = whereLambda.ToExpression();
                 var searchCondition = expression.ToWhereClause();
                 Assert.AreEqual(searchCondition.WhereClause, "DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1");
@@ -203,7 +203,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                     IdLeft = 3,
                     IdRight = 9
                 };
-                var whereLambda = searchModel.CrateWhereLambda((model_numberRange _) => { });
+                var whereLambda = searchModel.CreateWhereLambda((model_numberRange _) => { });
                 var expression = whereLambda.ToExpression();
                 var searchCondition = expression.ToWhereClause();
 
@@ -222,7 +222,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 {
                     Id = 5
                 };
-                var whereLambda = searchModel.CrateWhereLambda((Input_numberRange2 _) => { });
+                var whereLambda = searchModel.CreateWhereLambda((Input_numberRange2 _) => { });
                 var expression = whereLambda.ToExpression();
                 var searchCondition = expression.ToWhereClause();
                 Assert.AreEqual(searchCondition.WhereClause, "Id >= @Id And Id <= @Id1");
@@ -245,7 +245,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 DataCreatedAt = DateTime.Parse("2021-8-8"),
             };
 
-            var whereLambda = searchModel.CrateWhereLambda((model_gt _) => { });
+            var whereLambda = searchModel.CreateWhereLambda((model_gt _) => { });
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
             Assert.AreEqual(searchCondition.WhereClause, "Id > @Id And DataCreatedAt > @DataCreatedAt");
@@ -266,7 +266,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 Id = 5,
                 DataCreatedAt = DateTime.Parse("2021-8-8"),
             };
-            var whereLambda = searchModel.CrateWhereLambda((model_ge _) => { });
+            var whereLambda = searchModel.CreateWhereLambda((model_ge _) => { });
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
             Assert.AreEqual(searchCondition.WhereClause, "Id >= @Id And DataCreatedAt >= @DataCreatedAt");
@@ -287,7 +287,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 Id = 5,
                 DataCreatedAt = DateTime.Parse("2021-8-8"),
             };
-            var whereLambda = searchModel.CrateWhereLambda((model_lt _) => { });
+            var whereLambda = searchModel.CreateWhereLambda((model_lt _) => { });
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
             Assert.AreEqual(searchCondition.WhereClause, "Id < @Id And DataCreatedAt < @DataCreatedAt");
@@ -308,7 +308,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 Id = 5,
                 DataCreatedAt = DateTime.Parse("2021-8-8"),
             };
-            var whereLambda = searchModel.CrateWhereLambda((model_le _) => { });
+            var whereLambda = searchModel.CreateWhereLambda((model_le _) => { });
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
 

@@ -17,7 +17,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             {
                 Id = 1
             };
-            var whereLambda = searchModel.CrateWhereLambda((model_Demo3 p) => { });
+            var whereLambda = searchModel.CreateWhereLambda((model_Demo3 p) => { });
             // 已经在 input 模型上标注了
             whereLambda[SearchType.Neq] = new List<string>
             {
@@ -41,7 +41,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             {
                 Id = 1
             };
-            var whereLambda = searchModel.CrateWhereLambda((model_Demo3 p) => { });
+            var whereLambda = searchModel.CreateWhereLambda((model_Demo3 p) => { });
             // 已经在 input 模型上标注了
             whereLambda[SearchType.Eq] = new List<string>
             {

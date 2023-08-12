@@ -147,7 +147,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
             };
 
-            var whereLambda = searchModel.CrateWhereLambda((Model_People p) => { }); //这个 People 类型 和上面的匿名类型有关联的
+            var whereLambda = searchModel.CreateWhereLambda((Model_People p) => { }); //这个 People 类型 和上面的匿名类型有关联的
 
             whereLambda[SearchType.Like] = new List<string>
             {
@@ -185,7 +185,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 Name = (string)null,
             };
 
-            var whereLambda = searchModel.CrateWhereLambda((Model_People p) => { });//这个 People 类型 和上面的匿名类型有关联的
+            var whereLambda = searchModel.CreateWhereLambda((Model_People p) => { });//这个 People 类型 和上面的匿名类型有关联的
 
             whereLambda[SearchType.Like] = new List<string>
             {

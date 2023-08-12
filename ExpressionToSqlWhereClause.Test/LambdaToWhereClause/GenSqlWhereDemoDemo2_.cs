@@ -41,7 +41,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 DataCreatedAtEnd = time,
             };
 
-            var whereLambda = searchModel.CrateWhereLambda((Model_People _) => { });
+            var whereLambda = searchModel.CreateWhereLambda((Model_People _) => { });
 
             Expression<Func<Model_People, bool>> exp = whereLambda.ToExpression();
 
@@ -57,7 +57,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             {
                 Url = "123",
             };
-            var whereLambda = searchModel.CrateWhereLambda();
+            var whereLambda = searchModel.CreateWhereLambda();
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
             Assert.AreEqual(searchCondition.WhereClause, "Url Like @Url");
