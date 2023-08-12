@@ -20,7 +20,7 @@
 		<PackageReleaseNotes></PackageReleaseNotes>
 		<RepositoryType>gitee</RepositoryType>
 		<PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
-		<Version>1.6.2</Version>
+		<Version>1.6.3</Version>
 		<LangVersion>10</LangVersion> 
 	</PropertyGroup>
 
