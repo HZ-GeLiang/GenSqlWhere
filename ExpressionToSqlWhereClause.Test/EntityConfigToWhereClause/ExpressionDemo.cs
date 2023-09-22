@@ -18,6 +18,23 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
         [TestMethod]
         public void IsNull的生成()
         {
+            {
+                //增加 nfx 下的EF, string.IsNullOrEmpty() 可以出入Null值
+                var expression =
+                    default(Expression<Func<ShopInfoInput, bool>>)
+                    .WhereIf(true, a => string.IsNullOrEmpty(a.Production));
+                Assert.ThrowsException<Exception>(() => expression.ToWhereClause());
+                try
+                {
+                    expression.ToWhereClause();
+                }
+                catch (Exception ex)
+                {
+                    var exMsg = "Please use (a.Production ?? \"\") != \"\" replace string.IsNullOrEmpty(a.Production).";
+                    Assert.AreEqual(ex.Message, exMsg);
+                }
+            }
+
             //==
             {
                 var expression =
@@ -77,6 +94,8 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
                 var searchCondition = expression.ToWhereClause();
                 Assert.AreEqual(searchCondition.WhereClause, "IsNull(Production, N'') = '' Or IsNull(Unit, 0) = 0");
             }
+
+
 
         }
 

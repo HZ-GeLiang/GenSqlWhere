@@ -5,6 +5,7 @@ using ExpressionToSqlWhereClause.SqlFunc;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
@@ -270,6 +271,12 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                     // equal
                     //"Like" condition for string property, For example: u.Name.Contains("A")
                     return ConditionBuilder.BuildLikeOrEqualCondition(methodCallExpression, adhesive);
+                }
+                if (method.Name == "IsNullOrEmpty")
+                {
+                    var exp = methodCallExpression.Arguments.First();
+                    string msg = $"Please use ({exp} ?? \"\") != \"\" replace string.IsNullOrEmpty({exp}).";
+                    throw new Exception(msg);
                 }
             }
             else if (method.DeclaringType == typeof(System.Linq.Enumerable))
