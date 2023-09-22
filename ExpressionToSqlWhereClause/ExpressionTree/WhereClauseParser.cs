@@ -1,10 +1,10 @@
-﻿using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
+﻿using ExpressionToSqlWhereClause.Consts;
+using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
 using ExpressionToSqlWhereClause.ExtensionMethod;
 using ExpressionToSqlWhereClause.Helper;
 using ExpressionToSqlWhereClause.SqlFunc;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -401,6 +401,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                     needParseRight = true;
                 }
                 else if (
+                    binaryExpression.Left.GetType().FullName == ExpressionFullNameSpaceConst.SimpleBinary &&
                     (
                         binaryExpression.NodeType == ExpressionType.Equal ||
                         binaryExpression.NodeType == ExpressionType.NotEqual
