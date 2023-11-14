@@ -1511,6 +1511,86 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
         #endregion
 
+        #region WhereHasValue/WhereHasNoValue
+
+        /// <summary>
+        /// 字符串类型: IsNull(字段,"") != ""   
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public static Expression<Func<TEntity, bool>> GetExpression_HasValue<TEntity>(string propertyName)
+               where TEntity : class
+        {
+            var type_TEntity = typeof(TEntity);
+            var prop_Info = type_TEntity.GetProperty(propertyName);
+            if (prop_Info == null)
+            {
+                throw new Exception($"{propertyName}不在{typeof(TEntity).FullName}类型中");
+            }
+
+            if (prop_Info.PropertyType != typeof(string))
+            {
+                throw new Exception($"{propertyName}不在{typeof(TEntity).FullName}类型中只能为string类型");
+            }
+
+            var parameterExp = Expression.Parameter(type_TEntity, "a");
+            var left = Expression.MakeBinary(
+                ExpressionType.NotEqual,
+                Expression.Coalesce(
+                    Expression.MakeMemberAccess(parameterExp, prop_Info),
+                    Expression.Constant("", typeof(string))
+                ),
+                Expression.Constant("")
+                //dnspy 反编译没有这个2个, ExpressionTreeToString有
+                //,false
+                //,typeof(string).GetMethod("op_Inequality")
+            );
+            var lambda = Expression.Lambda<Func<TEntity, bool>>(left, parameterExp);
+            return lambda;
+        }
+
+        /// <summary>
+        /// 字符串类型: IsNull(字段,"") == ""   
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public static Expression<Func<TEntity, bool>> GetExpression_HasNoValue<TEntity>(string propertyName)
+               where TEntity : class
+        {
+            var type_TEntity = typeof(TEntity);
+            var prop_Info = type_TEntity.GetProperty(propertyName);
+            if (prop_Info == null)
+            {
+                throw new Exception($"{propertyName}不在{typeof(TEntity).FullName}类型中");
+            }
+            if (prop_Info.PropertyType != typeof(string))
+            {
+                throw new Exception($"{propertyName}不在{typeof(TEntity).FullName}类型中只能为string类型");
+            }
+
+            var parameterExp = Expression.Parameter(type_TEntity, "a");
+
+            var left = Expression.MakeBinary(
+                ExpressionType.Equal,
+                Expression.Coalesce(
+                    Expression.MakeMemberAccess(parameterExp, prop_Info),
+                    Expression.Constant("", typeof(string))
+                ),
+                Expression.Constant("")
+                //dnspy 反编译没有这个2个, ExpressionTreeToString有
+                //, false
+                //, typeof(string).GetMethod("op_Equality")
+            );
+            var lambda = Expression.Lambda<Func<TEntity, bool>>(left, parameterExp);
+            return lambda;
+        }
+
+        #endregion
+
         private static bool HaveCount(List<string> searchCondition) => searchCondition != null && searchCondition.Count > 0;
         private static bool HaveCount(string[] searchCondition) => searchCondition != null && searchCondition.Length > 0;
 
