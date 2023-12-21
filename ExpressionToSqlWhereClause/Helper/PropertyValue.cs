@@ -1,4 +1,4 @@
-using ExpressionToSqlWhereClause.Exceptions;
+﻿using ExpressionToSqlWhereClause.Exceptions;
 using System;
 using System.Collections.Concurrent;
 using System.Reflection;

@@ -1,4 +1,4 @@
-using ExpressionToSqlWhereClause.EntityConfig;
+ï»¿using ExpressionToSqlWhereClause.EntityConfig;
 using ExpressionToSqlWhereClause.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
@@ -82,7 +82,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                     nameof(searchModel.Id),
                 };
 
-                whereLambda.WhereIf[nameof(searchModel.Id)] = a => a.Id > 6;// Âú×ã Ìõ¼şÊ± ÉúĞ§
+                whereLambda.WhereIf[nameof(searchModel.Id)] = a => a.Id > 6;// æ»¡è¶³ æ¡ä»¶æ—¶ ç”Ÿæ•ˆ
 
                 var expression = whereLambda.ToExpression();
                 var searchCondition = expression.ToWhereClause();

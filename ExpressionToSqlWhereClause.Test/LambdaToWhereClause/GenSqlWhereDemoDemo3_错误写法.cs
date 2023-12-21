@@ -1,4 +1,4 @@
-using ExpressionToSqlWhereClause.EntityConfig;
+ï»¿using ExpressionToSqlWhereClause.EntityConfig;
 using ExpressionToSqlWhereClause.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
@@ -10,15 +10,15 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
     {
 
         [TestMethod]
-        public void ÖØ¸´ÅäÖÃÊ¹ÓÃ·½·¨_²»Í¬ÅäÖÃ()
+        public void é‡å¤é…ç½®ä½¿ç”¨æ–¹æ³•_ä¸åŒé…ç½®()
         {
-            //todo: ÖØ¸´ÅäÖÃµÄ¼ì²â
-            var searchModel = new Input_Demo3_²»Í¬ÅäÖÃ
+            //todo: é‡å¤é…ç½®çš„æ£€æµ‹
+            var searchModel = new Input_Demo3_ä¸åŒé…ç½®
             {
                 Id = 1
             };
             var whereLambda = searchModel.CreateWhereLambda((model_Demo3 p) => { });
-            // ÒÑ¾­ÔÚ input Ä£ĞÍÉÏ±ê×¢ÁË
+            // å·²ç»åœ¨ input æ¨¡å‹ä¸Šæ ‡æ³¨äº†
             whereLambda[SearchType.Neq] = new List<string>
             {
                 nameof(searchModel.Id),
@@ -28,21 +28,21 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             var searchCondition = exp.ToWhereClause();
 
             Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
-            expectedParameters.Add("@Id", 1);//Month()·µ»ØµÄÊÇint ,ËùÒÔ1 ÊÇintÀàĞÍµÄ²Å¶Ô
-            expectedParameters.Add("@Id1", 1);//Month()·µ»ØµÄÊÇint ,ËùÒÔ1 ÊÇintÀàĞÍµÄ²Å¶Ô
+            expectedParameters.Add("@Id", 1);//Month()è¿”å›çš„æ˜¯int ,æ‰€ä»¥1 æ˜¯intç±»å‹çš„æ‰å¯¹
+            expectedParameters.Add("@Id1", 1);//Month()è¿”å›çš„æ˜¯int ,æ‰€ä»¥1 æ˜¯intç±»å‹çš„æ‰å¯¹
             Assert.AreEqual(searchCondition.WhereClause, "Id = @Id And Id <> @Id1");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
         [TestMethod]
-        public void ÖØ¸´ÅäÖÃÊ¹ÓÃ·½·¨_ÏàÍ¬ÅäÖÃ()
+        public void é‡å¤é…ç½®ä½¿ç”¨æ–¹æ³•_ç›¸åŒé…ç½®()
         {
-            var searchModel = new Input_Demo3_ÏàÍ¬ÅäÖÃ
+            var searchModel = new Input_Demo3_ç›¸åŒé…ç½®
             {
                 Id = 1
             };
             var whereLambda = searchModel.CreateWhereLambda((model_Demo3 p) => { });
-            // ÒÑ¾­ÔÚ input Ä£ĞÍÉÏ±ê×¢ÁË
+            // å·²ç»åœ¨ input æ¨¡å‹ä¸Šæ ‡æ³¨äº†
             whereLambda[SearchType.Eq] = new List<string>
             {
                 nameof(searchModel.Id),
@@ -57,12 +57,12 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
-        public class Input_Demo3_²»Í¬ÅäÖÃ
+        public class Input_Demo3_ä¸åŒé…ç½®
         {
             [SearchType(SearchType.Eq)]
             public int Id { get; set; }
         }
-        public class Input_Demo3_ÏàÍ¬ÅäÖÃ
+        public class Input_Demo3_ç›¸åŒé…ç½®
         {
             [SearchType(SearchType.Eq)]
             public int Id { get; set; }

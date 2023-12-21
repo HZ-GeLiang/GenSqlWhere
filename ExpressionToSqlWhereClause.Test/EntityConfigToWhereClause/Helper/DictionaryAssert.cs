@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+ï»¿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,11 +27,11 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause.Helper
         }
 
         /// <summary>
-        /// ÊÇ·ñÎªÁĞ±í¶ÔÏó
+        /// æ˜¯å¦ä¸ºåˆ—è¡¨å¯¹è±¡
         /// </summary>
         /// <param name="type"></param>
-        /// <param name="objectType">¾ßÌåµÄÀàĞÍ</param>
-        /// <param name="objectTypeEqual">objectTypeÓ¦¸ÃÊÇ</param>
+        /// <param name="objectType">å…·ä½“çš„ç±»å‹</param>
+        /// <param name="objectTypeEqual">objectTypeåº”è¯¥æ˜¯</param>
         /// <returns></returns>
         private static bool IsObjectCollection(Type type, out Type objectType, Type objectTypeEqual)
         {
@@ -42,18 +42,18 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause.Helper
                 {
                     return true;
                 }
-                return false;//string ÀàĞÍÒ²ÊÇ IEnumerable ¶ÔÏó
+                return false;//string ç±»å‹ä¹Ÿæ˜¯ IEnumerable å¯¹è±¡
             }
 
             //Array : ICloneable, IList, ICollection, IEnumerable, IStructuralComparable, IStructuralEquatable
             //List<T> : IList<T>, ICollection<T>, IEnumerable<T>, IEnumerable, IList, ICollection, IReadOnlyList<T>, IReadOnlyCollection<T>
 
-            //¸ø¶¨Ò»¸öType¶ÔÏó£¬×î¼òµ¥µÄ·½·¨ÊÇ²âÊÔÒÔ²é¿´ËüÊÇ·ñÊµ¼ÊÉÏÊÇÒ»¸ö¶ÔÏóÁĞ±í£¿¼´Array»òIEnumerable / IEnumerable&%lt&gt;
+            //ç»™å®šä¸€ä¸ªTypeå¯¹è±¡ï¼Œæœ€ç®€å•çš„æ–¹æ³•æ˜¯æµ‹è¯•ä»¥æŸ¥çœ‹å®ƒæ˜¯å¦å®é™…ä¸Šæ˜¯ä¸€ä¸ªå¯¹è±¡åˆ—è¡¨ï¼Ÿå³Arrayæˆ–IEnumerable / IEnumerable&%lt&gt;
             var isObjectList = typeof(IEnumerable).IsAssignableFrom(type);
-            objectType = type.GetElementType(); //¸ø Array ÓÃµÄ
+            objectType = type.GetElementType(); //ç»™ Array ç”¨çš„
             if (objectType is null)
             {
-                if (type.GenericTypeArguments.Length == 1) //¸øList<T> ÓÃµÄ
+                if (type.GenericTypeArguments.Length == 1) //ç»™List<T> ç”¨çš„
                 {
                     objectType = type.GenericTypeArguments[0];
                 }
@@ -84,15 +84,15 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause.Helper
             }
             if (dict == null)
             {
-                Assert.Fail(nameof(dict) + "²»ÄÜÎª¿Õ");
+                Assert.Fail(nameof(dict) + "ä¸èƒ½ä¸ºç©º");
                 return;
             }
 
             Assert.AreEqual(dict.Count, dict2.Count);
 
-            CollectionAssert.AreEqual(dict.Keys, dict2.Keys);    //ÅĞ¶Ïkey
+            CollectionAssert.AreEqual(dict.Keys, dict2.Keys);    //åˆ¤æ–­key
 
-            //ÅĞ¶Ïvalue
+            //åˆ¤æ–­value
 
             foreach (var key in dict.Keys)
             {

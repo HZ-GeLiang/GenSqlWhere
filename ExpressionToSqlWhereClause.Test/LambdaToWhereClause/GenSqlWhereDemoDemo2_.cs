@@ -1,4 +1,4 @@
-using ExpressionToSqlWhereClause.EntityConfig;
+ï»¿using ExpressionToSqlWhereClause.EntityConfig;
 using ExpressionToSqlWhereClause.ExtensionMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -7,8 +7,8 @@ using System.Linq.Expressions;
 
 namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 {
-    //demo2,  ÔÚ input Ä£ĞÍÉÏ ±ê¼Ç Attribute µÄÕâÖÖÅäÖÃ·½Ê½À´´´½¨sql (ÍÆ¼ö)
-    //×¢: demo1 ºÍdemo2 Èç¹ûĞ´ÖØ¸´, ÄÇÃ´¶¼»áÉúĞ§
+    //demo2,  åœ¨ input æ¨¡å‹ä¸Š æ ‡è®° Attribute çš„è¿™ç§é…ç½®æ–¹å¼æ¥åˆ›å»ºsql (æ¨è)
+    //æ³¨: demo1 å’Œdemo2 å¦‚æœå†™é‡å¤, é‚£ä¹ˆéƒ½ä¼šç”Ÿæ•ˆ
     public class Input_Demo_Attr
     {
         [SearchType(SearchType.In)] public string Id { get; set; }
