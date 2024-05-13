@@ -12,7 +12,9 @@ using System.Text.RegularExpressions;
 
 namespace ExpressionToSqlWhereClause.EntityConfig
 {
-    ///
+    /// <summary>
+    /// 条件表达式帮助类
+    /// </summary>
     public static class WhereLambdaHelper
     {
 
