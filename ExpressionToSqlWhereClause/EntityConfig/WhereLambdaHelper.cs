@@ -1516,7 +1516,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         #region WhereHasValue/WhereNoValue
 
         /// <summary>
-        /// 字符串类型: IsNull(字段,"") != ""   
+        /// 当前字段有值, 字符串类型: IsNull(字段,"") != ""   
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="propertyName"></param>
@@ -1545,9 +1545,9 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                     Expression.Constant("", typeof(string))
                 ),
                 Expression.Constant("")
-                //dnspy 反编译没有这个2个, ExpressionTreeToString有
-                //,false
-                //,typeof(string).GetMethod("op_Inequality")
+            //dnspy 反编译没有这个2个, ExpressionTreeToString有
+            //,false
+            //,typeof(string).GetMethod("op_Inequality")
             );
             var lambda = Expression.Lambda<Func<TEntity, bool>>(left, parameterExp);
             return lambda;
@@ -1583,12 +1583,23 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                     Expression.Constant("", typeof(string))
                 ),
                 Expression.Constant("")
-                //dnspy 反编译没有这个2个, ExpressionTreeToString有
-                //, false
-                //, typeof(string).GetMethod("op_Equality")
+            //dnspy 反编译没有这个2个, ExpressionTreeToString有
+            //, false
+            //, typeof(string).GetMethod("op_Equality")
             );
             var lambda = Expression.Lambda<Func<TEntity, bool>>(left, parameterExp);
             return lambda;
+        }
+
+        #endregion
+
+        #region WhereNotDeleted 
+
+        public static Expression<Func<TEntity, bool>> GetExpression_NotDeleted<TEntity>(string propertyName)
+               where TEntity : class
+        {
+            //todo: 
+            return null;
         }
 
         #endregion
