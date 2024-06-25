@@ -10,4 +10,3 @@
         string FormatColumnName(string name);
     }
 }
-

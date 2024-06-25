@@ -8,8 +8,8 @@ namespace ConsoleApp1
         static void Main(string[] args)
         {
             Expression<Func<peo, bool>> exp = a => (a.Name ?? "") != "";
-            var exp2 = WhereLambdaHelper.GetExpression_HasValue<peo>("Name"); 
- 
+            var exp2 = WhereLambdaHelper.GetExpression_HasValue<peo>("Name");
+
             Console.WriteLine(exp.ToString() == exp2.ToString());
 
             Console.WriteLine("Hello, World!");

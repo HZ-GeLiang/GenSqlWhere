@@ -42,7 +42,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
         [TestMethod]
         public void GetExpression_NotDeleted()
         {
-            
+
         }
     }
 }

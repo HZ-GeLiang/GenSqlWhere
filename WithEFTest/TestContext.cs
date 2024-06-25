@@ -53,4 +53,3 @@ go
 INSERT INTO EFCorePractice.dbo.ExpressionSqlTest (Name, CreateAt, Flag) VALUES (N'abc', N'2023-02-14 23:17:33.000', N'DEA5B56C-D1B1-4513-83E7-B58B9D3EBB81')
 
  */
-
