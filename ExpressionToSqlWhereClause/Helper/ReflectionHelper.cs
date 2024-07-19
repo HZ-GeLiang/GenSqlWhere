@@ -15,7 +15,7 @@ namespace ExpressionToSqlWhereClause.Helper
 
         public static PropertyInfo[] GetProperties(Type type, BindingFlags bindingAttr) => type.GetProperties(bindingAttr);
 
-        #endregion  
+        #endregion
 
         #region GetAttributeForProperty
 
@@ -33,7 +33,7 @@ namespace ExpressionToSqlWhereClause.Helper
             return attrs as TAttribute[];
         }
 
-        #endregion  
+        #endregion
 
         #region GetAttributeForMethod
 
@@ -51,7 +51,7 @@ namespace ExpressionToSqlWhereClause.Helper
 
         public static TAttribute[] GetAttributeForMethod<TAttribute>(MemberInfo method) => GetAttributeForMethod(method, typeof(TAttribute)) as TAttribute[];
 
-        #endregion  
+        #endregion
 
         #region GetMethod
 
@@ -69,6 +69,6 @@ namespace ExpressionToSqlWhereClause.Helper
             return method;
         }
 
-        #endregion  
+        #endregion
     }
 }
