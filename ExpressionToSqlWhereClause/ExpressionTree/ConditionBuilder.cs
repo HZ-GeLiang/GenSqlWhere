@@ -92,7 +92,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                         throw new NotSupportedException($"Not support method name:{methodCallExpression.Method.Name}");
                 }
 
-                #endregion 获得值: symbol + valueSymbol
+                #endregion
 
                 var memberInfo = memberExpression.Member;
                 string fieldName = GetFieldName(memberExpression, memberInfo);

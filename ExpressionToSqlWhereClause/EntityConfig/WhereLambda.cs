@@ -123,7 +123,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return exp;
         }
 
-        #endregion ToExpression
+        #endregion
 
         #region ToExpressionList
 
@@ -256,7 +256,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return ToExpressionList(this);
         }
 
-        #endregion ToExpressionList
+        #endregion
     }
 
     ///// <summary>

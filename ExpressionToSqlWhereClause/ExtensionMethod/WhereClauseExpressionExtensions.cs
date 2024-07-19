@@ -48,7 +48,7 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
                 }
             }
 
-            #endregion 处理 alias
+            #endregion  
 
             var body = expression.Body;
             var parseResult = WhereClauseParser.Parse(body, alias, sqlAdapter);
@@ -105,7 +105,7 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
                 }
             }
 
-            #endregion 处理 parseResult 的  Adhesive  和 WhereClause
+            #endregion 
 
             var result = new SearchCondition(
                   parseResult.WhereClause,

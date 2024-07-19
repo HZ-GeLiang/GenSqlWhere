@@ -76,7 +76,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause.Helper
 
         private static bool IsObjectCollection(Type type, Type objectTypeEqual) => IsObjectCollection(type, out _, objectTypeEqual);
 
-        #endregion IsObjectCollection
+        #endregion  
 
         public static void AreEqual<TKey, TValue>(Dictionary<TKey, TValue> dict, Dictionary<TKey, TValue> dict2)
         {

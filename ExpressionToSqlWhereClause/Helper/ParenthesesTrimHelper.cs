@@ -236,7 +236,7 @@ namespace ExpressionToSqlWhereClause.Helper
                 //    }
                 //}
 
-                #endregion 判断顶层条件是否全为 or(只能判断3个) , 取消注释, 可以通过 case_复杂版的表达式解析4 的测试, ,注释的原因: 只能判断3个.
+                #endregion
 
                 //场景: case_复杂版的表达式解析4 的 todo: 这里还存在可优化的场景: 顶层条件全为 or ,且or的数量大于2个时, 还能有 () 要去掉
                 return result; //这个 return 是不包含 场景: case_复杂版的表达式解析4  的处理
@@ -297,7 +297,7 @@ namespace ExpressionToSqlWhereClause.Helper
                 }
             }
 
-            #endregion 某种if条件
+            #endregion
 
             return result; //不在单元测试中, 应该是太复杂了, 不知道怎么处理
         }
@@ -346,7 +346,7 @@ namespace ExpressionToSqlWhereClause.Helper
                 //    }
                 //}
 
-                #endregion 为了程序易读,这里的优化取消了
+                #endregion
 
                 if (index >= positions[i].Right)
                 {

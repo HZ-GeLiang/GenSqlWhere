@@ -330,7 +330,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 return parseResult.WhereClause.Remove(0, index).Insert(0, aliasDict[parseResult.MemberInfo.Name]);
             }
 
-            #endregion 内部方法
+            #endregion
 
             if (binaryExpression.NodeType is
                  ExpressionType.OrElse or
@@ -385,7 +385,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                     }
                 }
 
-                #endregion 处理left
+                #endregion
 
                 #region 处理right
 
@@ -453,7 +453,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                     }
                 }
 
-                #endregion 处理right
+                #endregion
 
                 return sqlBuilder;
             }
@@ -510,7 +510,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
             }
             */
 
-            #endregion 这边的 if 好像进不来了, 先注释
+            #endregion
 
             var msg = $"Unknow Left:{binaryExpression.Left.GetType()} ,Right:{binaryExpression.Right.GetType()} ,NodeType:{binaryExpression.NodeType}";
             throw new NotSupportedException(msg);

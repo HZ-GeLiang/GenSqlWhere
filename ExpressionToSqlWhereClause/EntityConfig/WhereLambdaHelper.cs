@@ -68,7 +68,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return Expression.Lambda<Func<TEntity, bool>>(containsMethodExp, parameterExp);
         }
 
-        #endregion AddLike
+        #endregion
 
         #region AddLikeLeft
 
@@ -120,7 +120,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return Expression.Lambda<Func<TEntity, bool>>(containsMethodExp, parameterExp);
         }
 
-        #endregion AddLikeLeft
+        #endregion
 
         #region AddLikeRight
 
@@ -173,7 +173,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return Expression.Lambda<Func<TEntity, bool>>(containsMethodExp, parameterExp);
         }
 
-        #endregion AddLikeRight
+        #endregion
 
         #region AddEqual版本2 : 根据: AddInOrEuqal 衍生出来的
 
@@ -272,7 +272,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             }
         }
 
-        #endregion AddEqual版本2 : 根据: AddInOrEuqal 衍生出来的
+        #endregion
 
         #region AddNotEqual-基于Equal的版本2
 
@@ -363,7 +363,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             }
         }
 
-        #endregion AddNotEqual-基于Equal的版本2
+        #endregion
 
         #region AddNumberRange
 
@@ -468,7 +468,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 }
             }
 
-            #endregion 初始化 timeDict
+            #endregion
 
             #region 删除无效key
 
@@ -488,7 +488,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 numberDict.Remove(key);
             }
 
-            #endregion 删除无效key
+            #endregion
 
             foreach (var key in numberDict.Keys)
             {
@@ -584,7 +584,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return whereLambdas;
         }
 
-        #endregion AddNumberRange
+        #endregion
 
         #region AddTimeRange
 
@@ -633,7 +633,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return whereLambdas;
         }
 
-        #endregion 指定 period 的
+        #endregion
 
         private static Dictionary<string, TimeSearch> AddTimeRange_GetTimeDict<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
             where TEntity : class
@@ -719,7 +719,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 }
             }
 
-            #endregion 初始化 timeDict
+            #endregion
 
             #region 删除无效key
 
@@ -740,7 +740,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 timeDict.Remove(key);
             }
 
-            #endregion 删除无效key
+            #endregion
 
             return timeDict;
         }
@@ -951,7 +951,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             throw new Exception("此片段逻辑有误,需要修改代码");
         }
 
-        #endregion AddTimeRange
+        #endregion
 
         #region AddIn
 
@@ -1073,7 +1073,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
 
                         lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExpression);
 
-                        #endregion 不要问怎么写的, 问就是反编译 代码抄的
+                        #endregion
                     }
                 }
 
@@ -1139,7 +1139,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                         lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToChar());
                     }
 
-                    #endregion 值类型
+                    #endregion
 
                     #region 可空值类型
 
@@ -1196,7 +1196,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                         lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableChar());
                     }
 
-                    #endregion 可空值类型
+                    #endregion
 
                 }
 
@@ -1243,7 +1243,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return lambda;
         }
 
-        #endregion AddIn
+        #endregion
 
         #region AddGt
 
@@ -1310,7 +1310,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return lambda;
         }
 
-        #endregion AddGt
+        #endregion
 
         #region AddGe
 
@@ -1376,7 +1376,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return lambda;
         }
 
-        #endregion AddGe
+        #endregion
 
         #region AddLt
 
@@ -1442,7 +1442,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return lambda;
         }
 
-        #endregion AddLt
+        #endregion
 
         #region AddLe
 
@@ -1508,7 +1508,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return lambda;
         }
 
-        #endregion AddLe
+        #endregion
 
         #region WhereHasValue/WhereNoValue
 
@@ -1588,7 +1588,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return lambda;
         }
 
-        #endregion WhereHasValue/WhereNoValue
+        #endregion
 
         #region WhereNotDeleted
 
@@ -1599,7 +1599,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return null;
         }
 
-        #endregion WhereNotDeleted
+        #endregion
 
         private static bool HaveCount(List<string> searchCondition) => searchCondition != null && searchCondition.Count > 0;
 

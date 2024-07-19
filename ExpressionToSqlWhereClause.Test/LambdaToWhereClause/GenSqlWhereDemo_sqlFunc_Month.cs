@@ -192,5 +192,5 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
         public List<int> DataCreatedAt { get; set; } // 必须和 Entity 的属性名一致
     }
 
-    #endregion 待实现
+    #endregion  
 }

@@ -216,5 +216,5 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
         }
     }
 
-    #endregion 操作Expression的扩展方法
+    #endregion
 }
