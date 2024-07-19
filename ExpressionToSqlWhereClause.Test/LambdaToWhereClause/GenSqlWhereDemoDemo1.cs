@@ -135,7 +135,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
         [TestMethod]
         public void UseDynamic()
         {
-            //针对  People  的匿名类 
+            //针对  People  的匿名类
             var searchModel = new /*People*/
             {
                 //Id = 1,
@@ -178,7 +178,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
         [TestMethod]
         public void UseDynamic_Test2()
         {
-            //针对  People  的匿名类 
+            //针对  People  的匿名类
             var searchModel = new /*People*/
             {
                 //IsDel = 0,

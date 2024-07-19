@@ -1,9 +1,9 @@
-GenerateSqlWhereClause   
-	ÓÃÀ´Éú³Énuget°üµÄ
+ï»¿GenerateSqlWhereClause   
+	ç”¨æ¥ç”ŸæˆnugetåŒ…çš„
 
 ExpressionToSqlWhereClause
-	±í´ïÊ½Ê÷×ª  SqlWhereClause 
+	è¡¨è¾¾å¼æ ‘è½¬  SqlWhereClause 
 
 EntityToSqlWhereClauseConfig       
-	ÅäÖÃÄ£ĞÍµÄsql²éÑ¯Ìõ¼ş
-	¿ÉÒÔÅäºÏ ExpressionToWhereClause ¿ÉÒÔÉú³É SqlWhereClause
+	é…ç½®æ¨¡å‹çš„sqlæŸ¥è¯¢æ¡ä»¶
+	å¯ä»¥é…åˆ ExpressionToWhereClause å¯ä»¥ç”Ÿæˆ SqlWhereClause
