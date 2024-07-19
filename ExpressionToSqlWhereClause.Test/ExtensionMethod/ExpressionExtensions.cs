@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 namespace ExpressionToSqlWhereClause.Test.ExtensionMethod;
 
 #region 操作Expression的扩展方法
+
 /*
 这2个类来自
 https://docs.microsoft.com/zh-cn/archive/blogs/meek/linq-to-entities-combining-predicates
@@ -35,7 +36,6 @@ internal static class ExpressionExtensions
         return first.Compose(second, Expression.AndAlso);
     }
 
-
     public static Expression<Func<T, bool>> AndIf<T>(this Expression<Func<T, bool>> first, bool condition, Func<Expression<Func<T, bool>>> second)
     {
         return condition ? first.Compose(second(), Expression.AndAlso) : first;
@@ -55,7 +55,7 @@ internal static class ExpressionExtensions
         // replace parameters in the second lambda expression with parameters from the first
         var secondBody = ParameterRebinder.ReplaceParameters(map, second.Body);
 
-        // apply composition of lambda expression bodies to parameters from the first expression 
+        // apply composition of lambda expression bodies to parameters from the first expression
         var body = merge(first.Body, secondBody);
         return Expression.Lambda<T>(body, first.Parameters);
     }
@@ -104,7 +104,6 @@ internal static class ExpressionExtensions
             return first;
         }
     }
-
 }
 
 internal class ParameterRebinder : ExpressionVisitor

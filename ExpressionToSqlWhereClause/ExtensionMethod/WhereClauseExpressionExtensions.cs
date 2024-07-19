@@ -48,7 +48,7 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
                 }
             }
 
-            #endregion  
+            #endregion
 
             var body = expression.Body;
             var parseResult = WhereClauseParser.Parse(body, alias, sqlAdapter);
@@ -105,7 +105,7 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
                 }
             }
 
-            #endregion 
+            #endregion
 
             var result = new SearchCondition(
                   parseResult.WhereClause,

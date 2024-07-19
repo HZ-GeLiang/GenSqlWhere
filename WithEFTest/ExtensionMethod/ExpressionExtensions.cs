@@ -80,5 +80,5 @@ namespace WithEFTest.ExtensionMethod
         }
     }
 
-    #endregion  
+    #endregion
 }

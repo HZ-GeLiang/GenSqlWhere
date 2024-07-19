@@ -78,7 +78,7 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
         public static bool IsObjectCollection(this Type type, Type objectTypeEqual) =>
             type.IsObjectCollection(out _, objectTypeEqual);
 
-        #endregion  
+        #endregion
 
         public static bool IsSubClassOfRawGeneric(this Type type, Type generic)
         {
