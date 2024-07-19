@@ -221,7 +221,6 @@ namespace ExpressionToSqlWhereClause.Helper
             return result;
         }
 
-
         /// <summary>
         /// 转换参数. 如转成 sqlserver 的参数等等
         /// </summary>

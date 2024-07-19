@@ -2,7 +2,6 @@
 
 namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause.SqlAdapter
 {
-
     public class TestSqlAdapter : DefaultSqlAdapter
     {
         public override string FormatColumnName(string name)
@@ -11,6 +10,4 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause.SqlAdapter
             return base.FormatColumnName(name);
         }
     }
-
-
 }

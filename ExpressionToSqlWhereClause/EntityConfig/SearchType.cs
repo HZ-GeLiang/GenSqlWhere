@@ -74,6 +74,5 @@
         /// 翻译成 like 'xxx%'
         /// </summary>
         LikeRight,
-
     }
 }

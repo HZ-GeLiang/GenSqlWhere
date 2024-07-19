@@ -21,7 +21,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
 
-
             Assert.AreEqual(searchCondition.WhereClause, "Url Like @Url");
             var dict = new Dictionary<string, object>
             {
@@ -321,6 +320,5 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 
             CollectionAssert.AreEqual(searchCondition.Parameters, dict);
         }
-
     }
 }

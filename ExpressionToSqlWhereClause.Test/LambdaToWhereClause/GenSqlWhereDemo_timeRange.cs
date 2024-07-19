@@ -15,7 +15,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
         [TestMethod]
         public void Test_timeRange_start_neq_end()
         {
-            //DataCreatedAtStart != DataCreatedAtEnd 
+            //DataCreatedAtStart != DataCreatedAtEnd
             var searchModel = new Input_timeRange_Attr()
             {
                 DataCreatedAtStart = DateTime.Parse("2021-8-7 23:00:00"),
@@ -43,7 +43,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 
             CollectionAssert.AreEqual(searchCondition.Parameters, dict);
         }
-
 
         [TestMethod]
         public void Test_timeRange_start_eq_end()
@@ -78,7 +77,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             CollectionAssert.AreEqual(searchCondition.Parameters, dict);
         }
 
-
         [TestMethod]
         public void Test_timeRange_start_eq_end_WhereIf()
         {
@@ -100,7 +98,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             };
 
             whereLambda.WhereIf[nameof(searchModel.DataCreatedAtStart)] =
-                    a => a.DataCreatedAtStart > new DateTime(2022, 8, 9);//  
+                    a => a.DataCreatedAtStart > new DateTime(2022, 8, 9);//
 
             //  因为上面的条件没生效, 所以翻译引擎会当  只有 DataCreatedAtEnd 有值来处理.
             //所以, 这里要把  DataCreatedAtEnd 当没有值来处理
@@ -118,8 +116,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             CollectionAssert.AreEqual(searchCondition.Parameters, dict);
         }
 
-
-
         [TestMethod]
         public void Test_timeRange_Get时间精度()
         {
@@ -135,7 +131,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             {
                 nameof(searchModel.DataCreatedAt)
             };
-
 
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
@@ -167,7 +162,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 var formatDateTime = new Dictionary<string, string>() { { "@DataCreatedAt1", "yyyy-MM-dd" } };
                 var str = WhereClauseHelper.MergeParametersIntoSql(searchCondition.WhereClause, searchCondition.Parameters, formatDateTime);
                 Assert.AreEqual(str, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03'");
-
             }
 
             {
@@ -205,5 +199,4 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
     {
         [SearchType(SearchType.TimeRange)] public DateTime? DataCreatedAt { get; set; }
     }
-
 }

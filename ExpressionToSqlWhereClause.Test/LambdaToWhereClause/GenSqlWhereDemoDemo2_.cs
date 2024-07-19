@@ -22,7 +22,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
         [SearchType(SearchType.TimeRange)] public DateTime? DataUpdatedAtEnd { get; set; }
     }
 
-
     [TestClass]
     public class UseDemo2
     {
@@ -84,7 +83,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 nameof(searchModel.Data_Remark),
             };
 
-
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
 
@@ -96,6 +94,5 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 
             CollectionAssert.AreEqual(searchCondition.Parameters, dict);
         }
-
     }
 }

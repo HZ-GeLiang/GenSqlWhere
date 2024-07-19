@@ -13,6 +13,5 @@ namespace ExpressionToSqlWhereClause.Helper
 
             return Convert.ChangeType(val, IsNullableType(type) ? GetNullableTType(type) : type);
         }
-
     }
 }

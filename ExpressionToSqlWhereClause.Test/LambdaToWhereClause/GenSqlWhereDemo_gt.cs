@@ -6,11 +6,9 @@ using System.Collections.Generic;
 
 namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 {
-
     [TestClass]
     public class GenSqlWhereDemo_gt
     {
-
         [TestMethod]
         public void Test_gt()
         {
@@ -47,10 +45,12 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
         public long? Id { get; set; }
         public DateTime? DataCreatedAt { get; set; }
     }
+
     public class Input_gt_Attr
     {
         [SearchType(SearchType.Gt)]
         public long? Id { get; set; }
+
         [SearchType(SearchType.Gt)]
         public DateTime? DataCreatedAt { get; set; }
     }

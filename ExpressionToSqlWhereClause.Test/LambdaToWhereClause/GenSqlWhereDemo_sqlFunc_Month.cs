@@ -8,11 +8,9 @@ using System.Collections.Generic;
 
 namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 {
-
     [TestClass]
     public class GenSqlWhereDemo_sqlFunc_Month
     {
-
         [TestMethod]
         public void Month_eq()
         {
@@ -54,6 +52,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             Assert.AreEqual(searchCondition.WhereClause, "Month(DataCreatedAt) <> @Month");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
+
         [TestMethod]
         public void Month_In()
         {
@@ -67,9 +66,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             var exMsg = $"SearchType:{nameof(SearchType.In)},操作遇到不支持的属性类型:{typeof(DateTime).FullName}";
 
             Assert.ThrowsException<FrameException>(() => whereLambda.ToExpression().ToWhereClause(), exMsg);
-
         }
-
 
         [TestMethod]
         public void MonthIn_eq_1()
@@ -145,7 +142,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
-
     }
 
     public class Input_sqlFun_Month_eq
@@ -154,12 +150,14 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
         [SearchType(SearchType.Eq)]
         public int DataCreatedAt { get; set; } // 必须和 Entity 的属性名一致
     }
+
     public class Input_sqlFun_Month_neq
     {
         [Month]
         [SearchType(SearchType.Neq)]
         public int DataCreatedAt { get; set; } // 必须和 Entity 的属性名一致
     }
+
     public class Input_sqlFun_Month_in
     {
         [Month]
@@ -179,13 +177,13 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
     public class Input_sqlFun_MonthIn1
     {
         [MonthIn]
-        public int DataCreatedAt { get; set; } //最后要翻译为 List<int> 
+        public int DataCreatedAt { get; set; } //最后要翻译为 List<int>
     }
 
     public class Input_sqlFun_MonthIn2
     {
         [MonthIn]
-        public string DataCreatedAt { get; set; } //最后要翻译为 List<int> 
+        public string DataCreatedAt { get; set; } //最后要翻译为 List<int>
     }
 
     public class Input_sqlFun_MonthIn3
@@ -194,5 +192,5 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
         public List<int> DataCreatedAt { get; set; } // 必须和 Entity 的属性名一致
     }
 
-    #endregion
+    #endregion 待实现
 }

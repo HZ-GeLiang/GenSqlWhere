@@ -17,7 +17,6 @@ namespace ExpressionToSqlWhereClause.EntityConfig
     /// </summary>
     public static class WhereLambdaHelper
     {
-
         #region AddLike
 
         public static List<Expression<Func<TEntity, bool>>> AddLike<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
@@ -69,7 +68,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return Expression.Lambda<Func<TEntity, bool>>(containsMethodExp, parameterExp);
         }
 
-        #endregion
+        #endregion AddLike
 
         #region AddLikeLeft
 
@@ -99,7 +98,6 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                         whereLambdas.Add(exp);
                     }
                 }
-
             }
             return whereLambdas;
         }
@@ -122,7 +120,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return Expression.Lambda<Func<TEntity, bool>>(containsMethodExp, parameterExp);
         }
 
-        #endregion
+        #endregion AddLikeLeft
 
         #region AddLikeRight
 
@@ -157,7 +155,6 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return whereLambdas;
         }
 
-
         // t.SomeProperty.EndsWith("stringValue");
         private static Expression<Func<TEntity, bool>> GetExpression_EndsWith<TEntity>(string propertyName, string propertyValue)
         {
@@ -176,7 +173,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return Expression.Lambda<Func<TEntity, bool>>(containsMethodExp, parameterExp);
         }
 
-        #endregion
+        #endregion AddLikeRight
 
         #region AddEqual版本2 : 根据: AddInOrEuqal 衍生出来的
 
@@ -238,20 +235,18 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                     //GetLambda_MonthAttribute_Equal
 
                     ParameterExpression parameterExpression = Expression.Parameter(type_TEntity, "u");
-                    //                  DbFunctions 的          Month(                      DateTime dt) 
-                    var leftP2 = typeof(DbFunctions).GetMethod("Month", new Type[] { typeof(DateTime) }); //SqlFunc.DbFunctions.Month(DateTime dt) 
+                    //                  DbFunctions 的          Month(                      DateTime dt)
+                    var leftP2 = typeof(DbFunctions).GetMethod("Month", new Type[] { typeof(DateTime) }); //SqlFunc.DbFunctions.Month(DateTime dt)
                                                                                                           //  type_TEntity 的 propertyName 的 类型 必须 是   DateTime
                     var leftP3 = new Expression[] { Expression.Property(parameterExpression, propertyName) }; // u.CreateAt
                     var left = Expression.Call(null, leftP2, leftP3); //SqlFunc.DbFunctions.Month(u.CreateAt)
 
-
-                    //Sql 的 month() 返回的是int 
+                    //Sql 的 month() 返回的是int
                     //https://docs.microsoft.com/zh-cn/sql/t-sql/functions/month-transact-sql?view=sql-server-2017
                     var right = Expression.Constant(Convert.ToInt32(propertyValue), typeof(int));
                     var body = Expression.Equal(left, right);
                     var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExpression);
                     whereLambdas.Add(lambda);
-
                 }
             }
             else
@@ -277,7 +272,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             }
         }
 
-        #endregion
+        #endregion AddEqual版本2 : 根据: AddInOrEuqal 衍生出来的
 
         #region AddNotEqual-基于Equal的版本2
 
@@ -300,7 +295,6 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                     continue;
                 }
                 AddNotEqualCore<TEntity, TSearch>(prop, valuePropType, value, whereLambdas);
-
             }
             return whereLambdas;
         }
@@ -337,7 +331,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                     var leftP2 = typeof(DbFunctions).GetMethod("Month", new Type[] { typeof(DateTime) });
                     var leftP3 = new Expression[] { Expression.Property(parameterExpression, propertyName) };
                     var left = Expression.Call(null, leftP2, leftP3);
-                    //Sql 的 month() 返回的是int 
+                    //Sql 的 month() 返回的是int
                     //https://docs.microsoft.com/zh-cn/sql/t-sql/functions/month-transact-sql?view=sql-server-2017
                     var right = Expression.Constant(Convert.ToInt32(propertyValue), typeof(int));
                     var body = Expression.NotEqual(left, right);
@@ -369,7 +363,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             }
         }
 
-        #endregion
+        #endregion AddNotEqual-基于Equal的版本2
 
         #region AddNumberRange
 
@@ -380,7 +374,6 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             public object[] NumberRange { get; set; }
 
             public bool? IsPair { get; set; }
-
         }
 
         public static List<Expression<Func<TEntity, bool>>> AddNumberRange<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
@@ -397,6 +390,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             var numberDict = new Dictionary<string, NumberSearch>();
 
             #region 初始化 timeDict
+
             foreach (var prop in searchCondition)
             {
                 var propertyValue = new PropertyValue<TSearch>(that.Search);
@@ -472,11 +466,12 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                         throw new FrameException("重复赋值");
                     }
                 }
-
             }
-            #endregion
+
+            #endregion 初始化 timeDict
 
             #region 删除无效key
+
             var removeKey = new List<string>();
             foreach (var key in numberDict.Keys)
             {
@@ -492,7 +487,8 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             {
                 numberDict.Remove(key);
             }
-            #endregion
+
+            #endregion 删除无效key
 
             foreach (var key in numberDict.Keys)
             {
@@ -508,7 +504,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 {
                     if (numbers.NumberRange[0] != null && numbers.NumberRange[1] != null)
                     {
-                        bool needSwap = (dynamic)numbers.NumberRange[0] > (dynamic)numbers.NumberRange[1]; //比较大小,小在放前面 
+                        bool needSwap = (dynamic)numbers.NumberRange[0] > (dynamic)numbers.NumberRange[1]; //比较大小,小在放前面
                         if (needSwap)
                         {
                             (numbers.NumberRange[1], numbers.NumberRange[0]) = (numbers.NumberRange[0], numbers.NumberRange[1]);
@@ -545,7 +541,6 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 else if (ispair == true && numberDict[key].NumberRange[0] != null && numberDict[key].NumberRange[1] == null)
                 {
                     d1 = numberDict[key].NumberRange[0];
-
                 }
                 else if (ispair == true && numberDict[key].NumberRange[0] == null && numberDict[key].NumberRange[1] != null)
                 {
@@ -585,12 +580,11 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                         whereLambdas.Add(lambda);
                     }
                 }
-
             }
             return whereLambdas;
         }
 
-        #endregion
+        #endregion AddNumberRange
 
         #region AddTimeRange
 
@@ -614,7 +608,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         #region 指定 period 的
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <typeparam name="TSearch"></typeparam>
@@ -639,7 +633,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return whereLambdas;
         }
 
-        #endregion
+        #endregion 指定 period 的
 
         private static Dictionary<string, TimeSearch> AddTimeRange_GetTimeDict<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
             where TEntity : class
@@ -649,6 +643,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             var timeDict = new Dictionary<string, TimeSearch>();
 
             #region 初始化 timeDict
+
             foreach (var prop in searchCondition)
             {
                 var propertyValue = new PropertyValue<TSearch>(that.Search);
@@ -722,11 +717,12 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                         throw new FrameException("重复赋值");
                     }
                 }
-
             }
-            #endregion
+
+            #endregion 初始化 timeDict
 
             #region 删除无效key
+
             var removeKey = new List<string>();
             foreach (var key in timeDict.Keys)
             {
@@ -743,7 +739,8 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             {
                 timeDict.Remove(key);
             }
-            #endregion
+
+            #endregion 删除无效key
 
             return timeDict;
         }
@@ -787,7 +784,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                             (d2, d1) = (d1, d2);
                         }
 
-                        if (d1 == d2)//效果等价于 只有一个字段 给查询的时间范围  
+                        if (d1 == d2)//效果等价于 只有一个字段 给查询的时间范围
                         {
                             var period = 主动查询时间周期 ? 获得查询的时间精度(d1) : fixedTimePeriod.Value;
                             d2 = GetEndTime(period, d1);
@@ -796,7 +793,6 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                         {
                             var period = 主动查询时间周期 ? 获得查询的时间精度(d2) : fixedTimePeriod.Value;
                             d2 = GetEndTime(period, d2);
-
                         }
 
                         times.StartAndEnd[0] = d1;
@@ -845,7 +841,6 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 else if (ispair == true && timeDict[key].StartAndEnd[0] != null && timeDict[key].StartAndEnd[1] == null)
                 {
                     d1 = timeDict[key].StartAndEnd[0];
-
                 }
                 else if (ispair == true && timeDict[key].StartAndEnd[0] == null && timeDict[key].StartAndEnd[1] != null)
                 {
@@ -956,7 +951,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             throw new Exception("此片段逻辑有误,需要修改代码");
         }
 
-        #endregion
+        #endregion AddTimeRange
 
         #region AddIn
 
@@ -1049,6 +1044,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                     if (attr_SqlFunc is MonthInAttribute)
                     {
                         #region 不要问怎么写的, 问就是反编译 代码抄的
+
                         //反编译代码: Expression<Func<User_SqlFunc_Entity, bool>> expression = u => SqlFunc.DbFunctions.MonthIn(u.CreateAt) == new List<int> { 5, 6 };
 
                         ParameterExpression parameterExpression = Expression.Parameter(type_TEntity, "u");
@@ -1076,7 +1072,8 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                         var body = Expression.Equal(left, right);
 
                         lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExpression);
-                        #endregion
+
+                        #endregion 不要问怎么写的, 问就是反编译 代码抄的
                     }
                 }
 
@@ -1142,7 +1139,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                         lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToChar());
                     }
 
-                    #endregion
+                    #endregion 值类型
 
                     #region 可空值类型
 
@@ -1199,7 +1196,8 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                         lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableChar());
                     }
 
-                    #endregion 
+                    #endregion 可空值类型
+
                 }
 
                 if (lambda == null)
@@ -1209,7 +1207,6 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                 }
 
                 whereLambdas.Add(lambda);
-
             }
             return whereLambdas;
         }
@@ -1221,15 +1218,15 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             //https://stackoverflow.com/questions/18491610/dynamic-linq-expression-for-ienumerableint-containsmemberexpression
             //https://stackoverflow.com/questions/26659824/create-a-predicate-builder-for-x-listofints-containsx-listofintstocheck
 
-            //ParameterExpression parameterExp = Expression.Parameter(type_TEntity, "a"); 
-            //MemberExpression propertyExp = Expression.Property(parameterExp, propertyName); //a.AuditStateId   
+            //ParameterExpression parameterExp = Expression.Parameter(type_TEntity, "a");
+            //MemberExpression propertyExp = Expression.Property(parameterExp, propertyName); //a.AuditStateId
 
             //var someValue = Expression.Constant(listObj, typeof(List<Int16?>));
             ConstantExpression someValue = Expression.Constant(listObj);
 
             //会生产 sql  CAST( `t`.`audit_state_id` AS int ) , 但是 mysql(5.7.32)  int 要翻译成改成 signed 不然提示sql语法有误
             //var convertExpression = Expression.Convert(propertyExp, typeof(Int32));
-            //var call = Expression.Call(someValue, "Contains", new Type[] { }, convertExpression);  
+            //var call = Expression.Call(someValue, "Contains", new Type[] { }, convertExpression);
 
             //var method = typeof(Enumerable).GetMethod("Contains");//会报错 ,说模棱两可的
             //var method = typeof(IEnumerable<Int32>).GetMethod("Contains");//没有这个方法
@@ -1242,11 +1239,11 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             //containsMethodExp
             var lambda = Expression.Lambda<Func<TEntity, bool>>(call, parameterExp);
             //“动态不包含”为：
-            // var lambda = Expression.Lambda<Func<TEntity, bool>>(Expression.Not(call), pe); 
+            // var lambda = Expression.Lambda<Func<TEntity, bool>>(Expression.Not(call), pe);
             return lambda;
         }
 
-        #endregion
+        #endregion AddIn
 
         #region AddGt
 
@@ -1313,7 +1310,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return lambda;
         }
 
-        #endregion
+        #endregion AddGt
 
         #region AddGe
 
@@ -1379,7 +1376,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return lambda;
         }
 
-        #endregion
+        #endregion AddGe
 
         #region AddLt
 
@@ -1445,7 +1442,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return lambda;
         }
 
-        #endregion
+        #endregion AddLt
 
         #region AddLe
 
@@ -1511,12 +1508,12 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return lambda;
         }
 
-        #endregion
+        #endregion AddLe
 
         #region WhereHasValue/WhereNoValue
 
         /// <summary>
-        /// 当前字段有值, 字符串类型: IsNull(字段,"") != ""   
+        /// 当前字段有值, 字符串类型: IsNull(字段,"") != ""
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="propertyName"></param>
@@ -1554,7 +1551,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         }
 
         /// <summary>
-        /// 字符串类型: IsNull(字段,"") == ""   
+        /// 字符串类型: IsNull(字段,"") == ""
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="propertyName"></param>
@@ -1591,20 +1588,21 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return lambda;
         }
 
-        #endregion
+        #endregion WhereHasValue/WhereNoValue
 
-        #region WhereNotDeleted 
+        #region WhereNotDeleted
 
         public static Expression<Func<TEntity, bool>> GetExpression_NotDeleted<TEntity>(string propertyName)
                where TEntity : class
         {
-            //todo: 
+            //todo:
             return null;
         }
 
-        #endregion
+        #endregion WhereNotDeleted
 
         private static bool HaveCount(List<string> searchCondition) => searchCondition != null && searchCondition.Count > 0;
+
         private static bool HaveCount(string[] searchCondition) => searchCondition != null && searchCondition.Length > 0;
 
         private static List<Expression<Func<TEntity, bool>>> Default<TEntity>() => new();

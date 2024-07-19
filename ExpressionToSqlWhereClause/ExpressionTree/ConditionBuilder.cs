@@ -36,11 +36,10 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 }
             }
             return memberInfo.Name;
-
         }
 
         /// <summary>
-        /// 编译条件 
+        /// 编译条件
         /// </summary>
         /// <param name="memberInfo"></param>
         /// <param name="adhesive"></param>
@@ -57,7 +56,6 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
             param.Symbol = symbol;
             param.SqlClause = $"{fieldName} {symbol} {parametersKey}";
             return param;
-
         }
 
         public static SqlClauseParametersInfo BuildLikeOrEqualCondition(MethodCallExpression methodCallExpression, WhereClauseAdhesive adhesive)
@@ -65,6 +63,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
             if (methodCallExpression.Object is MemberExpression memberExpression)
             {
                 #region 获得值: symbol + valueSymbol
+
                 string symbol;
                 string valueSymbol;
                 switch (methodCallExpression.Method.Name)
@@ -73,22 +72,27 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                         symbol = SqlKeys.Equals_symbol;
                         valueSymbol = SqlKeys.Equals_valueSymbol;
                         break;
+
                     case "StartsWith": //like 的3种/1
                         symbol = SqlKeys.StartsWith_symbol;
                         valueSymbol = SqlKeys.StartsWith_valueSymbol;
                         break;
+
                     case "EndsWith"://like 的3种/2
                         symbol = SqlKeys.EndsWith_symbol;
                         valueSymbol = SqlKeys.EndsWith_valueSymbol;
                         break;
+
                     case "Contains"://like 的3种/3
                         symbol = SqlKeys.Contains_symbol;
                         valueSymbol = SqlKeys.Contains_valueSymbol;
                         break;
+
                     default:
                         throw new NotSupportedException($"Not support method name:{methodCallExpression.Method.Name}");
                 }
-                #endregion
+
+                #endregion 获得值: symbol + valueSymbol
 
                 var memberInfo = memberExpression.Member;
                 string fieldName = GetFieldName(memberExpression, memberInfo);
@@ -167,7 +171,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 //not 只对bool类型做支持
                 if (memberInfo is PropertyInfo pi && pi.PropertyType == typeof(bool))
                 {
-                    //return "!=";  //和 NotEqual 等价  , 
+                    //return "!=";  //和 NotEqual 等价  ,
                     return SqlKeys.NotEqual;
                 }
             }

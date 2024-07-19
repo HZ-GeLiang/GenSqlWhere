@@ -13,7 +13,7 @@ namespace ExpressionToSqlWhereClause.Helper
         /// <returns></returns>
         public static void Each(object collection, Action<object> action)
         {
-            //注: 在这里没有判断 enumerableObj 是否为 IsObjectCollection(自己封装的) 
+            //注: 在这里没有判断 enumerableObj 是否为 IsObjectCollection(自己封装的)
             //原理: 参考fore的内部实现
             if (action != null && GetEachContext(collection, out var itor, out var typeItor, out var moveNext))
             {
@@ -29,7 +29,6 @@ namespace ExpressionToSqlWhereClause.Helper
                             break;
                         }
                         action.Invoke(typeItor.GetProperty("Current").GetValue(itor));
-
                     }
                 }
                 finally
@@ -72,6 +71,5 @@ namespace ExpressionToSqlWhereClause.Helper
             moveNext = null;
             return false;
         }
-
     }
 }

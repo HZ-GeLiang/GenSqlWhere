@@ -7,7 +7,6 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
 {
     internal static class TypeExtensions
     {
-
         public static IList MakeList(this Type t, params object[] items)
         {
             Type type = typeof(List<>).MakeGenericType(t);
@@ -69,7 +68,6 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
             {
                 return isObjectList;
             }
-
         }
 
         public static bool IsObjectCollection(this Type type) => type.IsObjectCollection(out _, null);
@@ -80,7 +78,7 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
         public static bool IsObjectCollection(this Type type, Type objectTypeEqual) =>
             type.IsObjectCollection(out _, objectTypeEqual);
 
-        #endregion
+        #endregion IsObjectCollection
 
         public static bool IsSubClassOfRawGeneric(this Type type, Type generic)
         {
@@ -99,9 +97,6 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
             bool IsTheRawGenericType(Type test)
                 => generic == (test.IsGenericType ? test.GetGenericTypeDefinition() : test);
         }
-
-
-
 
         /// <summary>
         /// 返回Nullable&lt;T&gt;里的T类型
@@ -140,6 +135,5 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
             }
             return false;
         }
-
     }
 }

@@ -36,7 +36,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
             isIEnumerableObj = true;
             object firstValue = null;
 
-            var loopCount = -1; //  -1  0  1 只有3种值 
+            var loopCount = -1; //  -1  0  1 只有3种值
             foreach (var obj in loopObj)
             {
                 loopCount++;
@@ -79,7 +79,6 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
             }
             var txt = sb.Remove(sb.Length - 1, 1).ToString(); //RemoveLastChar
             return txt;
-
         }
 
         /// <summary>
@@ -141,7 +140,6 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                     throw new NotSupportedException($"Unknow expression {expression.GetType()}");
                 }
             }
-
             else if (expression is System.Linq.Expressions.NewExpression newExpression)
             {
                 if (expression.NodeType == ExpressionType.New)
@@ -154,7 +152,6 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 }
             }
 
-
             //已知的不支持的有:
             //if (expression.GetType().FullName == ExpressionFullNameSpaceConst.TypedParameter)
             //{
@@ -162,7 +159,6 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
             //}
 
             throw new NotSupportedException($"Unknow expression {expression.GetType()}");
-
         }
 
         public static object ParseConstantExpression(ConstantExpression constantExpression)
@@ -190,12 +186,11 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
             {
 #if DEBUG
                 System.Diagnostics.Debugger.Break(); //进来看看
-#endif 
+#endif
                 //官方获得值的方法: https://docs.microsoft.com/zh-cn/dotnet/api/system.linq.expressions.expression.field?redirectedfrom=MSDN&view=netframework-4.8
                 //    dynamic rightValue = Expression.Lambda(memberExpression).Compile()();
                 //    return rightValue;
             }
-
 
             // Firstly: Get the value of u
             object value = ParseConstant(memberExpression.Expression);
@@ -207,9 +202,11 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 case MemberTypes.Field:
                     FieldInfo fieldInfo = type.GetField(memberExpression.Member.Name);
                     return fieldInfo.GetValue(value);
+
                 case MemberTypes.Property:
                     PropertyInfo propertyInfo = type.GetProperty(memberExpression.Member.Name);
                     return propertyInfo.GetValue(value);
+
                 default:
 #if DEBUG
                     StackFrame frame = new(1, true);
@@ -349,7 +346,6 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
             return ChangeType(value, convertExpression.Type);
         }
 
-
         private static object ParseNewExpression(NewExpression newExpression)
         {
             Type type = newExpression.Type;
@@ -396,6 +392,5 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
 
             throw new NotSupportedException("Unsupported expression type: " + expression.GetType().Name);
         }
-
     }
 }

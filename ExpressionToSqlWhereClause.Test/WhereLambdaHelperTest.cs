@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 
 namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 {
-    class Student
+    internal class Student
     {
         public string Name { get; set; }
 
@@ -30,7 +30,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 
             Assert.AreEqual(true, exp.ToString() == exp2.ToString());
 
-
             //配合扩展方法的使用
             {
                 IQueryable<Student> query = null;
@@ -41,7 +40,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
         [TestMethod]
         public void GetExpression_NotDeleted()
         {
-
         }
     }
 }

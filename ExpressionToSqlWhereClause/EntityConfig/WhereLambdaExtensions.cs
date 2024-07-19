@@ -33,6 +33,5 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         {
             return new WhereLambda<TSearch, TSearch>(searchModel);
         }
-
     }
 }

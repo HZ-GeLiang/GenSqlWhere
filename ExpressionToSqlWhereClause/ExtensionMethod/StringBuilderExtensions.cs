@@ -26,6 +26,5 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
             }
             return -1;
         }
-
     }
 }

@@ -62,7 +62,6 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
 
         public bool ContainsParameter(string key) => _parameters.ContainsKey(key);
 
-
         public void RemoveParameter(string key)
         {
             if (this._parameters.ContainsKey(key))

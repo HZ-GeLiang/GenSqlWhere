@@ -12,6 +12,5 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         public DateTime?[] StartAndEnd { get; set; }
 
         public bool? IsPair { get; set; }
-
     }
 }

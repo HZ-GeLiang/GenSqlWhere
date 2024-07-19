@@ -11,9 +11,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
         public int Id { get; set; }
         public bool IsDel { get; set; }
         public DateTime DataCreatedAt { get; set; }
-
     }
-
 
     [TestClass]
     public class GenSqlWhereDemo_dynamic

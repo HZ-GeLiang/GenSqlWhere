@@ -9,27 +9,25 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
     {
         //public int? Id { get; set; }
         public string Id { get; set; }
-        public string Sex { get; set; }
 
+        public string Sex { get; set; }
     }
+
     public class model_in2
     {
         public int? Id { get; set; }
-
     }
 
     public class Input_in_Attr
     {
         [SearchType(SearchType.In)] public string Id { get; set; }
         [SearchType(SearchType.In)] public string Sex { get; set; }
-
     }
+
     public class Input_in2_Attr
     {
         [SearchType(SearchType.In)] public int? Id { get; set; }
-
     }
-
 
     [TestClass]
     public class GenSqlWhereDemo_in
@@ -50,7 +48,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 nameof(searchModel.Id),
                 nameof(searchModel.Sex),
             };
-
 
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();

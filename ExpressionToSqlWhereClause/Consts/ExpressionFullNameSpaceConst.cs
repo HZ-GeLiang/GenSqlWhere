@@ -16,7 +16,5 @@
         /// 比如??运算符
         /// </summary>
         public const string SimpleBinary = "System.Linq.Expressions.SimpleBinaryExpression";
-
-
     }
 }

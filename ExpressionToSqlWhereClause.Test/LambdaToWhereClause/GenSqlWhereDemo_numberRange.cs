@@ -50,7 +50,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                     nameof(searchModel.Id),
                 };
 
-
                 var expression = whereLambda.ToExpression();
                 var searchCondition = expression.ToWhereClause();
 
@@ -63,8 +62,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 
                 DictionaryAssert.AreEqual(searchCondition.Parameters, dict);
             }
-
-
         }
 
         [TestMethod]
@@ -94,7 +91,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 
                 DictionaryAssert.AreEqual(searchCondition.Parameters, dict);
             }
-
         }
     }
 
@@ -109,15 +105,13 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
         [SearchType(SearchType.NumberRange)] public int? IdRight { get; set; }
     }
 
-
-
     public class Input_numberRange2
     {
         public int? Id { get; set; }
     }
+
     public class Input_numberRange2_Attr
     {
         [SearchType(SearchType.NumberRange)] public int? Id { get; set; }
-
     }
 }

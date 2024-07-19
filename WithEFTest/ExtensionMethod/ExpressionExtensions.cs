@@ -3,6 +3,7 @@
 namespace WithEFTest.ExtensionMethod
 {
     #region 操作Expression的扩展方法
+
     /*
     这2个类来自
     https://docs.microsoft.com/zh-cn/archive/blogs/meek/linq-to-entities-combining-predicates
@@ -33,7 +34,6 @@ namespace WithEFTest.ExtensionMethod
         public static Expression<Func<T, bool>> AndIf<T>(this Expression<Func<T, bool>> first, bool condition, Func<Expression<Func<T, bool>>> second)
             => condition ? first.Compose(second(), Expression.AndAlso) : first;
 
-
         private static Expression<T> Compose<T>(this Expression<T> first, Expression<T> second, Func<Expression, Expression, Expression> merge)
         {
             // build parameter map(from parameters of second to parameters of first)
@@ -48,11 +48,10 @@ namespace WithEFTest.ExtensionMethod
             // replace parameters in the second lambda expression with parameters from the first
             var secondBody = ParameterRebinder.ReplaceParameters(map, second.Body);
 
-            // apply composition of lambda expression bodies to parameters from the first expression 
+            // apply composition of lambda expression bodies to parameters from the first expression
             var body = merge(first.Body, secondBody);
             return Expression.Lambda<T>(body, first.Parameters);
         }
-
     }
 
     internal class ParameterRebinder : ExpressionVisitor
@@ -81,5 +80,5 @@ namespace WithEFTest.ExtensionMethod
         }
     }
 
-    #endregion
+    #endregion 操作Expression的扩展方法
 }

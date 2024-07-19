@@ -4,7 +4,6 @@
     {
         public string ErrorNo { get; } // 业务异常编号
 
-
         public FrameException(string errorNo, string message) : base(message)
         {
             ErrorNo = errorNo;
@@ -22,6 +21,5 @@
         public FrameException(string message, System.Exception e) : base(message, e)
         {
         }
-
     }
 }

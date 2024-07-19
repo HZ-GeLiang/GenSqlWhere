@@ -39,7 +39,6 @@ namespace ExpressionToSqlWhereClause.Helper
             return str; ;
         }
 
-
         /// <summary>
         /// 特殊占位符
         /// </summary>
@@ -127,7 +126,6 @@ namespace ExpressionToSqlWhereClause.Helper
             return str;
         }
 
-
         /// <summary>
         /// 可以无脑的直接去掉所有的()
         /// </summary>
@@ -138,7 +136,7 @@ namespace ExpressionToSqlWhereClause.Helper
         {
             if (str.Contains("(") == false && str.Contains(")") == false)
             {
-                return false;//没有 (), 即不需要进行 去() 操作 
+                return false;//没有 (), 即不需要进行 去() 操作
             }
             if (str.Contains(SqlKeys.@in)) //In语句
             {
@@ -148,7 +146,7 @@ namespace ExpressionToSqlWhereClause.Helper
             {
                 return false;
             }
-            if (str.Contains(SqlKeys.Or)) //Or语句 
+            if (str.Contains(SqlKeys.Or)) //Or语句
             {
                 //全为or的这里不考虑 ,根据 委托来决策
                 if (orWhereCanTrim?.Invoke(str) == true)
@@ -187,7 +185,8 @@ namespace ExpressionToSqlWhereClause.Helper
             {
                 result = TrimParenthesesWarp(result);
 
-                #region  判断顶层条件是否全为 or(只能判断3个) , 取消注释, 可以通过 case_复杂版的表达式解析4 的测试, ,注释的原因: 只能判断3个.
+                #region 判断顶层条件是否全为 or(只能判断3个) , 取消注释, 可以通过 case_复杂版的表达式解析4 的测试, ,注释的原因: 只能判断3个.
+
                 //positions = GetPositions(result, out var _);
                 //List<Position> positionsLv0 = GetPositionsLv0(positions);
                 //if (positionsLv0.Count > 0)
@@ -236,13 +235,15 @@ namespace ExpressionToSqlWhereClause.Helper
                 //        }
                 //    }
                 //}
-                #endregion
+
+                #endregion 判断顶层条件是否全为 or(只能判断3个) , 取消注释, 可以通过 case_复杂版的表达式解析4 的测试, ,注释的原因: 只能判断3个.
 
                 //场景: case_复杂版的表达式解析4 的 todo: 这里还存在可优化的场景: 顶层条件全为 or ,且or的数量大于2个时, 还能有 () 要去掉
                 return result; //这个 return 是不包含 场景: case_复杂版的表达式解析4  的处理
             }
 
             #region 某种if条件
+
             {
                 //单元测试:  case_复杂版的表达式解析3
                 //提取每个有()包裹的顶层条件,然后解析每个顶层是否可以继续拆分出顶层, 如果可以, 去掉当前顶层的()包裹
@@ -296,8 +297,9 @@ namespace ExpressionToSqlWhereClause.Helper
                 }
             }
 
-            #endregion
-            return result; //不在单元测试中, 应该是太复杂了, 不知道怎么处理  
+            #endregion 某种if条件
+
+            return result; //不在单元测试中, 应该是太复杂了, 不知道怎么处理
         }
 
         private static List<Position> GetPositionsLv0(List<Position> positions)
@@ -323,7 +325,6 @@ namespace ExpressionToSqlWhereClause.Helper
             }
 
             return positionslv0;
-
         }
 
         private static void ParseWhere(List<Position> positions, string where, out List<string> parts, out List<string> partLinks)
@@ -335,6 +336,7 @@ namespace ExpressionToSqlWhereClause.Helper
             for (int i = 0; i < positions.Count; i++)
             {
                 #region 为了程序易读,这里的优化取消了
+
                 //if (i == 0)
                 //{
                 //    if (where[position[0].Left] == '(' &&
@@ -342,8 +344,9 @@ namespace ExpressionToSqlWhereClause.Helper
                 //    {
                 //        continue;
                 //    }
-                //} 
-                #endregion
+                //}
+
+                #endregion 为了程序易读,这里的优化取消了
 
                 if (index >= positions[i].Right)
                 {
@@ -474,7 +477,7 @@ namespace ExpressionToSqlWhereClause.Helper
         /// <summary>
         /// 获得 () 的位置信息
         /// </summary>
-        /// <param name="str"></param> 
+        /// <param name="str"></param>
         /// <returns></returns>
         private static List<Position> GetPositions(string str)
         {
@@ -525,7 +528,6 @@ namespace ExpressionToSqlWhereClause.Helper
                         //Console.WriteLine($"Left: {index}, Right: {i}");
 
                         list.Add(new Position(index, i, str));
-
                     }
                     else
                     {
@@ -550,7 +552,6 @@ namespace ExpressionToSqlWhereClause.Helper
             }
 
 #endif
-
 
             var result = list.OrderBy(a => a.Left).ToList();
 

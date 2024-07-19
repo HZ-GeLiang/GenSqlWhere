@@ -5,11 +5,9 @@ using System.Collections.Generic;
 
 namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 {
-
     [TestClass]
     public class GenSqlWhereDemo_like
     {
-
         [TestMethod]
         public void Test_like()
         {
@@ -52,7 +50,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 nameof(searchModel.Data_Remark),
             };
 
-
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
 
@@ -93,13 +90,11 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
         }
     }
 
-
     public class model_like
     {
         public string Url { get; set; }
         public string Data_Remark { get; set; }
     }
-
 
     public class Input_like_Attr
     {

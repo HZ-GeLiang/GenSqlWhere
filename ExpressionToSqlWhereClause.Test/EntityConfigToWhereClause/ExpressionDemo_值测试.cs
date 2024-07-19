@@ -6,7 +6,6 @@ using System.Linq.Expressions;
 
 namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 {
-
     [TestClass]
     public class ExpressionDemo_值测试
     {
@@ -15,7 +14,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
         {
             Assert.ThrowsException<Exception>(() =>
             {
-                // 提示 
+                // 提示
                 Expression<Func<Student, bool>> expTest = o => string.IsNullOrEmpty(o.Url);
                 var aa = expTest.ToWhereClause().WhereClause;
             }, "Please use(o.Url ?? \"\") != \"\" replace string.IsNullOrEmpty(o.Url).");
@@ -37,7 +36,6 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 
             var para = new Dictionary<string, object>();
             CollectionAssert.AreEqual(searchCondition.Parameters, para);
-
         }
     }
 }

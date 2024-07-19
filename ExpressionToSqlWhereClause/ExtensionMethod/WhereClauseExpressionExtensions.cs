@@ -31,6 +31,7 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
             }
 
             #region 处理 alias
+
             alias ??= new Dictionary<string, string>();
 
             foreach (var propertyInfo in ReflectionHelper.GetProperties<T>())
@@ -46,7 +47,8 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
                     alias[propertyInfo.Name] = attrs[0].Name;
                 }
             }
-            #endregion
+
+            #endregion 处理 alias
 
             var body = expression.Body;
             var parseResult = WhereClauseParser.Parse(body, alias, sqlAdapter);
@@ -88,10 +90,10 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
 
                             continue;
                         }
-                        //else 没有处理 
+                        //else 没有处理
                     }
 
-                    //else 没有处理 
+                    //else 没有处理
                 }
 
                 //翻译IEnumerable的值
@@ -103,7 +105,7 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
                 }
             }
 
-            #endregion
+            #endregion 处理 parseResult 的  Adhesive  和 WhereClause
 
             var result = new SearchCondition(
                   parseResult.WhereClause,
@@ -124,7 +126,6 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
             return searchCondition;
         }
 
-
         public static SearchCondition ToFormattableWhereClause<T>(
             this Expression<Func<T, bool>> expression,
             Dictionary<string, string> alias = null,
@@ -134,7 +135,6 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
             WhereClauseHelper.ToFormattableString(searchCondition);//使用 FormattableParameters 有值
             return searchCondition;
         }
-
 
         /// <summary>
         /// 去掉()
@@ -149,7 +149,7 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
                 return str.Contains(SqlKeys.And) == false;
             });
 
-            if (canTrimAll) //去掉 关系条件 全为 and 时的 () 
+            if (canTrimAll) //去掉 关系条件 全为 and 时的 ()
             {
                 var str = ParenthesesTrimHelper.TrimAll(WhereClause, new char[] { '(', ')' });//全是and 的
                 return str;
@@ -230,6 +230,5 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
             var formattableStr = FormattableStringFactory.Create(querySql, this.FormattableParameters);
             return formattableStr;
         }
-
     }
 }

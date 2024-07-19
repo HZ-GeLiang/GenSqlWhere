@@ -10,14 +10,17 @@
         /// 天
         /// </summary>
         Day = 1,
+
         /// <summary>
         /// 小时
         /// </summary>
         Hour,
+
         /// <summary>
         /// 分钟
         /// </summary>
         Minute,
+
         /// <summary>
         /// 秒
         /// </summary>

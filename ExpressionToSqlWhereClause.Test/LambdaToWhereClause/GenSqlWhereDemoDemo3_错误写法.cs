@@ -8,7 +8,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
     [TestClass]
     public class UseDemo3
     {
-
         [TestMethod]
         public void 重复配置使用方法_不同配置()
         {
@@ -62,11 +61,13 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             [SearchType(SearchType.Eq)]
             public int Id { get; set; }
         }
+
         public class Input_Demo3_相同配置
         {
             [SearchType(SearchType.Eq)]
             public int Id { get; set; }
         }
+
         public class model_Demo3
         {
             [SearchType(SearchType.Eq)]

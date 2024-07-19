@@ -11,7 +11,6 @@ using System.Linq.Expressions;
 
 namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 {
-
     [TestClass]
     public class ExpressionDemo
     {
@@ -94,11 +93,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
                 var searchCondition = expression.ToWhereClause();
                 Assert.AreEqual(searchCondition.WhereClause, "IsNull(Production, N'') = '' Or IsNull(Unit, 0) = 0");
             }
-
-
-
         }
-
 
         [TestMethod]
         public void 获得sql_不使用sql参数()
@@ -133,9 +128,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             WhereClauseHelper.ToFormattableString(searchCondition);
             Assert.AreEqual(searchCondition.WhereClause, "Production Like {0}");
 
-
             /*一个示例
-
 
                 var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
                     .WhereIf(true, a => a.Id == 1)
@@ -199,7 +192,6 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             };
             CollectionAssert.AreEqual(searchCondition.Parameters, para);
 
-
             //这个是   WhereClauseHelper.ConvertParameters 使用示例
             var pms = WhereClauseHelper.ConvertParameters(searchCondition.Parameters, (key, val) =>
             {
@@ -246,7 +238,6 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             };
             Assert.AreEqual(searchCondition.WhereClause, "Sex = @Sex And Name Like @Name");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
-
         }
 
         [TestMethod]
@@ -275,7 +266,6 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             Assert.AreEqual(searchCondition.WhereClause, "Sex <> @Sex");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
-
 
         [TestMethod]
         public void ValidateConstant()
@@ -577,7 +567,6 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
         }
 
         [TestMethod]
-        //一元
         public void ValidateUnary()
         {
             Assert.ThrowsException<NotSupportedException>(() =>
@@ -585,9 +574,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
                 Expression<Func<User, bool>> expression = u => !u.Name.Contains("Name");
                 var sql = expression.ToWhereClause(null, new TestSqlAdapter());
             });
-
         }
-
 
         [TestMethod]
         public void case_复杂版的表达式解析1()
@@ -620,7 +607,6 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 
             Assert.AreEqual(searchCondition.WhereClause, "Sex = @Sex And (Age > @Age Or (Sex = @Sex1 And Age > @Age1))");
         }
-
 
         [TestMethod]
         public void case_复杂版的表达式解析3()
@@ -676,7 +662,6 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             Assert.AreEqual(searchCondition.WhereClause, "太复杂的去掉()的成本太高, 不写了...");
         }
 
-
         [TestMethod]
         public void case_去掉括号_3个or()
         {
@@ -691,9 +676,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             var searchCondition = expression.ToWhereClause();
 
             Assert.AreEqual(searchCondition.WhereClause, "Age > @Age Or Age > @Age1 Or Age > @Age2");
-
         }
-
 
         [TestMethod]
         public void case_去掉括号_4个or()
@@ -711,8 +694,6 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 
             Assert.AreEqual(searchCondition.WhereClause, "Age > @Age Or Age > @Age1 Or Age > @Age2 Or Age > @Age3");
         }
-
-
 
         [TestMethod]
         public void ValidateAll()
@@ -738,7 +719,6 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
-
 
         [TestMethod]
         public void ValidateArrayIn()
@@ -864,7 +844,6 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 
             Assert.AreEqual(searchCondition.WhereClause, "Flag = @Flag");
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
-
         }
 
         [TestMethod]
@@ -896,11 +875,9 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             }
         }
 
-
         [TestMethod]
         public void 测试_别名的替换()
         {
-
             var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
                 .WhereIf(true, a => a.CreateAtDay > 1)
                 ;
@@ -909,25 +886,19 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
                 { "CreateAtDay","datediff(day, CreateAt, GETDATE())"}
             });
 
-
             Assert.AreEqual(searchCondition.WhereClause, "datediff(day, CreateAt, GETDATE()) > @CreateAtDay");
             //DictionaryAssert.AreEqual(expectedParameters, where.Parameters);
-
         }
-
     }
-
 
     public record class ExpressionSqlTest
     {
-
         public int Id { get; set; }
         public string Name { get; set; }
         public DateTime? CreateAt { get; set; }
         public int? CreateAtDay { get; set; }
         public Guid? Flag { get; set; }
     }
-
 
     public class UserFilter
     {
@@ -944,6 +915,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             return i;
         }
     }
+
     public class Internal
     {
         public int Age { get; set; }
@@ -954,13 +926,14 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
         public int Age { get; set; }
         public DateTime? CreateStart { get; set; }
         public DateTime? CreateEnd { get; set; }
-
     }
+
     public class User_columnAttr
     {
         [Column("UserAge")]
         public int Age { get; set; }
     }
+
     public class User
     {
         public string Name { get; set; }
@@ -971,6 +944,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 
         public int Age { get; set; }
     }
+
     public class Student
     {
         public int Id { get; set; }
@@ -982,7 +956,6 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
         public string DataRemark { get; set; }
         public DateTime DataCreatedAt { get; set; }
         public DateTime DataUpdatedAt { get; set; }
-
     }
 
     public class Student_Alias
@@ -994,6 +967,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
     {
         public int Index { get; set; }
     }
+
     public enum Sex
     {
         Male = 1,
@@ -1002,7 +976,6 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 
     public class ShopInfoInput
     {
-
         public DateTime? DateStart { get; set; }
         public DateTime? DateEnd { get; set; }
 
@@ -1015,7 +988,5 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 
         public string Remarks { get; set; }
         public long? CreateUserID { get; set; }
-
-
     }
 }

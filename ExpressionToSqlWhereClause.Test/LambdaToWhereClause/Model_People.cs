@@ -13,6 +13,5 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
         public string DataRemark { get; set; }
         public DateTime DataCreatedAt { get; set; }
         public DateTime DataUpdatedAt { get; set; }
-
     }
 }

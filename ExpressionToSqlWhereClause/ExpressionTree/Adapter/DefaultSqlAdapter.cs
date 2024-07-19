@@ -2,7 +2,6 @@
 {
     public class DefaultSqlAdapter : ISqlAdapter
     {
-
         /// <inheritdoc/>
         public virtual string FormatColumnName(string name)
         {

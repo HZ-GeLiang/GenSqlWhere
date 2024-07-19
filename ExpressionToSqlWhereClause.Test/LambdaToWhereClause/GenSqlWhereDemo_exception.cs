@@ -5,11 +5,9 @@ using System.Collections.Generic;
 
 namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 {
-
     [TestClass]
     public class GenSqlWhereDemo_exception
     {
-
         [TestMethod]
         public void Test_expection1()
         {
@@ -53,7 +51,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 Assert.AreEqual(searchCondition.WhereClause, "");
 
                 CollectionAssert.AreEqual(searchCondition.Parameters, new Dictionary<string, object>());
-
             }
 
             {
@@ -83,7 +80,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
         {
             var searchModel = new model_lt()
             {
-
             };
 
             var whereLambda = new WhereLambda<Model_People, model_lt>(searchModel);
@@ -101,14 +97,13 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
         }
     }
 
-
     public class model_expection1
     {
         public int Id { get; set; }
     }
+
     public class model_expection2
     {
         public int? Id { get; set; }
     }
-
 }

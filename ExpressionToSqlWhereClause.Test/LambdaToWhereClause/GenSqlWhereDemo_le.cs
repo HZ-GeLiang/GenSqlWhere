@@ -21,7 +21,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
     [TestClass]
     public class GenSqlWhereDemo_le
     {
-
         [TestMethod]
         public void Test_le()
         {
@@ -51,6 +50,5 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 
             CollectionAssert.AreEqual(searchCondition.Parameters, dict);
         }
-
     }
 }

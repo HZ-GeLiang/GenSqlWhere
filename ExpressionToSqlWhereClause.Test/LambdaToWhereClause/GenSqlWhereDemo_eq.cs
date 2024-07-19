@@ -41,7 +41,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 CollectionAssert.AreEqual(searchCondition.Parameters, dict);
             }
 
-
             {
                 //获得 expression 的 写法2
 
@@ -69,7 +68,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             }
         }
 
-
         [TestMethod]
         public void Test_eq2()
         {
@@ -82,10 +80,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
              .WhereIf(true, a => a.Id == searchModel.Id)
              ;
             var searchCondition = expression.ToWhereClause();
-
         }
-
-
 
         [TestMethod]
         public void Test_eq_WhereIf()
@@ -117,7 +112,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 CollectionAssert.AreEqual(searchCondition.Parameters, dict);
             }
 
-
             {
                 var whereLambda = new WhereLambda<Model_eq, InputModel_eq>(searchModel);
 
@@ -142,10 +136,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 
                 CollectionAssert.AreEqual(searchCondition.Parameters, dict);
             }
-
         }
-
-
 
         [TestMethod]
         public void Test_eq_WhereIf_parseExpressionStr()
@@ -201,19 +192,18 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
         [SearchType(SearchType.Eq)] public long? Id { get; set; }
     }
 
-
     public class Model_eq
     {
         public bool IsDel { get; set; }
         public int Id { get; set; }
     }
 
-
     public class InputModel_eq
     {
         public int Id { get; set; }
         public int Age { get; set; }
     }
+
     public class Model_eq2
     {
         public int Id { get; set; }

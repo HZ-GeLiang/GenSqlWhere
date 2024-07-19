@@ -5,11 +5,9 @@ using System.Collections.Generic;
 
 namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 {
-
     [TestClass]
     public class GenSqlWhereDemo_neq
     {
-
         [TestMethod]
         public void Test_neq()
         {
@@ -37,6 +35,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             CollectionAssert.AreEqual(searchCondition.Parameters, dict);
         }
     }
+
     public class model_neq
     {
         public bool IsDel { get; set; }

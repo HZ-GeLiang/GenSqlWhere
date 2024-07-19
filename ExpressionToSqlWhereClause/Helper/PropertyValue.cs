@@ -5,7 +5,6 @@ using System.Reflection;
 
 namespace ExpressionToSqlWhereClause.Helper
 {
-
     //使用
     //People people = new People { Name = "Wayne" };
     //PropertyValue<People> propertyValue = new PropertyValue<People>(people);
@@ -16,7 +15,7 @@ namespace ExpressionToSqlWhereClause.Helper
     {
         private static ConcurrentDictionary<string, MemberGetDelegate> _memberGetDelegate = new();
 
-        delegate object MemberGetDelegate(T target);
+        private delegate object MemberGetDelegate(T target);
 
         public PropertyValue(T target)
         {
@@ -61,9 +60,7 @@ namespace ExpressionToSqlWhereClause.Helper
             Type type = typeof(T);
             PropertyInfo property = type.GetProperty(name);
             return (MemberGetDelegate)Delegate.CreateDelegate(typeof(MemberGetDelegate), property.GetGetMethod());
-
         }
-
 
         /*
         //http://www.cocoachina.com/articles/103961

@@ -41,7 +41,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         //public WhereLambda() { }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="search">检索对象</param>
         public WhereLambda(TSearch search)
@@ -58,7 +58,6 @@ namespace ExpressionToSqlWhereClause.EntityConfig
         /// 属性的值是否有值
         /// </summary>
         public Dictionary<string, Expression<Func<TSearch, bool>>> WhereIf { get; set; } = new();
-
 
         /// <summary>
         /// 检索对象的配置
@@ -81,7 +80,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return expression;
         }
 
-        /// <inheritdoc cref="ToExpressionCore{TEntity}(List{Expression{Func{TEntity, bool}}})"/> 
+        /// <inheritdoc cref="ToExpressionCore{TEntity}(List{Expression{Func{TEntity, bool}}})"/>
         public static implicit operator Expression<Func<TEntity, bool>>(WhereLambda<TEntity, TSearch> that)
         {
             var whereLambdas = ToExpressionList(that);
@@ -124,14 +123,13 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return exp;
         }
 
-        #endregion
-
+        #endregion ToExpression
 
         #region ToExpressionList
 
         /// <summary>
         /// 获得表达式树的写法,可以给ef用(不含sql内置函数的那种)
-        /// </summary> 
+        /// </summary>
         /// <returns></returns>
         public static List<Expression<Func<TEntity, bool>>> ToExpressionList(WhereLambda<TEntity, TSearch> that)
         {
@@ -236,7 +234,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return searchTypeConfig;
         }
 
-        /// <inheritdoc cref="GetSearchCondition(Dictionary{SearchType, List{string}})"/> 
+        /// <inheritdoc cref="GetSearchCondition(Dictionary{SearchType, List{string}})"/>
         public Dictionary<SearchType, List<string>> GetSearchConditionDict()
         {
             var searchConditionDict = GetSearchCondition(this._dictSearhType);
@@ -258,7 +256,7 @@ namespace ExpressionToSqlWhereClause.EntityConfig
             return ToExpressionList(this);
         }
 
-        #endregion
+        #endregion ToExpressionList
     }
 
     ///// <summary>

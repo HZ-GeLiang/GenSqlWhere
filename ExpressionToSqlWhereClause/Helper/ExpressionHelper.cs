@@ -9,6 +9,7 @@ namespace ExpressionToSqlWhereClause.Helper
         internal sealed class Visitor : ExpressionVisitor
         {
             public object Value { get; set; }
+
             protected override Expression VisitMember(MemberExpression member)
             {
                 if (member.Expression is ConstantExpression constantExpression && member.Member is FieldInfo fieldInfo)
@@ -21,6 +22,7 @@ namespace ExpressionToSqlWhereClause.Helper
                 return base.VisitMember(member);
             }
         }
+
         public static string GetLeftMemberName(dynamic left)
         {
             string leftMemberName;
@@ -69,16 +71,18 @@ namespace ExpressionToSqlWhereClause.Helper
                 return rightValue;
             }
 
-            #region 
+            #region
+
             //如果要解析其他的 Expression
-            //1.  在 Nuget:ExpressionToWhereClause 这个项目有  ConstantExtractor  文件 ,可以去参考看看 
+            //1.  在 Nuget:ExpressionToWhereClause 这个项目有  ConstantExtractor  文件 ,可以去参考看看
 
             //2. 在 https://github.com/stromblom/ExpressionToWhere 这个项目里看到的代码,记录下
             //BinaryExpression node
             //object value = Expression.Lambda<Func<object>>(Expression.Convert(node.Right, typeof(object))).Compile().Invoke();
-            //object value = Expression.Lambda<Func<object>>(Expression.Convert(right, typeof(object))).Compile().Invoke(); 
+            //object value = Expression.Lambda<Func<object>>(Expression.Convert(right, typeof(object))).Compile().Invoke();
 
             //object value = Expression.Lambda<Func<object>>(Expression.Convert(node, typeof(object))).Compile().Invoke();
+
             #endregion
 
             throw new FrameException("解析表达式的代码有问题,请修改程序");

@@ -7,8 +7,8 @@ namespace ExpressionToSqlWhereClause.Test
 {
     public class DictionaryAssert
     {
-
         #region IsObjectCollection
+
         private static bool IsSubClassOfRawGeneric(Type type, Type generic)
         {
             if (type is null) throw new ArgumentNullException(nameof(type));
@@ -68,14 +68,15 @@ namespace ExpressionToSqlWhereClause.Test
             {
                 return isObjectList;
             }
-
         }
+
         private static bool IsObjectCollection(Type type) => IsObjectCollection(type, out _, null);
+
         private static bool IsObjectCollection(Type type, out Type objectType) => IsObjectCollection(type, out objectType, null);
+
         private static bool IsObjectCollection(Type type, Type objectTypeEqual) => IsObjectCollection(type, out _, objectTypeEqual);
 
-
-        #endregion
+        #endregion IsObjectCollection
 
         public static void AreEqual<TKey, TValue>(Dictionary<TKey, TValue> dict, Dictionary<TKey, TValue> dict2)
         {
@@ -91,7 +92,6 @@ namespace ExpressionToSqlWhereClause.Test
             }
 
             Assert.AreEqual(dict.Count, dict2.Count);
-
 
             CollectionAssert.AreEqual(dict.Keys, dict2.Keys);    //判断key
 
@@ -111,6 +111,5 @@ namespace ExpressionToSqlWhereClause.Test
                 }
             }
         }
-
     }
 }

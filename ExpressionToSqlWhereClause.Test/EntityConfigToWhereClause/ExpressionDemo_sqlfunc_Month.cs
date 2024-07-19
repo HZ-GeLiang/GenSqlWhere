@@ -29,11 +29,10 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
         }
 
-
         [TestMethod]
         public void SqlFunc_MonthIn_eq()
         {
-            //EntityToSqlWherecClauseConfig 的 in 
+            //EntityToSqlWherecClauseConfig 的 in
             Expression<Func<User_SqlFunc_Entity, bool>> expression =
                 u => DbFunctions.MonthIn(u.CreateAt) == new List<int> { 5, 6 };//string 需要自己转成 List<int> , 这里略,直接写死
             var searchCondition = expression.ToWhereClause();
@@ -44,9 +43,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             Assert.AreEqual("Month(CreateAt) In (@MonthIn)", searchCondition.WhereClause);
 
             DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
-
         }
-
     }
 
     public class User_SqlFunc_Entity
@@ -55,5 +52,4 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
         public DateTime DelAt { get; set; }
         public int Month { get; set; }
     }
-
 }

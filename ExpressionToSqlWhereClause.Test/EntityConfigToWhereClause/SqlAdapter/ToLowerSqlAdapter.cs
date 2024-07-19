@@ -2,7 +2,6 @@
 
 namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause.SqlAdapter
 {
-
     public class ToLowerSqlAdapter : DefaultSqlAdapter
     {
         /// <inheritdoc/>

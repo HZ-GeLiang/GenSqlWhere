@@ -7,7 +7,7 @@ namespace ExpressionToSqlWhereClause.Helper
     internal sealed class TypeHelper
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="types">提供参数个数 >1 时, 会异常</param>
         /// <returns></returns>
@@ -18,6 +18,5 @@ namespace ExpressionToSqlWhereClause.Helper
             System.Collections.IList ilist = list as System.Collections.IList;
             return ilist;
         }
-
     }
 }

@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using WithEFTest.ExtensionMethod;
 
-
 var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
     .WhereIf(true, a => a.Id == 1)
     .WhereIf(true, a => a.Name == "abc")

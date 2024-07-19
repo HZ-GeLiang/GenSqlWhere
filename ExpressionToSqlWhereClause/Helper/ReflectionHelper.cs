@@ -15,7 +15,7 @@ namespace ExpressionToSqlWhereClause.Helper
 
         public static PropertyInfo[] GetProperties(Type type, BindingFlags bindingAttr) => type.GetProperties(bindingAttr);
 
-        #endregion
+        #endregion GetProperties
 
         #region GetAttributeForProperty
 
@@ -32,9 +32,11 @@ namespace ExpressionToSqlWhereClause.Helper
             object[] attrs = propertyInfo.GetCustomAttributes(attributeType, inherit);
             return attrs as TAttribute[];
         }
-        #endregion
+
+        #endregion GetAttributeForProperty
 
         #region GetAttributeForMethod
+
         public static object[] GetAttributeForMethod(MemberInfo method, Type attributeType)
         {
             if (method is null) throw new ArgumentNullException(nameof(method));
@@ -49,12 +51,12 @@ namespace ExpressionToSqlWhereClause.Helper
 
         public static TAttribute[] GetAttributeForMethod<TAttribute>(MemberInfo method) => GetAttributeForMethod(method, typeof(TAttribute)) as TAttribute[];
 
-        #endregion
+        #endregion GetAttributeForMethod
 
         #region GetMethod
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="type"></param>
         /// <param name="methodName"></param>
@@ -66,6 +68,7 @@ namespace ExpressionToSqlWhereClause.Helper
             MethodInfo? method = type.GetMethod(methodName, bindingAttr);
             return method;
         }
-        #endregion
+
+        #endregion GetMethod
     }
 }

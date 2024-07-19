@@ -87,11 +87,10 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 throw new NotSupportedException("暂不支持MemberExpression,修改程序");
             }
             throw new NotSupportedException("暂不支持,修改程序");
-
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="comparison"></param>
         /// <param name="expression">表达式</param>
@@ -117,11 +116,11 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                     if (attrs.Length > 0)
                     {
                         var leftName = ConstantExtractor.ParseMethodCallConstantExpression(methodCallExpression).ToString();//u.CreateAt
-                        var symbol = ConditionBuilder.ToComparisonSymbol(comparison, methodCallExpression); //=  
+                        var symbol = ConditionBuilder.ToComparisonSymbol(comparison, methodCallExpression); //=
 
                         var attr = attrs[0];
                         string clauseLeft;
-                        if (attr.FormatOnlyName) //目前为止, 这里永远为true 
+                        if (attr.FormatOnlyName) //目前为止, 这里永远为true
                         {
                             // u.CreateAt  变成  CreateAt
                             int startIndex = leftName.IndexOf(".", StringComparison.Ordinal);
@@ -158,7 +157,6 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                             MemberInfo = methodCallExpression.Method
                         };
                     }
-
                 }
                 else
                 {
@@ -241,8 +239,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 }
             }
 
-
-            //不支持的: 
+            //不支持的:
             //-expression  { Not(u.Name.Contains("Name"))}
             //System.Linq.Expressions.Expression { System.Linq.Expressions.UnaryExpression}
 
@@ -250,7 +247,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="adhesive">粘合剂</param>
         /// <param name="methodCallExpression"></param>
@@ -285,7 +282,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 {
                     //"In" condition, Support the `Contains` extension Method of IEnumerable<TSource> Type
                     //For example: List<string> values = new List<string> { "foo", "bar"};
-                    //values.Contains(u.Name)  
+                    //values.Contains(u.Name)
                     MemberExpression memberExpression = methodCallExpression.Arguments[1] as MemberExpression;
                     Expression valueExpression = methodCallExpression.Arguments[0];
                     return ConditionBuilder.BuildInCondition(memberExpression, valueExpression, adhesive);
@@ -332,7 +329,8 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
 
                 return parseResult.WhereClause.Remove(0, index).Insert(0, aliasDict[parseResult.MemberInfo.Name]);
             }
-            #endregion
+
+            #endregion 内部方法
 
             if (binaryExpression.NodeType is
                  ExpressionType.OrElse or
@@ -348,6 +346,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 var sqlBuilder = new StringBuilder();
 
                 #region 处理left
+
                 var leftParseResult = Parse(binaryExpression.NodeType, binaryExpression.Left, adhesive, aliasDict); //调用自身
 
                 var leftClause = $"({ReplaceAlias(leftParseResult)})";
@@ -385,7 +384,8 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                         leftParseResult.SqlClauseParametersInfo.SqlClause = leftClause;
                     }
                 }
-                #endregion
+
+                #endregion 处理left
 
                 #region 处理right
 
@@ -438,8 +438,8 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 {
                     ParseResult rightParseResult = binaryExpression.Right.NodeType switch
                     {
-                        ExpressionType.MemberAccess => Parse(binaryExpression.NodeType, binaryExpression.Right, adhesive, aliasDict),//调用自身  
-                        ExpressionType.Constant => Parse(binaryExpression.NodeType, binaryExpression.Right, adhesive, aliasDict),//调用自身, {(a.Id == 1)} 
+                        ExpressionType.MemberAccess => Parse(binaryExpression.NodeType, binaryExpression.Right, adhesive, aliasDict),//调用自身
+                        ExpressionType.Constant => Parse(binaryExpression.NodeType, binaryExpression.Right, adhesive, aliasDict),//调用自身, {(a.Id == 1)}
                         _ => Parse(binaryExpression.Right.NodeType, binaryExpression.Right, adhesive, aliasDict),//调用自身
                     };
 
@@ -452,9 +452,10 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                         rightParseResult.SqlClauseParametersInfo.SqlClause = rightClause;
                     }
                 }
-                #endregion
-                return sqlBuilder;
 
+                #endregion 处理right
+
+                return sqlBuilder;
             }
             else if (binaryExpression.NodeType is ExpressionType.Coalesce)
             {
@@ -477,7 +478,8 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 }
             }
 
-            #region  这边的 if 好像进不来了, 先注释
+            #region 这边的 if 好像进不来了, 先注释
+
             /*
             if (binaryExpression.Left is UnaryExpression convertExpression)
             {
@@ -507,7 +509,9 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
                 }
             }
             */
-            #endregion
+
+            #endregion 这边的 if 好像进不来了, 先注释
+
             var msg = $"Unknow Left:{binaryExpression.Left.GetType()} ,Right:{binaryExpression.Right.GetType()} ,NodeType:{binaryExpression.NodeType}";
             throw new NotSupportedException(msg);
         }
@@ -532,7 +536,6 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
             return false;
         }
 
-
         /// <summary>
         /// 转换为逻辑符号(And 或 Or)
         /// </summary>
@@ -548,6 +551,4 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
             };
         }
     }
-
-
 }

@@ -10,6 +10,7 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
         /// where子句
         /// </summary>
         public StringBuilder WhereClause { get; set; }
+
         public SqlClauseParametersInfo SqlClauseParametersInfo { get; set; }
 
         /// <summary>
@@ -26,7 +27,5 @@ namespace ExpressionToSqlWhereClause.ExpressionTree
         /// 额外添加参数时的辅助信息1: Expression的MemberInfo
         /// </summary>
         public MemberInfo MemberInfo { get; set; } = null;
-
-
     }
 }

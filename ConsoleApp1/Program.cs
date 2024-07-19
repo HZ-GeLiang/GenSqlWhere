@@ -5,7 +5,7 @@ namespace ConsoleApp1
 {
     internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Expression<Func<peo, bool>> exp = a => (a.Name ?? "") != "";
             var exp2 = WhereLambdaHelper.GetExpression_HasValue<peo>("Name");
@@ -15,7 +15,8 @@ namespace ConsoleApp1
             Console.WriteLine("Hello, World!");
         }
     }
-    class peo
+
+    internal class peo
     {
         public string Name { get; set; }
     }

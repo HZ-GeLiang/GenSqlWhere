@@ -14,6 +14,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
     {
         //public int? Id { get; set; }
         public string Id { get; set; }
+
         public string Url { get; set; }
         public string Sex { get; set; }
         public bool IsDel { get; set; }
@@ -82,7 +83,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 
             Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id) And Sex In (@Sex) And IsDel = @IsDel And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
 
-
             var dict = new Dictionary<string, object>
             {
                 { "@Id",   "1,2"},
@@ -129,7 +129,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 var str = WhereClauseHelper.ParamNameToNumber(searchCondition.WhereClause);
                 Assert.AreEqual(str, "IsDel = @0 And Url = @1");
             }
-
         }
 
         [TestMethod]
@@ -192,7 +191,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 "balabala"
             };
             Assert.ThrowsException<ArgumentException>(() => whereLambda.ToExpression().ToWhereClause(), "类'<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'中不存在名为'balabala'的属性");
-
         }
 
         [TestMethod]
@@ -241,8 +239,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             };
 
             var listExp = whereLambda.ToExpressionListForEF(); //可以给ef用
-
         }
-
     }
 }
