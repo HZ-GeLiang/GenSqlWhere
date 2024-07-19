@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ExpressionToSqlWhereClause.EntityConfig
+﻿namespace ExpressionToSqlWhereClause.EntityConfig
 {
     /// <summary>
     /// 时间周期
