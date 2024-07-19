@@ -1197,7 +1197,6 @@ namespace ExpressionToSqlWhereClause.EntityConfig
                     }
 
                     #endregion
-
                 }
 
                 if (lambda == null)
