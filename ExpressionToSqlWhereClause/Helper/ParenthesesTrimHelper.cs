@@ -36,7 +36,7 @@ namespace ExpressionToSqlWhereClause.Helper
             }
 
             var str = stringBuilder.ToString();
-            return str; ;
+            return str;
         }
 
         /// <summary>
