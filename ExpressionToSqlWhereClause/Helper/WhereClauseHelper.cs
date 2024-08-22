@@ -112,9 +112,18 @@ namespace ExpressionToSqlWhereClause.Helper
             string pattern = "@[a-zA-Z0-9_]*";
             var matches = Regex.Matches(whereClause, pattern);
 
+            if (matches.Count > 0 && parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
             for (int i = matches.Count - 1; i >= 0; i--) //要倒序替换
             {
                 var sqlParameterName = matches[i].Value;
+                if (parameters.ContainsKey(sqlParameterName) == false)
+                {
+                    throw new Exception($"参数对象'{nameof(parameters)}'中不存在名为'{sqlParameterName}'的key值");
+                }
                 var sqlParameterValue = parameters[matches[i].Value];
 
                 if (sqlParameterValue == null)
