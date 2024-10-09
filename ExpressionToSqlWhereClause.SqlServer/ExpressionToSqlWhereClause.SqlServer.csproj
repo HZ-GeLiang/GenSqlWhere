@@ -6,7 +6,6 @@
 		</TargetFrameworks>
 		<DefineConstants>DEBUG;TRACE</DefineConstants>
 		<!--<NoWarn>1701;1702;1591;</NoWarn>-->
-		<DocumentationFile>$(SolutionDir)$(AssemblyName)\$(AssemblyName).xml</DocumentationFile>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageId>ExpressionToSqlWhereClause.SqlServer</PackageId>

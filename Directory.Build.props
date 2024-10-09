@@ -1,0 +1,28 @@
+<Project>
+	<PropertyGroup>
+		<!--使用dotnet.ruleset-->
+		<!--<NoWarn>1701;1702;1591</NoWarn>
+		<NoWarn>MA0051</NoWarn>
+		<WarningsAsErrors>1998</WarningsAsErrors>-->
+		<CodeAnalysisRuleSet>$(SolutionDir)dotnet.ruleset</CodeAnalysisRuleSet>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+ 
+	<!--分析器Analyzer start-->
+	<ItemGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<PackageReference Include="Meziantou.Analyzer" Version="2.0.152">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<PackageReference Include="NonIQuerableAnalyzer" Version="1.1.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+	<!--分析器Analyzer end-->
+ 
+</Project>

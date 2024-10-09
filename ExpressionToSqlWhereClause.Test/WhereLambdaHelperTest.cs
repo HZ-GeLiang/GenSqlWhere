@@ -3,9 +3,6 @@ using ExpressionToSqlWhereClause.ExtensionMethods;
 using ExpressionToSqlWhereClause.Helper;
 using ExpressionToSqlWhereClause.Test.ExtensionMethods;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 
 namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
@@ -34,7 +31,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             var list = new List<string>() { "1", "2" };
             var expression = default(Expression<Func<Test_001, bool>>).WhereIf(true, a => list.Contains(a.Message));
 
-            var searchCondition = expression.ToWhereClause();
+            SearchCondition searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
 

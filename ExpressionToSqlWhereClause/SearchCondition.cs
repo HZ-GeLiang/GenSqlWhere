@@ -8,55 +8,39 @@ public class SearchCondition
 {
     public SearchCondition()
     {
-        WhereClauseRaw = string.Empty;
-        WhereClause = string.Empty;
-        Parameters = new Dictionary<string, object>();
-        //this.FormattableParameters = null;
     }
 
     public SearchCondition(ClauseParserResult parseResult)
     {
-        WhereClauseRaw = parseResult.WhereClause;
+        ParseResult = parseResult;
         WhereClause = TrimParentheses(parseResult.WhereClause);
-        Parameters = GetParameters(parseResult.Adhesive);
+
+        {
+            //init Parameters
+            WhereClauseAdhesive Adhesive = parseResult.Adhesive;
+            foreach (var key in Adhesive.GetParameterKeys())
+            {
+                this.Parameters.Add(key, Adhesive.GetParameter(key).Value);
+            }
+        }
     }
+
+    public ClauseParserResult ParseResult { get; private set; }
 
     /// <summary>
     /// where子句(不含where关键字)
     /// </summary>
-    public string WhereClause { get; private set; }
+    public string WhereClause { get; private set; } = "";
 
     /// <summary>
     /// 查询参数
     /// </summary>
-    public Dictionary<string, object> Parameters { get; private set; }
-
-    /// <summary>
-    /// FormattableString 的
-    /// </summary>
-    //public object[] FormattableParameters { get; private set; }
+    public Dictionary<string, object> Parameters { get; private set; } = new Dictionary<string, object>();
 
     /// <summary>
     /// 未加工处理的 WhereClause
     /// </summary>
-    public string WhereClauseRaw { get; private set; }
-
-    //public void SetWhereClause(string whereClause)
-    //{
-    //    this.WhereClause = whereClause;
-    //}
-
-    //public void SetFormattableStringParameters(string whereClause, object[] fmtParameters)
-    //{
-    //    this.WhereClause = whereClause;
-    //    this.FormattableParameters = fmtParameters;
-    //}
-
-    //public FormattableString GetFormattableString(string querySql)
-    //{
-    //    var formattableStr = FormattableStringFactory.Create(querySql, this.FormattableParameters);
-    //    return formattableStr;
-    //}
+    public string WhereClauseRaw => ParseResult?.WhereClause ?? "";
 
     // <summary>
     /// 去掉()
@@ -81,20 +65,5 @@ public class SearchCondition
             var str = ParenthesesTrimHelper.ParseTrimAll(WhereClause);
             return str;
         }
-    }
-
-    /// <summary>
-    /// 获得参数
-    /// </summary>
-    /// <param name="Adhesive"></param>
-    /// <returns></returns>
-    private static Dictionary<string, object> GetParameters(WhereClauseAdhesive Adhesive)
-    {
-        var parameters = new Dictionary<string, object>(0);
-        foreach (var key in Adhesive.GetParameterKeys())
-        {
-            parameters.Add(key, Adhesive.GetParameter(key).Value);
-        }
-        return parameters;
     }
 }

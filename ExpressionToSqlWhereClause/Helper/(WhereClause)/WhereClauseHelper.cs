@@ -1,8 +1,4 @@
-﻿using ExpressionToSqlWhereClause.ExtensionMethods;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace ExpressionToSqlWhereClause.Helper
@@ -12,123 +8,26 @@ namespace ExpressionToSqlWhereClause.Helper
     /// </summary>
     public sealed class WhereClauseHelper
     {
-        private const string space1 = " ";//一个空格符号
+        internal const string space1 = " ";//一个空格符号
 
         #region Clause_NonParameter
 
-        /// <inheritdoc cref="GetNonParameterClause(string, Dictionary{string, object}, Dictionary{string, string})"/>
         public static string GetNonParameterClause(SearchCondition searchCondition)
         {
             Dictionary<string, string> formatDateTime = GetDefaultFormatDateTime(searchCondition.Parameters);
-            var whreCaluse = GetNonParameterClause(searchCondition.WhereClause, searchCondition.Parameters, formatDateTime);
+            var clause = new NonParameterClause(searchCondition, formatDateTime);
+            var whreCaluse = clause.GetNonParameterClause();
             return whreCaluse;
         }
 
-        /// <inheritdoc cref="GetNonParameterClause(string, Dictionary{string, object}, Dictionary{string, string})"/>
         public static string GetNonParameterClause(SearchCondition searchCondition, Dictionary<string, string> formatDateTime)
         {
-            var whreCaluse = GetNonParameterClause(searchCondition.WhereClause, searchCondition.Parameters, formatDateTime);
-            //searchCondition.SetWhereClause(whreCaluse);
+            var clause = new NonParameterClause(searchCondition, formatDateTime);
+            var whreCaluse = clause.GetNonParameterClause();
             return whreCaluse;
         }
 
-        /// <inheritdoc cref="GetNonParameterClause(string, Dictionary{string, object}, Dictionary{string, string})"/>
-        public static string GetNonParameterClause(string whereClause, Dictionary<string, object> parameters)
-        {
-            Dictionary<string, string> formatDateTime = GetDefaultFormatDateTime(parameters);
-            var whreCaluse = GetNonParameterClause(whereClause, parameters, formatDateTime);
-            return whreCaluse;
-        }
-
-        /// <summary>
-        /// 非参数化的条件语句: sql参数合并到sql语句中
-        /// </summary>
-        /// <param name="whereClause"></param>
-        /// <param name="parameters"></param>
-        /// <param name="formatDateTime"></param>
-        /// <returns></returns>
-        public static string GetNonParameterClause(string whereClause, Dictionary<string, object> parameters, Dictionary<string, string> formatDateTime)
-        {
-            if (string.IsNullOrWhiteSpace(whereClause))
-            {
-                return null;
-            }
-            whereClause += space1;//为了解决替换时出现的 属性名存在包含关系, 示例: ExpressionDemo_属性名存在包含关系.cs
-            var default_formatDateTime = WhereClauseHelper.GetDefaultFormatDateTime(parameters);
-
-            string pattern = "@[a-zA-Z0-9_]*";
-            var matches = Regex.Matches(whereClause, pattern);
-
-            if (matches.Count > 0 && parameters == null)
-            {
-                throw new ArgumentNullException(nameof(parameters));
-            }
-
-            for (int i = matches.Count - 1; i >= 0; i--) //要倒序替换
-            {
-                string sqlParameterName = matches[i].Value;
-                if (parameters.ContainsKey(sqlParameterName) == false)
-                {
-                    throw new Exception($"参数对象'{nameof(parameters)}'中不存在名为'{sqlParameterName}'的key值");
-                }
-                var sqlParameterValue = parameters[matches[i].Value];
-
-                if (sqlParameterValue == null)
-                {
-                    replace_whereClause(ref whereClause, sqlParameterName, "Null");
-                }
-                else
-                {
-                    var sqlParameterValueType = sqlParameterValue.GetType();
-                    if (sqlParameterValueType == typeof(string))
-                    {
-                        //if (((string)sqlParameterValue).Contains("'"))
-                        //{
-                        //    sqlParameterValue = ((string)sqlParameterValue).Replace("'", "''");
-                        //}
-
-                        replace_whereClause(ref whereClause, sqlParameterName, $"'{(string)sqlParameterValue}'");
-                    }
-                    else if (sqlParameterValueType == typeof(DateTime) || sqlParameterValueType == typeof(DateTime?))
-                    {
-                        string format = null;
-                        if (formatDateTime != null && formatDateTime.ContainsKey(sqlParameterName))
-                        {
-                            format = formatDateTime[sqlParameterName]; //取用户配置的
-                        }
-                        else if (default_formatDateTime.ContainsKey(sqlParameterName))
-                        {
-                            format = default_formatDateTime[sqlParameterName];//取默认配置
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(format))
-                        {
-                            var newVal = $"'{((DateTime)sqlParameterValue).ToString(format)}'";
-                            replace_whereClause(ref whereClause, sqlParameterName, newVal);
-                        }
-                        else
-                        {
-                            replace_whereClause(ref whereClause, sqlParameterName, $"'{sqlParameterValue}'");
-                        }
-                    }
-                    else if (sqlParameterValueType == typeof(Guid) || sqlParameterValueType == typeof(Guid?))
-                    {
-                        replace_whereClause(ref whereClause, sqlParameterName, $"'{sqlParameterValue}'");
-                    }
-                    else if (sqlParameterValueType == typeof(bool) || sqlParameterValueType == typeof(bool?))
-                    {
-                        replace_whereClause(ref whereClause, sqlParameterName, $"{(object.Equals(sqlParameterValue, true) == true ? 1 : 0)}");
-                    }
-                    else
-                    {
-                        replace_whereClause(ref whereClause, sqlParameterName, $"{sqlParameterValue}");
-                    }
-                }
-            }
-            return whereClause.TrimEnd();
-        }
-
-        private static void replace_whereClause(ref string whereClause, string sqlParameterName, string newValue)
+        internal static void replace_whereClause(ref string whereClause, string sqlParameterName, string newValue)
         {
             var key = sqlParameterName + space1;
             if (whereClause.Contains(key))
