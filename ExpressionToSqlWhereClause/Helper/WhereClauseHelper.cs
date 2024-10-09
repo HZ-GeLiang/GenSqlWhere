@@ -7,72 +7,12 @@ using System.Text.RegularExpressions;
 
 namespace ExpressionToSqlWhereClause.Helper
 {
+    /// <summary>
+    /// WhereClause的帮助类
+    /// </summary>
     public sealed class WhereClauseHelper
     {
-        /// <inheritdoc cref="GetNumberParameterClause(string)"/>
-        public static string GetNumberParameterClause(SearchCondition searchCondition)
-        {
-            var whreCaluse = GetNumberParameterClause(searchCondition.WhereClause);
-            //searchCondition.SetWhereClause(whreCaluse);
-            return whreCaluse;
-        }
-
-        /// <summary>
-        /// 条件语句的参数是数字形式的:sql参数名转成数字的
-        /// </summary>
-        /// <param name="whereClause"></param>
-        /// <returns></returns>
-        public static string GetNumberParameterClause(string whereClause)
-        {
-            if (string.IsNullOrWhiteSpace(whereClause))
-            {
-                return "";
-            }
-
-            whereClause += " ";//为了解决替换时出现的 属性名存在包含关系, 示例: ExpressionDemo_属性名存在包含关系.cs
-
-            string pattern = "@[a-zA-Z0-9_]*";
-            var matches = Regex.Matches(whereClause, pattern);
-            //要倒序替换
-            for (int i = matches.Count - 1; i >= 0; i--)
-            {
-                whereClause = whereClause.Replace(matches[i].Value + " ", "@" + i + " ");
-            }
-            return whereClause.TrimEnd();
-        }
-
-        /// <summary>
-        /// 默认的日期格式
-        /// </summary>
-        /// <param name="parameters"></param>
-        /// <returns></returns>
-        public static Dictionary<string, string> GetDefaultFormatDateTime(Dictionary<string, object> parameters)
-        {
-            return GetDefaultFormatDateTime(parameters, "yyyy-MM-dd HH:mm:ss");
-        }
-
-        /// <summary>
-        /// 默认的日期格式
-        /// </summary>
-        /// <param name="parameters"></param>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        public static Dictionary<string, string> GetDefaultFormatDateTime(Dictionary<string, object> parameters, string format)
-        {
-            Dictionary<string, string> formatDateTime = new();
-            if (parameters != null)
-            {
-                foreach (var parameter in parameters)
-                {
-                    var type = parameter.Value.GetType();
-                    if (type == typeof(DateTime) || type == typeof(DateTime?))
-                    {
-                        formatDateTime.Add(parameter.Key, format);
-                    }
-                }
-            }
-            return formatDateTime;
-        }
+        #region Clause_NonParameter
 
         /// <inheritdoc cref="GetNonParameterClause(string, Dictionary{string, object}, Dictionary{string, string})"/>
         public static string GetNonParameterClause(SearchCondition searchCondition)
@@ -166,6 +106,10 @@ namespace ExpressionToSqlWhereClause.Helper
                             whereClause = whereClause.Replace(sqlParameterName + " ", $"'{sqlParameterValue}'" + " ");
                         }
                     }
+                    else if (sqlParameterValueType == typeof(bool) || sqlParameterValueType == typeof(bool?))
+                    {
+                        whereClause = whereClause.Replace(sqlParameterName + " ", $"{(object.Equals(sqlParameterValue, true) == true ? 1 : 0)}" + " ");
+                    }
                     else
                     {
                         whereClause = whereClause.Replace(sqlParameterName + " ", $"{sqlParameterValue}" + " ");
@@ -174,6 +118,46 @@ namespace ExpressionToSqlWhereClause.Helper
             }
             return whereClause.TrimEnd();
         }
+
+        #endregion
+
+        #region Clause_NumberParameter
+
+        /// <inheritdoc cref="GetNumberParameterClause(string)"/>
+        public static string GetNumberParameterClause(SearchCondition searchCondition)
+        {
+            var whreCaluse = GetNumberParameterClause(searchCondition.WhereClause);
+            //searchCondition.SetWhereClause(whreCaluse);
+            return whreCaluse;
+        }
+
+        /// <summary>
+        /// 条件语句的参数是数字形式的:sql参数名转成数字的
+        /// </summary>
+        /// <param name="whereClause"></param>
+        /// <returns></returns>
+        public static string GetNumberParameterClause(string whereClause)
+        {
+            if (string.IsNullOrWhiteSpace(whereClause))
+            {
+                return "";
+            }
+
+            whereClause += " ";//为了解决替换时出现的 属性名存在包含关系, 示例: ExpressionDemo_属性名存在包含关系.cs
+
+            string pattern = "@[a-zA-Z0-9_]*";
+            var matches = Regex.Matches(whereClause, pattern);
+            //要倒序替换
+            for (int i = matches.Count - 1; i >= 0; i--)
+            {
+                whereClause = whereClause.Replace(matches[i].Value + " ", "@" + i + " ");
+            }
+            return whereClause.TrimEnd();
+        }
+
+        #endregion
+
+        #region Clause_FormattableString
 
         /// <summary>
         /// 转换为 FormattableString 的对象
@@ -232,6 +216,45 @@ namespace ExpressionToSqlWhereClause.Helper
             var formattableStr = FormattableStringFactory.Create(querySql, FormattableParameters);
             return formattableStr;
         }
+
+        #endregion
+
+        #region GetDefaultFormatDateTime
+
+        /// <summary>
+        /// 默认的日期格式
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public static Dictionary<string, string> GetDefaultFormatDateTime(Dictionary<string, object> parameters)
+        {
+            return GetDefaultFormatDateTime(parameters, "yyyy-MM-dd HH:mm:ss");
+        }
+
+        /// <summary>
+        /// 默认的日期格式
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        public static Dictionary<string, string> GetDefaultFormatDateTime(Dictionary<string, object> parameters, string format)
+        {
+            Dictionary<string, string> formatDateTime = new();
+            if (parameters != null)
+            {
+                foreach (var parameter in parameters)
+                {
+                    var type = parameter.Value.GetType();
+                    if (type == typeof(DateTime) || type == typeof(DateTime?))
+                    {
+                        formatDateTime.Add(parameter.Key, format);
+                    }
+                }
+            }
+            return formatDateTime;
+        }
+
+        #endregion
 
         /// <summary>
         /// 转换参数. 如转成 sqlserver 的参数等等
