@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace ExpressionToSqlWhereClause.Test.ExtensionMethod
+namespace ExpressionToSqlWhereClause.Test.ExtensionMethods
 {
     public static class WhereExtension
     {

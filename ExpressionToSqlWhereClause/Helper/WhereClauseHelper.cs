@@ -75,19 +75,19 @@ namespace ExpressionToSqlWhereClause.Helper
 
                 if (sqlParameterValue == null)
                 {
-                    whereClause = whereClause.Replace(sqlParameterName + space1, "Null" + space1);
+                    replace_whereClause(ref whereClause, sqlParameterName, "Null");
                 }
                 else
                 {
                     var sqlParameterValueType = sqlParameterValue.GetType();
                     if (sqlParameterValueType == typeof(string))
                     {
-                        if (((string)sqlParameterValue).Contains("'"))
-                        {
-                            sqlParameterValue = ((string)sqlParameterValue).Replace("'", "''");
-                        }
+                        //if (((string)sqlParameterValue).Contains("'"))
+                        //{
+                        //    sqlParameterValue = ((string)sqlParameterValue).Replace("'", "''");
+                        //}
 
-                        whereClause = whereClause.Replace(sqlParameterName + space1, $"'{(string)sqlParameterValue}'" + space1);
+                        replace_whereClause(ref whereClause, sqlParameterName, $"'{(string)sqlParameterValue}'");
                     }
                     else if (sqlParameterValueType == typeof(DateTime) || sqlParameterValueType == typeof(DateTime?))
                     {
@@ -104,28 +104,45 @@ namespace ExpressionToSqlWhereClause.Helper
                         if (!string.IsNullOrWhiteSpace(format))
                         {
                             var newVal = $"'{((DateTime)sqlParameterValue).ToString(format)}'";
-                            whereClause = whereClause.Replace(sqlParameterName + space1, newVal + space1);
+                            replace_whereClause(ref whereClause, sqlParameterName, newVal);
                         }
                         else
                         {
-                            whereClause = whereClause.Replace(sqlParameterName + space1, $"'{sqlParameterValue}'" + space1);
+                            replace_whereClause(ref whereClause, sqlParameterName, $"'{sqlParameterValue}'");
                         }
                     }
                     else if (sqlParameterValueType == typeof(Guid) || sqlParameterValueType == typeof(Guid?))
                     {
-                        whereClause = whereClause.Replace(sqlParameterName + space1, $"'{sqlParameterValue}'" + space1);
+                        replace_whereClause(ref whereClause, sqlParameterName, $"'{sqlParameterValue}'");
                     }
                     else if (sqlParameterValueType == typeof(bool) || sqlParameterValueType == typeof(bool?))
                     {
-                        whereClause = whereClause.Replace(sqlParameterName + space1, $"{(object.Equals(sqlParameterValue, true) == true ? 1 : 0)}" + space1);
+                        replace_whereClause(ref whereClause, sqlParameterName, $"{(object.Equals(sqlParameterValue, true) == true ? 1 : 0)}");
                     }
                     else
                     {
-                        whereClause = whereClause.Replace(sqlParameterName + space1, $"{sqlParameterValue}" + space1);
+                        replace_whereClause(ref whereClause, sqlParameterName, $"{sqlParameterValue}");
                     }
                 }
             }
             return whereClause.TrimEnd();
+        }
+
+        private static void replace_whereClause(ref string whereClause, string sqlParameterName, string newValue)
+        {
+            var key = sqlParameterName + space1;
+            if (whereClause.Contains(key))
+            {
+                whereClause = whereClause.Replace(key, newValue + space1);
+                return;
+            }
+
+            key = "(" + sqlParameterName + ")";
+            if (whereClause.Contains(key))
+            {
+                whereClause = whereClause.Replace(key, "(" + newValue + ")");
+                return;
+            }
         }
 
         #endregion
@@ -159,7 +176,7 @@ namespace ExpressionToSqlWhereClause.Helper
             //要倒序替换
             for (int i = matches.Count - 1; i >= 0; i--)
             {
-                whereClause = whereClause.Replace(matches[i].Value + space1, "@" + i + space1);
+                replace_whereClause(ref whereClause, matches[i].Value, "@" + i);
             }
             return whereClause.TrimEnd();
         }
@@ -190,31 +207,7 @@ namespace ExpressionToSqlWhereClause.Helper
             for (int i = matches.Count - 1; i >= 0; i--) //要倒序替换
             {
                 var sqlParameterName = matches[i].Value;
-                whereClause = whereClause.Replace(sqlParameterName + space1, "{" + i + "}" + space1);
-
-                //var sqlParameterValue = parameters[matches[i].Value];
-                //if (sqlParameterValue == null)
-                //{
-                //    whereClause = whereClause.Replace(sqlParameterName, "{" + i + "}");
-                //}
-                //else
-                //{
-                //    var sqlParameterValueType = sqlParameterValue.GetType();
-                //    if (sqlParameterValueType == typeof(string) ||
-                //        sqlParameterValueType == typeof(DateTime) ||
-                //        sqlParameterValueType == typeof(DateTime?) ||
-                //        sqlParameterValueType == typeof(Guid) ||
-                //        sqlParameterValueType == typeof(Guid?)
-                //        )
-                //    {
-                //        //whereClause = whereClause.Replace(sqlParameterName, "'{" + i + "}'");//不需要这样写
-                //        whereClause = whereClause.Replace(sqlParameterName, "{" + i + "}");
-                //    }
-                //    else
-                //    {
-                //        whereClause = whereClause.Replace(sqlParameterName, "{" + i + "}");
-                //    }
-                //}
+                replace_whereClause(ref whereClause, sqlParameterName, "{" + i + "}");
             }
 
             return whereClause.TrimEnd();
