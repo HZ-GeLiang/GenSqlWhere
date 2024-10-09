@@ -1,4 +1,4 @@
-﻿using ExpressionToSqlWhereClause.ExtensionMethod;
+﻿using ExpressionToSqlWhereClause.ExtensionMethods;
 using ExpressionToSqlWhereClause.Helper;
 using ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause.SqlAdapter;
 using ExpressionToSqlWhereClause.Test.ExtensionMethods;

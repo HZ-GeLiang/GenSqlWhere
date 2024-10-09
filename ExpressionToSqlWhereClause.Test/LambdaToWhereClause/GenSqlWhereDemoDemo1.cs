@@ -1,5 +1,5 @@
 ﻿using ExpressionToSqlWhereClause.EntityConfig;
-using ExpressionToSqlWhereClause.ExtensionMethod;
+using ExpressionToSqlWhereClause.ExtensionMethods;
 using ExpressionToSqlWhereClause.Helper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;

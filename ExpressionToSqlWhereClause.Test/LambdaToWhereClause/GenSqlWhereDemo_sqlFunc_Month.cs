@@ -1,6 +1,6 @@
 ﻿using ExpressionToSqlWhereClause.EntityConfig;
 using ExpressionToSqlWhereClause.Exceptions;
-using ExpressionToSqlWhereClause.ExtensionMethod;
+using ExpressionToSqlWhereClause.ExtensionMethods;
 using ExpressionToSqlWhereClause.SqlFunc.EntityConfig;
 using ExpressionToSqlWhereClause.Test.Helper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

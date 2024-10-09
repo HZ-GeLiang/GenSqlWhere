@@ -1,4 +1,5 @@
-﻿using ExpressionToSqlWhereClause.ExtensionMethod;
+﻿using ExpressionToSqlWhereClause;
+using ExpressionToSqlWhereClause.ExtensionMethods;
 using ExpressionToSqlWhereClause.Helper;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;

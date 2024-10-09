@@ -1,5 +1,5 @@
 ﻿using ExpressionToSqlWhereClause.Consts;
-using ExpressionToSqlWhereClause.ExtensionMethod;
+using ExpressionToSqlWhereClause.ExtensionMethods;
 using ExpressionToSqlWhereClause.Helper;
 using System;
 using System.Collections;

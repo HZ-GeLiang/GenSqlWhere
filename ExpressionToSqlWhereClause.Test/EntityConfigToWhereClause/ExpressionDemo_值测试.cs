@@ -1,4 +1,4 @@
-﻿using ExpressionToSqlWhereClause.ExtensionMethod;
+﻿using ExpressionToSqlWhereClause.ExtensionMethods;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;

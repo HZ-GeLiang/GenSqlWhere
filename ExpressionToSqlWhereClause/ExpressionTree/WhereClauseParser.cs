@@ -1,6 +1,6 @@
 ﻿using ExpressionToSqlWhereClause.Consts;
 using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
-using ExpressionToSqlWhereClause.ExtensionMethod;
+using ExpressionToSqlWhereClause.ExtensionMethods;
 using ExpressionToSqlWhereClause.Helper;
 using ExpressionToSqlWhereClause.SqlFunc;
 using System;
