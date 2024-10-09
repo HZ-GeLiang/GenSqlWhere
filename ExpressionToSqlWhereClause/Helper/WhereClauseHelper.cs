@@ -2,29 +2,31 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace ExpressionToSqlWhereClause.Helper
 {
     public sealed class WhereClauseHelper
     {
-        /// <inheritdoc cref="ParamNameToNumber(string)"/>
-        public static void ParamNameToNumber(SearchCondition searchCondition)
+        /// <inheritdoc cref="GetNumberParameterClause(string)"/>
+        public static string GetNumberParameterClause(SearchCondition searchCondition)
         {
-            var newWhereClause = ParamNameToNumber(searchCondition.WhereClause);
-            searchCondition.SetWhereClause(newWhereClause);
+            var whreCaluse = GetNumberParameterClause(searchCondition.WhereClause);
+            //searchCondition.SetWhereClause(whreCaluse);
+            return whreCaluse;
         }
 
         /// <summary>
-        /// sql参数名转成数字的
+        /// 条件语句的参数是数字形式的:sql参数名转成数字的
         /// </summary>
         /// <param name="whereClause"></param>
         /// <returns></returns>
-        public static string ParamNameToNumber(string whereClause)
+        public static string GetNumberParameterClause(string whereClause)
         {
             if (string.IsNullOrWhiteSpace(whereClause))
             {
-                return null;
+                return "";
             }
 
             string pattern = "@[a-zA-Z0-9_]*";
@@ -70,37 +72,38 @@ namespace ExpressionToSqlWhereClause.Helper
             return formatDateTime;
         }
 
-        /// <inheritdoc cref="MergeParametersIntoSql(string, Dictionary{string, object}, Dictionary{string, string})"/>
-        public static void MergeParametersIntoSql(SearchCondition searchCondition)
+        /// <inheritdoc cref="GetNonParameterClause(string, Dictionary{string, object}, Dictionary{string, string})"/>
+        public static string GetNonParameterClause(SearchCondition searchCondition)
         {
             Dictionary<string, string> formatDateTime = GetDefaultFormatDateTime(searchCondition.Parameters);
-            var newWhereClause = MergeParametersIntoSql(searchCondition.WhereClause, searchCondition.Parameters, formatDateTime);
-            searchCondition.SetWhereClause(newWhereClause);
+            var whreCaluse = GetNonParameterClause(searchCondition.WhereClause, searchCondition.Parameters, formatDateTime);
+            return whreCaluse;
         }
 
-        /// <inheritdoc cref="MergeParametersIntoSql(string, Dictionary{string, object}, Dictionary{string, string})"/>
-        public static void MergeParametersIntoSql(SearchCondition searchCondition, Dictionary<string, string> formatDateTime)
+        /// <inheritdoc cref="GetNonParameterClause(string, Dictionary{string, object}, Dictionary{string, string})"/>
+        public static string GetNonParameterClause(SearchCondition searchCondition, Dictionary<string, string> formatDateTime)
         {
-            var newWhereClause = MergeParametersIntoSql(searchCondition.WhereClause, searchCondition.Parameters, formatDateTime);
-            searchCondition.SetWhereClause(newWhereClause);
+            var whreCaluse = GetNonParameterClause(searchCondition.WhereClause, searchCondition.Parameters, formatDateTime);
+            //searchCondition.SetWhereClause(whreCaluse);
+            return whreCaluse;
         }
 
-        /// <inheritdoc cref="MergeParametersIntoSql(string, Dictionary{string, object}, Dictionary{string, string})"/>
-        public static string MergeParametersIntoSql(string whereClause, Dictionary<string, object> parameters)
+        /// <inheritdoc cref="GetNonParameterClause(string, Dictionary{string, object}, Dictionary{string, string})"/>
+        public static string GetNonParameterClause(string whereClause, Dictionary<string, object> parameters)
         {
             Dictionary<string, string> formatDateTime = GetDefaultFormatDateTime(parameters);
-            var whreCaluse = MergeParametersIntoSql(whereClause, parameters, formatDateTime);
+            var whreCaluse = GetNonParameterClause(whereClause, parameters, formatDateTime);
             return whreCaluse;
         }
 
         /// <summary>
-        /// sql参数合并到sql语句中
+        /// 非参数化的条件语句: sql参数合并到sql语句中
         /// </summary>
         /// <param name="whereClause"></param>
         /// <param name="parameters"></param>
         /// <param name="formatDateTime"></param>
         /// <returns></returns>
-        public static string MergeParametersIntoSql(string whereClause, Dictionary<string, object> parameters, Dictionary<string, string> formatDateTime)
+        public static string GetNonParameterClause(string whereClause, Dictionary<string, object> parameters, Dictionary<string, string> formatDateTime)
         {
             if (string.IsNullOrWhiteSpace(whereClause))
             {
@@ -171,26 +174,18 @@ namespace ExpressionToSqlWhereClause.Helper
         }
 
         /// <summary>
-        /// 转换为FormattableString
+        /// 转换为 FormattableString 的对象
         /// </summary>
         /// <param name="searchCondition"></param>
-        public static void ToFormattableString(SearchCondition searchCondition)
-        {
-            var result = ToFormattableString(searchCondition.WhereClause, searchCondition.Parameters);
-            searchCondition.SetFormattableStringParameters(result.whereClause, result.parameters);
-        }
-
-        /// <summary>
-        /// 转换为FormattableString
-        /// </summary>
-        /// <param name="whereClause"></param>
-        /// <param name="parameters"></param>
         /// <returns></returns>
-        public static (string whereClause, object[] parameters) ToFormattableString(string whereClause, Dictionary<string, object> parameters)
+        public static string GetFormattableStringClause(SearchCondition searchCondition)
         {
+            //这个方法和 GetNumberParameterClause 基本一致, 目前唯一的区别在 whereClause.Replace 的处理
+            string whereClause = searchCondition.WhereClause;
+
             if (string.IsNullOrWhiteSpace(whereClause))
             {
-                return ("", new object[] { });
+                return "";
             }
 
             string pattern = "@[a-zA-Z0-9_]*";
@@ -226,8 +221,13 @@ namespace ExpressionToSqlWhereClause.Helper
                 //}
             }
 
-            var result = (whereClause, parameters?.Values.ToArray() ?? new object[] { });
-            return result;
+            return whereClause;
+        }
+
+        public static FormattableString CreateFormattableString(string querySql, object[] FormattableParameters)
+        {
+            var formattableStr = FormattableStringFactory.Create(querySql, FormattableParameters);
+            return formattableStr;
         }
 
         /// <summary>

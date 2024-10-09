@@ -1,4 +1,5 @@
 ﻿using ExpressionToSqlWhereClause.ExtensionMethod;
+using ExpressionToSqlWhereClause.Helper;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using WithEFTest.ExtensionMethod;
@@ -7,15 +8,15 @@ var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
     .WhereIf(true, a => a.Id == 1)
     .WhereIf(true, a => a.Name == "abc")
     .WhereIf(true, a => a.CreateAt > new DateTime(2023, 1, 1))
-    .WhereIf(true, a => a.Flag.Value == Guid.Parse("DEA5B56C-D1B1-4513-83E7-B58B9D3EBB81"))
-    ;
+    .WhereIf(true, a => a.Flag.Value == Guid.Parse("DEA5B56C-D1B1-4513-83E7-B58B9D3EBB81"));
 
-var searchCondition = expression.ToFormattableWhereClause();
+SearchCondition searchCondition = expression.ToWhereClause();
 
-string sql = $@"select * from ExpressionSqlTest where {searchCondition.WhereClause} ";
+var whereClause = WhereClauseHelper.GetFormattableStringClause(searchCondition);
 
-//var formattableStr = FormattableStringFactory.Create(sql, searchCondition.FormattableParameters);
-var formattableStr = searchCondition.GetFormattableString(sql);
+string sql = $@"select * from ExpressionSqlTest where {whereClause} ";
+
+FormattableString? formattableStr = WhereClauseHelper.CreateFormattableString(sql, searchCondition.Parameters.Values.ToArray());
 
 using var db = new TestContext();
 

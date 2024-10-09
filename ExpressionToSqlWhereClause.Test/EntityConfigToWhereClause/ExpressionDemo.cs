@@ -104,12 +104,12 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             };
 
             var expression = default(Expression<Func<ShopInfoInput, bool>>)
-               .WhereIf(!string.IsNullOrEmpty(input.Production), a => a.Production.Contains(input.Production))
-            ;
+               .WhereIf(!string.IsNullOrEmpty(input.Production), a => a.Production.Contains(input.Production));
 
             var searchCondition = expression.ToWhereClause();
-            WhereClauseHelper.MergeParametersIntoSql(searchCondition);
-            Assert.AreEqual(searchCondition.WhereClause, "Production Like '%aa%'");
+            var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+
+            Assert.AreEqual(clause, "Production Like '%aa%'");
         }
 
         [TestMethod]
@@ -121,12 +121,11 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             };
 
             var expression = default(Expression<Func<ShopInfoInput, bool>>)
-               .WhereIf(!string.IsNullOrEmpty(input.Production), a => a.Production.Contains(input.Production))
-            ;
+               .WhereIf(!string.IsNullOrEmpty(input.Production), a => a.Production.Contains(input.Production));
 
             var searchCondition = expression.ToWhereClause();
-            WhereClauseHelper.ToFormattableString(searchCondition);
-            Assert.AreEqual(searchCondition.WhereClause, "Production Like {0}");
+            var clause = WhereClauseHelper.GetFormattableStringClause(searchCondition);
+            Assert.AreEqual(clause, "Production Like {0}");
 
             /*一个示例
 
@@ -134,8 +133,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
                     .WhereIf(true, a => a.Id == 1)
                     .WhereIf(true, a => a.Name == "abc")
                     .WhereIf(true, a => a.CreateAt > new DateTime(2023, 1, 1))
-                    .WhereIf(true, a => a.Flag.Value == Guid.Parse("DEA5B56C-D1B1-4513-83E7-B58B9D3EBB81"))
-                    ;
+                    .WhereIf(true, a => a.Flag.Value == Guid.Parse("DEA5B56C-D1B1-4513-83E7-B58B9D3EBB81"));
 
                 var searchCondition = expression.ToFormattableWhereClause();
 
@@ -618,8 +616,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             Expression<Func<User, bool>> expression =
                 u => u.Age > 10
                       && (u.Sex && u.Age > 18 || u.Sex == false && u.Age > filter.Internal.Age)
-                      && (u.Name == filter.Name || u.Name.Contains(filter.Name.Substring(1, 2)))
-                      ;
+                      && (u.Name == filter.Name || u.Name.Contains(filter.Name.Substring(1, 2)));
             var searchCondition = expression.ToWhereClause();
 
             Assert.AreEqual(searchCondition.WhereClause, "Age > @Age And ((Sex = @Sex And Age > @Age1) Or (Sex = @Sex1 And Age > @Age2)) And (Name = @Name Or Name Like @Name1)");
@@ -635,8 +632,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             Expression<Func<User, bool>> expression =
                 u => u.Age > 10
                       || (u.Sex && u.Age > 18 || u.Sex == false && u.Age > filter.Internal.Age)
-                      || (u.Name == filter.Name || u.Name.Contains(filter.Name.Substring(1, 2)))
-                      ;
+                      || (u.Name == filter.Name || u.Name.Contains(filter.Name.Substring(1, 2)));
             var searchCondition = expression.ToWhereClause();
 
             Assert.AreEqual(searchCondition.WhereClause, "Age > @Age Or ((Sex = @Sex And Age > @Age1) Or (Sex = @Sex1 And Age > @Age2)) Or Name = @Name Or Name Like @Name1");
@@ -650,13 +646,11 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             filter.Name = "Gary";
 
             Expression<Func<User, bool>> expression =
-                u => (u.Age > 10)
-                      || (
+                u => (u.Age > 10) || (
                             (u.Age > 10 && u.Age > 11)
                              && (u.Sex && u.Age > 18 || u.Sex == false && u.Age > filter.Internal.Age)
                              && (u.Name == filter.Name || u.Name.Contains(filter.Name.Substring(1, 2)))
-                          )
-                      ;
+                          );
             var searchCondition = expression.ToWhereClause();
 
             Assert.AreEqual(searchCondition.WhereClause, "太复杂的去掉()的成本太高, 不写了...");
@@ -671,8 +665,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             Expression<Func<User, bool>> expression =
                 u => u.Age > 10
                       || u.Age > 11
-                      || u.Age > 12
-                      ;
+                      || u.Age > 12;
             var searchCondition = expression.ToWhereClause();
 
             Assert.AreEqual(searchCondition.WhereClause, "Age > @Age Or Age > @Age1 Or Age > @Age2");
@@ -688,8 +681,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
                 u => u.Age > 10
                       || u.Age > 11
                       || u.Age > 12
-                      || u.Age > 13
-                      ;
+                      || u.Age > 13;
             var searchCondition = expression.ToWhereClause();
 
             Assert.AreEqual(searchCondition.WhereClause, "Age > @Age Or Age > @Age1 Or Age > @Age2 Or Age > @Age3");
@@ -817,8 +809,8 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
         public void 测试_表达式的生成_new一个DateTime()
         {
             var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
-                .WhereIf(true, a => a.CreateAt > new DateTime(2023, 1, 1))
-                ;
+                .WhereIf(true, a => a.CreateAt > new DateTime(2023, 1, 1));
+
             var searchCondition = expression.ToWhereClause();
             Dictionary<string, object> expectedParameters = new()
             {
@@ -833,8 +825,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
         public void 测试_表达式的生成_new一个Guid()
         {
             var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
-                .WhereIf(true, a => a.Flag.Value == Guid.Parse("DEA5B56C-D1B1-4513-83E7-B58B9D3EBB81"))
-                ;
+                .WhereIf(true, a => a.Flag.Value == Guid.Parse("DEA5B56C-D1B1-4513-83E7-B58B9D3EBB81"));
 
             var searchCondition = expression.ToWhereClause();
             Dictionary<string, object> expectedParameters = new()
@@ -857,8 +848,8 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
 
             {
                 var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
-                    .WhereIf(true, a => a.Flag.Value == v4)
-                    ;
+                    .WhereIf(true, a => a.Flag.Value == v4);
+
                 var searchCondition = expression.ToWhereClause();
 
                 Assert.AreEqual(searchCondition.WhereClause, "Flag = @Flag");
@@ -866,8 +857,8 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
             }
             {
                 var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
-                    .WhereIf(true, a => a.Flag == v4)
-                    ;
+                    .WhereIf(true, a => a.Flag == v4);
+
                 var searchCondition = expression.ToWhereClause();
 
                 Assert.AreEqual(searchCondition.WhereClause, "Flag = @Flag");
@@ -879,8 +870,8 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause
         public void 测试_别名的替换()
         {
             var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
-                .WhereIf(true, a => a.CreateAtDay > 1)
-                ;
+                .WhereIf(true, a => a.CreateAtDay > 1);
+
             var searchCondition = expression.ToWhereClause(new Dictionary<string, string>()
             {
                 { "CreateAtDay","datediff(day, CreateAt, GETDATE())"}

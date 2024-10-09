@@ -116,26 +116,6 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
             return result;
         }
 
-        public static SearchCondition ToNumberParamNameWhereClause<T>(
-           this Expression<Func<T, bool>> expression,
-           Dictionary<string, string> alias = null,
-           ISqlAdapter sqlAdapter = default) where T : class
-        {
-            var searchCondition = expression.ToWhereClause();
-            WhereClauseHelper.ParamNameToNumber(searchCondition);//使用 FormattableParameters 有值
-            return searchCondition;
-        }
-
-        public static SearchCondition ToFormattableWhereClause<T>(
-            this Expression<Func<T, bool>> expression,
-            Dictionary<string, string> alias = null,
-            ISqlAdapter sqlAdapter = default) where T : class
-        {
-            var searchCondition = expression.ToWhereClause();
-            WhereClauseHelper.ToFormattableString(searchCondition);//使用 FormattableParameters 有值
-            return searchCondition;
-        }
-
         /// <summary>
         /// 去掉()
         /// </summary>
@@ -184,7 +164,7 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
             this.WhereClauseRaw = string.Empty;
             this.WhereClause = string.Empty;
             this.Parameters = new Dictionary<string, object>();
-            this.FormattableParameters = null;
+            //this.FormattableParameters = null;
         }
 
         public SearchCondition(string whereClauseRaw, string whereClause, Dictionary<string, object> parameters)
@@ -195,7 +175,7 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
         }
 
         /// <summary>
-        /// where子句
+        /// where子句(不含where关键字)
         /// </summary>
         public string WhereClause { get; private set; }
 
@@ -205,30 +185,30 @@ namespace ExpressionToSqlWhereClause.ExtensionMethod
         public Dictionary<string, object> Parameters { get; private set; }
 
         /// <summary>
-        /// FormattableStringd的
+        /// FormattableString 的
         /// </summary>
-        public object[] FormattableParameters { get; private set; }
+        //public object[] FormattableParameters { get; private set; }
 
         /// <summary>
         /// 未加工处理的 WhereClause
         /// </summary>
         public string WhereClauseRaw { get; private set; }
 
-        public void SetWhereClause(string whereClause)
-        {
-            this.WhereClause = whereClause;
-        }
+        //public void SetWhereClause(string whereClause)
+        //{
+        //    this.WhereClause = whereClause;
+        //}
 
-        public void SetFormattableStringParameters(string whereClause, object[] fmtParameters)
-        {
-            this.WhereClause = whereClause;
-            this.FormattableParameters = fmtParameters;
-        }
+        //public void SetFormattableStringParameters(string whereClause, object[] fmtParameters)
+        //{
+        //    this.WhereClause = whereClause;
+        //    this.FormattableParameters = fmtParameters;
+        //}
 
-        public FormattableString GetFormattableString(string querySql)
-        {
-            var formattableStr = FormattableStringFactory.Create(querySql, this.FormattableParameters);
-            return formattableStr;
-        }
+        //public FormattableString GetFormattableString(string querySql)
+        //{
+        //    var formattableStr = FormattableStringFactory.Create(querySql, this.FormattableParameters);
+        //    return formattableStr;
+        //}
     }
 }

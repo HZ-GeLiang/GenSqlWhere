@@ -77,8 +77,8 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
             };
 
             var expression = default(Expression<Func<Input_eq2, bool>>)
-             .WhereIf(true, a => a.Id == searchModel.Id)
-             ;
+             .WhereIf(true, a => a.Id == searchModel.Id);
+
             var searchCondition = expression.ToWhereClause();
         }
 
