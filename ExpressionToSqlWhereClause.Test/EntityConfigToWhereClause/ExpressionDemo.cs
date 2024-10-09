@@ -1,13 +1,10 @@
-﻿using ExpressionToSqlWhereClause.ExtensionMethods;
+﻿using ExpressionToSqlWhereClaus.Test;
+using ExpressionToSqlWhereClause.ExtensionMethods;
 using ExpressionToSqlWhereClause.Helper;
-using ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause.SqlAdapter;
 using ExpressionToSqlWhereClause.Test.ExtensionMethods;
 using ExpressionToSqlWhereClause.Test.Helper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 using System.Linq.Expressions;
 
 namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause

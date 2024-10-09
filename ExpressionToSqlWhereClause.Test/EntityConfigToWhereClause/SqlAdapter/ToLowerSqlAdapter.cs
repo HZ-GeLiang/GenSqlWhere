@@ -1,13 +1,12 @@
 ﻿using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
 
-namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause.SqlAdapter
+namespace ExpressionToSqlWhereClaus.Test;
+
+public class ToLowerSqlAdapter : DefaultSqlAdapter
 {
-    public class ToLowerSqlAdapter : DefaultSqlAdapter
+    /// <inheritdoc/>
+    public override string FormatColumnName(string name)
     {
-        /// <inheritdoc/>
-        public override string FormatColumnName(string name)
-        {
-            return name.ToLower();
-        }
+        return name.ToLower();
     }
 }

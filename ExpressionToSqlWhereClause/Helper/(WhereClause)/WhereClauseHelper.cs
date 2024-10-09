@@ -48,77 +48,36 @@ namespace ExpressionToSqlWhereClause.Helper
 
         #region Clause_NumberParameter
 
-        /// <inheritdoc cref="GetNumberParameterClause(string)"/>
         public static string GetNumberParameterClause(SearchCondition searchCondition)
         {
-            var whreCaluse = GetNumberParameterClause(searchCondition.WhereClause);
-            //searchCondition.SetWhereClause(whreCaluse);
-            return whreCaluse;
+            var clause = new NumberParameterClause(searchCondition.WhereClause).GetNumberParameterClause();
+            return clause;
         }
 
-        /// <summary>
-        /// 条件语句的参数是数字形式的:sql参数名转成数字的
-        /// </summary>
-        /// <param name="whereClause"></param>
         /// <returns></returns>
         public static string GetNumberParameterClause(string whereClause)
         {
-            if (string.IsNullOrWhiteSpace(whereClause))
-            {
-                return "";
-            }
-
-            whereClause += space1;//为了解决替换时出现的 属性名存在包含关系, 示例: ExpressionDemo_属性名存在包含关系.cs
-
-            string pattern = "@[a-zA-Z0-9_]*";
-            var matches = Regex.Matches(whereClause, pattern);
-            //要倒序替换
-            for (int i = matches.Count - 1; i >= 0; i--)
-            {
-                replace_whereClause(ref whereClause, matches[i].Value, "@" + i);
-            }
-            return whereClause.TrimEnd();
+            var clause = new NumberParameterClause(whereClause).GetNumberParameterClause();
+            return clause;
         }
 
         #endregion
 
         #region Clause_FormattableString
 
-        /// <summary>
-        /// 转换为 FormattableString 的对象
-        /// </summary>
-        /// <param name="searchCondition"></param>
-        /// <returns></returns>
         public static string GetFormattableStringClause(SearchCondition searchCondition)
         {
-            //这个方法和 GetNumberParameterClause 基本一致, 目前唯一的区别在 whereClause.Replace 的处理
-            string whereClause = searchCondition.WhereClause;
-
-            if (string.IsNullOrWhiteSpace(whereClause))
-            {
-                return "";
-            }
-
-            whereClause += space1;//为了解决替换时出现的 属性名存在包含关系, 示例: ExpressionDemo_属性名存在包含关系.cs
-            string pattern = "@[a-zA-Z0-9_]*";
-            var matches = Regex.Matches(whereClause, pattern);
-
-            for (int i = matches.Count - 1; i >= 0; i--) //要倒序替换
-            {
-                var sqlParameterName = matches[i].Value;
-                replace_whereClause(ref whereClause, sqlParameterName, "{" + i + "}");
-            }
-
-            return whereClause.TrimEnd();
+            var clause = new FormattableStringClause(searchCondition.WhereClause).GetNumberParameterClause();
+            return clause;
         }
+
+        #endregion
 
         public static FormattableString CreateFormattableString(string querySql, object[] FormattableParameters)
         {
             var formattableStr = FormattableStringFactory.Create(querySql, FormattableParameters);
             return formattableStr;
         }
-
-        #endregion
 
         #region GetDefaultFormatDateTime
 
