@@ -29,14 +29,16 @@ namespace ExpressionToSqlWhereClause.Helper
                 return "";
             }
 
+            whereClause += " ";//为了解决替换时出现的 属性名存在包含关系, 示例: ExpressionDemo_属性名存在包含关系.cs
+
             string pattern = "@[a-zA-Z0-9_]*";
             var matches = Regex.Matches(whereClause, pattern);
             //要倒序替换
             for (int i = matches.Count - 1; i >= 0; i--)
             {
-                whereClause = whereClause.Replace(matches[i].Value, "@" + i);
+                whereClause = whereClause.Replace(matches[i].Value + " ", "@" + i + " ");
             }
-            return whereClause;
+            return whereClause.TrimEnd();
         }
 
         /// <summary>
@@ -109,7 +111,7 @@ namespace ExpressionToSqlWhereClause.Helper
             {
                 return null;
             }
-
+            whereClause += " ";//为了解决替换时出现的 属性名存在包含关系, 示例: ExpressionDemo_属性名存在包含关系.cs
             var default_formatDateTime = WhereClauseHelper.GetDefaultFormatDateTime(parameters);
 
             string pattern = "@[a-zA-Z0-9_]*";
@@ -122,7 +124,7 @@ namespace ExpressionToSqlWhereClause.Helper
 
             for (int i = matches.Count - 1; i >= 0; i--) //要倒序替换
             {
-                var sqlParameterName = matches[i].Value;
+                string sqlParameterName = matches[i].Value;
                 if (parameters.ContainsKey(sqlParameterName) == false)
                 {
                     throw new Exception($"参数对象'{nameof(parameters)}'中不存在名为'{sqlParameterName}'的key值");
@@ -131,7 +133,7 @@ namespace ExpressionToSqlWhereClause.Helper
 
                 if (sqlParameterValue == null)
                 {
-                    whereClause = whereClause.Replace(sqlParameterName, "Null");
+                    whereClause = whereClause.Replace(sqlParameterName + " ", "Null" + " ");
                 }
                 else
                 {
@@ -140,7 +142,7 @@ namespace ExpressionToSqlWhereClause.Helper
                         sqlParameterValueType == typeof(Guid) ||
                         sqlParameterValueType == typeof(Guid?))
                     {
-                        whereClause = whereClause.Replace(sqlParameterName, $"'{sqlParameterValue}'");
+                        whereClause = whereClause.Replace(sqlParameterName + " ", $"'{sqlParameterValue}'" + " ");
                     }
                     else if (sqlParameterValueType == typeof(DateTime) || sqlParameterValueType == typeof(DateTime?))
                     {
@@ -157,20 +159,20 @@ namespace ExpressionToSqlWhereClause.Helper
                         if (!string.IsNullOrWhiteSpace(format))
                         {
                             var newVal = $"'{((DateTime)sqlParameterValue).ToString(format)}'";
-                            whereClause = whereClause.Replace(sqlParameterName, newVal);
+                            whereClause = whereClause.Replace(sqlParameterName + " ", newVal + " ");
                         }
                         else
                         {
-                            whereClause = whereClause.Replace(sqlParameterName, $"'{sqlParameterValue}'");
+                            whereClause = whereClause.Replace(sqlParameterName + " ", $"'{sqlParameterValue}'" + " ");
                         }
                     }
                     else
                     {
-                        whereClause = whereClause.Replace(sqlParameterName, $"{sqlParameterValue}");
+                        whereClause = whereClause.Replace(sqlParameterName + " ", $"{sqlParameterValue}" + " ");
                     }
                 }
             }
-            return whereClause;
+            return whereClause.TrimEnd();
         }
 
         /// <summary>
@@ -188,13 +190,14 @@ namespace ExpressionToSqlWhereClause.Helper
                 return "";
             }
 
+            whereClause += " ";//为了解决替换时出现的 属性名存在包含关系, 示例: ExpressionDemo_属性名存在包含关系.cs
             string pattern = "@[a-zA-Z0-9_]*";
             var matches = Regex.Matches(whereClause, pattern);
 
             for (int i = matches.Count - 1; i >= 0; i--) //要倒序替换
             {
                 var sqlParameterName = matches[i].Value;
-                whereClause = whereClause.Replace(sqlParameterName, "{" + i + "}");
+                whereClause = whereClause.Replace(sqlParameterName + " ", "{" + i + "}" + " ");
 
                 //var sqlParameterValue = parameters[matches[i].Value];
                 //if (sqlParameterValue == null)
@@ -221,7 +224,7 @@ namespace ExpressionToSqlWhereClause.Helper
                 //}
             }
 
-            return whereClause;
+            return whereClause.TrimEnd();
         }
 
         public static FormattableString CreateFormattableString(string querySql, object[] FormattableParameters)

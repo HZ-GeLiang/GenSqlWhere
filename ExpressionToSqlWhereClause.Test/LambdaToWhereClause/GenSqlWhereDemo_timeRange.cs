@@ -157,8 +157,8 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 var searchCondition = expression.ToWhereClause();
 
                 var formatDateTime = new Dictionary<string, string>() { { "@DataCreatedAt1", "yyyy-MM-dd" } };
-                var whreCaluse = WhereClauseHelper.GetNonParameterClause(searchCondition.WhereClause, searchCondition.Parameters, formatDateTime);
-                Assert.AreEqual(whreCaluse, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03'");
+                var caluse = WhereClauseHelper.GetNonParameterClause(searchCondition.WhereClause, searchCondition.Parameters, formatDateTime);
+                Assert.AreEqual(caluse, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03'");
             }
 
             {
@@ -171,8 +171,8 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
                 var searchCondition = expression.ToWhereClause();
 
                 var formatDateTime = WhereClauseHelper.GetDefaultFormatDateTime(searchCondition.Parameters);
-                var whreCaluse = WhereClauseHelper.GetNonParameterClause(searchCondition, formatDateTime);
-                Assert.AreEqual(whreCaluse, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03 12:34:56'");
+                var caluse = WhereClauseHelper.GetNonParameterClause(searchCondition, formatDateTime);
+                Assert.AreEqual(caluse, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03 12:34:56'");
             }
         }
     }
