@@ -1,15 +1,15 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace ExpressionToSqlWhereClause.Helper;
+namespace ExpressionToSqlWhereClause.Helpers;
 
 /// <summary>
-/// 转换为 FormattableString 的对象
+/// 条件语句的参数是数字形式的:sql参数名转成数字的
 /// </summary>
-public class FormattableStringClause
+public class NumberParameterClause
 {
     private string _whereClause;
 
-    public FormattableStringClause(string whereClause)
+    public NumberParameterClause(string whereClause)
     {
         _whereClause = whereClause;
     }
@@ -25,15 +25,14 @@ public class FormattableStringClause
             return "";
         }
         _whereClause += WhereClauseHelper.space1;//为了解决替换时出现的 属性名存在包含关系, 示例: ExpressionDemo_属性名存在包含关系.cs
+
         string pattern = "@[a-zA-Z0-9_]*";
         var matches = Regex.Matches(_whereClause, pattern);
-
-        for (int i = matches.Count - 1; i >= 0; i--) //要倒序替换
+        //要倒序替换
+        for (int i = matches.Count - 1; i >= 0; i--)
         {
-            var sqlParameterName = matches[i].Value;
-            WhereClauseHelper.replace_whereClause(ref _whereClause, sqlParameterName, "{" + i + "}");
+            WhereClauseHelper.replace_whereClause(ref _whereClause, matches[i].Value, "@" + i);
         }
-
         return _whereClause.TrimEnd();
     }
 }

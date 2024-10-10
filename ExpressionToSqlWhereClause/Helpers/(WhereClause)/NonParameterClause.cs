@@ -1,7 +1,7 @@
 ﻿using ExpressionToSqlWhereClause.ExpressionTree;
 using System.Text.RegularExpressions;
 
-namespace ExpressionToSqlWhereClause.Helper;
+namespace ExpressionToSqlWhereClause.Helpers;
 
 public class NonParameterClause
 {

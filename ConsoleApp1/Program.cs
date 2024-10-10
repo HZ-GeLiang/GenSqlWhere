@@ -1,4 +1,4 @@
-﻿using ExpressionToSqlWhereClause.EntityConfig;
+﻿using ExpressionToSqlWhereClause.Helpers;
 using System.Linq.Expressions;
 
 namespace ConsoleApp1

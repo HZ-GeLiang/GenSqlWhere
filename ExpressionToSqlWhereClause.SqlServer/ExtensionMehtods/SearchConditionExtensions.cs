@@ -1,5 +1,5 @@
 ﻿using ExpressionToSqlWhereClause.ExtensionMethods;
-using ExpressionToSqlWhereClause.Helper;
+using ExpressionToSqlWhereClause.Helpers;
 using Microsoft.Data.SqlClient;
 
 namespace ExpressionToSqlWhereClause.SqlServer.ExtensionMehtods

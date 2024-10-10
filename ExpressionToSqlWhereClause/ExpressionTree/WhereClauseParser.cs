@@ -1,7 +1,7 @@
 ﻿using ExpressionToSqlWhereClause.Consts;
 using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
 using ExpressionToSqlWhereClause.ExtensionMethods;
-using ExpressionToSqlWhereClause.Helper;
+using ExpressionToSqlWhereClause.Helpers;
 using ExpressionToSqlWhereClause.SqlFunc;
 using System;
 using System.Collections.Generic;

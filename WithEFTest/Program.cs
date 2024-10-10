@@ -1,6 +1,6 @@
 ﻿using ExpressionToSqlWhereClause;
 using ExpressionToSqlWhereClause.ExtensionMethods;
-using ExpressionToSqlWhereClause.Helper;
+using ExpressionToSqlWhereClause.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using WithEFTest.ExtensionMethod;

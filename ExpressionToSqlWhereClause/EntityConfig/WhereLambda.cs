@@ -1,6 +1,6 @@
 ﻿using ExpressionToSqlWhereClause.Exceptions;
 using ExpressionToSqlWhereClause.ExtensionMethods;
-using ExpressionToSqlWhereClause.Helper;
+using ExpressionToSqlWhereClause.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
