@@ -1,6 +1,4 @@
-﻿using ExpressionToSqlWhereClause.ExtensionMethods;
-using ExpressionToSqlWhereClause.Test.ExtensionMethods;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq.Expressions;
 
 namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause;

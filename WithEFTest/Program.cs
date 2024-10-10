@@ -1,9 +1,8 @@
 ﻿using ExpressionToSqlWhereClause;
 using ExpressionToSqlWhereClause.ExtensionMethods;
-using ExpressionToSqlWhereClause.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using WithEFTest.ExtensionMethod;
+using WithEFTest.ExtensionMethods;
 
 var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
     .WhereIf(true, a => a.Id == 1)

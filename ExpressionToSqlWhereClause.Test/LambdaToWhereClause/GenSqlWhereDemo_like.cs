@@ -1,128 +1,125 @@
 ﻿using ExpressionToSqlWhereClause.EntityConfig;
-using ExpressionToSqlWhereClause.ExtensionMethods;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
 
-namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
+namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
+
+[TestClass]
+public class GenSqlWhereDemo_like
 {
-    [TestClass]
-    public class GenSqlWhereDemo_like
+    [TestMethod]
+    public void Test_like()
     {
-        [TestMethod]
-        public void Test_like()
+        var searchModel = new model_like()
         {
-            var searchModel = new model_like()
-            {
-                Url = "123",
-            };
-            var whereLambda = new WhereLambda<Model_People, model_like>(searchModel);
+            Url = "123",
+        };
+        var whereLambda = new WhereLambda<Model_People, model_like>(searchModel);
 
-            whereLambda[SearchType.Like] = new List<string>
-            {
-                nameof(searchModel.Url),
-                nameof(searchModel.Data_Remark),
-            };
-
-            var expression = whereLambda.ToExpression();
-            var searchCondition = expression.ToWhereClause();
-
-            Assert.AreEqual(searchCondition.WhereClause, "Url Like @Url");
-            var dict = new Dictionary<string, object>
-            {
-                { "@Url", "%123%" }
-            };
-
-            CollectionAssert.AreEqual(searchCondition.Parameters, dict);
-        }
-
-        [TestMethod]
-        public void Test_likeLeft()
+        whereLambda[SearchType.Like] = new List<string>
         {
-            var searchModel = new Input_likeLeft()
-            {
-                Url = "123",
-            };
-            var whereLambda = new WhereLambda<Model_People, Input_likeLeft>(searchModel);
+            nameof(searchModel.Url),
+            nameof(searchModel.Data_Remark),
+        };
 
-            whereLambda[SearchType.LikeLeft] = new List<string>
-            {
-                nameof(searchModel.Url),
-                nameof(searchModel.Data_Remark),
-            };
+        var expression = whereLambda.ToExpression();
+        var searchCondition = expression.ToWhereClause();
 
-            var expression = whereLambda.ToExpression();
-            var searchCondition = expression.ToWhereClause();
-
-            Assert.AreEqual(searchCondition.WhereClause, "Url Like @Url");
-            var dict = new Dictionary<string, object>
-            {
-                { "@Url", "123%" }
-            };
-
-            CollectionAssert.AreEqual(searchCondition.Parameters, dict);
-        }
-
-        [TestMethod]
-        public void Test_likeRight()
+        Assert.AreEqual(searchCondition.WhereClause, "Url Like @Url");
+        var dict = new Dictionary<string, object>
         {
-            var searchModel = new Input_likeRight()
-            {
-                Url = "123",
-            };
-            var whereLambda = new WhereLambda<Model_People, Input_likeRight>(searchModel);
+            { "@Url", "%123%" }
+        };
 
-            whereLambda[SearchType.LikeRight] = new List<string>
-            {
-                nameof(searchModel.Url),
-                nameof(searchModel.Data_Remark),
-            };
-
-            var expression = whereLambda.ToExpression();
-            var searchCondition = expression.ToWhereClause();
-
-            Assert.AreEqual(searchCondition.WhereClause, "Url Like @Url");
-            var dict = new Dictionary<string, object>
-            {
-                { "@Url", "%123" }
-            };
-
-            CollectionAssert.AreEqual(searchCondition.Parameters, dict);
-        }
+        CollectionAssert.AreEqual(searchCondition.Parameters, dict);
     }
 
-    public class model_like
+    [TestMethod]
+    public void Test_likeLeft()
     {
-        public string Url { get; set; }
-        public string Data_Remark { get; set; }
+        var searchModel = new Input_likeLeft()
+        {
+            Url = "123",
+        };
+        var whereLambda = new WhereLambda<Model_People, Input_likeLeft>(searchModel);
+
+        whereLambda[SearchType.LikeLeft] = new List<string>
+        {
+            nameof(searchModel.Url),
+            nameof(searchModel.Data_Remark),
+        };
+
+        var expression = whereLambda.ToExpression();
+        var searchCondition = expression.ToWhereClause();
+
+        Assert.AreEqual(searchCondition.WhereClause, "Url Like @Url");
+        var dict = new Dictionary<string, object>
+        {
+            { "@Url", "123%" }
+        };
+
+        CollectionAssert.AreEqual(searchCondition.Parameters, dict);
     }
 
-    public class Input_like_Attr
+    [TestMethod]
+    public void Test_likeRight()
     {
-        [SearchType(SearchType.Like)] public string Url { get; set; }
-        [SearchType(SearchType.Like)] public string Data_Remark { get; set; }
-    }
+        var searchModel = new Input_likeRight()
+        {
+            Url = "123",
+        };
+        var whereLambda = new WhereLambda<Model_People, Input_likeRight>(searchModel);
 
-    public class Input_likeLeft
-    {
-        public string Url { get; set; }
-        public string Data_Remark { get; set; }
-    }
+        whereLambda[SearchType.LikeRight] = new List<string>
+        {
+            nameof(searchModel.Url),
+            nameof(searchModel.Data_Remark),
+        };
 
-    public class Input_likeLeft_Attr
-    {
-        [SearchType(SearchType.LikeLeft)] public string Url { get; set; }
-        [SearchType(SearchType.LikeLeft)] public string Data_Remark { get; set; }
-    }
+        var expression = whereLambda.ToExpression();
+        var searchCondition = expression.ToWhereClause();
 
-    public class Input_likeRight
-    {
-        public string Url { get; set; }
-        public string Data_Remark { get; set; }
-    }
+        Assert.AreEqual(searchCondition.WhereClause, "Url Like @Url");
+        var dict = new Dictionary<string, object>
+        {
+            { "@Url", "%123" }
+        };
 
-    public class Input_likeRight_Attr
-    {
-        [SearchType(SearchType.LikeRight)] public string Url { get; set; }
-        [SearchType(SearchType.LikeRight)] public string Data_Remark { get; set; }
+        CollectionAssert.AreEqual(searchCondition.Parameters, dict);
     }
+}
+
+public class model_like
+{
+    public string Url { get; set; }
+    public string Data_Remark { get; set; }
+}
+
+public class Input_like_Attr
+{
+    [SearchType(SearchType.Like)] public string Url { get; set; }
+    [SearchType(SearchType.Like)] public string Data_Remark { get; set; }
+}
+
+public class Input_likeLeft
+{
+    public string Url { get; set; }
+    public string Data_Remark { get; set; }
+}
+
+public class Input_likeLeft_Attr
+{
+    [SearchType(SearchType.LikeLeft)] public string Url { get; set; }
+    [SearchType(SearchType.LikeLeft)] public string Data_Remark { get; set; }
+}
+
+public class Input_likeRight
+{
+    public string Url { get; set; }
+    public string Data_Remark { get; set; }
+}
+
+public class Input_likeRight_Attr
+{
+    [SearchType(SearchType.LikeRight)] public string Url { get; set; }
+    [SearchType(SearchType.LikeRight)] public string Data_Remark { get; set; }
 }

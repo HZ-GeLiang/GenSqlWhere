@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-public partial class TestContext : DbContext
+internal partial class TestContext : DbContext
 {
     public TestContext()
     {
@@ -23,7 +23,7 @@ public partial class TestContext : DbContext
     }
 }
 
-public record class ExpressionSqlTest
+internal record class ExpressionSqlTest
 {
     public int Id { get; set; }
     public string Name { get; set; }
