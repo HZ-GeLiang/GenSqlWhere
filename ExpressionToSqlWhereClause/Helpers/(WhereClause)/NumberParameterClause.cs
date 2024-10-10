@@ -7,11 +7,11 @@ namespace ExpressionToSqlWhereClause;
 /// </summary>
 public class NumberParameterClause
 {
-    private string _whereClause;
+    public string WhereClause { get; private set; }
 
     public NumberParameterClause(string whereClause)
     {
-        _whereClause = whereClause;
+        WhereClause = whereClause;
     }
 
     /// <summary>
@@ -20,19 +20,19 @@ public class NumberParameterClause
     /// <returns></returns>
     public string GetNumberParameterClause()
     {
-        if (string.IsNullOrWhiteSpace(_whereClause))
+        if (string.IsNullOrWhiteSpace(WhereClause))
         {
             return "";
         }
-        _whereClause += WhereClauseHelper.space1;//为了解决替换时出现的 属性名存在包含关系, 示例: ExpressionDemo_属性名存在包含关系.cs
+        WhereClause += WhereClauseHelper.space1;//为了解决替换时出现的 属性名存在包含关系, 示例: ExpressionDemo_属性名存在包含关系.cs
 
         string pattern = "@[a-zA-Z0-9_]*";
-        var matches = Regex.Matches(_whereClause, pattern);
+        var matches = Regex.Matches(WhereClause, pattern);
         //要倒序替换
         for (int i = matches.Count - 1; i >= 0; i--)
         {
-            WhereClauseHelper.replace_whereClause(ref _whereClause, matches[i].Value, "@" + i);
+            WhereClause = WhereClauseHelper.replace_whereClause(WhereClause, matches[i].Value, "@" + i);
         }
-        return _whereClause.TrimEnd();
+        return WhereClause.TrimEnd();
     }
 }

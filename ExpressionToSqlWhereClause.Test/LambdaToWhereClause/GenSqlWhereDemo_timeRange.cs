@@ -143,38 +143,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 
             CollectionAssert.AreEqual(searchCondition.Parameters, dict);
         }
-
-        [TestMethod]
-        public void Test_timeRange_MergeParametersIntoSql()
-        {
-            {
-                DateTime? d1 = (DateTime?)DateTime.Parse("2022-3-1 15:12:34");
-                DateTime? d2 = (DateTime?)DateTime.Parse("2022-3-3 12:34:56");
-                var expression = default(Expression<Func<Input_timeRange2_Attr, bool>>)
-                  .WhereIf(true, a => a.DataCreatedAt >= d1)
-                  .WhereIf(true, a => a.DataCreatedAt < d2);
-
-                var searchCondition = expression.ToWhereClause();
-
-                var formatDateTime = new Dictionary<string, string>() { { "@DataCreatedAt1", "yyyy-MM-dd" } };
-                var caluse = WhereClauseHelper.GetNonParameterClause(searchCondition, formatDateTime);
-                Assert.AreEqual(caluse, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03'");
-            }
-
-            {
-                DateTime? d1 = (DateTime?)DateTime.Parse("2022-3-1 15:12:34");
-                DateTime? d2 = (DateTime?)DateTime.Parse("2022-3-3 12:34:56");
-                var expression = default(Expression<Func<Input_timeRange2_Attr, bool>>)
-                  .WhereIf(true, a => a.DataCreatedAt >= d1)
-                  .WhereIf(true, a => a.DataCreatedAt < d2);
-
-                var searchCondition = expression.ToWhereClause();
-
-                var formatDateTime = WhereClauseHelper.GetDefaultFormatDateTime(searchCondition.Parameters);
-                var caluse = WhereClauseHelper.GetNonParameterClause(searchCondition, formatDateTime);
-                Assert.AreEqual(caluse, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03 12:34:56'");
-            }
-        }
     }
 
     public class model_timeRange

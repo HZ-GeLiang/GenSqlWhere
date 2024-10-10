@@ -15,32 +15,48 @@ public sealed class WhereClauseHelper
     {
         Dictionary<string, string> formatDateTime = GetDefaultFormatDateTime(searchCondition.Parameters);
         var clause = new NonParameterClause(searchCondition, formatDateTime);
-        var whreCaluse = clause.GetNonParameterClause();
-        return whreCaluse;
+        var whereCaluse = clause.GetNonParameterClause();
+        return whereCaluse;
     }
 
     public static string GetNonParameterClause(SearchCondition searchCondition, Dictionary<string, string> formatDateTime)
     {
         var clause = new NonParameterClause(searchCondition, formatDateTime);
-        var whreCaluse = clause.GetNonParameterClause();
-        return whreCaluse;
+        var whereCaluse = clause.GetNonParameterClause();
+        return whereCaluse;
     }
 
-    internal static void replace_whereClause(ref string whereClause, string sqlParameterName, string newValue)
+    public static string GetNonParameterClause(string whereClause, Dictionary<string, object> parameters)
+    {
+        var clause = new NonParameterClause(whereClause, parameters);
+        var whereCaluse = clause.GetNonParameterClause();
+        return whereCaluse;
+    }
+
+    public static string GetNonParameterClause(string whereClause, Dictionary<string, object> parameters, Dictionary<string, string> formatDateTime)
+    {
+        var clause = new NonParameterClause(whereClause, parameters, formatDateTime);
+        var whereCaluse = clause.GetNonParameterClause();
+        return whereCaluse;
+    }
+
+    internal static string replace_whereClause(string whereClause, string sqlParameterName, string newValue)
     {
         var key = sqlParameterName + space1;
         if (whereClause.Contains(key))
         {
             whereClause = whereClause.Replace(key, newValue + space1);
-            return;
+            return whereClause;
         }
 
         key = "(" + sqlParameterName + ")";
         if (whereClause.Contains(key))
         {
             whereClause = whereClause.Replace(key, "(" + newValue + ")");
-            return;
+            return whereClause;
         }
+
+        return whereClause;
     }
 
     #endregion

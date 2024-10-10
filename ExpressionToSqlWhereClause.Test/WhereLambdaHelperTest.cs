@@ -1,15 +1,90 @@
-﻿using ExpressionToSqlWhereClause.EntityConfig;
-using ExpressionToSqlWhereClause.ExtensionMethods;
+﻿using ExpressionToSqlWhereClause.ExtensionMethods;
 using ExpressionToSqlWhereClause.Helpers;
 using ExpressionToSqlWhereClause.Test.ExtensionMethods;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq.Expressions;
+using System.Text;
 
 namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause
 {
     [TestClass]
     public class WhereLambdaHelperTest
     {
+        [TestMethod]
+        public void test_GetNonParameterClause_02()
+        {
+            var expression =
+                default(Expression<Func<Test_001, bool>>)
+                .WhereIf(true, a => a.Message == "abc")
+                .WhereIf(true, a => a.MessageType == 1);
+
+            var searchCondition = expression.ToWhereClause();
+            var clause = searchCondition.WhereClause;
+            var param = searchCondition.Parameters;
+
+            StringBuilder sb_clause = new StringBuilder();
+            if (clause.Length > 0)
+            {
+                sb_clause.Append(" and " + clause);
+            }
+
+            StringBuilder sb_sql_count = new StringBuilder("SELECT count(*) FROM xxx ");
+            StringBuilder sb_sql = new StringBuilder($"SELECT * FROM xxx ");
+
+            if (sb_clause.Length > 0)
+            {
+                sb_clause.Remove(0, 4);
+                sb_sql_count.Append(" where ").Append(sb_clause);
+                sb_sql.Append(" where ").Append(sb_clause);
+            }
+
+            sb_sql.Append($" order by Id ");
+            var limit_offset = 0;
+            var limit_startLine = 10;
+            sb_sql.Append($" LIMIT {limit_startLine} offset {limit_offset} ");
+
+            var sql_count = sb_sql_count.ToString();
+            var sql = sb_sql.ToString();
+
+            var debug_sql_count = WhereClauseHelper.GetNonParameterClause(sql_count, param);
+            var debug_sql = WhereClauseHelper.GetNonParameterClause(sql, param);
+
+            Assert.AreEqual("SELECT count(*) FROM xxx  where  Message = 'abc' And MessageType = 1", debug_sql_count);
+            Assert.AreEqual("SELECT * FROM xxx  where  Message = 'abc' And MessageType = 1 order by Id  LIMIT 10 offset 0", debug_sql);
+        }
+
+        [TestMethod]
+        public void Test_timeRange_MergeParametersIntoSql()
+        {
+            {
+                DateTime? d1 = (DateTime?)DateTime.Parse("2022-3-1 15:12:34");
+                DateTime? d2 = (DateTime?)DateTime.Parse("2022-3-3 12:34:56");
+                var expression = default(Expression<Func<Input_timeRange2_Attr, bool>>)
+                  .WhereIf(true, a => a.DataCreatedAt >= d1)
+                  .WhereIf(true, a => a.DataCreatedAt < d2);
+
+                var searchCondition = expression.ToWhereClause();
+
+                var formatDateTime = new Dictionary<string, string>() { { "@DataCreatedAt1", "yyyy-MM-dd" } };
+                var caluse = WhereClauseHelper.GetNonParameterClause(searchCondition, formatDateTime);
+                Assert.AreEqual(caluse, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03'");
+            }
+
+            {
+                DateTime? d1 = (DateTime?)DateTime.Parse("2022-3-1 15:12:34");
+                DateTime? d2 = (DateTime?)DateTime.Parse("2022-3-3 12:34:56");
+                var expression = default(Expression<Func<Input_timeRange2_Attr, bool>>)
+                  .WhereIf(true, a => a.DataCreatedAt >= d1)
+                  .WhereIf(true, a => a.DataCreatedAt < d2);
+
+                var searchCondition = expression.ToWhereClause();
+
+                var formatDateTime = WhereClauseHelper.GetDefaultFormatDateTime(searchCondition.Parameters);
+                var caluse = WhereClauseHelper.GetNonParameterClause(searchCondition, formatDateTime);
+                Assert.AreEqual(caluse, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03 12:34:56'");
+            }
+        }
+
         [TestMethod]
         public void GetExpression_HasValue()
         {

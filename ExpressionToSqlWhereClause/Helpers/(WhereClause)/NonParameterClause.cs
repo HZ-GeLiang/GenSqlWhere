@@ -6,13 +6,13 @@ namespace ExpressionToSqlWhereClause;
 public class NonParameterClause
 {
     //private readonly SearchCondition _searchCondition;
-    private string whereClause;
+    public string WhereClause { get; private set; }
 
-    private Dictionary<string, object> parameters;
+    public Dictionary<string, object> Parameters { get; private set; }
 
-    private WhereClauseAdhesive Adhesive;
+    public WhereClauseAdhesive Adhesive { get; private set; }
 
-    private readonly Dictionary<string, string> _formatDateTime;
+    public Dictionary<string, string> FormatDateTime { get; private set; }
 
     public NonParameterClause(SearchCondition searchCondition) : this(searchCondition, null)
     {
@@ -20,16 +20,35 @@ public class NonParameterClause
 
     public NonParameterClause(SearchCondition searchCondition, Dictionary<string, string> formatDateTime)
     {
-        whereClause = searchCondition.WhereClause;
-        parameters = searchCondition.Parameters;
+        WhereClause = searchCondition.WhereClause;
+        Parameters = searchCondition.Parameters;
         Adhesive = searchCondition.ParseResult.Adhesive;
         if (formatDateTime == null)
         {
-            _formatDateTime = WhereClauseHelper.GetDefaultFormatDateTime(searchCondition.Parameters);
+            FormatDateTime = WhereClauseHelper.GetDefaultFormatDateTime(searchCondition.Parameters);
         }
         else
         {
-            _formatDateTime = formatDateTime;
+            FormatDateTime = formatDateTime;
+        }
+    }
+
+    public NonParameterClause(string whereClause, Dictionary<string, object> parameters) : this(whereClause, parameters, null)
+    {
+    }
+
+    public NonParameterClause(string whereClause, Dictionary<string, object> parameters, Dictionary<string, string> formatDateTime)
+    {
+        WhereClause = whereClause;
+        Parameters = parameters;
+        Adhesive = null;
+        if (formatDateTime == null)
+        {
+            FormatDateTime = WhereClauseHelper.GetDefaultFormatDateTime(parameters);
+        }
+        else
+        {
+            FormatDateTime = formatDateTime;
         }
     }
 
@@ -39,34 +58,34 @@ public class NonParameterClause
     /// <returns></returns>
     public string GetNonParameterClause()
     {
-        if (string.IsNullOrWhiteSpace(whereClause))
+        if (string.IsNullOrWhiteSpace(WhereClause))
         {
             return "";
         }
 
-        whereClause += WhereClauseHelper.space1;//为了解决替换时出现的 属性名存在包含关系, 示例: ExpressionDemo_属性名存在包含关系.cs
-        var default_formatDateTime = WhereClauseHelper.GetDefaultFormatDateTime(parameters);
+        WhereClause += WhereClauseHelper.space1;//为了解决替换时出现的 属性名存在包含关系, 示例: ExpressionDemo_属性名存在包含关系.cs
+        var default_formatDateTime = WhereClauseHelper.GetDefaultFormatDateTime(Parameters);
 
         string pattern = "@[a-zA-Z0-9_]*";
-        var matches = Regex.Matches(whereClause, pattern);
+        var matches = Regex.Matches(WhereClause, pattern);
 
-        if (matches.Count > 0 && parameters == null)
+        if (matches.Count > 0 && Parameters == null)
         {
-            throw new ArgumentNullException(nameof(parameters));
+            throw new ArgumentNullException(nameof(Parameters));
         }
 
         for (int i = matches.Count - 1; i >= 0; i--) //要倒序替换
         {
             string sqlParameterName = matches[i].Value;
-            if (parameters.ContainsKey(sqlParameterName) == false)
+            if (Parameters.ContainsKey(sqlParameterName) == false)
             {
-                throw new Exception($"参数对象'{nameof(parameters)}'中不存在名为'{sqlParameterName}'的key值");
+                throw new Exception($"参数对象'{nameof(Parameters)}'中不存在名为'{sqlParameterName}'的key值");
             }
-            var sqlParameterValue = parameters[matches[i].Value];
+            var sqlParameterValue = Parameters[matches[i].Value];
 
             if (sqlParameterValue == null)
             {
-                WhereClauseHelper.replace_whereClause(ref whereClause, sqlParameterName, "Null");
+                WhereClause = WhereClauseHelper.replace_whereClause(WhereClause, sqlParameterName, "Null");
             }
             else
             {
@@ -75,14 +94,14 @@ public class NonParameterClause
                 {
                     string sqlParameterValue_str = Get_sqlParameterValue_str(sqlParameterName, (string)sqlParameterValue);
 
-                    WhereClauseHelper.replace_whereClause(ref whereClause, sqlParameterName, sqlParameterValue_str);
+                    WhereClause = WhereClauseHelper.replace_whereClause(WhereClause, sqlParameterName, sqlParameterValue_str);
                 }
                 else if (sqlParameterValueType == typeof(DateTime) || sqlParameterValueType == typeof(DateTime?))
                 {
                     string format = null;
-                    if (_formatDateTime != null && _formatDateTime.ContainsKey(sqlParameterName))
+                    if (FormatDateTime != null && FormatDateTime.ContainsKey(sqlParameterName))
                     {
-                        format = _formatDateTime[sqlParameterName]; //取用户配置的
+                        format = FormatDateTime[sqlParameterName]; //取用户配置的
                     }
                     else if (default_formatDateTime.ContainsKey(sqlParameterName))
                     {
@@ -92,28 +111,28 @@ public class NonParameterClause
                     if (!string.IsNullOrWhiteSpace(format))
                     {
                         var newVal = $"'{((DateTime)sqlParameterValue).ToString(format)}'";
-                        WhereClauseHelper.replace_whereClause(ref whereClause, sqlParameterName, newVal);
+                        WhereClause = WhereClauseHelper.replace_whereClause(WhereClause, sqlParameterName, newVal);
                     }
                     else
                     {
-                        WhereClauseHelper.replace_whereClause(ref whereClause, sqlParameterName, $"'{sqlParameterValue}'");
+                        WhereClause = WhereClauseHelper.replace_whereClause(WhereClause, sqlParameterName, $"'{sqlParameterValue}'");
                     }
                 }
                 else if (sqlParameterValueType == typeof(Guid) || sqlParameterValueType == typeof(Guid?))
                 {
-                    WhereClauseHelper.replace_whereClause(ref whereClause, sqlParameterName, $"'{sqlParameterValue}'");
+                    WhereClause = WhereClauseHelper.replace_whereClause(WhereClause, sqlParameterName, $"'{sqlParameterValue}'");
                 }
                 else if (sqlParameterValueType == typeof(bool) || sqlParameterValueType == typeof(bool?))
                 {
-                    WhereClauseHelper.replace_whereClause(ref whereClause, sqlParameterName, $"{(object.Equals(sqlParameterValue, true) == true ? 1 : 0)}");
+                    WhereClause = WhereClauseHelper.replace_whereClause(WhereClause, sqlParameterName, $"{(object.Equals(sqlParameterValue, true) == true ? 1 : 0)}");
                 }
                 else
                 {
-                    WhereClauseHelper.replace_whereClause(ref whereClause, sqlParameterName, $"{sqlParameterValue}");
+                    WhereClause = WhereClauseHelper.replace_whereClause(WhereClause, sqlParameterName, $"{sqlParameterValue}");
                 }
             }
         }
-        return whereClause.TrimEnd();
+        return WhereClause.TrimEnd();
     }
 
     private string Get_sqlParameterValue_str(string sqlParameterName, string sqlParameterValue_str)

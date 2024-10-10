@@ -1,6 +1,4 @@
-﻿using ExpressionToSqlWhereClause.ExtensionMethods;
-using ExpressionToSqlWhereClause.Helpers;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 
 namespace ExpressionToSqlWhereClause.SqlServer.ExtensionMehtods
 {
