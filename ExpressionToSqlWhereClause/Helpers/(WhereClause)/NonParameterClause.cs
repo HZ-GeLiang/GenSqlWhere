@@ -1,23 +1,36 @@
 ﻿using ExpressionToSqlWhereClause.ExpressionTree;
 using System.Text.RegularExpressions;
 
-namespace ExpressionToSqlWhereClause.Helpers;
+namespace ExpressionToSqlWhereClause;
 
 public class NonParameterClause
 {
-    private readonly SearchCondition _searchCondition;
+    //private readonly SearchCondition _searchCondition;
+    private string whereClause;
+
+    private Dictionary<string, object> parameters;
+
+    private WhereClauseAdhesive Adhesive;
+
     private readonly Dictionary<string, string> _formatDateTime;
 
-    public NonParameterClause(SearchCondition searchCondition)
+    public NonParameterClause(SearchCondition searchCondition) : this(searchCondition, null)
     {
-        _searchCondition = searchCondition;
-        _formatDateTime = WhereClauseHelper.GetDefaultFormatDateTime(searchCondition.Parameters);
     }
 
     public NonParameterClause(SearchCondition searchCondition, Dictionary<string, string> formatDateTime)
     {
-        _searchCondition = searchCondition;
-        _formatDateTime = formatDateTime;
+        whereClause = searchCondition.WhereClause;
+        parameters = searchCondition.Parameters;
+        Adhesive = searchCondition.ParseResult.Adhesive;
+        if (formatDateTime == null)
+        {
+            _formatDateTime = WhereClauseHelper.GetDefaultFormatDateTime(searchCondition.Parameters);
+        }
+        else
+        {
+            _formatDateTime = formatDateTime;
+        }
     }
 
     /// <summary>
@@ -26,12 +39,11 @@ public class NonParameterClause
     /// <returns></returns>
     public string GetNonParameterClause()
     {
-        if (string.IsNullOrWhiteSpace(_searchCondition.WhereClause))
+        if (string.IsNullOrWhiteSpace(whereClause))
         {
             return "";
         }
-        string whereClause = _searchCondition.WhereClause;
-        Dictionary<string, object> parameters = _searchCondition.Parameters;
+
         whereClause += WhereClauseHelper.space1;//为了解决替换时出现的 属性名存在包含关系, 示例: ExpressionDemo_属性名存在包含关系.cs
         var default_formatDateTime = WhereClauseHelper.GetDefaultFormatDateTime(parameters);
 
@@ -61,20 +73,7 @@ public class NonParameterClause
                 var sqlParameterValueType = sqlParameterValue.GetType();
                 if (sqlParameterValueType == typeof(string))
                 {
-                    var sqlParameterValue_str = (string)sqlParameterValue;
-                    var pmsInfo = _searchCondition.ParseResult.Adhesive.GetParameter(sqlParameterName);
-                    if (pmsInfo.Symbol == SqlKeys.Equal && sqlParameterValue_str.Contains("'"))
-                    {
-                        sqlParameterValue_str = $"'{sqlParameterValue_str.Replace("'", "''")}'";
-                    }
-                    else if (pmsInfo.Symbol == SqlKeys.@in)
-                    {
-                        sqlParameterValue_str = $"{sqlParameterValue_str}";
-                    }
-                    else
-                    {
-                        sqlParameterValue_str = $"'{sqlParameterValue_str}'";
-                    }
+                    string sqlParameterValue_str = Get_sqlParameterValue_str(sqlParameterName, (string)sqlParameterValue);
 
                     WhereClauseHelper.replace_whereClause(ref whereClause, sqlParameterName, sqlParameterValue_str);
                 }
@@ -115,5 +114,26 @@ public class NonParameterClause
             }
         }
         return whereClause.TrimEnd();
+    }
+
+    private string Get_sqlParameterValue_str(string sqlParameterName, string sqlParameterValue_str)
+    {
+        if (Adhesive != null)
+        {
+            SqlClauseParametersInfo pmsInfo = Adhesive.GetParameter(sqlParameterName);
+            if (pmsInfo != null)
+            {
+                if (pmsInfo.Symbol == SqlKeys.Equal && sqlParameterValue_str.Contains("'"))
+                {
+                    return $"'{sqlParameterValue_str.Replace("'", "''")}'";
+                }
+                if (pmsInfo.Symbol == SqlKeys.@in)
+                {
+                    return $"{sqlParameterValue_str}";
+                }
+            }
+        }
+
+        return $"'{sqlParameterValue_str}'";
     }
 }

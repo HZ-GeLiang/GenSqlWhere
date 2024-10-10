@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace ExpressionToSqlWhereClause.Helpers;
+namespace ExpressionToSqlWhereClause;
 
 /// <summary>
 /// WhereClause的帮助类

@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace ExpressionToSqlWhereClause.Helpers;
+namespace ExpressionToSqlWhereClause;
 
 /// <summary>
 /// 转换为 FormattableString 的对象

@@ -2,12 +2,10 @@
 using ExpressionToSqlWhereClause.ExpressionTree;
 using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
 using ExpressionToSqlWhereClause.Helpers;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
 
-namespace ExpressionToSqlWhereClause.ExtensionMethods;
+namespace ExpressionToSqlWhereClause;
 
 public static class WhereClauseExpressionExtensions
 {

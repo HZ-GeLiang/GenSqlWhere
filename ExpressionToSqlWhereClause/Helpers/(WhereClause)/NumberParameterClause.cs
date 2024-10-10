@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace ExpressionToSqlWhereClause.Helpers;
+namespace ExpressionToSqlWhereClause;
 
 /// <summary>
 /// 条件语句的参数是数字形式的:sql参数名转成数字的

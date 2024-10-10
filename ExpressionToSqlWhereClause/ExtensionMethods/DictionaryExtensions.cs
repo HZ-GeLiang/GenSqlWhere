@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ExpressionToSqlWhereClause.ExtensionMethods;
+﻿namespace ExpressionToSqlWhereClause.ExtensionMethods;
 
 internal static class DictionaryExtensions
 {
