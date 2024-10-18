@@ -1,8 +1,7 @@
-﻿namespace ExpressionToSqlWhereClause.ExpressionTree
+﻿namespace ExpressionToSqlWhereClause.ExpressionTree;
+
+public class ClauseParserResult
 {
-    public class ClauseParserResult
-    {
-        public string WhereClause { get; set; }
-        public WhereClauseAdhesive Adhesive { get; set; }
-    }
+    public string WhereClause { get; set; }
+    public WhereClauseAdhesive Adhesive { get; set; }
 }

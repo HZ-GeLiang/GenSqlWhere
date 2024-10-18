@@ -5,7 +5,7 @@ namespace ExpressionToSqlWhereClause.Test;
 internal static class WhereExtension
 {
     /// <summary>
-    /// 有值(不为空 IsNotBlank): COALESCE([t].[Name], N'') <> N''
+    /// 有值(不为空 IsNotBlank)
     /// </summary>
     /// <typeparam name="TSource"></typeparam>
     /// <typeparam name="TProperty"></typeparam>
@@ -16,6 +16,7 @@ internal static class WhereExtension
     public static IQueryable<TSource> WhereHasValue<TSource, TProperty>(this IQueryable<TSource> query,
         Expression<Func<TSource, TProperty>> propertySelector)
     {
+        //sql语句类似于  COALESCE([t].[Name], N'') <> N''
         //把 sql语句 IsNull(字段, "") != "" 对应的表达式 Expression<Func<TSource, bool>> exp = a => (a.字段 ?? "") != ""; 翻译成对应的表达式树
 
         string propertyName = GetPropertyName(propertySelector);
