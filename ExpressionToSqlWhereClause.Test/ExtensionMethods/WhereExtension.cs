@@ -1,9 +1,13 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace ExpressionToSqlWhereClause.Test;
 
 internal static class WhereExtension
 {
+    #region 是否有值
+
     /// <summary>
     /// 有值(不为空 IsNotBlank)
     /// </summary>
@@ -16,7 +20,7 @@ internal static class WhereExtension
     public static IQueryable<TSource> WhereHasValue<TSource, TProperty>(this IQueryable<TSource> query,
         Expression<Func<TSource, TProperty>> propertySelector)
     {
-        //sql语句类似于  COALESCE([t].[Name], N'') <> N''
+        //sql语句类似:  COALESCE([t].[Name], N'') <> N''
         //把 sql语句 IsNull(字段, "") != "" 对应的表达式 Expression<Func<TSource, bool>> exp = a => (a.字段 ?? "") != ""; 翻译成对应的表达式树
 
         string propertyName = GetPropertyName(propertySelector);
@@ -52,7 +56,7 @@ internal static class WhereExtension
     }
 
     /// <summary>
-    /// 没有值(为空 IsBlank):  COALESCE([t].[Name], N'') = N''
+    /// 没有值(为空 IsBlank)
     /// </summary>
     /// <typeparam name="TSource"></typeparam>
     /// <typeparam name="TProperty"></typeparam>
@@ -63,6 +67,8 @@ internal static class WhereExtension
     public static IQueryable<TSource> WhereNoValue<TSource, TProperty>(this IQueryable<TSource> query,
         Expression<Func<TSource, TProperty>> propertySelector)
     {
+        //sql语句类似: COALESCE([t].[Name], N'') = N''
+
         //把 sql语句 IsNull(字段, "") = "" 对应的表达式 Expression<Func<TSource, bool>> exp = a => (a.字段 ?? "") == ""; 翻译成对应的表达式树
 
         string propertyName = GetPropertyName(propertySelector);
@@ -138,4 +144,101 @@ internal static class WhereExtension
             return query;
         }
     }
+
+    #endregion
+
+    #region 是否删除
+
+    /// <summary>
+    /// 未删除
+    /// </summary>
+    /// <typeparam name="TSource"></typeparam>
+    /// <typeparam name="TProperty"></typeparam>
+    /// <param name="query"></param>
+    /// <param name="propertySelector"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public static IQueryable<TSource> WhereNotDeleted<TSource, TProperty>(this IQueryable<TSource> query,
+        Expression<Func<TSource, TProperty>> propertySelector)
+    {
+        // 获取属性名
+        string propertyName = GetPropertyName(propertySelector);
+
+        var type_TEntity = typeof(TSource);
+        var prop_Info = type_TEntity.GetProperty(propertyName);
+        if (prop_Info == null)
+        {
+            throw new Exception($"{propertyName}不在{typeof(TSource).FullName}类型中");
+        }
+
+        var parameterExp = Expression.Parameter(type_TEntity, "a");
+        if (prop_Info.PropertyType == typeof(bool))
+        {
+            var left = Expression.MakeBinary(
+                ExpressionType.NotEqual,
+                Expression.MakeMemberAccess(parameterExp, prop_Info),
+                Expression.Constant(true)
+            );
+
+            var lambda = Expression.Lambda<Func<TSource, bool>>(left, parameterExp);
+
+            query = query.Where(lambda);
+            return query;
+        }
+        else if (prop_Info.PropertyType == typeof(bool?))
+        {
+            // 判断属性是否为null或者为true
+            var left = Expression.OrElse(
+                Expression.NotEqual(
+                    Expression.MakeMemberAccess(parameterExp, prop_Info),
+                    Expression.Constant(true, typeof(bool?))
+                ),
+                Expression.Equal(
+                    Expression.MakeMemberAccess(parameterExp, prop_Info),
+                    Expression.Constant(null, typeof(bool?))
+                )
+            );
+
+            var lambda = Expression.Lambda<Func<TSource, bool>>(left, parameterExp);
+
+            query = query.Where(lambda);
+            return query;
+        }
+        else if (prop_Info.PropertyType == typeof(int))
+        {
+            var left = Expression.MakeBinary(
+                ExpressionType.NotEqual,
+                Expression.MakeMemberAccess(parameterExp, prop_Info),
+                Expression.Constant(1)
+            );
+
+            var lambda = Expression.Lambda<Func<TSource, bool>>(left, parameterExp);
+
+            query = query.Where(lambda);
+            return query;
+        }
+        else if (prop_Info.PropertyType == typeof(int?))
+        {
+            // 判断属性是否为null或者为true
+            var left = Expression.OrElse(
+                Expression.NotEqual(
+                    Expression.MakeMemberAccess(parameterExp, prop_Info),
+                    Expression.Constant(1, typeof(int?))
+                ),
+                Expression.Equal(
+                    Expression.MakeMemberAccess(parameterExp, prop_Info),
+                    Expression.Constant(null, typeof(int?))
+                )
+            );
+
+            var lambda = Expression.Lambda<Func<TSource, bool>>(left, parameterExp);
+
+            query = query.Where(lambda);
+            return query;
+        }
+
+        throw new NotImplementedException();
+    }
+
+    #endregion
 }
