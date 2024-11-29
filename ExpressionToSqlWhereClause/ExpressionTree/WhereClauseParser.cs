@@ -233,8 +233,32 @@ internal static class WhereClauseParser
                         MemberInfo = operandMemberExpression.Member
                     };
                 }
+                else if (unaryExpression.Operand is System.Linq.Expressions.UnaryExpression operandUnaryExpression)
+                {
+                    //IssusDemo 的 类型问题
+                    // 从嵌套的 UnaryExpression 中获取 MemberExpression
+                    var nestedMemberExpression = operandUnaryExpression.Operand as MemberExpression;
+                    if (nestedMemberExpression != null)
+                    {
+                        SqlClauseParametersInfo param = ConditionBuilder.BuildCondition(
+                            nestedMemberExpression,
+                            nestedMemberExpression.Member,
+                            adhesive,
+                            comparison);
+
+                        return new ParseResult()
+                        {
+                            WhereClause = new StringBuilder(param.SqlClause),
+                            SqlClauseParametersInfo = param,
+                            NeedAddPara = true,
+                            MemberExpression = null,
+                            MemberInfo = nestedMemberExpression.Member
+                        };
+                    }
+                }
             }
         }
+
 
         //不支持的:
         //-expression  { Not(u.Name.Contains("Name"))}
