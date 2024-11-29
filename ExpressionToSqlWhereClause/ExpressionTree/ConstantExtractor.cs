@@ -88,11 +88,13 @@ public static class ConstantExtractor
     public static object ParseConstant(Expression expression)
     {
 #if DEBUG
-        StackFrame frame = new(1, true);
-        var method = frame.GetMethod();
-        var fileName = frame.GetFileName();
-        var lineNumber = frame.GetFileLineNumber();
+        //StackFrame frame = new(1, true);
+        //var method = frame.GetMethod();
+        //var fileName = frame.GetFileName();
+        //var lineNumber = frame.GetFileLineNumber();
+        var frame = DebuggerHelper.GetStackFrame();
 #endif
+
         if (expression is ConstantExpression constantExpression)
         {
             return ConstantExtractor.ParseConstantExpression(constantExpression);
@@ -208,10 +210,11 @@ public static class ConstantExtractor
 
             default:
 #if DEBUG
-                StackFrame frame = new(1, true);
-                var method = frame.GetMethod();
-                var fileName = frame.GetFileName();
-                var lineNumber = frame.GetFileLineNumber();
+                //StackFrame frame = new(1, true);
+                //var method = frame.GetMethod();
+                //var fileName = frame.GetFileName();
+                //var lineNumber = frame.GetFileLineNumber();
+                var frame = DebuggerHelper.GetStackFrame();
 #endif
                 throw new NotSupportedException($"Unknow Member type {memberExpression.Member.MemberType}");
         }

@@ -263,7 +263,7 @@ internal static class WhereClauseParser
         //不支持的:
         //-expression  { Not(u.Name.Contains("Name"))}
         //System.Linq.Expressions.Expression { System.Linq.Expressions.UnaryExpression}
-
+        DebuggerHelper.Break();
         throw new NotSupportedException($"Unknow expression {expression.GetType()}");
     }
 
