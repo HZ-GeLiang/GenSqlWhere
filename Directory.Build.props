@@ -8,10 +8,10 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
- 
+
 	<!--分析器Analyzer start-->
 	<ItemGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<PackageReference Include="Meziantou.Analyzer" Version="2.0.183">
+		<PackageReference Include="Meziantou.Analyzer" Version="2.0.184">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
@@ -24,5 +24,5 @@
 		</PackageReference>
 	</ItemGroup>
 	<!--分析器Analyzer end-->
- 
+
 </Project>
