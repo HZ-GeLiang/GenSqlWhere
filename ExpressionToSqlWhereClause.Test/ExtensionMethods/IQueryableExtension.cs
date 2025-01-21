@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace ExpressionToSqlWhereClause.Test;
 
-internal static class WhereExtension
+internal static class IQueryableExtension
 {
     #region 是否有值
 
