@@ -64,7 +64,8 @@ internal sealed class StackTraceInfo
         var method = this.Method.Name;
         if (method == "MoveNext")
         {
-            method += "---" + this.Method.DeclaringType.Name;  //<GetDataInterfaceData>d__33
+            //method += "---" + this.Method.DeclaringType.Name;  //<GetDataInterfaceData>d__33
+            method += "---" + this.Method.DeclaringType.FullName;
         }
         return method;
     }
