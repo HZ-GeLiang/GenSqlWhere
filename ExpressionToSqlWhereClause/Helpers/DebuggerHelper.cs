@@ -22,8 +22,7 @@ internal sealed class DebuggerHelper
         [CallerLineNumber] int lineNumber = 0)
     {
         //方便调试预览
-        var message = ex.Message;
+        var message = ex?.Message;
         var message_inner = ex?.InnerException?.Message;
-        Debugger.Break();
     }
 }

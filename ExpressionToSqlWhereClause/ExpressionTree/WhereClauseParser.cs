@@ -170,7 +170,15 @@ internal static class WhereClauseParser
             SqlClauseParametersInfo param;
             if (memberExpression.Member is PropertyInfo pi && pi.PropertyType == typeof(bool))
             {
-                param = ConditionBuilder.BuildCondition(memberExpression, memberExpression.Member, adhesive, comparison);
+                if (comparison == ExpressionType.AndAlso || comparison == ExpressionType.OrElse)
+                {
+                    param = ConditionBuilder.BuildCondition(memberExpression, memberExpression.Member, adhesive, ExpressionType.Equal);
+                }
+                else
+                {
+                    param = ConditionBuilder.BuildCondition(memberExpression, memberExpression.Member, adhesive, comparison);
+                }
+
             }
             else
             {
@@ -341,8 +349,8 @@ internal static class WhereClauseParser
             }
 
             var index = parseResult.WhereClause.IndexOf(' ');// IndexOf 是扩展方法
-            //Remove的index小于0会报错,所以,这里添加一个判断
-            //虽然这个判断永远不会生效(以目前逻辑来讲,2021.12.12),但是为了保险起见, 还是添加了
+                                                             //Remove的index小于0会报错,所以,这里添加一个判断
+                                                             //虽然这个判断永远不会生效(以目前逻辑来讲,2021.12.12),但是为了保险起见, 还是添加了
             if (index == -1)
             {
                 return parseResult.WhereClause;

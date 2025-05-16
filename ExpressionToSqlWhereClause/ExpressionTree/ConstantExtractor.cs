@@ -243,7 +243,6 @@ public static class ConstantExtractor
 
                 if (expression.GetType().FullName == ExpressionFullNameSpaceConst.Property)
                 {
-                    DebuggerHelper.Break();
                     var nodeType = (ExpressionType)(((dynamic)expression).Expression.NodeType);
 
                     if (nodeType == ExpressionType.Parameter)
@@ -257,7 +256,7 @@ public static class ConstantExtractor
                 }
                 else if (expression.GetType().FullName == ExpressionFullNameSpaceConst.TypedParameter)
                 {
-                    DebuggerHelper.Break();
+                    Debugger.Break();
                     throw new NotSupportedException($"Unknow expression {expression.GetType()}");
                 }
                 else
