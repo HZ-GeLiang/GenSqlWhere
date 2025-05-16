@@ -37,7 +37,7 @@ var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
     var param = searchCondition.Parameters;
     var sql_count_str = $"select count(*) from V_CRM_Contacts where {clause}";
 
-    //var total = _db.ExecSqlReader<int>(sql_count_str, searchCondition.GetSqlParameter()).First();
+    //var total = _db.ExecSqlReader<int>(sql_count_str, searchCondition.GetSqlParameter()).First(); //自定义的扩展方法
 
     //var pageIndex = dto.MaxResultCount;
     //var pageSize = dto.SkipCount;
@@ -45,8 +45,8 @@ var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
     var pageIndex = 1;
     var pageSize = 5;
 
-    var sql_query_str = $"select * from V_CRM_Contacts where {clause} OrderBy IsDeparture, ModifyDate desc " +
+    var sql_query_str = $"select * from V_CRM_Contacts where {clause} Order By IsDeparture, ModifyDate desc " +
         $@" OFFSET {(pageIndex - 1) * pageSize} ROWS FETCH NEXT {pageSize} ROWS ONLY";
 
-    //var list = _db.ExecSqlReader<V_CRM_Contacts>(sql_query_str, searchCondition.GetSqlParameter()).ToList();
+    //var list = _db.ExecSqlReader<V_CRM_Contacts>(sql_query_str, searchCondition.GetSqlParameter()).ToList(); //自定义的扩展方法
 }
