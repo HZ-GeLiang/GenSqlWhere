@@ -39,9 +39,6 @@ var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
 
     //var total = _db.ExecSqlReader<int>(sql_count_str, searchCondition.GetSqlParameter()).First(); //自定义的扩展方法
 
-    //var pageIndex = dto.MaxResultCount;
-    //var pageSize = dto.SkipCount;
-
     var pageIndex = 1;
     var pageSize = 5;
 

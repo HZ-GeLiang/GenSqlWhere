@@ -21,6 +21,7 @@
 	</ItemGroup>-->
 
 	<ItemGroup>
+	  <ProjectReference Include="..\ExpressionToSqlWhereClause.SqlServer\ExpressionToSqlWhereClause.SqlServer.csproj" />
 	  <ProjectReference Include="..\ExpressionToSqlWhereClause\ExpressionToSqlWhereClause.csproj" />
 	</ItemGroup>
 

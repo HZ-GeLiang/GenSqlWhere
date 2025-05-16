@@ -10,6 +10,29 @@ namespace ExpressionToSqlWhereClause.Test;
 public class WhereLambdaHelperTest
 {
     [TestMethod]
+    public void test_notEuqal()
+    {
+        {
+            var expression = default(Expression<Func<Test_001, bool>>).WhereIf(true, a => a.IsDel == true);
+
+            var searchCondition = expression.ToWhereClause();
+            var clause = searchCondition.WhereClause;
+
+            Assert.AreEqual("IsDel = @IsDel", clause);
+        }
+
+        {
+            var expression = default(Expression<Func<Test_001, bool>>).WhereIf(true, a => a.IsDel != true);
+
+            var searchCondition = expression.ToWhereClause();
+            var clause = searchCondition.WhereClause;
+
+            Assert.AreEqual("IsDel <> @IsDel", clause);
+        }
+    }
+
+
+    [TestMethod]
     public void test_GetNonParameterClause_02()
     {
         var expression =

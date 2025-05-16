@@ -170,7 +170,7 @@ internal static class WhereClauseParser
             SqlClauseParametersInfo param;
             if (memberExpression.Member is PropertyInfo pi && pi.PropertyType == typeof(bool))
             {
-                param = ConditionBuilder.BuildCondition(memberExpression, memberExpression.Member, adhesive, ExpressionType.Equal);
+                param = ConditionBuilder.BuildCondition(memberExpression, memberExpression.Member, adhesive, comparison);
             }
             else
             {
