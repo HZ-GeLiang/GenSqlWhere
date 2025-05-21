@@ -205,7 +205,15 @@ public static class ConstantExtractor
 
             case MemberTypes.Property:
                 PropertyInfo propertyInfo = type.GetProperty(memberExpression.Member.Name);
-                return propertyInfo.GetValue(value);
+                if (propertyInfo == null)
+                {
+                    //可空类型时遇到了, 详见 bug:#01
+                    return value;
+                }
+                else
+                {
+                    return propertyInfo.GetValue(value);
+                }
 
             default:
 #if DEBUG
