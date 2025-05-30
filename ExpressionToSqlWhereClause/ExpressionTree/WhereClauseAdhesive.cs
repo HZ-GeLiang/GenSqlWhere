@@ -7,10 +7,21 @@ namespace ExpressionToSqlWhereClause.ExpressionTree;
 /// </summary>
 public class SqlClauseParametersInfo
 {
+
+    public SqlClauseParametersInfo()
+    {
+
+    }
+
     /// <summary>
     /// 参数化的key
     /// </summary>
     public string Key { get; set; }
+
+    /// <summary>
+    /// 字段
+    /// </summary>
+    public string Field { get; set; }
 
     /// <summary>
     /// 参数化的sql子句的符号

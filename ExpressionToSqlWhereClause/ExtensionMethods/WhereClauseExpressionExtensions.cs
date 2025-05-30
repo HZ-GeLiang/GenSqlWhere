@@ -94,10 +94,15 @@ public static class WhereClauseExpressionExtensions
             }
 
             //翻译IEnumerable的值
-            var parseValue = ConstantExtractor.ConstantExpressionValueToString(val, out var isIEnumerableObj);
+            var parseValue = ConstantExtractor.ConstantExpressionValueToString(val, out var isIEnumerableObj, out var hasNullItem);
             if (isIEnumerableObj)
             {
                 para.Value = parseValue;
+                if (hasNullItem)
+                {
+                    para.SqlClause += $" OR ({para.Field} IS NULL)";
+                    parseResult.WhereClause = para.SqlClause;
+                }
                 continue;
             }
         }

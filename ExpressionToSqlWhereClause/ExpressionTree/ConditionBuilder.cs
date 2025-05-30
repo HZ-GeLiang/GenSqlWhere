@@ -16,6 +16,7 @@ public static class ConditionBuilder
         var param = adhesive.GetParameter(parametersKey);
         var symbol = ConditionBuilder.ToComparisonSymbol(comparison, memberInfo);
         param.Symbol = symbol;
+        param.Field = fieldName;
         param.Value = value;
         param.SqlClause = $"{fieldName} {symbol} {parametersKey}";
         return param;
@@ -44,17 +45,17 @@ public static class ConditionBuilder
     /// <param name="memberInfo"></param>
     /// <param name="adhesive"></param>
     /// <param name="comparison"></param>
-    /// <param name="fieldName"></param>
     /// <returns> </returns>
-    public static SqlClauseParametersInfo BuildCondition(Expression expression, MemberInfo memberInfo, WhereClauseAdhesive adhesive, ExpressionType comparison, out string fieldName)
+    public static SqlClauseParametersInfo BuildCondition(Expression expression, MemberInfo memberInfo, WhereClauseAdhesive adhesive, ExpressionType comparison)
     {
-        fieldName = GetFieldName(expression, memberInfo);
+        var fieldName = GetFieldName(expression, memberInfo);
         fieldName = adhesive.SqlAdapter.FormatColumnName(fieldName);
         string parameterName = EnsureParameter(fieldName, adhesive);
         var symbol = ConditionBuilder.ToComparisonSymbol(comparison, memberInfo);
         var parametersKey = $"@{parameterName}";
         var param = adhesive.GetParameter(parametersKey);
         param.Symbol = symbol;
+        param.Field = fieldName;
         param.SqlClause = $"{fieldName} {symbol} {parametersKey}";
         return param;
     }
@@ -104,6 +105,7 @@ public static class ConditionBuilder
             var param = adhesive.GetParameter(parametersKey);
             param.Value = string.Format(valueSymbol, value);
             param.Symbol = symbol;
+            param.Field = fieldName;
             param.SqlClause = string.Format($"{fieldName} {symbol}", parametersKey);// string.Format( Name Like ){0} , Name1
             return param;
         }
@@ -122,6 +124,7 @@ public static class ConditionBuilder
         var symbol = SqlKeys.@in;
         var param = adhesive.GetParameter(parametersKey);
         param.Symbol = symbol;
+        param.Field = fieldName;
         param.Value = value;
         param.SqlClause = $"{fieldName} {symbol} ({parametersKey})";
         return param;

@@ -174,20 +174,20 @@ internal static class WhereClauseParser
             {
                 if (comparison == ExpressionType.AndAlso || comparison == ExpressionType.OrElse)
                 {
-                    param = ConditionBuilder.BuildCondition(memberExpression, memberExpression.Member, adhesive, ExpressionType.Equal, out var fieldName);
+                    param = ConditionBuilder.BuildCondition(memberExpression, memberExpression.Member, adhesive, ExpressionType.Equal);
                 }
             }
 
             if (param == null)
             {
-                param = ConditionBuilder.BuildCondition(memberExpression, memberExpression.Member, adhesive, comparison, out var fieldName);
+                param = ConditionBuilder.BuildCondition(memberExpression, memberExpression.Member, adhesive, comparison);
 
                 if (pi?.PropertyType == typeof(bool?))
                 {
                     //如果是判断符号是 != +类型是可空,  生成的语句中需要 IS NULL
                     if (param.Symbol == "<>")
                     {
-                        param.SqlClause += $" OR ({fieldName} IS NULL)";
+                        param.SqlClause += $" OR ({param.Field} IS NULL)";
                     }
                 }
             }
@@ -213,8 +213,7 @@ internal static class WhereClauseParser
                             operandMemberExpression,
                             operandMemberExpression.Member,
                             adhesive,
-                            comparison,
-                            out var fieldName);
+                            comparison);
                         return new ParseResult()
                         {
                             WhereClause = new StringBuilder(param.SqlClause),
@@ -233,8 +232,7 @@ internal static class WhereClauseParser
                         memberExpression2,
                         member,
                         adhesive,
-                        comparison,
-                        out var fieldName);
+                        comparison);
                     return new ParseResult()
                     {
                         WhereClause = new StringBuilder(param.SqlClause),
@@ -253,8 +251,7 @@ internal static class WhereClauseParser
                             operandMemberExpression,
                             operandMemberExpression.Member,
                             adhesive,
-                            comparison,
-                            out var fieldName);
+                            comparison);
                     return new ParseResult()
                     {
                         WhereClause = new StringBuilder(param.SqlClause),
@@ -275,8 +272,7 @@ internal static class WhereClauseParser
                             nestedMemberExpression,
                             nestedMemberExpression.Member,
                             adhesive,
-                            comparison,
-                            out var fieldName);
+                            comparison);
 
                         return new ParseResult()
                         {

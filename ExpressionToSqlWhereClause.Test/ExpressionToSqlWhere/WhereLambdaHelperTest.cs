@@ -1,4 +1,5 @@
 ﻿using ExpressionToSqlWhereClause.Helpers;
+using ExpressionToSqlWhereClause.Test.ExtensionMethods;
 using ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq.Expressions;
@@ -9,6 +10,60 @@ namespace ExpressionToSqlWhereClause.Test.ExpressionToSqlWhere;
 [TestClass]
 public class WhereLambdaHelperTest
 {
+
+    [TestMethod]
+    public void 列表范围()
+    {
+        {
+            List<int?> list = new List<int?>() { 1, 2, null, 3 }; //特地添加了null
+            var expression =
+            default(Expression<Func<Test_001, bool>>)
+            .WhereIf(true, a => list.Contains(a.UserId));
+
+            var searchCondition = expression.ToWhereClause();
+
+            var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+            Assert.AreEqual(clause, "UserId In (1,2,3) OR UserId IS NULL");
+            //WHERE[t].[OtherId] IN(1, 2, 3) OR(UserId IS NULL)
+        }
+
+        {
+            var ids = "1,2,3";
+            var expression =
+            default(Expression<Func<Test_001, bool>>)
+            .WhereIf(ids.HasValue(), a => ids.SplitToInt(',').Contains(a.MessageType));
+
+            var searchCondition = expression.ToWhereClause();
+            {
+                var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+                Assert.AreEqual(clause, "MessageType In (1,2,3)");
+            }
+
+            {
+                var clause = searchCondition.WhereClause;
+            }
+        }
+
+
+
+        {
+
+            var list = new List<string>() { "1", "2" };
+            var expression =
+            default(Expression<Func<Test_001, bool>>)
+            .WhereIf(true, a => list.Contains(a.Message));
+
+
+
+            //todo:
+            var searchCondition = expression.ToWhereClause();
+            {
+                var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+                Assert.AreEqual(clause, "MessageType In (1,2,3)");
+            }
+        }
+    }
+
     #region NonParameter
 
     [TestMethod]
@@ -17,30 +72,30 @@ public class WhereLambdaHelperTest
         {
             var expression = default(Expression<Func<Test_001, bool>>).WhereIf(true, a => a.IsDel != true);
             var searchCondition = expression.ToWhereClause();
-            var caluse = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(caluse, "IsDel <> 1");
+            var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+            Assert.AreEqual(clause, "IsDel <> 1");
         }
 
         {
             var expression = default(Expression<Func<Test_001, bool>>).WhereIf(true, a => a.IsDel == false);
             var searchCondition = expression.ToWhereClause();
-            var caluse = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(caluse, "IsDel = 0");
+            var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+            Assert.AreEqual(clause, "IsDel = 0");
         }
 
 
         {
             var expression = default(Expression<Func<Test_001, bool>>).WhereIf(true, a => a.IsDel2 != true);
             var searchCondition = expression.ToWhereClause();
-            var caluse = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(caluse, "IsDel2 <> 1 OR IsDel2 IS NULL");
+            var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+            Assert.AreEqual(clause, "IsDel2 <> 1 OR IsDel2 IS NULL");
         }
 
         {
             var expression = default(Expression<Func<Test_001, bool>>).WhereIf(true, a => a.IsDel2 == false);
             var searchCondition = expression.ToWhereClause();
-            var caluse = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(caluse, "IsDel2 = 0");
+            var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+            Assert.AreEqual(clause, "IsDel2 = 0");
         }
 
     }
@@ -198,8 +253,8 @@ public class WhereLambdaHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var formatDateTime = new Dictionary<string, string>() { { "@DataCreatedAt1", "yyyy-MM-dd" } };
-            var caluse = WhereClauseHelper.GetNonParameterClause(searchCondition, formatDateTime);
-            Assert.AreEqual(caluse, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03'");
+            var clause = WhereClauseHelper.GetNonParameterClause(searchCondition, formatDateTime);
+            Assert.AreEqual(clause, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03'");
         }
 
         {
@@ -212,8 +267,8 @@ public class WhereLambdaHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var formatDateTime = WhereClauseHelper.GetDefaultFormatDateTime(searchCondition.Parameters);
-            var caluse = WhereClauseHelper.GetNonParameterClause(searchCondition, formatDateTime);
-            Assert.AreEqual(caluse, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03 12:34:56'");
+            var clause = WhereClauseHelper.GetNonParameterClause(searchCondition, formatDateTime);
+            Assert.AreEqual(clause, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03 12:34:56'");
         }
     }
 
@@ -290,6 +345,7 @@ internal class Test_001
     public string Message { get; set; }
 
     public int MessageType { get; set; } // MessageType 包含 Message
+    public int? UserId { get; set; }
 }
 
 internal class Student

@@ -1,6 +1,5 @@
 ﻿using ExpressionToSqlWhereClause.Consts;
 using ExpressionToSqlWhereClause.ExtensionMethods;
-using ExpressionToSqlWhereClause.Helpers;
 using System.Collections;
 using System.Diagnostics;
 using System.Linq.Expressions;
@@ -16,9 +15,11 @@ public static class ConstantExtractor
     /// </summary>
     /// <param name="value"></param>
     /// <param name="isIEnumerableObj">是否是isIEnumerable 对象</param>
+    /// <param name="hasNullItem">存在null值</param>
     /// <returns></returns>
-    public static string ConstantExpressionValueToString(object value, out bool isIEnumerableObj)
+    public static string ConstantExpressionValueToString(object value, out bool isIEnumerableObj, out bool hasNullItem)
     {
+        hasNullItem = false;
         if (value == null)
         {
             isIEnumerableObj = false;
@@ -67,13 +68,20 @@ public static class ConstantExtractor
         StringBuilder sb = new();
         foreach (var obj in loopObj)
         {
-            if (obj.GetType().IsStructType())
+            if (obj == null)
             {
-                sb.Append(obj).Append(",");
+                hasNullItem = true; //需要在sql语句中生成 or 字段 is null
             }
             else
             {
-                sb.Append("'").Append(obj).Append("'").Append(",");
+                if (obj.GetType().IsStructType())
+                {
+                    sb.Append(obj).Append(",");
+                }
+                else
+                {
+                    sb.Append("'").Append(obj).Append("'").Append(",");
+                }
             }
         }
         var txt = sb.Remove(sb.Length - 1, 1).ToString(); //RemoveLastChar
@@ -157,6 +165,14 @@ public static class ConstantExtractor
         //{
         //    throw new NotSupportedException($"Unknow expression {expression.GetType()}");
         //}
+
+
+
+#if DEBUG
+
+        System.Linq.Expressions.NewArrayExpression NewArrayExpression = expression as System.Linq.Expressions.NewArrayExpression;
+#endif
+
 
         throw new NotSupportedException($"Unknow expression {expression.GetType()}");
     }
