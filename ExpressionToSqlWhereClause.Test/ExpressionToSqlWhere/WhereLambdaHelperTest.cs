@@ -15,6 +15,59 @@ public class WhereLambdaHelperTest
     public void 列表范围()
     {
         {
+            var list = new List<short?>() { 1, 2, null };
+            var expression =
+            default(Expression<Func<Test_001, bool>>)
+            .WhereIf(true, a => list.Contains(a.id_short));
+
+            var searchCondition = expression.ToWhereClause();
+
+            var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+            Assert.AreEqual(clause, "id_short In (1,2) OR id_short IS NULL");
+        }
+
+        {
+            //issue:#01 list<可空类型>.contains(不可空类型)
+            //System.NullReferenceException:“Object reference not set to an instance of an object.”
+
+            var list = new List<short?>() { 1, 2 };
+            var expression =
+            default(Expression<Func<Test_001, bool>>)
+            .WhereIf(true, a => list.Contains(a.id_short));
+
+            var searchCondition = expression.ToWhereClause();
+
+            var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+            Assert.AreEqual(clause, "id_short_nullable In (1,2)");
+        }
+
+        {
+            var list = new List<short?>() { 1, 2, null };
+            var expression =
+            default(Expression<Func<Test_001, bool>>)
+            .WhereIf(true, a => list.Contains(a.id_short_nullable));
+
+            var searchCondition = expression.ToWhereClause();
+
+            var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+            Assert.AreEqual(clause, "id_short_nullable In (1,2) OR id_short_nullable IS NULL");
+
+        }
+
+        {
+            var list = new List<short>() { 1, 2 };
+            var expression =
+            default(Expression<Func<Test_001, bool>>)
+            .WhereIf(true, a => list.Contains(a.id_short));
+
+            var searchCondition = expression.ToWhereClause();
+
+            var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+            Assert.AreEqual(clause, "id_short In (1,2)");
+
+        }
+
+        {
             var list = new List<string>() { "1", "2" };
             var expression =
             default(Expression<Func<Test_001, bool>>)
@@ -342,6 +395,10 @@ internal class Test_001
 
     public int MessageType { get; set; } // MessageType 包含 Message
     public int? UserId { get; set; }
+    public short id_short { get; set; }
+    public short? id_short_nullable { get; set; }
+    public char id_char { get; set; }
+    public char? id_char_nullable { get; set; }
 }
 
 internal class Student

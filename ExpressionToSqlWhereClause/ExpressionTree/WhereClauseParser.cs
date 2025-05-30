@@ -343,9 +343,25 @@ internal static class WhereClauseParser
                  && methodCallExpression.Arguments?.Count == 1
                  && method.Name == "Contains")
             {
-                MemberExpression memberExpression = methodCallExpression.Arguments[0] as MemberExpression;
-                Expression valueExpression = methodCallExpression.Object;
-                return ConditionBuilder.BuildInCondition(memberExpression, valueExpression, adhesive);
+                Expression valueExpression;
+                if (methodCallExpression.Arguments[0] is MemberExpression memberExpression)
+                {
+                    valueExpression = methodCallExpression.Object;
+                    return ConditionBuilder.BuildInCondition(memberExpression, valueExpression, adhesive);
+                }
+                else if (methodCallExpression.Arguments[0] is UnaryExpression unaryExpression)
+                {
+                    //issue:#01
+                    if (unaryExpression.NodeType == ExpressionType.Convert)
+                    {
+                        // 提取 UnaryExpression 的 Operand，确保它是 MemberExpression
+                        memberExpression = unaryExpression.Operand as MemberExpression;
+                        valueExpression = methodCallExpression.Object;
+                        return ConditionBuilder.BuildInCondition(memberExpression, valueExpression, adhesive);
+                    }
+                }
+
+                throw new NotImplementedException("请完善List<xxx>.Contains()");
             }
         }
 
