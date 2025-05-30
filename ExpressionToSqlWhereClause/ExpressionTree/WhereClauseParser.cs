@@ -329,12 +329,28 @@ internal static class WhereClauseParser
         {
             if (methodCallExpression.Arguments?.Count == 2 && method.Name == "Contains")
             {
-                //"In" condition, Support the `Contains` extension Method of IEnumerable<TSource> Type
-                //For example: List<string> values = new List<string> { "foo", "bar"};
-                //values.Contains(u.Name)
-                MemberExpression memberExpression = methodCallExpression.Arguments[1] as MemberExpression;
-                Expression valueExpression = methodCallExpression.Arguments[0];
-                return ConditionBuilder.BuildInCondition(memberExpression, valueExpression, adhesive);
+                Expression valueExpression;
+                if (methodCallExpression.Arguments[1] is MemberExpression memberExpression)
+                {
+                    //"In" condition, Support the `Contains` extension Method of IEnumerable<TSource> Type
+                    //For example: List<string> values = new List<string> { "foo", "bar"};
+                    //values.Contains(u.Name)
+
+                    memberExpression = methodCallExpression.Arguments[1] as MemberExpression;
+                    valueExpression = methodCallExpression.Arguments[0];
+                    return ConditionBuilder.BuildInCondition(memberExpression, valueExpression, adhesive);
+                }
+                else if (methodCallExpression.Arguments[1] is UnaryExpression unaryExpression)
+                {
+                    if (unaryExpression.NodeType == ExpressionType.Convert)
+                    {
+                        // 提取 UnaryExpression 的 Operand，确保它是 MemberExpression
+                        memberExpression = unaryExpression.Operand as MemberExpression;
+                        valueExpression = methodCallExpression.Arguments[0];
+                        return ConditionBuilder.BuildInCondition(memberExpression, valueExpression, adhesive);
+                    }
+                }
+                throw new NotImplementedException("请完善Enumerable.Contains()");
             }
         }
         else if (method.DeclaringType.IsGenericType)

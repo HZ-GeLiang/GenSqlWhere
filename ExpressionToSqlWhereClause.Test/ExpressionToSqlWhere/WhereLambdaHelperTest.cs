@@ -12,7 +12,7 @@ public class WhereLambdaHelperTest
 {
 
     [TestMethod]
-    public void 列表范围()
+    public void Contains_List()
     {
         {
             var list = new List<short?>() { 1, 2, null };
@@ -38,7 +38,7 @@ public class WhereLambdaHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "id_short_nullable In (1,2)");
+            Assert.AreEqual(clause, "id_short In (1,2)");
         }
 
         {
@@ -81,7 +81,110 @@ public class WhereLambdaHelperTest
         }
 
         {
-            List<int?> list = new List<int?>() { 1, 2, null, 3 }; //特地添加了null
+            var list = new List<int?>() { 1, 2, null, 3 }; //特地添加了null
+            var expression =
+            default(Expression<Func<Test_001, bool>>)
+            .WhereIf(true, a => list.Contains(a.UserId));
+
+            var searchCondition = expression.ToWhereClause();
+
+            var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+            Assert.AreEqual(clause, "UserId In (1,2,3) OR UserId IS NULL");
+            //WHERE[t].[OtherId] IN(1, 2, 3) OR(UserId IS NULL)
+        }
+
+
+        {
+            var ids = "1,2,3";
+            var expression =
+            default(Expression<Func<Test_001, bool>>)
+            .WhereIf(ids.HasValue(), a => ids.SplitToInt(',').Contains(a.MessageType));
+
+            var searchCondition = expression.ToWhereClause();
+            {
+                var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+                Assert.AreEqual(clause, "MessageType In (1,2,3)");
+            }
+
+            {
+                var clause = searchCondition.WhereClause;
+            }
+        }
+
+    }
+
+    [TestMethod]
+    public void Contains_Array()
+    {
+
+        {
+            var list = new short?[] { 1, 2, null };
+            var expression =
+            default(Expression<Func<Test_001, bool>>)
+            .WhereIf(true, a => list.Contains(a.id_short));
+
+            var searchCondition = expression.ToWhereClause();
+
+            var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+            Assert.AreEqual(clause, "id_short In (1,2) OR id_short IS NULL");
+        }
+
+        {
+            //issue:#01 list<可空类型>.contains(不可空类型)
+            //System.NullReferenceException:“Object reference not set to an instance of an object.”
+
+            var list = new short[] { 1, 2 };
+            var expression =
+            default(Expression<Func<Test_001, bool>>)
+            .WhereIf(true, a => list.Contains(a.id_short));
+
+            var searchCondition = expression.ToWhereClause();
+
+            var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+            Assert.AreEqual(clause, "id_short In (1,2)");
+        }
+
+        {
+            var list = new short?[] { 1, 2, null };
+            var expression =
+            default(Expression<Func<Test_001, bool>>)
+            .WhereIf(true, a => list.Contains(a.id_short_nullable));
+
+            var searchCondition = expression.ToWhereClause();
+
+            var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+            Assert.AreEqual(clause, "id_short_nullable In (1,2) OR id_short_nullable IS NULL");
+
+        }
+
+        {
+            var list = new short[] { 1, 2 };
+            var expression =
+            default(Expression<Func<Test_001, bool>>)
+            .WhereIf(true, a => list.Contains(a.id_short));
+
+            var searchCondition = expression.ToWhereClause();
+
+            var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+            Assert.AreEqual(clause, "id_short In (1,2)");
+
+        }
+
+        {
+            var list = new string[] { "1", "2" };
+            var expression =
+            default(Expression<Func<Test_001, bool>>)
+            .WhereIf(true, a => list.Contains(a.Message));
+
+            var searchCondition = expression.ToWhereClause();
+
+            var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+            Assert.AreEqual(clause, "Message In ('1','2')");
+
+        }
+
+        {
+            var list = new int?[] { 1, 2, null, 3 }; //特地添加了null
             var expression =
             default(Expression<Func<Test_001, bool>>)
             .WhereIf(true, a => list.Contains(a.UserId));
