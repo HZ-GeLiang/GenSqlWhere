@@ -15,6 +15,19 @@ public class WhereLambdaHelperTest
     public void 列表范围()
     {
         {
+            var list = new List<string>() { "1", "2" };
+            var expression =
+            default(Expression<Func<Test_001, bool>>)
+            .WhereIf(true, a => list.Contains(a.Message));
+
+            var searchCondition = expression.ToWhereClause();
+
+            var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+            Assert.AreEqual(clause, "Message In ('1','2')");
+
+        }
+
+        {
             List<int?> list = new List<int?>() { 1, 2, null, 3 }; //特地添加了null
             var expression =
             default(Expression<Func<Test_001, bool>>)
@@ -26,6 +39,7 @@ public class WhereLambdaHelperTest
             Assert.AreEqual(clause, "UserId In (1,2,3) OR UserId IS NULL");
             //WHERE[t].[OtherId] IN(1, 2, 3) OR(UserId IS NULL)
         }
+
 
         {
             var ids = "1,2,3";
@@ -44,24 +58,6 @@ public class WhereLambdaHelperTest
             }
         }
 
-
-
-        {
-
-            var list = new List<string>() { "1", "2" };
-            var expression =
-            default(Expression<Func<Test_001, bool>>)
-            .WhereIf(true, a => list.Contains(a.Message));
-
-
-
-            //todo:
-            var searchCondition = expression.ToWhereClause();
-            {
-                var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-                Assert.AreEqual(clause, "MessageType In (1,2,3)");
-            }
-        }
     }
 
     #region NonParameter
