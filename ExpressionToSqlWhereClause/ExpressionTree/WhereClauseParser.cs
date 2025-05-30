@@ -167,23 +167,31 @@ internal static class WhereClauseParser
         }
         if (expression is MemberExpression memberExpression)
         {
-            SqlClauseParametersInfo param;
-            if (memberExpression.Member is PropertyInfo pi && pi.PropertyType == typeof(bool))
+            SqlClauseParametersInfo param = null;
+            //m,[fn],bool值的处理
+            PropertyInfo pi = memberExpression.Member as PropertyInfo;
+            if (pi != null && pi.PropertyType == typeof(bool))
             {
                 if (comparison == ExpressionType.AndAlso || comparison == ExpressionType.OrElse)
                 {
-                    param = ConditionBuilder.BuildCondition(memberExpression, memberExpression.Member, adhesive, ExpressionType.Equal);
+                    param = ConditionBuilder.BuildCondition(memberExpression, memberExpression.Member, adhesive, ExpressionType.Equal, out var fieldName);
                 }
-                else
-                {
-                    param = ConditionBuilder.BuildCondition(memberExpression, memberExpression.Member, adhesive, comparison);
-                }
+            }
 
-            }
-            else
+            if (param == null)
             {
-                param = ConditionBuilder.BuildCondition(memberExpression, memberExpression.Member, adhesive, comparison);
+                param = ConditionBuilder.BuildCondition(memberExpression, memberExpression.Member, adhesive, comparison, out var fieldName);
+
+                if (pi?.PropertyType == typeof(bool?))
+                {
+                    //如果是判断符号是 != +类型是可空,  生成的语句中需要 IS NULL
+                    if (param.Symbol == "<>")
+                    {
+                        param.SqlClause += $" OR ({fieldName} IS NULL)";
+                    }
+                }
             }
+
             return new ParseResult()
             {
                 WhereClause = new StringBuilder(param.SqlClause),
@@ -201,7 +209,12 @@ internal static class WhereClauseParser
                 {
                     if (unaryExpression.Type == typeof(bool))
                     {
-                        SqlClauseParametersInfo param = ConditionBuilder.BuildCondition(operandMemberExpression, operandMemberExpression.Member, adhesive, comparison);
+                        SqlClauseParametersInfo param = ConditionBuilder.BuildCondition(
+                            operandMemberExpression,
+                            operandMemberExpression.Member,
+                            adhesive,
+                            comparison,
+                            out var fieldName);
                         return new ParseResult()
                         {
                             WhereClause = new StringBuilder(param.SqlClause),
@@ -216,7 +229,12 @@ internal static class WhereClauseParser
                 {
                     var memberExpression2 = ((unaryExpression.Operand as BinaryExpression).Left as MemberExpression);
                     var member = memberExpression2.Member;
-                    SqlClauseParametersInfo param = ConditionBuilder.BuildCondition(memberExpression2, member, adhesive, comparison);
+                    var param = ConditionBuilder.BuildCondition(
+                        memberExpression2,
+                        member,
+                        adhesive,
+                        comparison,
+                        out var fieldName);
                     return new ParseResult()
                     {
                         WhereClause = new StringBuilder(param.SqlClause),
@@ -231,7 +249,12 @@ internal static class WhereClauseParser
             {
                 if (unaryExpression.Operand is MemberExpression operandMemberExpression)
                 {
-                    SqlClauseParametersInfo param = ConditionBuilder.BuildCondition(operandMemberExpression, operandMemberExpression.Member, adhesive, comparison);
+                    var param = ConditionBuilder.BuildCondition(
+                            operandMemberExpression,
+                            operandMemberExpression.Member,
+                            adhesive,
+                            comparison,
+                            out var fieldName);
                     return new ParseResult()
                     {
                         WhereClause = new StringBuilder(param.SqlClause),
@@ -248,11 +271,12 @@ internal static class WhereClauseParser
                     var nestedMemberExpression = operandUnaryExpression.Operand as MemberExpression;
                     if (nestedMemberExpression != null)
                     {
-                        SqlClauseParametersInfo param = ConditionBuilder.BuildCondition(
+                        var param = ConditionBuilder.BuildCondition(
                             nestedMemberExpression,
                             nestedMemberExpression.Member,
                             adhesive,
-                            comparison);
+                            comparison,
+                            out var fieldName);
 
                         return new ParseResult()
                         {

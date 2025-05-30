@@ -92,6 +92,7 @@ public class NonParameterClause
                 var sqlParameterValueType = sqlParameterValue.GetType();
                 if (sqlParameterValueType == typeof(string))
                 {
+                    //m,[fn],类型_string
                     string sqlParameterValue_str = Get_sqlParameterValue_str(sqlParameterName, (string)sqlParameterValue);
 
                     WhereClause = WhereClauseHelper.replace_whereClause(WhereClause, sqlParameterName, sqlParameterValue_str);
@@ -120,10 +121,12 @@ public class NonParameterClause
                 }
                 else if (sqlParameterValueType == typeof(Guid) || sqlParameterValueType == typeof(Guid?))
                 {
+                    //m,[fn],类型_guid
                     WhereClause = WhereClauseHelper.replace_whereClause(WhereClause, sqlParameterName, $"'{sqlParameterValue}'");
                 }
                 else if (sqlParameterValueType == typeof(bool) || sqlParameterValueType == typeof(bool?))
                 {
+                    //m,[fn],类型_bool
                     WhereClause = WhereClauseHelper.replace_whereClause(WhereClause, sqlParameterName, $"{(object.Equals(sqlParameterValue, true) == true ? 1 : 0)}");
                 }
                 else

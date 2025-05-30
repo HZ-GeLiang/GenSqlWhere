@@ -40,13 +40,15 @@ public static class ConditionBuilder
     /// <summary>
     /// 编译条件
     /// </summary>
+    /// <param name="expression"></param>
     /// <param name="memberInfo"></param>
     /// <param name="adhesive"></param>
     /// <param name="comparison"></param>
+    /// <param name="fieldName"></param>
     /// <returns> </returns>
-    public static SqlClauseParametersInfo BuildCondition(Expression expression, MemberInfo memberInfo, WhereClauseAdhesive adhesive, ExpressionType comparison)
+    public static SqlClauseParametersInfo BuildCondition(Expression expression, MemberInfo memberInfo, WhereClauseAdhesive adhesive, ExpressionType comparison, out string fieldName)
     {
-        string fieldName = GetFieldName(expression, memberInfo);
+        fieldName = GetFieldName(expression, memberInfo);
         fieldName = adhesive.SqlAdapter.FormatColumnName(fieldName);
         string parameterName = EnsureParameter(fieldName, adhesive);
         var symbol = ConditionBuilder.ToComparisonSymbol(comparison, memberInfo);

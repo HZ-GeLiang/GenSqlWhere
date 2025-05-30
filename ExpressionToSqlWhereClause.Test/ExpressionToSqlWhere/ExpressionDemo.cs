@@ -8,6 +8,8 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause;
 [TestClass]
 public class ExpressionDemo
 {
+
+
     [TestMethod]
     public void IsNull的生成()
     {

@@ -4,36 +4,49 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace ExpressionToSqlWhereClause.Test;
+namespace ExpressionToSqlWhereClause.Test.ExpressionToSqlWhere;
 
 [TestClass]
 public class WhereLambdaHelperTest
 {
+    #region NonParameter
+
     [TestMethod]
-    public void test_notEuqal()
+    public void NonParameter_boolean()
     {
         {
-            var expression = default(Expression<Func<Test_001, bool>>).WhereIf(true, a => a.IsDel == true);
-
+            var expression = default(Expression<Func<Test_001, bool>>).WhereIf(true, a => a.IsDel != true);
             var searchCondition = expression.ToWhereClause();
-            var clause = searchCondition.WhereClause;
-
-            Assert.AreEqual("IsDel = @IsDel", clause);
+            var caluse = WhereClauseHelper.GetNonParameterClause(searchCondition);
+            Assert.AreEqual(caluse, "IsDel <> 1");
         }
 
         {
-            var expression = default(Expression<Func<Test_001, bool>>).WhereIf(true, a => a.IsDel != true);
-
+            var expression = default(Expression<Func<Test_001, bool>>).WhereIf(true, a => a.IsDel == false);
             var searchCondition = expression.ToWhereClause();
-            var clause = searchCondition.WhereClause;
-
-            Assert.AreEqual("IsDel <> @IsDel", clause);
+            var caluse = WhereClauseHelper.GetNonParameterClause(searchCondition);
+            Assert.AreEqual(caluse, "IsDel = 0");
         }
+
+
+        {
+            var expression = default(Expression<Func<Test_001, bool>>).WhereIf(true, a => a.IsDel2 != true);
+            var searchCondition = expression.ToWhereClause();
+            var caluse = WhereClauseHelper.GetNonParameterClause(searchCondition);
+            Assert.AreEqual(caluse, "IsDel2 <> 1 OR IsDel2 IS NULL");
+        }
+
+        {
+            var expression = default(Expression<Func<Test_001, bool>>).WhereIf(true, a => a.IsDel2 == false);
+            var searchCondition = expression.ToWhereClause();
+            var caluse = WhereClauseHelper.GetNonParameterClause(searchCondition);
+            Assert.AreEqual(caluse, "IsDel2 = 0");
+        }
+
     }
 
-
     [TestMethod]
-    public void test_GetNonParameterClause_02()
+    public void NonParameterClause_02()
     {
         var expression =
             default(Expression<Func<Test_001, bool>>)
@@ -76,54 +89,7 @@ public class WhereLambdaHelperTest
     }
 
     [TestMethod]
-    public void Test_timeRange_MergeParametersIntoSql()
-    {
-        {
-            DateTime? d1 = (DateTime?)DateTime.Parse("2022-3-1 15:12:34");
-            DateTime? d2 = (DateTime?)DateTime.Parse("2022-3-3 12:34:56");
-            var expression = default(Expression<Func<Input_timeRange2_Attr, bool>>)
-              .WhereIf(true, a => a.DataCreatedAt >= d1)
-              .WhereIf(true, a => a.DataCreatedAt < d2);
-
-            var searchCondition = expression.ToWhereClause();
-
-            var formatDateTime = new Dictionary<string, string>() { { "@DataCreatedAt1", "yyyy-MM-dd" } };
-            var caluse = WhereClauseHelper.GetNonParameterClause(searchCondition, formatDateTime);
-            Assert.AreEqual(caluse, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03'");
-        }
-
-        {
-            DateTime? d1 = (DateTime?)DateTime.Parse("2022-3-1 15:12:34");
-            DateTime? d2 = (DateTime?)DateTime.Parse("2022-3-3 12:34:56");
-            var expression = default(Expression<Func<Input_timeRange2_Attr, bool>>)
-              .WhereIf(true, a => a.DataCreatedAt >= d1)
-              .WhereIf(true, a => a.DataCreatedAt < d2);
-
-            var searchCondition = expression.ToWhereClause();
-
-            var formatDateTime = WhereClauseHelper.GetDefaultFormatDateTime(searchCondition.Parameters);
-            var caluse = WhereClauseHelper.GetNonParameterClause(searchCondition, formatDateTime);
-            Assert.AreEqual(caluse, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03 12:34:56'");
-        }
-    }
-
-    [TestMethod]
-    public void GetExpression_HasValue()
-    {
-        Expression<Func<Student, bool>> exp = a => (a.Name ?? "") != "";
-        var exp2 = WhereLambdaHelper.GetExpression_HasValue<Student>("Name");
-
-        Assert.AreEqual(true, exp.ToString() == exp2.ToString());
-
-        //配合扩展方法的使用
-        {
-            IQueryable<Student> query = null;
-            query?.WhereNoValue(a => a.Name);
-        }
-    }
-
-    [TestMethod]
-    public void GetNonParameterClause优化_list()
+    public void NonParameterClause优化_list()
     {
         var list = new List<string>() { "1", "2" };
         var expression = default(Expression<Func<Test_001, bool>>).WhereIf(true, a => list.Contains(a.Message));
@@ -136,7 +102,7 @@ public class WhereLambdaHelperTest
     }
 
     [TestMethod]
-    public void GetNonParameterClause优化_string()
+    public void NonParameterClause优化_string()
     {
         var expression = default(Expression<Func<Test_001, bool>>).WhereIf(true, a => a.Message == "'123");
 
@@ -148,7 +114,7 @@ public class WhereLambdaHelperTest
     }
 
     [TestMethod]
-    public void GetNonParameterClause优化_bool()
+    public void NonParameterClause优化_bool()
     {
         {
             {
@@ -192,6 +158,77 @@ public class WhereLambdaHelperTest
 
                 Assert.AreEqual(clause, "IsDel2 = 0");
             }
+        }
+    }
+
+    #endregion
+
+    [TestMethod]
+    public void notEuqal()
+    {
+        {
+            var expression = default(Expression<Func<Test_001, bool>>).WhereIf(true, a => a.IsDel == true);
+
+            var searchCondition = expression.ToWhereClause();
+            var clause = searchCondition.WhereClause;
+
+            Assert.AreEqual("IsDel = @IsDel", clause);
+        }
+
+        {
+            var expression = default(Expression<Func<Test_001, bool>>).WhereIf(true, a => a.IsDel != true);
+
+            var searchCondition = expression.ToWhereClause();
+            var clause = searchCondition.WhereClause;
+
+            Assert.AreEqual("IsDel <> @IsDel", clause);
+        }
+    }
+
+    [TestMethod]
+    public void timeRange_MergeParametersIntoSql()
+    {
+        {
+            DateTime? d1 = (DateTime?)DateTime.Parse("2022-3-1 15:12:34");
+            DateTime? d2 = (DateTime?)DateTime.Parse("2022-3-3 12:34:56");
+            var expression = default(Expression<Func<Input_timeRange2_Attr, bool>>)
+              .WhereIf(true, a => a.DataCreatedAt >= d1)
+              .WhereIf(true, a => a.DataCreatedAt < d2);
+
+            var searchCondition = expression.ToWhereClause();
+
+            var formatDateTime = new Dictionary<string, string>() { { "@DataCreatedAt1", "yyyy-MM-dd" } };
+            var caluse = WhereClauseHelper.GetNonParameterClause(searchCondition, formatDateTime);
+            Assert.AreEqual(caluse, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03'");
+        }
+
+        {
+            DateTime? d1 = (DateTime?)DateTime.Parse("2022-3-1 15:12:34");
+            DateTime? d2 = (DateTime?)DateTime.Parse("2022-3-3 12:34:56");
+            var expression = default(Expression<Func<Input_timeRange2_Attr, bool>>)
+              .WhereIf(true, a => a.DataCreatedAt >= d1)
+              .WhereIf(true, a => a.DataCreatedAt < d2);
+
+            var searchCondition = expression.ToWhereClause();
+
+            var formatDateTime = WhereClauseHelper.GetDefaultFormatDateTime(searchCondition.Parameters);
+            var caluse = WhereClauseHelper.GetNonParameterClause(searchCondition, formatDateTime);
+            Assert.AreEqual(caluse, "DataCreatedAt >= '2022-03-01 15:12:34' And DataCreatedAt < '2022-03-03 12:34:56'");
+        }
+    }
+
+    [TestMethod]
+    public void Expression_HasValue()
+    {
+        Expression<Func<Student, bool>> exp = a => (a.Name ?? "") != "";
+        var exp2 = WhereLambdaHelper.GetExpression_HasValue<Student>("Name");
+
+        Assert.AreEqual(true, exp.ToString() == exp2.ToString());
+
+        //配合扩展方法的使用
+        {
+            IQueryable<Student> query = null;
+            query?.WhereNoValue(a => a.Name);
         }
     }
 
@@ -241,7 +278,7 @@ public class WhereLambdaHelperTest
     }
 
     [TestMethod]
-    public void GetExpression_NotDeleted()
+    public void Expression_NotDeleted()
     {
     }
 }
