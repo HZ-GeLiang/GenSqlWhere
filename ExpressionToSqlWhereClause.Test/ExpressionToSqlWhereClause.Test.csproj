@@ -17,7 +17,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\ExpressionToSqlWhereClause\ExpressionToSqlWhereClause.csproj" />
-		<!--<PackageReference Include="ExpressionToSqlWhereClause" Version="1.7.6.4" />-->
 	</ItemGroup>
 
 </Project>
