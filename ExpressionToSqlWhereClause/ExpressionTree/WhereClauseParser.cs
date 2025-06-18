@@ -394,8 +394,11 @@ internal static class WhereClauseParser
         //处理别名
         StringBuilder ReplaceAlias(ParseResult parseResult)
         {
-            if (parseResult.MemberInfo == null ||
-                !aliasDict.ContainsKey(parseResult.MemberInfo.Name))
+            if (parseResult == null ||
+                parseResult.MemberInfo == null ||
+                aliasDict.ContainsKey(parseResult.MemberInfo.Name) == false ||
+                string.IsNullOrWhiteSpace(aliasDict[parseResult.MemberInfo.Name])
+                )
             {
                 return parseResult.WhereClause;
             }

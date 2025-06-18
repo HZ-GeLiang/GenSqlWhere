@@ -16,7 +16,7 @@ public class ExpressionDemo_alias
             { "Index", "[Index]" }
         };
 
-        var searchCondition = expOr.ToWhereClause(alias: dict);
+        var searchCondition = expOr.ToWhereClause(dict);
 
         Assert.AreEqual(searchCondition.WhereClause, "[Index] = @Index Or [Index] = @Index1");
 
@@ -37,7 +37,7 @@ public class ExpressionDemo_alias
         {
             { "Id", "RouteId" }
         };
-        var searchCondition = expOr.ToWhereClause(alias: dict);
+        var searchCondition = expOr.ToWhereClause(dict);
 
         Assert.AreEqual(searchCondition.WhereClause, "RouteId = @Id Or RouteId = @Id1");
 
@@ -60,7 +60,7 @@ public class ExpressionDemo_alias
         {
             { "Id", "RouteId" }
         };
-        var searchCondition = expOr.ToWhereClause(alias: dict);
+        var searchCondition = expOr.ToWhereClause(dict);
 
         Assert.AreEqual(searchCondition.WhereClause, "(RouteId = @Id Or RouteId = @Id1) And IsDel = @IsDel");
 
@@ -85,7 +85,7 @@ public class ExpressionDemo_alias
             { "Id", "RouteId" },
             { "IsDel", "b.IsDel" }
         };
-        var searchCondition = expOr.ToWhereClause(alias: dict);
+        var searchCondition = expOr.ToWhereClause(dict);
 
         Assert.AreEqual(searchCondition.WhereClause, "(RouteId = @Id Or RouteId = @Id1) And b.IsDel = @IsDel");
 

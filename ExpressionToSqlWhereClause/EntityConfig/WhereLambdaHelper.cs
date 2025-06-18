@@ -957,9 +957,10 @@ public static class WhereLambdaHelper
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
     /// <typeparam name="TSearch"></typeparam>
-    /// <param name="searchModel"></param>
+    /// <param name="that"></param>
     /// <param name="propertyNames"></param>
     /// <returns></returns>
+    /// <exception cref="FrameException"></exception>
     public static List<Expression<Func<TEntity, bool>>> AddIn<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> propertyNames)
         where TEntity : class
         where TSearch : class

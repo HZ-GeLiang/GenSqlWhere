@@ -14,6 +14,7 @@ internal sealed class ParenthesesTrimHelper
     /// 去掉所有的()
     /// </summary>
     /// <param name="where"></param>
+    /// <param name="trimChars"></param>
     /// <returns></returns>
     public static string TrimAll(string where, char[] trimChars)
     {

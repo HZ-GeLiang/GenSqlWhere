@@ -36,7 +36,7 @@ public enum SearchType
     /// <summary>
     /// 数值的范围(只接受数字)
     /// 1:有区间范围 [xxxLeft, xxxRight]=> 包含开始值,包含结束值
-    /// 2:没有区间范围  xxx => 还是上面的规则, 即: >=@xxx And <= @xxx1
+    /// 2:没有区间范围  xxx => 还是上面的规则, 即: >=@xxx And &lt;= @xxx1
     /// </summary>
     NumberRange,
 

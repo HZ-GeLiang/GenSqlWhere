@@ -14,12 +14,12 @@ public static class WhereClauseExpressionExtensions
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="expression">表达式</param>
-    /// <param name="alias">别名</param>
+    /// <param name="aliasDict">别名</param>
     /// <param name="sqlAdapter">适配器</param>
     /// <returns></returns>
     public static SearchCondition ToWhereClause<T>(
         this Expression<Func<T, bool>> expression,
-        Dictionary<string, string> alias = null,
+        Dictionary<string, string> aliasDict = null,
         ISqlAdapter sqlAdapter = default) where T : class
     {
         if (expression == null)
@@ -29,26 +29,26 @@ public static class WhereClauseExpressionExtensions
 
         #region 处理 alias
 
-        alias ??= new Dictionary<string, string>();
+        aliasDict ??= new Dictionary<string, string>();
 
         foreach (var propertyInfo in ReflectionHelper.GetProperties<T>())
         {
             //优先级: 方法参数的 alias > Column
-            if (alias.ContainsKey(propertyInfo.Name))
+            if (aliasDict.ContainsKey(propertyInfo.Name))
             {
                 continue;
             }
             var attrs = ReflectionHelper.GetAttributeForProperty<ColumnAttribute>(propertyInfo, true);
             if (attrs.Length == 1)
             {
-                alias[propertyInfo.Name] = attrs[0].Name;
+                aliasDict[propertyInfo.Name] = attrs[0].Name;
             }
         }
 
         #endregion
 
         var body = expression.Body;
-        ClauseParserResult parseResult = WhereClauseParser.Parse(body, alias, sqlAdapter);
+        ClauseParserResult parseResult = WhereClauseParser.Parse(body, aliasDict, sqlAdapter);
 
         #region 处理 parseResult 的  Adhesive  和 WhereClause
 

@@ -42,7 +42,7 @@ public class SearchCondition
     /// </summary>
     public string WhereClauseRaw => ParseResult?.WhereClause ?? "";
 
-    // <summary>
+    /// <summary>
     /// 去掉()
     /// </summary>
     /// <param name="WhereClause"></param>
