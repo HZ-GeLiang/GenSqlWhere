@@ -110,19 +110,25 @@ public class DictionaryAssert
         {
             Assert.IsTrue(dict2.ContainsKey(key), $"The parameters does not contain key '{key}'");
 
-            var value_dict = dict[key];
-            var value_dict2 = dict2[key];
-            var value_type_dict = value_dict.GetType().FullName;
-            var value_type_dict2 = value_dict.GetType().FullName;
+            var value_1 = dict[key];
+            var value_2 = dict2[key];
 
-            if (IsObjectCollection(value_dict.GetType()))
+            if (IsObjectCollection(value_1.GetType()))
             {
-                CollectionAssert.AreEqual(value_dict as ICollection, value_dict2 as ICollection);
+                CollectionAssert.AreEqual(value_1 as ICollection, value_2 as ICollection);
             }
             else
             {
-                var msg = $"The expected value is {value_dict} ({value_type_dict}), the actual value is {value_dict2} ({value_type_dict2})";
-                Assert.IsTrue(value_dict.Equals(value_dict2), msg);
+                var value_type1 = value_1.GetType().FullName;
+                var value_type2 = value_2.GetType().FullName;
+
+                var isSameType = value_type1 == value_type2;
+                if (isSameType)
+                {
+                }
+                var istrue = object.Equals(value_1, value_2);
+                var msg = $"The expected value is {value_1} ({value_type1}), the actual value is {value_2} ({value_type2})";
+                Assert.IsTrue(istrue, msg);
             }
         }
     }

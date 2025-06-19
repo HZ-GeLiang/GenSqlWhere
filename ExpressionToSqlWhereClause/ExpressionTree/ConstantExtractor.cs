@@ -361,19 +361,19 @@ public static class ConstantExtractor
                     var val = Expression.Lambda(expression).Compile().DynamicInvoke();
                     return val;
                 }
+                else
+                {
+                    //其他方法调用通过编译执行
+                    //var compiledExpression = Expression.Lambda(methodCallExpression).Compile();
+                    //return compiledExpression.DynamicInvoke();
 
-                //其他方法调用通过编译执行
-                //var compiledExpression = Expression.Lambda(methodCallExpression).Compile();
-                //return compiledExpression.DynamicInvoke();
-
-                throw new NotImplementedException($"ParseMethodCallConstantExpression of type {expression.GetType()}");
+                    throw new NotImplementedException($"ParseMethodCallConstantExpression of type {expression.GetType()}");
+                }
             }
         }
 
         // 使用反射调用方法并返回结果
         return methodInfo.Invoke(target, arguments);
-
-
     }
 
     // 辅助方法：递归求值表达式

@@ -455,6 +455,12 @@ internal static class WhereClauseParser
                         }
                         val = valList;
                     }
+                    else if (binaryExpression.Right is System.Linq.Expressions.MethodCallExpression methodCallExpression)
+                    {
+                        //#issue 2025.6.19-2  类型不对
+                        //val = ConstantExtractor.ParseMethodCallConstantExpression(methodCallExpression);//调用这个方法不对
+                        val = Expression.Lambda(methodCallExpression).Compile().DynamicInvoke();
+                    }
                     else
                     {
                         //Basic case, For example: u.Age > 18

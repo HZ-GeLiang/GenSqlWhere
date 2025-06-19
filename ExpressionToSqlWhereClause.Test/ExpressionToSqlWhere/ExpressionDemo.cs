@@ -8,8 +8,6 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause;
 [TestClass]
 public class ExpressionDemo
 {
-
-
     [TestMethod]
     public void IsNull的生成()
     {
@@ -409,11 +407,12 @@ public class ExpressionDemo
     [TestMethod]
     public void ValidateMethodChainConstant()
     {
+        //#issue 2025.6.19-2  类型不对
         Expression<Func<User, bool>> expression = u => u.Age < int.Parse(GetInt().ToString());
         var searchCondition = expression.ToWhereClause(null, new TestSqlAdapter());
         Dictionary<string, object> expectedParameters = new()
         {
-            { "@Age", 20 }
+            { "@Age", 20 } //这里正确的类型是 int  而不是 string
         };
         Assert.AreEqual(searchCondition.WhereClause, "Age < @Age");
         DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
