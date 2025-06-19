@@ -7,7 +7,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
 public class GenSqlWhereDemo_neq
 {
     [TestMethod]
-    public void Test_neq()
+    public void neq()
     {
         var searchModel = new model_neq()
         {

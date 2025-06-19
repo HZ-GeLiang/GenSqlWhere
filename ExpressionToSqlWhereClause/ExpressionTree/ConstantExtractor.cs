@@ -93,7 +93,7 @@ public static class ConstantExtractor
     /// </summary>
     /// <param name="expression"></param>
     /// <returns></returns>
-    public static object ParseConstant(Expression expression)
+    public static object ParseConstant(System.Linq.Expressions.Expression expression)
     {
 #if DEBUG
         StackFrame frame = new(1, true);
@@ -108,7 +108,7 @@ public static class ConstantExtractor
         }
         else if (expression is MemberExpression memberExpression)
         {
-            return ParseMemberConstantExpression(memberExpression);
+            return ConstantExtractor.ParseMemberConstantExpression(memberExpression);
         }
         else if (expression is MethodCallExpression methodCallExpression)
         {
@@ -160,22 +160,62 @@ public static class ConstantExtractor
             }
         }
 
-        //已知的不支持的有:
-        //if (expression.GetType().FullName == ExpressionFullNameSpaceConst.TypedParameter)
-        //{
-        //    throw new NotSupportedException($"Unknow expression {expression.GetType()}");
-        //}
+        else if (expression is System.Linq.Expressions.Expression linqExpression)
+        {
+            if (linqExpression.NodeType == ExpressionType.Lambda)
+            {
+                //-expression  { a => Convert(a, Nullable`1)}
+                //System.Linq.Expressions.Expression { System.Linq.Expressions.Expression1<System.Func<int, int?>>}
+                //#issue 2025.6.19
 
+                var lambdaExpression = (LambdaExpression)linqExpression;
+                return ParseConstant(lambdaExpression.Body); //调用自身
+            }
+            else if (linqExpression.NodeType == ExpressionType.Parameter)
+            {
+                //PrimitiveParameterExpression`1
+                if (linqExpression.GetType().Name.StartsWith("PrimitiveParameterExpression`"))
+                {
+                    //var paramExpr = (ParameterExpression)linqExpression;
 
+                    // 参数表达式无法直接求值，返回 null 或抛出异常
+                    return null;
+
+                }
+            }
+            else if (linqExpression.NodeType == ExpressionType.Convert)
+            {
+                // 处理 Convert 操作（如 Convert(a, Nullable<int>)）
+                var unaryExpr = (UnaryExpression)linqExpression;
+                return ParseConstant(unaryExpr.Operand); // 递归解析操作数
+            }
+            else if (linqExpression.NodeType == ExpressionType.Constant)
+            {
+                // 处理常量
+                var constantExpr = (ConstantExpression)linqExpression;
+                return constantExpr.Value;
+            }
+
+            throw new NotSupportedException($"Unknow expression {expression.GetType()}");
+
+        }
 
 #if DEBUG
 
-        System.Linq.Expressions.NewArrayExpression NewArrayExpression = expression as System.Linq.Expressions.NewArrayExpression;
-#endif
+        var fullname = expression.GetType().FullName;
+        //已知的不支持的有:
+        if (fullname == ExpressionFullNameSpaceConst.TypedParameter)
+        {
+            throw new NotSupportedException($"Unknow expression {expression.GetType()}");
+        }
 
+
+        var newArrayExpression = expression as System.Linq.Expressions.NewArrayExpression;
+#endif
 
         throw new NotSupportedException($"Unknow expression {expression.GetType()}");
     }
+
 
     public static object ParseConstantExpression(ConstantExpression constantExpression)
     {

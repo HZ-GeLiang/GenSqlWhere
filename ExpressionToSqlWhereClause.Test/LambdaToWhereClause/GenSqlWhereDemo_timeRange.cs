@@ -7,7 +7,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
 public class GenSqlWhereDemo_TimeRange
 {
     [TestMethod]
-    public void Test_timeRange_start_neq_end()
+    public void timeRange_start_neq_end()
     {
         //DataCreatedAtStart != DataCreatedAtEnd
         var searchModel = new Input_timeRange_Attr()
@@ -39,7 +39,7 @@ public class GenSqlWhereDemo_TimeRange
     }
 
     [TestMethod]
-    public void Test_timeRange_start_eq_end()
+    public void timeRange_start_eq_end()
     {
         //DataCreatedAtStart == DataCreatedAtEnd  ,会按 2021.8.8 一整天的时间号来解析
 
@@ -72,7 +72,7 @@ public class GenSqlWhereDemo_TimeRange
     }
 
     [TestMethod]
-    public void Test_timeRange_start_eq_end_WhereIf()
+    public void timeRange_start_eq_end_WhereIf()
     {
         //DataCreatedAtStart == DataCreatedAtEnd  ,会按 2021.8.8 一整天的时间号来解析
 
@@ -109,7 +109,7 @@ public class GenSqlWhereDemo_TimeRange
     }
 
     [TestMethod]
-    public void Test_timeRange_Get时间精度()
+    public void timeRange_Get时间精度()
     {
         //没有区间范围 (取当前时间精度: 如 当前 当前小时, 当前这一分钟, 当前这秒)
         var searchModel = new Input_timeRange2_Attr()

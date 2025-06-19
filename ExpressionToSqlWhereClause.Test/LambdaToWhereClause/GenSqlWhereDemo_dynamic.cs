@@ -14,7 +14,7 @@ public class model_dynamic
 public class GenSqlWhereDemo_dynamic
 {
     [TestMethod]
-    public void Test_le_dynamic()
+    public void le_dynamic()
     {
         var searchModel = new
         {
@@ -43,7 +43,7 @@ public class GenSqlWhereDemo_dynamic
     }
 
     [TestMethod]
-    public void Test_le_dynamic_什么条件都没配()
+    public void le_dynamic_什么条件都没配()
     {
         var searchModel = new
         {
@@ -61,7 +61,7 @@ public class GenSqlWhereDemo_dynamic
     }
 
     [TestMethod]
-    public void Test_le_dynamic_bool和int()
+    public void le_dynamic_bool和int()
     {
         //int to bool  取决于 Convert.ChangeType(propertyValue, bool );
 

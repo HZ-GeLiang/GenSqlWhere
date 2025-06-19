@@ -7,7 +7,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
 public class GenSqlWhereDemo_gt
 {
     [TestMethod]
-    public void Test_gt()
+    public void gt()
     {
         var searchModel = new model_gt()
         {

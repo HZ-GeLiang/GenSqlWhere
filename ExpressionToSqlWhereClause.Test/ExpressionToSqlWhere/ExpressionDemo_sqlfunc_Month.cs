@@ -7,7 +7,7 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause;
 [TestClass]
 public class ExpressionDemo_sqlfunc_Month
 {
-    public void Test_Expression_compile()
+    public void Expression_compile()
     {
         Expression<Func<User_SqlFunc_Entity, bool>> expression =
             u => DbFunctions.Month(u.CreateAt) == 5;

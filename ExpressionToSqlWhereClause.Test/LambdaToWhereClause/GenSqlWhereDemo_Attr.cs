@@ -7,7 +7,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
 public class GenSqlWhereDemo_Attr
 {
     [TestMethod]
-    public void Test_like_Attr()
+    public void like_Attr()
     {
         var searchModel = new Input_like_Attr()
         {
@@ -27,7 +27,7 @@ public class GenSqlWhereDemo_Attr
     }
 
     [TestMethod]
-    public void Test_likeLeft_Attr()
+    public void likeLeft_Attr()
     {
         var searchModel = new Input_likeLeft_Attr()
         {
@@ -46,7 +46,7 @@ public class GenSqlWhereDemo_Attr
     }
 
     [TestMethod]
-    public void Test_likeRight_Attr()
+    public void likeRight_Attr()
     {
         var searchModel = new Input_likeRight_Attr()
         {
@@ -65,7 +65,7 @@ public class GenSqlWhereDemo_Attr
     }
 
     [TestMethod]
-    public void Test_eq_Attr()
+    public void eq_Attr()
     {
         var searchModel = new Input_eq()
         {
@@ -86,7 +86,7 @@ public class GenSqlWhereDemo_Attr
     }
 
     [TestMethod]
-    public void Test_neq_Attr()
+    public void neq_Attr()
     {
         var searchModel = new Input_neq_Attr()
         {
@@ -106,7 +106,7 @@ public class GenSqlWhereDemo_Attr
     }
 
     [TestMethod]
-    public void Test_in_Attr()
+    public void in_Attr()
     {
         var searchModel = new Input_in_Attr()
         {
@@ -128,7 +128,7 @@ public class GenSqlWhereDemo_Attr
     }
 
     [TestMethod]
-    public void Test_in2_Attr()
+    public void in2_Attr()
     {
         var searchModel = new Input_in2_Attr()
         {
@@ -147,7 +147,7 @@ public class GenSqlWhereDemo_Attr
     }
 
     [TestMethod]
-    public void Test_datetimeRange_Attr()
+    public void datetimeRange_Attr()
     {
         {
             var searchModel = new Input_timeRange_Attr()
@@ -191,7 +191,7 @@ public class GenSqlWhereDemo_Attr
     }
 
     [TestMethod]
-    public void Test_numberRange_Attr()
+    public void numberRange_Attr()
     {
         {
             var searchModel = new Input_numberRange_Attr()
@@ -233,7 +233,7 @@ public class GenSqlWhereDemo_Attr
     }
 
     [TestMethod]
-    public void Test_gt_Attr()
+    public void gt_Attr()
     {
         var searchModel = new Input_gt_Attr()
         {
@@ -255,7 +255,7 @@ public class GenSqlWhereDemo_Attr
     }
 
     [TestMethod]
-    public void Test_ge_Attr()
+    public void ge_Attr()
     {
         var searchModel = new Input_ge_Attr()
         {
@@ -276,7 +276,7 @@ public class GenSqlWhereDemo_Attr
     }
 
     [TestMethod]
-    public void Test_lt_Attr()
+    public void lt_Attr()
     {
         var searchModel = new Input_lt_Attr()
         {
@@ -297,7 +297,7 @@ public class GenSqlWhereDemo_Attr
     }
 
     [TestMethod]
-    public void Test_le_Attr()
+    public void le_Attr()
     {
         var searchModel = new Input_le_Attr()
         {

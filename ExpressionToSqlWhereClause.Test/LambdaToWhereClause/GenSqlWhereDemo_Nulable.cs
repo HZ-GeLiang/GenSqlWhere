@@ -8,7 +8,7 @@ public class GenSqlWhereDemo_Nulable
 {
 
     [TestMethod]
-    public void Test_nullable_datetime()
+    public void nullable_datetime()
     {
         /*
          bug:#01

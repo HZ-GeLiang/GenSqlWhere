@@ -7,7 +7,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
 public class GenSqlWhereDemo_numberRange
 {
     [TestMethod]
-    public void Test_numberRange()
+    public void numberRange()
     {
         {
             var searchModel = new Input_numberRange_Attr()
@@ -63,7 +63,7 @@ public class GenSqlWhereDemo_numberRange
     }
 
     [TestMethod]
-    public void Test_numberRange_whereif()
+    public void numberRange_whereif()
     {
         {
             var searchModel = new Input_numberRange2()

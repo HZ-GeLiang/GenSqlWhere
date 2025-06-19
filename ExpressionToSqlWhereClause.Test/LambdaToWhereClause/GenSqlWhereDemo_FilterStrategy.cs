@@ -8,7 +8,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
 public class GenSqlWhereDemo_FilterStrategy
 {
     [TestMethod]
-    public void Test_FilterStrategy()
+    public void FilterStrategy()
     {
         var obj = new model_FilterStrategyInput()
         {
@@ -27,14 +27,11 @@ public class GenSqlWhereDemo_FilterStrategy
         var searchCondition = expression.ToWhereClause();
 
         Assert.AreEqual(searchCondition.WhereClause, "IsDeleted = @IsDeleted And GetSum = @GetSum And Id > @Id");
-        //var dict = new Dictionary<string, object>
-        //{
-        //    { "@IsDeleted", (object)false },
-        //    { "@GetSum", (object)5},
-        //    { "@Id",(object) 0},
-        //};
 
-        //CollectionAssert.AreEqual(searchCondition.Parameters, dict);
+        Assert.AreEqual(searchCondition.Parameters["@IsDeleted"], false);
+        Assert.AreEqual(searchCondition.Parameters["@GetSum"], 5);
+        Assert.AreEqual(searchCondition.Parameters["@Id"], 0);
+
     }
 
     public class model_FilterStrategy

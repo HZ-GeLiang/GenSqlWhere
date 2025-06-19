@@ -19,7 +19,7 @@ public class Input_le_Attr
 public class GenSqlWhereDemo_le
 {
     [TestMethod]
-    public void Test_le()
+    public void le()
     {
         var searchModel = new model_le()
         {

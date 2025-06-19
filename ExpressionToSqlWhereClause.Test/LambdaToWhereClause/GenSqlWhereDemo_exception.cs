@@ -7,7 +7,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
 public class GenSqlWhereDemo_exception
 {
     [TestMethod]
-    public void Test_expection1()
+    public void expection1()
     {
         {
             //string的null 转 int
@@ -74,7 +74,7 @@ public class GenSqlWhereDemo_exception
     }
 
     [TestMethod]
-    public void Test_sqlShouldBeEmpty()
+    public void sqlShouldBeEmpty()
     {
         var searchModel = new model_lt()
         {

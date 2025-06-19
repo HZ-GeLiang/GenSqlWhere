@@ -47,7 +47,7 @@ public class UseDemo2
     }
 
     [TestMethod]
-    public void Test_like_Sef_Attr() //TEntity ==  TSearch
+    public void like_Sef_Attr() //TEntity ==  TSearch
     {
         var searchModel = new Input_like_Attr()
         {
@@ -66,7 +66,7 @@ public class UseDemo2
     }
 
     [TestMethod]
-    public void Test_like_self()
+    public void like_self()
     {
         var searchModel = new model_like()
         {

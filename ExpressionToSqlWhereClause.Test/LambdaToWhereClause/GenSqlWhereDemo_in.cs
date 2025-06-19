@@ -31,7 +31,7 @@ public class Input_in2_Attr
 public class GenSqlWhereDemo_in
 {
     [TestMethod]
-    public void Test_in()
+    public void @in()
     {
         var searchModel = new model_in()
         {
@@ -61,7 +61,7 @@ public class GenSqlWhereDemo_in
     }
 
     [TestMethod]
-    public void Test_in2()
+    public void @in2()
     {
         var searchModel = new model_in2()
         {

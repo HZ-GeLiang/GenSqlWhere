@@ -19,7 +19,7 @@ public class Input_lt_Attr
 public class GenSqlWhereDemo_lt
 {
     [TestMethod]
-    public void Test_lt()
+    public void lt()
     {
         var searchModel = new model_lt()
         {

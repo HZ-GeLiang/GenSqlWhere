@@ -9,7 +9,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
 public class GenSqlWhereDemo_eq
 {
     [TestMethod]
-    public void Test_eq()
+    public void eq()
     {
         var searchModel = new Input_eq()
         {
@@ -65,7 +65,7 @@ public class GenSqlWhereDemo_eq
     }
 
     [TestMethod]
-    public void Test_eq2()
+    public void eq2()
     {
         var searchModel = new Model_eq2()
         {
@@ -79,7 +79,7 @@ public class GenSqlWhereDemo_eq
     }
 
     [TestMethod]
-    public void Test_eq_WhereIf()
+    public void eq_WhereIf()
     {
         var searchModel = new InputModel_eq()
         {
@@ -135,7 +135,7 @@ public class GenSqlWhereDemo_eq
     }
 
     [TestMethod]
-    public void Test_eq_WhereIf_parseExpressionStr()
+    public void eq_WhereIf_parseExpressionStr()
     {
         var searchModel = new InputModel_eq()
         {

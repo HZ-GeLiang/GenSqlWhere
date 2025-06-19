@@ -7,7 +7,7 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
 public class GenSqlWhereDemo_like
 {
     [TestMethod]
-    public void Test_like()
+    public void like()
     {
         var searchModel = new model_like()
         {
@@ -34,7 +34,7 @@ public class GenSqlWhereDemo_like
     }
 
     [TestMethod]
-    public void Test_likeLeft()
+    public void likeLeft()
     {
         var searchModel = new Input_likeLeft()
         {
@@ -61,7 +61,7 @@ public class GenSqlWhereDemo_like
     }
 
     [TestMethod]
-    public void Test_likeRight()
+    public void likeRight()
     {
         var searchModel = new Input_likeRight()
         {

@@ -39,7 +39,7 @@ public static class WhereClauseExpressionExtensions
                 continue;
             }
             var attrs = ReflectionHelper.GetAttributeForProperty<ColumnAttribute>(propertyInfo, true);
-            if (attrs.Length == 1 && string.IsNullOrWhiteSpace(attrs[0].Name) == false)
+            if (attrs.Length == 1 && string.IsNullOrWhiteSpace(attrs[0].Name) == false) // attrs[0].Name 不为空
             {
                 aliasDict[propertyInfo.Name] = attrs[0].Name;
             }
