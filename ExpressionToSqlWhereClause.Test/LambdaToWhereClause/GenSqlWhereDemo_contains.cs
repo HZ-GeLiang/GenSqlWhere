@@ -50,16 +50,4 @@ public class GenSqlWhereDemo_contains
         public int? userid { get; set; }
     }
 
-    /// <summary>
-    /// 获取收款input
-    /// </summary>
-    public class model_FilterStrategyInput
-    {
-        public decimal GetSum { get; set; }
-
-        /// <summary>
-        /// 筛选符号
-        /// </summary>
-        public string GetSumFilter { get; set; }
-    }
 }

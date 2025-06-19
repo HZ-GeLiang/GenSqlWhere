@@ -137,10 +137,11 @@ public static class ConstantExtractor
                 throw new NotSupportedException($"Unknow expression {expression.GetType()}");
             }
         }
-        else if (expression is UnaryExpression convertExpression)
+        else if (expression is UnaryExpression unaryExpression)
         {
             if (expression.NodeType == ExpressionType.Convert)
             {
+                var convertExpression = unaryExpression;
                 return ConstantExtractor.ParseConvertExpression(convertExpression);
             }
             else
@@ -168,8 +169,10 @@ public static class ConstantExtractor
                 //System.Linq.Expressions.Expression { System.Linq.Expressions.Expression1<System.Func<int, int?>>}
                 //#issue 2025.6.19
 
-                var lambdaExpression = (LambdaExpression)linqExpression;
-                return ParseConstant(lambdaExpression.Body); //调用自身
+                throw new NotSupportedException($"Unsupported lambda expression body: {body.GetType()}");
+
+                // 处理 Lambda 表达式，例如 a => Convert(a, Nullable<int>)
+                //return ParseConstant(((LambdaExpression)linqExpression).Body);//调用自己(目前无法解析)
             }
             else if (linqExpression.NodeType == ExpressionType.Parameter)
             {
@@ -289,7 +292,6 @@ public static class ConstantExtractor
     /// <param name="methodCallExpression"></param>
     /// <returns></returns>
     internal static object ParseMethodCallConstantExpression(MethodCallExpression methodCallExpression)
-    //private static object ParseMethodCallConstantExpression(MethodCallExpression methodCallExpression)
     {
         MethodInfo mi = methodCallExpression.Method;
         object instance = null;
@@ -329,6 +331,11 @@ public static class ConstantExtractor
                 }
             }
         }
+
+        //还有一段Grok给的端, 应该是有问题的,这里记录下, 看看以后能否用到
+        //其他方法调用通过编译执行
+        //var compiledExpression = Expression.Lambda(methodCallExpression).Compile();
+        //return compiledExpression.DynamicInvoke();
 
         return mi.Invoke(instance, parameters);
     }
@@ -399,14 +406,24 @@ public static class ConstantExtractor
     private static object ParseConvertExpression(UnaryExpression convertExpression)
     {
         bool IsNullableType(Type type) => type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
-
         Type GetNullableTType(Type type) => type.GetProperty("Value").PropertyType;
-
         object ChangeType(object val, Type type) => Convert.ChangeType(val, IsNullableType(type) ? GetNullableTType(type) : type);
 
-        object value = ConstantExtractor.ParseConstant(convertExpression.Operand);
+        var operand = convertExpression.Operand;
+        var inputType = operand.Type; // 假设是 int
+        var outputType = convertExpression.Type; // 假设是 int?
 
-        return ChangeType(value, convertExpression.Type);
+        if (operand.NodeType == ExpressionType.Parameter)
+        {
+            // 参数表达式无法直接求值
+            // 示例: #issue 2025.6.19 , 遇到这种情况, 请修改代码
+            throw new NotSupportedException("Parameter expression requires context of Select source.");
+        }
+        else
+        {
+            object value = ConstantExtractor.ParseConstant(operand);
+            return ChangeType(value, outputType);
+        }
     }
 
     private static object ParseNewExpression(NewExpression newExpression)
