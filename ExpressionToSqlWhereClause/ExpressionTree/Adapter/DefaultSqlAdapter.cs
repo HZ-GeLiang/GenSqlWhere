@@ -5,7 +5,9 @@
         /// <inheritdoc/>
         public virtual string FormatColumnName(string name)
         {
-            // System.Diagnostics.Debugger.Break();
+#if DEBUG
+            //System.Diagnostics.Debugger.Break();
+#endif
             return name;
         }
     }

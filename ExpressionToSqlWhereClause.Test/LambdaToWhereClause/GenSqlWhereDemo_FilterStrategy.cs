@@ -29,7 +29,7 @@ public class GenSqlWhereDemo_FilterStrategy
         Assert.AreEqual(searchCondition.WhereClause, "IsDeleted = @IsDeleted And GetSum = @GetSum And Id > @Id");
 
         Assert.AreEqual(searchCondition.Parameters["@IsDeleted"], false);
-        Assert.AreEqual(searchCondition.Parameters["@GetSum"], 5);
+        Assert.AreEqual(searchCondition.Parameters["@GetSum"], 5m);
         Assert.AreEqual(searchCondition.Parameters["@Id"], 0);
 
     }

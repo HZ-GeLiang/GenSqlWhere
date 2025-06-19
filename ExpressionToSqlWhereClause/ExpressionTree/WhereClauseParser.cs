@@ -184,7 +184,7 @@ internal static class WhereClauseParser
 
                 if (pi?.PropertyType == typeof(bool?))
                 {
-                    //如果是判断符号是 != +类型是可空,  生成的语句中需要 IS NULL
+                    //如果是判断符号是 != 且类型是可空,  生成的语句中需要 IS NULL
                     if (param.Symbol == "<>")
                     {
                         param.SqlClause += $" OR ({param.Field} IS NULL)";
@@ -264,7 +264,7 @@ internal static class WhereClauseParser
                 else if (unaryExpression.Operand is System.Linq.Expressions.UnaryExpression operandUnaryExpression)
                 {
                     //IssusDemo 的 类型问题
-                    // 从嵌套的 UnaryExpression 中获取 MemberExpression
+                    //从嵌套的 UnaryExpression 中获取 MemberExpression
                     var nestedMemberExpression = operandUnaryExpression.Operand as MemberExpression;
                     if (nestedMemberExpression != null)
                     {
@@ -287,12 +287,14 @@ internal static class WhereClauseParser
             }
         }
 
-
-        //不支持的:
+        //已知的的不支持的:
         //-expression  { Not(u.Name.Contains("Name"))}
         //System.Linq.Expressions.Expression { System.Linq.Expressions.UnaryExpression}
+#if DEBUG
+
         DebuggerHelper.Break();
-        throw new NotSupportedException($"Unknow expression {expression.GetType()}");
+#endif
+        throw new NotSupportedException($"Unknow expression {expression.GetType().FullName}");
     }
 
     /// <summary>

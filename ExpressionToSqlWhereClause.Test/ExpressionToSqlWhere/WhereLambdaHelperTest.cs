@@ -116,7 +116,6 @@ public class WhereLambdaHelperTest
     [TestMethod]
     public void Contains_Array()
     {
-
         {
             var list = new short?[] { 1, 2, null };
             var expression =
