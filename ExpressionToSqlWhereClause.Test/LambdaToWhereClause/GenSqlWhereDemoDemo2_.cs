@@ -1,4 +1,5 @@
 ﻿using ExpressionToSqlWhereClause.EntityConfig;
+using ExpressionToSqlWhereClause.ExtensionMethods;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq.Expressions;
 
@@ -37,7 +38,7 @@ public class UseDemo2
             DataCreatedAtEnd = time,
         };
 
-        var whereLambda = searchModel.CreateWhereLambda((Model_People _) => { });
+        var whereLambda = searchModel.CreateWhereLambda(default(Model_People));
 
         Expression<Func<Model_People, bool>> exp = whereLambda.ToExpression();
 

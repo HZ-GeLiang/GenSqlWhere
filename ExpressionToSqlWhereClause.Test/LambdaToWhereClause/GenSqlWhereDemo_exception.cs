@@ -1,4 +1,5 @@
 ﻿using ExpressionToSqlWhereClause.EntityConfig;
+using ExpressionToSqlWhereClause.ExtensionMethods;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
@@ -16,7 +17,7 @@ public class GenSqlWhereDemo_exception
                 Id = (string)null,
             };
 
-            var whereLambda = searchModel.CreateWhereLambda((model_expection1 _) => { });
+            var whereLambda = searchModel.CreateWhereLambda(default(model_expection1));
 
             whereLambda[SearchType.Eq] = new List<string>
             {
@@ -37,7 +38,7 @@ public class GenSqlWhereDemo_exception
                 Id = string.Empty,
             };
 
-            var whereLambda = searchModel.CreateWhereLambda((model_expection1 _) => { });
+            var whereLambda = searchModel.CreateWhereLambda(default(model_expection1));
 
             whereLambda[SearchType.Eq] = new List<string>
             {
@@ -58,7 +59,7 @@ public class GenSqlWhereDemo_exception
                 Id = string.Empty,
             };
 
-            var whereLambda = searchModel.CreateWhereLambda((model_expection2 _) => { });
+            var whereLambda = searchModel.CreateWhereLambda(default(model_expection2));
 
             whereLambda[SearchType.Eq] = new List<string>
             {

@@ -1,4 +1,4 @@
-﻿using ExpressionToSqlWhereClause.EntityConfig;
+﻿using ExpressionToSqlWhereClause.ExtensionMethods;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
@@ -13,7 +13,7 @@ public class GenSqlWhereDemo_Attr
         {
             Url = "123",
         };
-        var whereLambda = searchModel.CreateWhereLambda((model_like _) => { });
+        var whereLambda = searchModel.CreateWhereLambda(default(model_like));
 
         var expression = whereLambda.ToExpression();
         var searchCondition = expression.ToWhereClause();
@@ -33,7 +33,7 @@ public class GenSqlWhereDemo_Attr
         {
             Url = "123",
         };
-        var whereLambda = searchModel.CreateWhereLambda((Input_likeLeft _) => { });
+        var whereLambda = searchModel.CreateWhereLambda(default(Input_likeLeft));
         var expression = whereLambda.ToExpression();
         var searchCondition = expression.ToWhereClause();
         Assert.AreEqual(searchCondition.WhereClause, "Url Like @Url");
@@ -52,7 +52,7 @@ public class GenSqlWhereDemo_Attr
         {
             Url = "123",
         };
-        var whereLambda = searchModel.CreateWhereLambda((Input_likeRight _) => { });
+        var whereLambda = searchModel.CreateWhereLambda(default(Input_likeRight));
         var expression = whereLambda.ToExpression();
         var searchCondition = expression.ToWhereClause();
         Assert.AreEqual(searchCondition.WhereClause, "Url Like @Url");
@@ -72,7 +72,7 @@ public class GenSqlWhereDemo_Attr
             IsDel = true,
         };
 
-        var whereLambda = searchModel.CreateWhereLambda((Model_eq _) => { });
+        var whereLambda = searchModel.CreateWhereLambda(default(Model_eq));
         var expression = whereLambda.ToExpression();
         var searchCondition = expression.ToWhereClause();
 
@@ -93,7 +93,7 @@ public class GenSqlWhereDemo_Attr
             IsDel = true,//todo://计划:添加当其他值为xx时,当前值才生效
         };
 
-        var whereLambda = searchModel.CreateWhereLambda((model_neq _) => { });
+        var whereLambda = searchModel.CreateWhereLambda(default(model_neq));
         var expression = whereLambda.ToExpression();
         var searchCondition = expression.ToWhereClause();
         Assert.AreEqual(searchCondition.WhereClause, "IsDel <> @IsDel");
@@ -114,7 +114,7 @@ public class GenSqlWhereDemo_Attr
             Sex = "1",
         };
 
-        var whereLambda = searchModel.CreateWhereLambda((model_in _) => { });
+        var whereLambda = searchModel.CreateWhereLambda(default(model_in));
         var expression = whereLambda.ToExpression();
         var searchCondition = expression.ToWhereClause();
         Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id) And Sex In (@Sex)");
@@ -134,7 +134,7 @@ public class GenSqlWhereDemo_Attr
         {
             Id = 1
         };
-        var whereLambda = searchModel.CreateWhereLambda((model_in2 _) => { });
+        var whereLambda = searchModel.CreateWhereLambda(default(model_in2));
         var expression = whereLambda.ToExpression();
         var searchCondition = expression.ToWhereClause();
         Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id)");
@@ -155,7 +155,7 @@ public class GenSqlWhereDemo_Attr
                 DataCreatedAtStart = DateTime.Parse("2021-8-7 23:00:00"),
                 DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
             };
-            var whereLambda = searchModel.CreateWhereLambda((model_timeRange _) => { });
+            var whereLambda = searchModel.CreateWhereLambda(default(model_timeRange));
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
             Assert.AreEqual(searchCondition.WhereClause, "DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1");
@@ -175,7 +175,7 @@ public class GenSqlWhereDemo_Attr
                 DataCreatedAt = DateTime.Parse("2021-8-8")
             };
 
-            var whereLambda = searchModel.CreateWhereLambda((Input_timeRange2_Attr _) => { });
+            var whereLambda = searchModel.CreateWhereLambda(default(Input_timeRange2_Attr));
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
             Assert.AreEqual(searchCondition.WhereClause, "DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1");
@@ -199,7 +199,7 @@ public class GenSqlWhereDemo_Attr
                 IdLeft = 3,
                 IdRight = 9
             };
-            var whereLambda = searchModel.CreateWhereLambda((model_numberRange _) => { });
+            var whereLambda = searchModel.CreateWhereLambda(default(model_numberRange));
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
 
@@ -218,7 +218,7 @@ public class GenSqlWhereDemo_Attr
             {
                 Id = 5
             };
-            var whereLambda = searchModel.CreateWhereLambda((Input_numberRange2 _) => { });
+            var whereLambda = searchModel.CreateWhereLambda(default(Input_numberRange2));
             var expression = whereLambda.ToExpression();
             var searchCondition = expression.ToWhereClause();
             Assert.AreEqual(searchCondition.WhereClause, "Id >= @Id And Id <= @Id1");
@@ -241,7 +241,7 @@ public class GenSqlWhereDemo_Attr
             DataCreatedAt = DateTime.Parse("2021-8-8"),
         };
 
-        var whereLambda = searchModel.CreateWhereLambda((model_gt _) => { });
+        var whereLambda = searchModel.CreateWhereLambda(default(model_gt));
         var expression = whereLambda.ToExpression();
         var searchCondition = expression.ToWhereClause();
         Assert.AreEqual(searchCondition.WhereClause, "Id > @Id And DataCreatedAt > @DataCreatedAt");
@@ -262,7 +262,7 @@ public class GenSqlWhereDemo_Attr
             Id = 5,
             DataCreatedAt = DateTime.Parse("2021-8-8"),
         };
-        var whereLambda = searchModel.CreateWhereLambda((model_ge _) => { });
+        var whereLambda = searchModel.CreateWhereLambda(default(model_ge));
         var expression = whereLambda.ToExpression();
         var searchCondition = expression.ToWhereClause();
         Assert.AreEqual(searchCondition.WhereClause, "Id >= @Id And DataCreatedAt >= @DataCreatedAt");
@@ -283,7 +283,7 @@ public class GenSqlWhereDemo_Attr
             Id = 5,
             DataCreatedAt = DateTime.Parse("2021-8-8"),
         };
-        var whereLambda = searchModel.CreateWhereLambda((model_lt _) => { });
+        var whereLambda = searchModel.CreateWhereLambda(default(model_lt));
         var expression = whereLambda.ToExpression();
         var searchCondition = expression.ToWhereClause();
         Assert.AreEqual(searchCondition.WhereClause, "Id < @Id And DataCreatedAt < @DataCreatedAt");
@@ -304,7 +304,7 @@ public class GenSqlWhereDemo_Attr
             Id = 5,
             DataCreatedAt = DateTime.Parse("2021-8-8"),
         };
-        var whereLambda = searchModel.CreateWhereLambda((model_le _) => { });
+        var whereLambda = searchModel.CreateWhereLambda(default(model_le));
         var expression = whereLambda.ToExpression();
         var searchCondition = expression.ToWhereClause();
 

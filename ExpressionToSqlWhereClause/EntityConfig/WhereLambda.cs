@@ -18,8 +18,8 @@ public class WhereLambda<TEntity, TSearch>
     //添加where的排序顺序: 目的是尽可能的让索引生效(也就是like必须是最后的,其他只能随意)
     private static readonly SearchType[] _addOrder = {
         SearchType.None,
-        SearchType.In,
         SearchType.Eq,
+        SearchType.In,
         SearchType.TimeRange,
         SearchType.NumberRange,
         SearchType.Gt,
@@ -27,8 +27,8 @@ public class WhereLambda<TEntity, TSearch>
         SearchType.Lt,
         SearchType.Le,
         SearchType.Neq,
-        SearchType.LikeRight,
         SearchType.LikeLeft,
+        SearchType.LikeRight,
         SearchType.Like,
     };
 
@@ -130,7 +130,7 @@ public class WhereLambda<TEntity, TSearch>
     /// <returns></returns>
     public static List<Expression<Func<TEntity, bool>>> ToExpressionList(WhereLambda<TEntity, TSearch> that)
     {
-        //static  是为了 给 implicit operator 方法使用的
+        //该方法的 static 是为了给 implicit operator 方法使用的
         var searchConditionDict = GetSearchCondition(that._dictSearhType);
         return ToExpressionList(that, searchConditionDict);
     }

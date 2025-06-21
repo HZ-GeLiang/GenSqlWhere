@@ -1,4 +1,5 @@
 ﻿using ExpressionToSqlWhereClause.EntityConfig;
+using ExpressionToSqlWhereClause.ExtensionMethods;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
@@ -22,7 +23,7 @@ public class GenSqlWhereDemo_dynamic
             DataCreatedAt = DateTime.Parse("2021-8-8"),
         };
 
-        var whereLambda = searchModel.CreateWhereLambda((model_dynamic _) => { });
+        var whereLambda = searchModel.CreateWhereLambda(default(model_dynamic));
 
         whereLambda[SearchType.Le] = new List<string>
         {
@@ -51,7 +52,7 @@ public class GenSqlWhereDemo_dynamic
             DataCreatedAt = DateTime.Parse("2021-8-8"),
         };
 
-        var whereLambda = searchModel.CreateWhereLambda((model_dynamic _) => { });
+        var whereLambda = searchModel.CreateWhereLambda(default(model_dynamic));
 
         var searchCondition = whereLambda.ToExpression().ToWhereClause();
 
@@ -71,7 +72,7 @@ public class GenSqlWhereDemo_dynamic
                 IsDel = 0,
             };
 
-            var whereLambda = searchModel.CreateWhereLambda((model_dynamic _) => { });
+            var whereLambda = searchModel.CreateWhereLambda(default(model_dynamic));
             whereLambda[SearchType.Eq] = new List<string>
             {
                 nameof(searchModel.IsDel),
@@ -92,7 +93,7 @@ public class GenSqlWhereDemo_dynamic
                 IsDel = 1,
             };
 
-            var whereLambda = searchModel.CreateWhereLambda((model_dynamic _) => { });
+            var whereLambda = searchModel.CreateWhereLambda(default(model_dynamic));
             whereLambda[SearchType.Eq] = new List<string>
             {
                 nameof(searchModel.IsDel),
