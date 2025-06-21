@@ -1,4 +1,5 @@
 ﻿using FilterStrategy;
+using Infra.ExtensionMethods;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq.Expressions;
 
@@ -31,7 +32,6 @@ public class GenSqlWhereDemo_FilterStrategy
         Assert.AreEqual(searchCondition.Parameters["@IsDeleted"], false);
         Assert.AreEqual(searchCondition.Parameters["@GetSum"], 5m);
         Assert.AreEqual(searchCondition.Parameters["@Id"], 0);
-
     }
 
     public class model_FilterStrategy

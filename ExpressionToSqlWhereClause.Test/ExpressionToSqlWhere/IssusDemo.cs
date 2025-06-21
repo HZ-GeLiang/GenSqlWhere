@@ -1,4 +1,5 @@
 ﻿using ExpressionToSqlWhereClaus.Test;
+using Infra.ExtensionMethods;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
@@ -12,10 +13,12 @@ public class IssusDemo
     {
         public byte Status { get; set; } = 0;
     }
+
     class TypeConvert_input
     {
         public int? Status { get; set; } = 0;
     }
+
     [TestMethod]
     public void 类型问题()
     {
@@ -34,6 +37,5 @@ public class IssusDemo
 
         var searchCondition = expression.ToWhereClause(); //注:sql参数的类型还是 int 的, 并没有转换为 byte
         Assert.AreEqual(searchCondition.WhereClause, "Status = @Status");
-
     }
 }

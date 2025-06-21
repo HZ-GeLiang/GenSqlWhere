@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ExpressionToSqlWhereClause.Test.ExtensionMethods
+namespace Infra.ExtensionMethods
 {
-    internal static class StringExtensions
+    public static class StringExtensions
     {
         public static bool HasValue(this string value) => !string.IsNullOrWhiteSpace(value);
 
@@ -18,7 +18,6 @@ namespace ExpressionToSqlWhereClause.Test.ExtensionMethods
             }
             return value.SplitToInt(separator, true);
         }
-
 
         /// <summary>
         /// 分隔后转int

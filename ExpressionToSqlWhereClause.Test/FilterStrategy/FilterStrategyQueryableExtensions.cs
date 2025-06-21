@@ -1,15 +1,14 @@
 ﻿using ExpressionToSqlWhereClause.Test;
+using Infra.ExtensionMethods;
 using System.Linq.Expressions;
 
 namespace FilterStrategy
 {
-
     /// <summary>
     /// 用来拼接具体的where
     /// </summary>
     public static class FilterStrategyQueryableExtensions
     {
-
         #region IQueryable
 
         public static IQueryable<T> WhereIfFilterStrategy<T, TValue>(
@@ -38,7 +37,6 @@ namespace FilterStrategy
            Expression<Func<T, TValue>> propertySelector,
            Func<IQueryable<T>, IFilterStrategy<T, TValue>> strategy) where T : class
         {
-
             /* 使用示例
                 _Repository.GetAll()
                 .Where()
@@ -65,7 +63,6 @@ namespace FilterStrategy
                if(obj.FinancePrice.HasValue() && obj.FinancePriceFilter.HasValue())
                     query=query.WhereIfFilterStrategy(a => a.FinancePrice, query.NumericFilterStrategy(obj.FinancePrice.Value, obj.FinancePriceFilter));
            */
-
 
             if (strategy == null || strategy.Value == null)
             {
@@ -123,6 +120,5 @@ namespace FilterStrategy
         }
 
         #endregion
-
     }
 }

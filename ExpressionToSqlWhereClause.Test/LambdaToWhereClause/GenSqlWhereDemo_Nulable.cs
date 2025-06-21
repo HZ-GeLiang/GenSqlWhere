@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Infra.ExtensionMethods;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq.Expressions;
 
 namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
@@ -6,7 +7,6 @@ namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
 [TestClass]
 public class GenSqlWhereDemo_Nulable
 {
-
     [TestMethod]
     public void nullable_datetime()
     {
@@ -35,9 +35,7 @@ public class GenSqlWhereDemo_Nulable
         CollectionAssert.AreEqual(searchCondition.Parameters, dict);
     }
 
-
     #region domain
-
 
     public class v_User
     {

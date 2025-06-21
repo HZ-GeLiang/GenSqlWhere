@@ -1,4 +1,5 @@
 ﻿using ExpressionToSqlWhereClause.SqlFunc;
+using Infra.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq.Expressions;
 

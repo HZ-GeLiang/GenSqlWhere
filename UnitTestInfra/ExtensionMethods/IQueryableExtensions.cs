@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace ExpressionToSqlWhereClause.Test;
+namespace Infra.ExtensionMethods;
 
-internal static class IQueryableExtensions
+public static class IQueryableExtensions
 {
     #region 是否有值
 

@@ -1,6 +1,7 @@
 ﻿using ExpressionToSqlWhereClause.Helpers;
 using ExpressionToSqlWhereClause.Test.ExtensionMethods;
 using ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
+using Infra.ExtensionMethods;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq.Expressions;
 using System.Text;
@@ -10,7 +11,6 @@ namespace ExpressionToSqlWhereClause.Test.ExpressionToSqlWhere;
 [TestClass]
 public class WhereLambdaHelperTest
 {
-
     [TestMethod]
     public void Contains_List()
     {
@@ -51,7 +51,6 @@ public class WhereLambdaHelperTest
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
             Assert.AreEqual(clause, "id_short_nullable In (1,2) OR id_short_nullable IS NULL");
-
         }
 
         {
@@ -64,7 +63,6 @@ public class WhereLambdaHelperTest
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
             Assert.AreEqual(clause, "id_short In (1,2)");
-
         }
 
         {
@@ -77,7 +75,6 @@ public class WhereLambdaHelperTest
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
             Assert.AreEqual(clause, "Message In ('1','2')");
-
         }
 
         {
@@ -92,7 +89,6 @@ public class WhereLambdaHelperTest
             Assert.AreEqual(clause, "UserId In (1,2,3) OR UserId IS NULL");
             //WHERE[t].[OtherId] IN(1, 2, 3) OR(UserId IS NULL)
         }
-
 
         {
             var ids = "1,2,3";
@@ -110,7 +106,6 @@ public class WhereLambdaHelperTest
                 var clause = searchCondition.WhereClause;
             }
         }
-
     }
 
     [TestMethod]
@@ -153,7 +148,6 @@ public class WhereLambdaHelperTest
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
             Assert.AreEqual(clause, "id_short_nullable In (1,2) OR id_short_nullable IS NULL");
-
         }
 
         {
@@ -166,7 +160,6 @@ public class WhereLambdaHelperTest
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
             Assert.AreEqual(clause, "id_short In (1,2)");
-
         }
 
         {
@@ -179,7 +172,6 @@ public class WhereLambdaHelperTest
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
             Assert.AreEqual(clause, "Message In ('1','2')");
-
         }
 
         {
@@ -194,7 +186,6 @@ public class WhereLambdaHelperTest
             Assert.AreEqual(clause, "UserId In (1,2,3) OR UserId IS NULL");
             //WHERE[t].[OtherId] IN(1, 2, 3) OR(UserId IS NULL)
         }
-
 
         {
             var ids = "1,2,3";
@@ -212,7 +203,6 @@ public class WhereLambdaHelperTest
                 var clause = searchCondition.WhereClause;
             }
         }
-
     }
 
     #region NonParameter
@@ -234,7 +224,6 @@ public class WhereLambdaHelperTest
             Assert.AreEqual(clause, "IsDel = 0");
         }
 
-
         {
             var expression = default(Expression<Func<Test_001, bool>>).WhereIf(true, a => a.IsDel2 != true);
             var searchCondition = expression.ToWhereClause();
@@ -248,7 +237,6 @@ public class WhereLambdaHelperTest
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
             Assert.AreEqual(clause, "IsDel2 = 0");
         }
-
     }
 
     [TestMethod]

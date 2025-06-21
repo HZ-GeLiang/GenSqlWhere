@@ -1,4 +1,6 @@
 ﻿using ExpressionToSqlWhereClaus.Test;
+using Infra.ExtensionMethods;
+using Infra.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
