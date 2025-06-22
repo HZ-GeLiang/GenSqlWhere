@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace FilterStrategy
 {
-
     /// <summary>
     /// 用来生成具体的FilterStrategy
     /// </summary>

@@ -1,4 +1,9 @@
-﻿using System.Linq.Expressions;
+﻿using ExpressionToSqlWhereClause.Exceptions;
+using ExpressionToSqlWhereClause.ExpressionTree;
+using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
+using ExpressionToSqlWhereClause.Helpers;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq.Expressions;
 
 namespace ExpressionToSqlWhereClause.ExtensionMethods;
 
@@ -14,9 +19,119 @@ https://docs.microsoft.com/zh-cn/archive/blogs/meek/linq-to-entities-combining-p
  For more information about this solution please refer to http://blogs.msdn.com/b/meek/archive/2008/05/02/linq-to-entities-combining-predicates.aspx.  (这个地址失效了, 估计就是微软的docs那个)
 */
 
-internal static class ExpressionExtensions
+public static class ExpressionExtensions
 {
-    public static Expression<Func<T, bool>> WhereIf<T>(this Expression<Func<T, bool>> first, bool condition, Expression<Func<T, bool>> second)
+    #region ToWhereClause
+
+    /// <summary>
+    /// 转换为Where子句
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="expression">表达式</param>
+    /// <param name="aliasDict">别名</param>
+    /// <param name="sqlAdapter">适配器</param>
+    /// <returns></returns>
+    public static SearchCondition ToWhereClause<T>(
+        this Expression<Func<T, bool>> expression,
+        Dictionary<string, string> aliasDict = null,
+        ISqlAdapter sqlAdapter = default) where T : class
+    {
+        if (expression == null)
+        {
+            return new SearchCondition();
+        }
+
+        #region 处理 alias
+
+        aliasDict ??= new Dictionary<string, string>();
+
+        foreach (var propertyInfo in ReflectionHelper.GetProperties<T>())
+        {
+            //优先级: 方法参数的 alias > Column
+            if (aliasDict.ContainsKey(propertyInfo.Name))
+            {
+                continue;
+            }
+            var attrs = ReflectionHelper.GetAttributeForProperty<ColumnAttribute>(propertyInfo, true);
+            if (attrs.Length == 1 && string.IsNullOrWhiteSpace(attrs[0].Name) == false) // attrs[0].Name 不为空
+            {
+                aliasDict[propertyInfo.Name] = attrs[0].Name;
+            }
+        }
+
+        #endregion
+
+        var body = expression.Body;
+        ClauseParserResult parseResult = WhereClauseParser.Parse(body, aliasDict, sqlAdapter);
+
+        #region 处理 parseResult 的  Adhesive  和 WhereClause
+
+        foreach (var key in parseResult.Adhesive.GetParameterKeys())
+        {
+            var para = parseResult.Adhesive.GetParameter(key);
+            var val = para.Value;
+
+            // 处理 val == null 的情况
+            if (val == null)
+            {
+                if (para.Symbol == SqlKeys.Equal || para.Symbol == SqlKeys.NotEqual)
+                {
+                    //为了支持 a.url == null , 此处需要翻译为 url is null
+                    var sqlClauseOrigin = para.SqlClause;
+                    var reg = "[ ].*[ ]@.*\\)$";
+                    var strList = RegexHelper.GetStringByMatches(sqlClauseOrigin, reg);
+                    if (strList.Count == 1)
+                    {
+                        string sqlClauseNew;
+                        if (para.Symbol == SqlKeys.Equal)
+                        {
+                            sqlClauseNew = sqlClauseOrigin.Replace(strList[0], " Is Null)");
+                        }
+                        else if (para.Symbol == SqlKeys.NotEqual)
+                        {
+                            sqlClauseNew = sqlClauseOrigin.Replace(strList[0], " Is Not Null)");
+                        }
+                        else
+                        {
+                            throw new FrameException("逻辑错误,需要调整");
+                        }
+
+                        parseResult.WhereClause = parseResult.WhereClause.Replace(sqlClauseOrigin, sqlClauseNew);
+                        parseResult.Adhesive.RemoveParameter(key);//移除参数
+
+                        continue;
+                    }
+                    //else 没有处理
+                }
+
+                //else 没有处理
+            }
+
+            //翻译IEnumerable的值
+            var parseValue = ConstantExtractor.ConstantExpressionValueToString(val, out var isIEnumerableObj, out var hasNullItem);
+            if (isIEnumerableObj)
+            {
+                para.Value = parseValue;
+                if (hasNullItem)
+                {
+                    para.SqlClause += $" OR ({para.Field} IS NULL)";
+                    parseResult.WhereClause = para.SqlClause;
+                }
+                continue;
+            }
+        }
+
+        #endregion
+
+        var result = new SearchCondition(parseResult);
+        return result;
+    }
+
+    #endregion
+
+    #region 拼接操作
+
+    internal static Expression<Func<T, bool>> WhereIf<T>(this Expression<Func<T, bool>> first, bool condition, Expression<Func<T, bool>> second)
     {
         if (condition)
         {
@@ -51,7 +166,7 @@ internal static class ExpressionExtensions
     /// <param name="predicate_conditionTrue"></param>
     /// <param name="predicate_conditionFalse"></param>
     /// <returns></returns>
-    public static Expression<Func<T, bool>> WhereIf<T>(this Expression<Func<T, bool>> exp, bool condition,
+    internal static Expression<Func<T, bool>> WhereIf<T>(this Expression<Func<T, bool>> exp, bool condition,
                             Expression<Func<T, bool>> predicate_conditionTrue,
                             Expression<Func<T, bool>> predicate_conditionFalse)
     {
@@ -79,7 +194,7 @@ internal static class ExpressionExtensions
         }
     }
 
-    public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> first, Expression<Func<T, bool>> second)
+    internal static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> first, Expression<Func<T, bool>> second)
     {
         if (first == null)
         {
@@ -98,7 +213,7 @@ internal static class ExpressionExtensions
         }
     }
 
-    public static Expression<Func<T, bool>> AndIf<T>(this Expression<Func<T, bool>> first, bool condition, Func<Expression<Func<T, bool>>> second)
+    internal static Expression<Func<T, bool>> AndIf<T>(this Expression<Func<T, bool>> first, bool condition, Func<Expression<Func<T, bool>>> second)
     {
         if (condition)
         {
@@ -124,7 +239,7 @@ internal static class ExpressionExtensions
         }
     }
 
-    public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> first, Expression<Func<T, bool>> second)
+    internal static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> first, Expression<Func<T, bool>> second)
     {
         if (first == null)
         {
@@ -143,7 +258,7 @@ internal static class ExpressionExtensions
         }
     }
 
-    public static Expression<Func<T, bool>> OrIf<T>(this Expression<Func<T, bool>> first, bool condition, Expression<Func<T, bool>> second)
+    internal static Expression<Func<T, bool>> OrIf<T>(this Expression<Func<T, bool>> first, bool condition, Expression<Func<T, bool>> second)
     {
         if (condition)
         {
@@ -187,6 +302,8 @@ internal static class ExpressionExtensions
         var body = merge(first.Body, secondBody);
         return Expression.Lambda<T>(body, first.Parameters);
     }
+
+    #endregion
 }
 
 internal class ParameterRebinder : ExpressionVisitor

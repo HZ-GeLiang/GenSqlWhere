@@ -1,6 +1,7 @@
-﻿using ExpressionToSqlWhereClause.Helpers;
+﻿using ExpressionToSqlWhereClause.ExtensionMethods;
+using ExpressionToSqlWhereClause.Helpers;
+using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Models;
 using ExpressionToSqlWhereClause.Test.ExtensionMethods;
-using ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
 using Infra.ExtensionMethods;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq.Expressions;

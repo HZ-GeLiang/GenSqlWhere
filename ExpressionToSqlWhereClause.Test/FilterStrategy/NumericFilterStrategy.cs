@@ -24,8 +24,8 @@ namespace FilterStrategy
         public TValue Value { get => _value; set => _value = value; }
         public string FilterType { get => _filterType; set => _filterType = value; }
 
+        private bool IsNullableType(Type type) => type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
 
-        bool IsNullableType(Type type) => type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         public static Type GetNullableTType(Type type) => type.GetProperty("Value").PropertyType;
 
         public Expression<Func<T, bool>> ApplyFilter(Expression<Func<T, TValue>> propertySelector)
@@ -55,22 +55,28 @@ namespace FilterStrategy
                 case "=":
                     condition = Expression.Equal(property, constant);
                     break;
+
                 case "<>":
                 case "!="://冗余
                     condition = Expression.NotEqual(property, constant);
                     break;
+
                 case ">":
                     condition = Expression.GreaterThan(property, constant);
                     break;
+
                 case ">=":
                     condition = Expression.GreaterThanOrEqual(property, constant);
                     break;
+
                 case "<":
                     condition = Expression.LessThan(property, constant);
                     break;
+
                 case "<=":
                     condition = Expression.LessThanOrEqual(property, constant);
                     break;
+
                 default:
                     break;
             }
@@ -81,4 +87,3 @@ namespace FilterStrategy
         }
     }
 }
-

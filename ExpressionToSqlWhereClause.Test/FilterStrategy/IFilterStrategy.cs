@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
+
 namespace FilterStrategy
 {
     /// <summary>
@@ -9,7 +10,6 @@ namespace FilterStrategy
     /// <typeparam name="TValue">数据实体的属性值</typeparam>
     public interface IFilterStrategy<T, TValue> where T : class
     {
-
         /// <summary>
         /// 查询的值
         /// </summary>
@@ -28,7 +28,5 @@ namespace FilterStrategy
         Expression<Func<T, bool>> ApplyFilter(Expression<Func<T, TValue>> propertySelector);
 
         //Expression<Func<T, bool>> ApplyFilter(Expression<Func<T, TValue>> propertySelector, TValue value);
-
     }
 }
-
