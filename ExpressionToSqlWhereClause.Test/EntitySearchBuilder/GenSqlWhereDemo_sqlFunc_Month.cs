@@ -1,11 +1,11 @@
-﻿using ExpressionToSqlWhereClause.EntityConfig;
+﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 using ExpressionToSqlWhereClause.Exceptions;
 using ExpressionToSqlWhereClause.ExtensionMethods;
 using ExpressionToSqlWhereClause.SqlFunc.EntityConfig;
 using Infra.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
+namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
 
 [TestClass]
 public class GenSqlWhereDemo_sqlFunc_Month

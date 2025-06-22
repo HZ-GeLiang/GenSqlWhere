@@ -1,4 +1,4 @@
-﻿using ExpressionToSqlWhereClause.EntityConfig;
+﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 
 namespace ExpressionToSqlWhereClause.ExtensionMethods;
 
@@ -17,13 +17,13 @@ public static class WhereLambdaExtensions
     /// <param name="_">只是为了获得TEntity而存在的</param>
     /// <returns></returns>
     [Obsolete("推荐用defaut(T)的形式")]
-    public static WhereLambda<TEntity, TSearch> CreateWhereLambda<TEntity, TSearch>(this TSearch searchModel, Action<TEntity> _)
+    public static QueryConfig<TEntity, TSearch> CreateWhereLambda<TEntity, TSearch>(this TSearch searchModel, Action<TEntity> _)
         where TSearch : class
         where TEntity : class
     {
         //使用示例 , 使用的不方便
         //searchModel.CreateWhereLambda((Input_likeLeft _) => { });
-        return new WhereLambda<TEntity, TSearch>(searchModel);
+        return new QueryConfig<TEntity, TSearch>(searchModel);
     }
 
     /// <summary>
@@ -34,14 +34,14 @@ public static class WhereLambdaExtensions
     /// <param name="searchModel">检索模型实例</param>
     /// <param name="_">只是为了获得TEntity而存在的</param>
     /// <returns></returns>
-    public static WhereLambda<TEntity, TSearch> CreateWhereLambda<TEntity, TSearch>(this TSearch searchModel, TEntity _)
+    public static QueryConfig<TEntity, TSearch> CreateWhereLambda<TEntity, TSearch>(this TSearch searchModel, TEntity _)
         where TSearch : class
         where TEntity : class
     {
         //使用示例
         //searchModel.CreateWhereLambda((model_like)null);
         //searchModel.CreateWhereLambda(default(model_like));    推荐这种
-        return new WhereLambda<TEntity, TSearch>(searchModel);
+        return new QueryConfig<TEntity, TSearch>(searchModel);
     }
 
     /// <summary>
@@ -51,10 +51,10 @@ public static class WhereLambdaExtensions
     /// <typeparam name="TSearch"></typeparam>
     /// <param name="searchModel"></param>
     /// <returns></returns>
-    public static WhereLambda<TSearch, TSearch> CreateWhereLambda<TSearch>(this TSearch searchModel)
+    public static QueryConfig<TSearch, TSearch> CreateWhereLambda<TSearch>(this TSearch searchModel)
         where TSearch : class
     {
-        return new WhereLambda<TSearch, TSearch>(searchModel);
+        return new QueryConfig<TSearch, TSearch>(searchModel);
     }
 
     /// <summary>
@@ -66,10 +66,10 @@ public static class WhereLambdaExtensions
     /// <typeparam name="TSearch">检索模型类型</typeparam>
     /// <param name="searchModel">检索模型实例</param>
     /// <returns>WhereLambda 实例</returns>
-    public static WhereLambda<TEntity, TSearch> CreateWhereLambda<TEntity, TSearch>(this TSearch searchModel)
+    public static QueryConfig<TEntity, TSearch> CreateWhereLambda<TEntity, TSearch>(this TSearch searchModel)
         where TSearch : class
         where TEntity : class
     {
-        return new WhereLambda<TEntity, TSearch>(searchModel);
+        return new QueryConfig<TEntity, TSearch>(searchModel);
     }
 }

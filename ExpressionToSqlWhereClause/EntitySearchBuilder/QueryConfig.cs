@@ -4,14 +4,14 @@ using ExpressionToSqlWhereClause.Helpers;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace ExpressionToSqlWhereClause.EntityConfig;
+namespace ExpressionToSqlWhereClause.EntitySearchBuilder;
 
 /// <summary>
 /// TSearch 转 TEntity 的表达式树的配置
 /// </summary>
 /// <typeparam name="TEntity">一般是数据库实体对象</typeparam>
 /// <typeparam name="TSearch">检索对象,一般为后端定义好后给前端传参的模型对象. 注: 不要使用多态,会报错的</typeparam>
-public class WhereLambda<TEntity, TSearch>
+public class QueryConfig<TEntity, TSearch>
     where TEntity : class
     where TSearch : class
 {
@@ -41,7 +41,7 @@ public class WhereLambda<TEntity, TSearch>
     ///
     /// </summary>
     /// <param name="search">检索对象</param>
-    public WhereLambda(TSearch search)
+    public QueryConfig(TSearch search)
     {
         this.Search = search;
     }
@@ -73,15 +73,15 @@ public class WhereLambda<TEntity, TSearch>
     public Expression<Func<TEntity, bool>> ToExpression()
     {
         List<Expression<Func<TEntity, bool>>> whereLambdas = ToExpressionList(this);
-        var expression = WhereLambda<TEntity, TSearch>.ToExpressionCore(whereLambdas);
+        var expression = QueryConfig<TEntity, TSearch>.ToExpressionCore(whereLambdas);
         return expression;
     }
 
     /// <inheritdoc cref="ToExpressionCore{TEntity}(List{Expression{Func{TEntity, bool}}})"/>
-    public static implicit operator Expression<Func<TEntity, bool>>(WhereLambda<TEntity, TSearch> that)
+    public static implicit operator Expression<Func<TEntity, bool>>(QueryConfig<TEntity, TSearch> that)
     {
         var whereLambdas = ToExpressionList(that);
-        var expression = WhereLambda<TEntity, TSearch>.ToExpressionCore(whereLambdas);
+        var expression = QueryConfig<TEntity, TSearch>.ToExpressionCore(whereLambdas);
         return expression;
     }
 
@@ -89,7 +89,7 @@ public class WhereLambda<TEntity, TSearch>
     public Expression<Func<TEntity, bool>> ToExpression<TEntity>(List<Expression<Func<TEntity, bool>>> whereLambdas)
         where TEntity : class
     {
-        return WhereLambda<TEntity, TSearch>.ToExpressionCore(whereLambdas);
+        return QueryConfig<TEntity, TSearch>.ToExpressionCore(whereLambdas);
     }
 
     /// <summary>
@@ -128,14 +128,14 @@ public class WhereLambda<TEntity, TSearch>
     /// 获得表达式树的写法,可以给ef用(不含sql内置函数的那种)
     /// </summary>
     /// <returns></returns>
-    public static List<Expression<Func<TEntity, bool>>> ToExpressionList(WhereLambda<TEntity, TSearch> that)
+    public static List<Expression<Func<TEntity, bool>>> ToExpressionList(QueryConfig<TEntity, TSearch> that)
     {
         //该方法的 static 是为了给 implicit operator 方法使用的
         var searchConditionDict = GetSearchCondition(that._dictSearhType);
         return ToExpressionList(that, searchConditionDict);
     }
 
-    /// <inheritdoc cref="ToExpressionList(WhereLambda{TEntity, TSearch})"/>
+    /// <inheritdoc cref="ToExpressionList(QueryConfig{TEntity, TSearch})"/>
     public List<Expression<Func<TEntity, bool>>> ToExpressionList()
     {
         var searchConditionDict = GetSearchCondition(this._dictSearhType);
@@ -150,7 +150,7 @@ public class WhereLambda<TEntity, TSearch>
     /// <returns></returns>
     /// <exception cref="FrameException"></exception>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public static List<Expression<Func<TEntity, bool>>> ToExpressionList(WhereLambda<TEntity, TSearch> that, Dictionary<SearchType, List<string>> searchConditionDict)
+    public static List<Expression<Func<TEntity, bool>>> ToExpressionList(QueryConfig<TEntity, TSearch> that, Dictionary<SearchType, List<string>> searchConditionDict)
     {
         var whereLambdas = new List<Expression<Func<TEntity, bool>>>();
 
@@ -172,18 +172,18 @@ public class WhereLambda<TEntity, TSearch>
 
             List<Expression<Func<TEntity, bool>>> expressionList = searchType switch
             {
-                SearchType.Like => WhereLambdaHelper.AddLike<TEntity, TSearch>(that, searchCondition),
-                SearchType.LikeLeft => WhereLambdaHelper.AddLikeLeft<TEntity, TSearch>(that, searchCondition),
-                SearchType.LikeRight => WhereLambdaHelper.AddLikeRight<TEntity, TSearch>(that, searchCondition),
-                SearchType.Eq => WhereLambdaHelper.AddEqual<TEntity, TSearch>(that, searchCondition),
-                SearchType.Neq => WhereLambdaHelper.AddNotEqual<TEntity, TSearch>(that, searchCondition),
-                SearchType.In => WhereLambdaHelper.AddIn<TEntity, TSearch>(that, searchCondition),
-                SearchType.TimeRange => WhereLambdaHelper.AddTimeRange<TEntity, TSearch>(that, searchCondition),
-                SearchType.NumberRange => WhereLambdaHelper.AddNumberRange<TEntity, TSearch>(that, searchCondition),
-                SearchType.Gt => WhereLambdaHelper.AddGt<TEntity, TSearch>(that, searchCondition),
-                SearchType.Ge => WhereLambdaHelper.AddGe<TEntity, TSearch>(that, searchCondition),
-                SearchType.Lt => WhereLambdaHelper.AddLt<TEntity, TSearch>(that, searchCondition),
-                SearchType.Le => WhereLambdaHelper.AddLe<TEntity, TSearch>(that, searchCondition),
+                SearchType.Like => QueryConfigHelper.AddLike<TEntity, TSearch>(that, searchCondition),
+                SearchType.LikeLeft => QueryConfigHelper.AddLikeLeft<TEntity, TSearch>(that, searchCondition),
+                SearchType.LikeRight => QueryConfigHelper.AddLikeRight<TEntity, TSearch>(that, searchCondition),
+                SearchType.Eq => QueryConfigHelper.AddEqual<TEntity, TSearch>(that, searchCondition),
+                SearchType.Neq => QueryConfigHelper.AddNotEqual<TEntity, TSearch>(that, searchCondition),
+                SearchType.In => QueryConfigHelper.AddIn<TEntity, TSearch>(that, searchCondition),
+                SearchType.TimeRange => QueryConfigHelper.AddTimeRange<TEntity, TSearch>(that, searchCondition),
+                SearchType.NumberRange => QueryConfigHelper.AddNumberRange<TEntity, TSearch>(that, searchCondition),
+                SearchType.Gt => QueryConfigHelper.AddGt<TEntity, TSearch>(that, searchCondition),
+                SearchType.Ge => QueryConfigHelper.AddGe<TEntity, TSearch>(that, searchCondition),
+                SearchType.Lt => QueryConfigHelper.AddLt<TEntity, TSearch>(that, searchCondition),
+                SearchType.Le => QueryConfigHelper.AddLe<TEntity, TSearch>(that, searchCondition),
                 SearchType.None => throw new FrameException($"未指定{nameof(searchType)}", new ArgumentException()),
                 _ => throw new ArgumentOutOfRangeException(nameof(searchType), searchType, null),
             };
@@ -242,7 +242,7 @@ public class WhereLambda<TEntity, TSearch>
     /// implicit 转换
     /// </summary>
     /// <param name="that"></param>
-    public static implicit operator List<Expression<Func<TEntity, bool>>>(WhereLambda<TEntity, TSearch> that)
+    public static implicit operator List<Expression<Func<TEntity, bool>>>(QueryConfig<TEntity, TSearch> that)
     {
         var whereLambdas = ToExpressionList(that);
         return whereLambdas;

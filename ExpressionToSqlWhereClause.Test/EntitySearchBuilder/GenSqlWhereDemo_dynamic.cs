@@ -1,8 +1,8 @@
-﻿using ExpressionToSqlWhereClause.EntityConfig;
+﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 using ExpressionToSqlWhereClause.ExtensionMethods;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
+namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
 
 public class model_dynamic
 {

@@ -1,8 +1,8 @@
-﻿using ExpressionToSqlWhereClause.EntityConfig;
+﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 using Infra.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
+namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
 
 [TestClass]
 public class GenSqlWhereDemo_numberRange
@@ -16,7 +16,7 @@ public class GenSqlWhereDemo_numberRange
                 IdLeft = 3,
                 IdRight = 9
             };
-            var whereLambda = new WhereLambda<Model_People, Input_numberRange_Attr>(searchModel);
+            var whereLambda = new QueryConfig<Model_People, Input_numberRange_Attr>(searchModel);
 
             whereLambda[SearchType.NumberRange] = new List<string>
             {
@@ -42,7 +42,7 @@ public class GenSqlWhereDemo_numberRange
             {
                 Id = 5
             };
-            var whereLambda = new WhereLambda<Model_People, Input_numberRange2>(searchModel);
+            var whereLambda = new QueryConfig<Model_People, Input_numberRange2>(searchModel);
 
             whereLambda[SearchType.NumberRange] = new List<string>
             {
@@ -71,7 +71,7 @@ public class GenSqlWhereDemo_numberRange
             {
                 Id = 5
             };
-            var whereLambda = new WhereLambda<Model_People, Input_numberRange2>(searchModel);
+            var whereLambda = new QueryConfig<Model_People, Input_numberRange2>(searchModel);
 
             whereLambda[SearchType.NumberRange] = new List<string>
             {

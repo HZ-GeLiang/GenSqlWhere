@@ -1,35 +1,35 @@
-﻿using ExpressionToSqlWhereClause.EntityConfig;
+﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
+namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
 
-public class model_lt
+public class model_le
 {
     public long? Id { get; set; }
     public DateTime? DataCreatedAt { get; set; }
 }
 
-public class Input_lt_Attr
+public class Input_le_Attr
 {
-    [SearchType(SearchType.Lt)] public long? Id { get; set; }
-    [SearchType(SearchType.Lt)] public DateTime? DataCreatedAt { get; set; }
+    [SearchType(SearchType.Le)] public long? Id { get; set; }
+    [SearchType(SearchType.Le)] public DateTime? DataCreatedAt { get; set; }
 }
 
 [TestClass]
-public class GenSqlWhereDemo_lt
+public class GenSqlWhereDemo_le
 {
     [TestMethod]
-    public void lt()
+    public void le()
     {
-        var searchModel = new model_lt()
+        var searchModel = new model_le()
         {
             Id = 5,
             DataCreatedAt = DateTime.Parse("2021-8-8"),
         };
 
-        var whereLambda = new WhereLambda<Model_People, model_lt>(searchModel);
+        var whereLambda = new QueryConfig<Model_People, model_le>(searchModel);
 
-        whereLambda[SearchType.Lt] = new List<string>
+        whereLambda[SearchType.Le] = new List<string>
         {
             nameof(searchModel.Id),
             nameof(searchModel.DataCreatedAt),
@@ -38,7 +38,7 @@ public class GenSqlWhereDemo_lt
         var expression = whereLambda.ToExpression();
         var searchCondition = expression.ToWhereClause();
 
-        Assert.AreEqual(searchCondition.WhereClause, "Id < @Id And DataCreatedAt < @DataCreatedAt");
+        Assert.AreEqual(searchCondition.WhereClause, "Id <= @Id And DataCreatedAt <= @DataCreatedAt");
         var dict = new Dictionary<string, object>
         {
             { "@Id", 5 },//取 domain 的类型

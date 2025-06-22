@@ -1,9 +1,9 @@
-﻿using ExpressionToSqlWhereClause.EntityConfig;
+﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 using ExpressionToSqlWhereClause.ExtensionMethods;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq.Expressions;
 
-namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
+namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
 
 //demo2,  在 input 模型上 标记 Attribute 的这种配置方式来创建sql (推荐)
 //注: demo1 和demo2 如果写重复, 那么都会生效
@@ -73,7 +73,7 @@ public class UseDemo2
         {
             Url = "123",
         };
-        var whereLambda = new WhereLambda<model_like, model_like>(searchModel);
+        var whereLambda = new QueryConfig<model_like, model_like>(searchModel);
 
         whereLambda[SearchType.Like] = new List<string>
         {

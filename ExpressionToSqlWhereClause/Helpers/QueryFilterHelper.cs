@@ -1,4 +1,4 @@
-﻿using ExpressionToSqlWhereClause.EntityConfig;
+﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 using ExpressionToSqlWhereClause.Exceptions;
 using ExpressionToSqlWhereClause.ExtensionMethods;
 using ExpressionToSqlWhereClause.SqlFunc;
@@ -12,11 +12,11 @@ namespace ExpressionToSqlWhereClause.Helpers;
 /// <summary>
 /// 条件表达式帮助类
 /// </summary>
-public static class WhereLambdaHelper
+public static class QueryConfigHelper
 {
     #region AddLike
 
-    public static List<Expression<Func<TEntity, bool>>> AddLike<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
+    public static List<Expression<Func<TEntity, bool>>> AddLike<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -36,7 +36,7 @@ public static class WhereLambdaHelper
             }
             if (value is string valueStr && !string.IsNullOrWhiteSpace(valueStr))
             {
-                var exp = WhereLambdaHelper.GetExpression_Contains<TEntity>(prop, valueStr);
+                var exp = QueryConfigHelper.GetExpression_Contains<TEntity>(prop, valueStr);
                 if (exp != null)
                 {
                     whereLambdas.Add(exp);
@@ -69,7 +69,7 @@ public static class WhereLambdaHelper
 
     #region AddLikeLeft
 
-    public static List<Expression<Func<TEntity, bool>>> AddLikeLeft<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
+    public static List<Expression<Func<TEntity, bool>>> AddLikeLeft<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -89,7 +89,7 @@ public static class WhereLambdaHelper
             }
             if (value is string valueStr && !string.IsNullOrWhiteSpace(valueStr))
             {
-                var exp = WhereLambdaHelper.GetExpression_StartsWith<TEntity>(prop, valueStr);
+                var exp = QueryConfigHelper.GetExpression_StartsWith<TEntity>(prop, valueStr);
                 if (exp != null)
                 {
                     whereLambdas.Add(exp);
@@ -122,7 +122,7 @@ public static class WhereLambdaHelper
     #region AddLikeRight
 
     ///
-    public static List<Expression<Func<TEntity, bool>>> AddLikeRight<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
+    public static List<Expression<Func<TEntity, bool>>> AddLikeRight<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -142,7 +142,7 @@ public static class WhereLambdaHelper
             }
             if (value is string valueStr && !string.IsNullOrWhiteSpace(valueStr))
             {
-                var exp = WhereLambdaHelper.GetExpression_EndsWith<TEntity>(prop, valueStr);
+                var exp = QueryConfigHelper.GetExpression_EndsWith<TEntity>(prop, valueStr);
                 if (exp != null)
                 {
                     whereLambdas.Add(exp);
@@ -174,7 +174,7 @@ public static class WhereLambdaHelper
 
     #region AddEqual版本2 : 根据: AddInOrEuqal 衍生出来的
 
-    public static List<Expression<Func<TEntity, bool>>> AddEqual<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
+    public static List<Expression<Func<TEntity, bool>>> AddEqual<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -273,7 +273,7 @@ public static class WhereLambdaHelper
 
     #region AddNotEqual-基于Equal的版本2
 
-    public static List<Expression<Func<TEntity, bool>>> AddNotEqual<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
+    public static List<Expression<Func<TEntity, bool>>> AddNotEqual<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -373,7 +373,7 @@ public static class WhereLambdaHelper
         public bool? IsPair { get; set; }
     }
 
-    public static List<Expression<Func<TEntity, bool>>> AddNumberRange<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
+    public static List<Expression<Func<TEntity, bool>>> AddNumberRange<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -585,7 +585,7 @@ public static class WhereLambdaHelper
 
     #region AddTimeRange
 
-    public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
+    public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -613,7 +613,7 @@ public static class WhereLambdaHelper
     /// <param name="searchCondition"></param>
     /// <param name="period">当为秒的时候需要调用这个方法</param>
     /// <returns></returns>
-    public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition, TimePeriod period)
+    public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition, TimePeriod period)
         where TEntity : class
         where TSearch : class
     {
@@ -632,7 +632,7 @@ public static class WhereLambdaHelper
 
     #endregion
 
-    private static Dictionary<string, TimeSearch> AddTimeRange_GetTimeDict<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
+    private static Dictionary<string, TimeSearch> AddTimeRange_GetTimeDict<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -961,7 +961,7 @@ public static class WhereLambdaHelper
     /// <param name="propertyNames"></param>
     /// <returns></returns>
     /// <exception cref="FrameException"></exception>
-    public static List<Expression<Func<TEntity, bool>>> AddIn<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> propertyNames)
+    public static List<Expression<Func<TEntity, bool>>> AddIn<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> propertyNames)
         where TEntity : class
         where TSearch : class
     {
@@ -1244,7 +1244,7 @@ public static class WhereLambdaHelper
 
     #region AddGt
 
-    public static List<Expression<Func<TEntity, bool>>> AddGt<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
+    public static List<Expression<Func<TEntity, bool>>> AddGt<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -1266,7 +1266,7 @@ public static class WhereLambdaHelper
             }
             if (!valuePropType.IsClass)
             {
-                var exp = WhereLambdaHelper.GetExpression_gt<TEntity>(prop, value);
+                var exp = QueryConfigHelper.GetExpression_gt<TEntity>(prop, value);
                 if (exp != null)
                 {
                     whereLambdas.Add(exp);
@@ -1311,7 +1311,7 @@ public static class WhereLambdaHelper
 
     #region AddGe
 
-    public static List<Expression<Func<TEntity, bool>>> AddGe<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
+    public static List<Expression<Func<TEntity, bool>>> AddGe<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -1332,7 +1332,7 @@ public static class WhereLambdaHelper
             }
             if (!valuePropType.IsClass)
             {
-                var exp = WhereLambdaHelper.GetExpression_ge<TEntity>(prop, value);
+                var exp = QueryConfigHelper.GetExpression_ge<TEntity>(prop, value);
                 if (exp != null)
                 {
                     whereLambdas.Add(exp);
@@ -1377,7 +1377,7 @@ public static class WhereLambdaHelper
 
     #region AddLt
 
-    public static List<Expression<Func<TEntity, bool>>> AddLt<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
+    public static List<Expression<Func<TEntity, bool>>> AddLt<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -1398,7 +1398,7 @@ public static class WhereLambdaHelper
             }
             if (!valuePropType.IsClass)
             {
-                var exp = WhereLambdaHelper.GetExpression_lt<TEntity>(prop, value);
+                var exp = QueryConfigHelper.GetExpression_lt<TEntity>(prop, value);
                 if (exp != null)
                 {
                     whereLambdas.Add(exp);
@@ -1443,7 +1443,7 @@ public static class WhereLambdaHelper
 
     #region AddLe
 
-    public static List<Expression<Func<TEntity, bool>>> AddLe<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, List<string> searchCondition)
+    public static List<Expression<Func<TEntity, bool>>> AddLe<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -1464,7 +1464,7 @@ public static class WhereLambdaHelper
             }
             if (!valuePropType.IsClass)
             {
-                var exp = WhereLambdaHelper.GetExpression_le<TEntity>(prop, value);
+                var exp = QueryConfigHelper.GetExpression_le<TEntity>(prop, value);
                 if (exp != null)
                 {
                     whereLambdas.Add(exp);
@@ -1604,7 +1604,7 @@ public static class WhereLambdaHelper
 
     private static List<Expression<Func<TEntity, bool>>> Default<TEntity>() => new();
 
-    private static bool ContinueAdd<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, string prop, object value)
+    private static bool ContinueAdd<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, string prop, object value)
         where TEntity : class
         where TSearch : class
     {
@@ -1631,7 +1631,7 @@ public static class WhereLambdaHelper
             }
         }
 
-        bool ExistsWhereIf<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, string propName)
+        bool ExistsWhereIf<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, string propName)
            where TEntity : class
            where TSearch : class
         {
@@ -1647,7 +1647,7 @@ public static class WhereLambdaHelper
             return true;
         }
 
-        bool InvokeWhereIf<TEntity, TSearch>(WhereLambda<TEntity, TSearch> that, string propName)
+        bool InvokeWhereIf<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, string propName)
             where TEntity : class
             where TSearch : class
         {

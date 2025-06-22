@@ -1,7 +1,7 @@
-﻿using ExpressionToSqlWhereClause.EntityConfig;
+﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
+namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
 
 [TestClass]
 public class GenSqlWhereDemo_gt
@@ -15,7 +15,7 @@ public class GenSqlWhereDemo_gt
             DataCreatedAt = DateTime.Parse("2021-8-8"),
         };
 
-        var whereLambda = new WhereLambda<Model_People, model_gt>(searchModel);
+        var whereLambda = new QueryConfig<Model_People, model_gt>(searchModel);
 
         whereLambda[SearchType.Gt] = new List<string>
         {

@@ -1,4 +1,4 @@
-﻿namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
+﻿namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
 
 public class Model_People
 {

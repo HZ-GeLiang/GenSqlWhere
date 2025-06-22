@@ -1,9 +1,9 @@
-﻿using ExpressionToSqlWhereClause.EntityConfig;
+﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 using ExpressionToSqlWhereClause.ExtensionMethods;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq.Expressions;
 
-namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
+namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
 
 //demo1, 使用   whereLambda[SearchType.like] 的这种配置方式来创建sql
 //注: demo1 和demo2 如果写重复, 那么都会生效
@@ -40,7 +40,7 @@ public class UseDemo1
             DataCreatedAtEnd = time,
         };
 
-        var whereLambda = new WhereLambda<Model_People, Input_Demo>(searchModel);
+        var whereLambda = new QueryConfig<Model_People, Input_Demo>(searchModel);
 
         whereLambda[SearchType.Like] = new List<string>
         {
@@ -81,9 +81,9 @@ public class UseDemo1
         Assert.AreEqual(searchCondition.WhereClause, "IsDel = @IsDel And Id In (@Id) And Sex In (@Sex) And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
         var dict = new Dictionary<string, object>
         {
+            { "@IsDel", searchModel.IsDel },
             { "@Id", "1,2"},
             { "@Sex", searchModel.Sex },
-            { "@IsDel", searchModel.IsDel },
             { "@DataCreatedAt", searchModel.DataCreatedAtStart },
             { "@DataCreatedAt1", searchModel.DataCreatedAtEnd?.AddDays(1) },
             { "@Url", $@"%{searchModel.Url}%" },
@@ -101,7 +101,7 @@ public class UseDemo1
             Url = "123",
         };
 
-        var whereLambda = new WhereLambda<Model_People, Input_Demo>(searchModel);
+        var whereLambda = new QueryConfig<Model_People, Input_Demo>(searchModel);
 
         whereLambda[SearchType.Eq] = new List<string>
         {
@@ -197,7 +197,7 @@ public class UseDemo1
             DataCreatedAtEnd = time,
         };
 
-        var whereLambda = new WhereLambda<Model_People, Input_Demo>(searchModel);
+        var whereLambda = new QueryConfig<Model_People, Input_Demo>(searchModel);
 
         whereLambda[SearchType.Like] = new List<string>
         {

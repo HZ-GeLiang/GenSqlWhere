@@ -1,6 +1,6 @@
 ﻿using ExpressionToSqlWhereClause.Helpers;
 using ExpressionToSqlWhereClause.Test.ExtensionMethods;
-using ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
+using ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
 using Infra.ExtensionMethods;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq.Expressions;
@@ -415,7 +415,7 @@ public class WhereLambdaHelperTest
     public void Expression_HasValue()
     {
         Expression<Func<Student, bool>> exp = a => (a.Name ?? "") != "";
-        var exp2 = WhereLambdaHelper.GetExpression_HasValue<Student>("Name");
+        var exp2 = QueryConfigHelper.GetExpression_HasValue<Student>("Name");
 
         Assert.AreEqual(true, exp.ToString() == exp2.ToString());
 

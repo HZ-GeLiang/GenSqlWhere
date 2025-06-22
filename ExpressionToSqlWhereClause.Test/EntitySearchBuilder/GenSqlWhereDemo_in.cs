@@ -1,7 +1,7 @@
-﻿using ExpressionToSqlWhereClause.EntityConfig;
+﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
+namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
 
 public class model_in
 {
@@ -39,7 +39,7 @@ public class GenSqlWhereDemo_in
             Sex = "1",
         };
 
-        var whereLambda = new WhereLambda<Model_People, model_in>(searchModel);
+        var whereLambda = new QueryConfig<Model_People, model_in>(searchModel);
 
         whereLambda[SearchType.In] = new List<string>
         {
@@ -68,7 +68,7 @@ public class GenSqlWhereDemo_in
             Id = 1
         };
 
-        var whereLambda = new WhereLambda<Model_People, model_in2>(searchModel);
+        var whereLambda = new QueryConfig<Model_People, model_in2>(searchModel);
 
         whereLambda[SearchType.In] = new List<string>
         {

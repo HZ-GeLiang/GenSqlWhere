@@ -1,7 +1,7 @@
-﻿using ExpressionToSqlWhereClause.EntityConfig;
+﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
+namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
 
 [TestClass]
 public class GenSqlWhereDemo_neq
@@ -14,7 +14,7 @@ public class GenSqlWhereDemo_neq
             IsDel = true,//todo://计划:添加当其他值为xx时,当前值才生效
         };
 
-        var whereLambda = new WhereLambda<Model_People, model_neq>(searchModel);
+        var whereLambda = new QueryConfig<Model_People, model_neq>(searchModel);
 
         whereLambda[SearchType.Neq] = new List<string>
         {

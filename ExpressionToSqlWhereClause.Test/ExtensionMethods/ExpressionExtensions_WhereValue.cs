@@ -11,7 +11,7 @@ namespace ExpressionToSqlWhereClause.Test.ExtensionMethods
         {
             if (expression.Body is MemberExpression memberExpression)
             {
-                return WhereLambdaHelper.GetExpression_HasValue<T>(memberExpression.Member.Name);
+                return QueryConfigHelper.GetExpression_HasValue<T>(memberExpression.Member.Name);
             }
 
             throw new ArgumentException("Invalid expression. Expected MemberExpression.");
@@ -21,7 +21,7 @@ namespace ExpressionToSqlWhereClause.Test.ExtensionMethods
         {
             if (expression.Body is MemberExpression memberExpression)
             {
-                return WhereLambdaHelper.GetExpression_NoValue<T>(memberExpression.Member.Name);
+                return QueryConfigHelper.GetExpression_NoValue<T>(memberExpression.Member.Name);
             }
             throw new ArgumentException("Invalid expression. Expected MemberExpression.");
         }

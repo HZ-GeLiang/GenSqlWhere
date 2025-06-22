@@ -1,7 +1,7 @@
-﻿using ExpressionToSqlWhereClause.EntityConfig;
+﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
+namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
 
 [TestClass]
 public class GenSqlWhereDemo_TimeRange
@@ -15,7 +15,7 @@ public class GenSqlWhereDemo_TimeRange
             DataCreatedAtStart = DateTime.Parse("2021-8-7 23:00:00"),
             DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
         };
-        var whereLambda = new WhereLambda<model_timeRange, Input_timeRange_Attr>(searchModel);
+        var whereLambda = new QueryConfig<model_timeRange, Input_timeRange_Attr>(searchModel);
 
         whereLambda[SearchType.TimeRange] = new List<string>
         {
@@ -48,7 +48,7 @@ public class GenSqlWhereDemo_TimeRange
             DataCreatedAtStart = DateTime.Parse("2021-8-8"),
             DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
         };
-        var whereLambda = new WhereLambda<model_timeRange, Input_timeRange_Attr>(searchModel);
+        var whereLambda = new QueryConfig<model_timeRange, Input_timeRange_Attr>(searchModel);
 
         whereLambda[SearchType.TimeRange] = new List<string>
         {
@@ -81,7 +81,7 @@ public class GenSqlWhereDemo_TimeRange
             DataCreatedAtStart = DateTime.Parse("2021-8-8"),
             DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
         };
-        var whereLambda = new WhereLambda<model_timeRange, Input_timeRange_Attr>(searchModel);
+        var whereLambda = new QueryConfig<model_timeRange, Input_timeRange_Attr>(searchModel);
 
         whereLambda[SearchType.TimeRange] = new List<string>
         {
@@ -117,7 +117,7 @@ public class GenSqlWhereDemo_TimeRange
             DataCreatedAt = DateTime.Parse("2021-8-8")
         };
 
-        var whereLambda = new WhereLambda<Model_People, Input_timeRange2_Attr>(searchModel);
+        var whereLambda = new QueryConfig<Model_People, Input_timeRange2_Attr>(searchModel);
 
         whereLambda[SearchType.TimeRange] = new List<string>
         {

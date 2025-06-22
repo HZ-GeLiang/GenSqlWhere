@@ -1,8 +1,8 @@
-﻿using ExpressionToSqlWhereClause.EntityConfig;
+﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 using ExpressionToSqlWhereClause.ExtensionMethods;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
+namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
 
 [TestClass]
 public class GenSqlWhereDemo_exception
@@ -81,7 +81,7 @@ public class GenSqlWhereDemo_exception
         {
         };
 
-        var whereLambda = new WhereLambda<Model_People, model_lt>(searchModel);
+        var whereLambda = new QueryConfig<Model_People, model_lt>(searchModel);
 
         whereLambda[SearchType.Lt] = new List<string>
         {

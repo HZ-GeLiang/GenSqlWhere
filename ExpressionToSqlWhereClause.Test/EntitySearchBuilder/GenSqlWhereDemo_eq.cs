@@ -1,11 +1,11 @@
-﻿using ExpressionToSqlWhereClause.EntityConfig;
+﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 using ExpressionToSqlWhereClause.ExtensionMethods;
 using Infra.ExtensionMethods;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 
-namespace ExpressionToSqlWhereClause.Test.LambdaToWhereClause;
+namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
 
 [TestClass]
 public class GenSqlWhereDemo_eq
@@ -18,7 +18,7 @@ public class GenSqlWhereDemo_eq
             IsDel = true,
         };
 
-        var whereLambda = new WhereLambda<Model_eq, Input_eq>(searchModel);
+        var whereLambda = new QueryConfig<Model_eq, Input_eq>(searchModel);
 
         whereLambda[SearchType.Eq] = new List<string>
         {
@@ -89,7 +89,7 @@ public class GenSqlWhereDemo_eq
         };
 
         {
-            var whereLambda = new WhereLambda<Model_eq, InputModel_eq>(searchModel);
+            var whereLambda = new QueryConfig<Model_eq, InputModel_eq>(searchModel);
 
             whereLambda.WhereIf[nameof(searchModel.Id)] = a => a.Id > 0;// 添加满足 Id>0的 条件时 ,当前值才生效
 
@@ -111,7 +111,7 @@ public class GenSqlWhereDemo_eq
         }
 
         {
-            var whereLambda = new WhereLambda<Model_eq, InputModel_eq>(searchModel);
+            var whereLambda = new QueryConfig<Model_eq, InputModel_eq>(searchModel);
 
             //whereLambda.WhereIf[nameof(searchModel.Id)] = a => a.Id > 10;// 添加满足 Id>0的 条件时 ,当前值才生效
 
@@ -145,7 +145,7 @@ public class GenSqlWhereDemo_eq
         };
 
         {
-            var whereLambda = new WhereLambda<Model_eq, InputModel_eq>(searchModel);
+            var whereLambda = new QueryConfig<Model_eq, InputModel_eq>(searchModel);
 
             //或者这样写
             //Expression<Func<InputModel_eq, bool>> exp = a => a.Id > 10;

@@ -1,4 +1,4 @@
-﻿namespace ExpressionToSqlWhereClause.EntityConfig;
+﻿namespace ExpressionToSqlWhereClause.EntitySearchBuilder;
 
 /// <summary>
 /// 搜索类型
