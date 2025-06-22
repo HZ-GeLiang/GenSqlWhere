@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace FilterStrategy
+namespace ExpressionToSqlWhereClause.ExtensionMethods
 {
     /// <summary>
     /// 用来生成具体的FilterStrategy

@@ -1,8 +1,7 @@
-﻿using ExpressionToSqlWhereClause.Test;
-using Infra.ExtensionMethods;
+﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 using System.Linq.Expressions;
 
-namespace FilterStrategy
+namespace ExpressionToSqlWhereClause.ExtensionMethods
 {
     /// <summary>
     /// 用来拼接具体的where

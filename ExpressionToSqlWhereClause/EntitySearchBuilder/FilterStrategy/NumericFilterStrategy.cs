@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
 
-namespace FilterStrategy
+namespace ExpressionToSqlWhereClause.EntitySearchBuilder
 {
     /// <summary>
     /// 数值过滤策略实现
@@ -24,9 +24,9 @@ namespace FilterStrategy
         public TValue Value { get => _value; set => _value = value; }
         public string FilterType { get => _filterType; set => _filterType = value; }
 
-        private bool IsNullableType(Type type) => type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        //private bool IsNullableType(Type type) => type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
 
-        public static Type GetNullableTType(Type type) => type.GetProperty("Value").PropertyType;
+        //public static Type GetNullableTType(Type type) => type.GetProperty("Value").PropertyType;
 
         public Expression<Func<T, bool>> ApplyFilter(Expression<Func<T, TValue>> propertySelector)
         {
@@ -57,7 +57,7 @@ namespace FilterStrategy
                     break;
 
                 case "<>":
-                case "!="://冗余
+                case "!=":
                     condition = Expression.NotEqual(property, constant);
                     break;
 
