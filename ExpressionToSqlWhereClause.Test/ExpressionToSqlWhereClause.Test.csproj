@@ -17,7 +17,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\ExpressionToSqlWhereClause\ExpressionToSqlWhereClause.csproj" />
-		<ProjectReference Include="..\UnitTestInfra\UnitTestInfra.csproj" />
+		<ProjectReference Include="..\UnitTestInfra\UnitTest.Infra.csproj" />
 	</ItemGroup>
 
 </Project>

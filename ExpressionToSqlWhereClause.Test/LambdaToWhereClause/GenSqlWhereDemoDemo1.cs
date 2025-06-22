@@ -26,7 +26,7 @@ public class Input_Demo
 public class UseDemo1
 {
     [TestMethod]
-    public void Use()
+    public void Use1()
     {
         var time = DateTime.Parse("2021-8-8");
         var searchModel = new Input_Demo()
@@ -78,11 +78,10 @@ public class UseDemo1
 
         var searchCondition = exp.ToWhereClause();
 
-        Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id) And Sex In (@Sex) And IsDel = @IsDel And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
-
+        Assert.AreEqual(searchCondition.WhereClause, "IsDel = @IsDel And Id In (@Id) And Sex In (@Sex) And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
         var dict = new Dictionary<string, object>
         {
-            { "@Id",   "1,2"},
+            { "@Id", "1,2"},
             { "@Sex", searchModel.Sex },
             { "@IsDel", searchModel.IsDel },
             { "@DataCreatedAt", searchModel.DataCreatedAtStart },
@@ -136,7 +135,7 @@ public class UseDemo1
             DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
         };
 
-        var whereLambda = searchModel.CreateWhereLambda((Model_People p) => { }); //这个 People 类型 和上面的匿名类型有关联的
+        var whereLambda = searchModel.CreateWhereLambda(default(Model_People)); //这个 People 类型 和上面的匿名类型有关联的
 
         whereLambda[SearchType.Like] = new List<string>
         {
@@ -161,7 +160,7 @@ public class UseDemo1
 
         var searchCondition = whereLambda.ToExpression().ToWhereClause();
 
-        Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id) And Sex In (@Sex) And IsDel = @IsDel And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
+        Assert.AreEqual(searchCondition.WhereClause, "IsDel = @IsDel And Id In (@Id) And Sex In (@Sex) And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
     }
 
     [TestMethod]
@@ -174,7 +173,7 @@ public class UseDemo1
             Name = (string)null,
         };
 
-        var whereLambda = searchModel.CreateWhereLambda((Model_People p) => { });//这个 People 类型 和上面的匿名类型有关联的
+        var whereLambda = searchModel.CreateWhereLambda(default(Model_People));//这个 People 类型 和上面的匿名类型有关联的
 
         whereLambda[SearchType.Like] = new List<string>
         {

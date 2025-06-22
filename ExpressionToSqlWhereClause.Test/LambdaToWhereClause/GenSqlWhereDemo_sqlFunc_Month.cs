@@ -17,7 +17,7 @@ public class GenSqlWhereDemo_sqlFunc_Month
         {
             DataCreatedAt = 1
         };
-        var whereLambda = searchModel.CreateWhereLambda((Model_sqlFun_Month p) => { });
+        var whereLambda = searchModel.CreateWhereLambda(default(Model_sqlFun_Month));
 
         var exp = whereLambda.ToExpression();
 
@@ -38,7 +38,7 @@ public class GenSqlWhereDemo_sqlFunc_Month
         {
             DataCreatedAt = 1
         };
-        var whereLambda = searchModel.CreateWhereLambda((Model_sqlFun_Month p) => { });
+        var whereLambda = searchModel.CreateWhereLambda(default(Model_sqlFun_Month));
 
         var exp = whereLambda.ToExpression();
 
@@ -59,7 +59,7 @@ public class GenSqlWhereDemo_sqlFunc_Month
         {
             DataCreatedAt = 1
         };
-        var whereLambda = searchModel.CreateWhereLambda((Model_sqlFun_Month p) => { });
+        var whereLambda = searchModel.CreateWhereLambda(default(Model_sqlFun_Month));
 
         //SearchType:in,操作遇到不支持的属性类型:System.DateTime
         var exMsg = $"SearchType:{nameof(SearchType.In)},操作遇到不支持的属性类型:{typeof(DateTime).FullName}";
@@ -74,7 +74,7 @@ public class GenSqlWhereDemo_sqlFunc_Month
         {
             DataCreatedAt = 1
         };
-        var whereLambda = searchModel.CreateWhereLambda((Model_sqlFun_Month p) => { });
+        var whereLambda = searchModel.CreateWhereLambda(default(Model_sqlFun_Month));
         whereLambda[SearchType.In] = new List<string>
         {
             nameof(searchModel.DataCreatedAt),
@@ -99,7 +99,7 @@ public class GenSqlWhereDemo_sqlFunc_Month
         {
             DataCreatedAt = "1,2,3"
         };
-        var whereLambda = searchModel.CreateWhereLambda((Model_sqlFun_Month p) => { });
+        var whereLambda = searchModel.CreateWhereLambda(default(Model_sqlFun_Month));
         whereLambda[SearchType.In] = new List<string>
         {
             nameof(searchModel.DataCreatedAt),
@@ -124,7 +124,7 @@ public class GenSqlWhereDemo_sqlFunc_Month
         {
             DataCreatedAt = new List<int> { 1, 2, 3 }
         };
-        var whereLambda = searchModel.CreateWhereLambda((Model_sqlFun_Month p) => { });
+        var whereLambda = searchModel.CreateWhereLambda(default(Model_sqlFun_Month));
         whereLambda[SearchType.In] = new List<string>
         {
             nameof(searchModel.DataCreatedAt),

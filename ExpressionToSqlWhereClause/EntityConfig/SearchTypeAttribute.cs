@@ -10,7 +10,7 @@ public class SearchTypeAttribute : Attribute
     /// </summary>
     public SearchType SearchType { get; private set; }
 
-    ///
+    /// <inheritdoc/>
     public SearchTypeAttribute(SearchType searchType)
     {
         this.SearchType = searchType;

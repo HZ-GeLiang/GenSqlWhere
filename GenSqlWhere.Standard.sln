@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{02EA681E-C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample_AppendSql", "Sample_AppendSql\Sample_AppendSql.csproj", "{0E452B27-3BCB-EF81-9411-E7CF1A37518F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestInfra", "UnitTestInfra\UnitTestInfra.csproj", "{FFD01741-6B3C-42CB-9AA6-38A65968BE4E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest.Infra", "UnitTestInfra\UnitTest.Infra.csproj", "{FFD01741-6B3C-42CB-9AA6-38A65968BE4E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

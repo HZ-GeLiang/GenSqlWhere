@@ -16,7 +16,7 @@ public class UseDemo3
         {
             Id = 1
         };
-        var whereLambda = searchModel.CreateWhereLambda((model_Demo3 p) => { });
+        var whereLambda = searchModel.CreateWhereLambda(default(model_Demo3));
         // 已经在 input 模型上标注了
         whereLambda[SearchType.Neq] = new List<string>
         {
@@ -40,7 +40,7 @@ public class UseDemo3
         {
             Id = 1
         };
-        var whereLambda = searchModel.CreateWhereLambda((model_Demo3 p) => { });
+        var whereLambda = searchModel.CreateWhereLambda(default(model_Demo3));
         // 已经在 input 模型上标注了
         whereLambda[SearchType.Eq] = new List<string>
         {
