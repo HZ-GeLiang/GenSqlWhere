@@ -1,4 +1,4 @@
-﻿namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Models;
+﻿namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Inputs;
 
 public class Input_likeRight
 {

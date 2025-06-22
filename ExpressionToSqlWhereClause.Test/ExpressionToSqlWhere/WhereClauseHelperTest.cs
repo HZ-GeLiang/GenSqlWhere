@@ -1,6 +1,6 @@
 ﻿using ExpressionToSqlWhereClause.ExtensionMethods;
 using ExpressionToSqlWhereClause.Helpers;
-using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Models;
+using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Inputs;
 using ExpressionToSqlWhereClause.Test.ExtensionMethods;
 using Infra.ExtensionMethods;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,7 +10,7 @@ using System.Text;
 namespace ExpressionToSqlWhereClause.Test.ExpressionToSqlWhere;
 
 [TestClass]
-public class WhereLambdaHelperTest
+public class WhereClauseHelperTest
 {
     [TestMethod]
     public void Contains_List()

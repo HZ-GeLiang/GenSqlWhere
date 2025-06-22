@@ -1,8 +1,8 @@
 ﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 
-namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Models;
+namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Inputs;
 
-public class Input_Demo3_相同配置
+public class Input_Demo3_不同配置
 {
     [SearchType(SearchType.Eq)]
     public int Id { get; set; }

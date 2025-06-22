@@ -1,6 +1,6 @@
 ﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 
-namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Models;
+namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Inputs;
 
 //demo2,  在 input 模型上 标记 Attribute 的这种配置方式来创建sql (推荐)
 //注: demo1 和demo2 如果写重复, 那么都会生效
