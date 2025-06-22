@@ -82,7 +82,7 @@ public class QueryConfig_exception
         {
         };
 
-        var whereLambda = new QueryConfig<Model_People, Model_lt>(searchModel);
+        var whereLambda = searchModel.CreateQueryConfig(default(Model_People));
 
         whereLambda[SearchType.Lt] = new List<string>
         {

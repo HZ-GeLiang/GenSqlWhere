@@ -1,5 +1,6 @@
 ﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 using ExpressionToSqlWhereClause.ExtensionMethods;
+using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Inputs;
 using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Models;
 using FilterStrategy;
 using Infra.ExtensionMethods;
@@ -40,16 +41,21 @@ public class QueryConfig_FilterStrategy
     [TestMethod]
     public void FilterStrategy_结合配置()
     {
-        var input = new Model_FilterStrategyInput()
+        var input = new Input_FilterStrategy()
         {
+            Id = 0,
             GetSum = 5,
             GetSumFilter = "="
         };
 
         var whereLambda = input.CreateQueryConfig(default(Model_FilterStrategy));
-        whereLambda[SearchType.Eq] = new List<string>
+        whereLambda[SearchType.Gt] = new List<string>
         {
-            $"{default(Model_FilterStrategy).IsDeleted}",
+           nameof(Input_FilterStrategy.Id),
+        };
+        whereLambda[SearchType.Neq] = new List<string>
+        {
+            nameof(Model_FilterStrategy.IsDeleted),
         };
 
         //var expression =

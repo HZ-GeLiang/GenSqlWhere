@@ -18,7 +18,7 @@ public class QueryConfig_TimeRange
             DataCreatedAtStart = DateTime.Parse("2021-8-7 23:00:00"),
             DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
         };
-        var whereLambda = new QueryConfig<Model_timeRange, Input_timeRange_Attr>(searchModel);
+        var whereLambda = searchModel.CreateQueryConfig(default(Model_timeRange));
 
         whereLambda[SearchType.TimeRange] = new List<string>
         {
@@ -51,7 +51,7 @@ public class QueryConfig_TimeRange
             DataCreatedAtStart = DateTime.Parse("2021-8-8"),
             DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
         };
-        var whereLambda = new QueryConfig<Model_timeRange, Input_timeRange_Attr>(searchModel);
+        var whereLambda = searchModel.CreateQueryConfig(default(Model_timeRange));
 
         whereLambda[SearchType.TimeRange] = new List<string>
         {
@@ -84,7 +84,7 @@ public class QueryConfig_TimeRange
             DataCreatedAtStart = DateTime.Parse("2021-8-8"),
             DataCreatedAtEnd = DateTime.Parse("2021-8-8"),
         };
-        var whereLambda = new QueryConfig<Model_timeRange, Input_timeRange_Attr>(searchModel);
+        var whereLambda = searchModel.CreateQueryConfig(default(Model_timeRange));
 
         whereLambda[SearchType.TimeRange] = new List<string>
         {
@@ -120,7 +120,7 @@ public class QueryConfig_TimeRange
             DataCreatedAt = DateTime.Parse("2021-8-8")
         };
 
-        var whereLambda = new QueryConfig<Model_People, Input_timeRange2_Attr>(searchModel);
+        var whereLambda = searchModel.CreateQueryConfig(default(Model_People));
 
         whereLambda[SearchType.TimeRange] = new List<string>
         {

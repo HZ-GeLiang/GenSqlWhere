@@ -20,7 +20,7 @@ public class QueryConfig_eq
             IsDel = true,
         };
 
-        var whereLambda = new QueryConfig<Model_eq, Input_eq>(searchModel);
+        var whereLambda = searchModel.CreateQueryConfig(default(Model_eq));
 
         whereLambda[SearchType.Eq] = new List<string>
         {
@@ -91,7 +91,7 @@ public class QueryConfig_eq
         };
 
         {
-            var whereLambda = new QueryConfig<Model_eq, InputModel_eq>(searchModel);
+            var whereLambda = searchModel.CreateQueryConfig(default(Model_eq));
 
             whereLambda.WhereIf[nameof(searchModel.Id)] = a => a.Id > 0;// 添加满足 Id>0的 条件时 ,当前值才生效
 
@@ -113,7 +113,7 @@ public class QueryConfig_eq
         }
 
         {
-            var whereLambda = new QueryConfig<Model_eq, InputModel_eq>(searchModel);
+            var whereLambda = searchModel.CreateQueryConfig(default(Model_eq));
 
             //whereLambda.WhereIf[nameof(searchModel.Id)] = a => a.Id > 10;// 添加满足 Id>0的 条件时 ,当前值才生效
 
@@ -147,7 +147,7 @@ public class QueryConfig_eq
         };
 
         {
-            var whereLambda = new QueryConfig<Model_eq, InputModel_eq>(searchModel);
+            var whereLambda = searchModel.CreateQueryConfig(default(Model_eq));
 
             //或者这样写
             //Expression<Func<InputModel_eq, bool>> exp = a => a.Id > 10;

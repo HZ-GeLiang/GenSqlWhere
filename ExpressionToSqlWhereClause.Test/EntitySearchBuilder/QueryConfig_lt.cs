@@ -17,7 +17,7 @@ public class QueryConfig_lt
             DataCreatedAt = DateTime.Parse("2021-8-8"),
         };
 
-        var whereLambda = new QueryConfig<Model_People, Model_lt>(searchModel);
+        var whereLambda = searchModel.CreateQueryConfig(default(Model_People));
 
         whereLambda[SearchType.Lt] = new List<string>
         {

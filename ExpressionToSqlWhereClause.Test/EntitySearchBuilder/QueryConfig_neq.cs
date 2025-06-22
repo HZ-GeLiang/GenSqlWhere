@@ -16,7 +16,7 @@ public class QueryConfig_neq
             IsDel = true,//todo://计划:添加当其他值为xx时,当前值才生效
         };
 
-        var whereLambda = new QueryConfig<Model_People, Model_neq>(searchModel);
+        var whereLambda = searchModel.CreateQueryConfig(default(Model_People));
 
         whereLambda[SearchType.Neq] = new List<string>
         {

@@ -16,7 +16,7 @@ public class QueryConfig_like
         {
             Url = "123",
         };
-        var whereLambda = new QueryConfig<Model_People, Model_like>(searchModel);
+        var whereLambda = searchModel.CreateQueryConfig(default(Model_People));
 
         whereLambda[SearchType.Like] = new List<string>
         {
@@ -43,7 +43,7 @@ public class QueryConfig_like
         {
             Url = "123",
         };
-        var whereLambda = new QueryConfig<Model_People, Input_likeLeft>(searchModel);
+        var whereLambda = searchModel.CreateQueryConfig(default(Model_People));
 
         whereLambda[SearchType.LikeLeft] = new List<string>
         {
@@ -70,7 +70,7 @@ public class QueryConfig_like
         {
             Url = "123",
         };
-        var whereLambda = new QueryConfig<Model_People, Input_likeRight>(searchModel);
+        var whereLambda = searchModel.CreateQueryConfig(default(Model_People));
 
         whereLambda[SearchType.LikeRight] = new List<string>
         {

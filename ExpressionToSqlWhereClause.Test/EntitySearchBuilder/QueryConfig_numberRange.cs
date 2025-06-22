@@ -19,7 +19,7 @@ public class QueryConfig_numberRange
                 IdLeft = 3,
                 IdRight = 9
             };
-            var whereLambda = new QueryConfig<Model_People, Input_numberRange_Attr>(searchModel);
+            var whereLambda = searchModel.CreateQueryConfig(default(Model_People));
 
             whereLambda[SearchType.NumberRange] = new List<string>
             {
@@ -45,7 +45,7 @@ public class QueryConfig_numberRange
             {
                 Id = 5
             };
-            var whereLambda = new QueryConfig<Model_People, Input_numberRange2>(searchModel);
+            var whereLambda = searchModel.CreateQueryConfig(default(Model_People));
 
             whereLambda[SearchType.NumberRange] = new List<string>
             {
@@ -74,7 +74,7 @@ public class QueryConfig_numberRange
             {
                 Id = 5
             };
-            var whereLambda = new QueryConfig<Model_People, Input_numberRange2>(searchModel);
+            var whereLambda = searchModel.CreateQueryConfig(default(Model_People));
 
             whereLambda[SearchType.NumberRange] = new List<string>
             {

@@ -18,7 +18,7 @@ public class QueryConfig_ge
             DataCreatedAt = DateTime.Parse("2021-8-8"),
         };
 
-        var whereLambda = new QueryConfig<Model_People, Model_ge>(searchModel);
+        var whereLambda = searchModel.CreateQueryConfig(default(Model_People));
 
         whereLambda[SearchType.Ge] = new List<string>
         {

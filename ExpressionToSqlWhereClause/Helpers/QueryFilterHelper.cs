@@ -16,7 +16,7 @@ public static class QueryConfigHelper
 {
     #region AddLike
 
-    public static List<Expression<Func<TEntity, bool>>> AddLike<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
+    public static List<Expression<Func<TEntity, bool>>> AddLike<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -69,7 +69,7 @@ public static class QueryConfigHelper
 
     #region AddLikeLeft
 
-    public static List<Expression<Func<TEntity, bool>>> AddLikeLeft<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
+    public static List<Expression<Func<TEntity, bool>>> AddLikeLeft<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -122,7 +122,7 @@ public static class QueryConfigHelper
     #region AddLikeRight
 
     ///
-    public static List<Expression<Func<TEntity, bool>>> AddLikeRight<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
+    public static List<Expression<Func<TEntity, bool>>> AddLikeRight<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -174,7 +174,7 @@ public static class QueryConfigHelper
 
     #region AddEqual版本2 : 根据: AddInOrEuqal 衍生出来的
 
-    public static List<Expression<Func<TEntity, bool>>> AddEqual<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
+    public static List<Expression<Func<TEntity, bool>>> AddEqual<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -194,14 +194,14 @@ public static class QueryConfigHelper
             {
                 continue;
             }
-            AddEqualCore<TEntity, TSearch>(prop, valuePropType, value, whereLambdas);
+            AddEqualCore<TSearch, TEntity>(prop, valuePropType, value, whereLambdas);
         }
 
         return whereLambdas;
     }
 
     //核心-equal
-    private static void AddEqualCore<TEntity, TSearch>(string propertyName, Type valuePropType, object propertyValue, List<Expression<Func<TEntity, bool>>> whereLambdas)
+    private static void AddEqualCore<TSearch, TEntity>(string propertyName, Type valuePropType, object propertyValue, List<Expression<Func<TEntity, bool>>> whereLambdas)
         where TEntity : class
         where TSearch : class
     {
@@ -273,7 +273,7 @@ public static class QueryConfigHelper
 
     #region AddNotEqual-基于Equal的版本2
 
-    public static List<Expression<Func<TEntity, bool>>> AddNotEqual<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
+    public static List<Expression<Func<TEntity, bool>>> AddNotEqual<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -291,13 +291,13 @@ public static class QueryConfigHelper
             {
                 continue;
             }
-            AddNotEqualCore<TEntity, TSearch>(prop, valuePropType, value, whereLambdas);
+            AddNotEqualCore<TSearch, TEntity>(prop, valuePropType, value, whereLambdas);
         }
         return whereLambdas;
     }
 
     //核心
-    private static void AddNotEqualCore<TEntity, TSearch>(string propertyName, Type valuePropType, object propertyValue, List<Expression<Func<TEntity, bool>>> whereLambdas)
+    private static void AddNotEqualCore<TSearch, TEntity>(string propertyName, Type valuePropType, object propertyValue, List<Expression<Func<TEntity, bool>>> whereLambdas)
         where TEntity : class
         where TSearch : class
     {
@@ -373,7 +373,7 @@ public static class QueryConfigHelper
         public bool? IsPair { get; set; }
     }
 
-    public static List<Expression<Func<TEntity, bool>>> AddNumberRange<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
+    public static List<Expression<Func<TEntity, bool>>> AddNumberRange<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -585,7 +585,7 @@ public static class QueryConfigHelper
 
     #region AddTimeRange
 
-    public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
+    public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -607,13 +607,13 @@ public static class QueryConfigHelper
     /// <summary>
     ///
     /// </summary>
-    /// <typeparam name="TEntity"></typeparam>
     /// <typeparam name="TSearch"></typeparam>
+    /// <typeparam name="TEntity"></typeparam>
     /// <param name="that"></param>
     /// <param name="searchCondition"></param>
     /// <param name="period">当为秒的时候需要调用这个方法</param>
     /// <returns></returns>
-    public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition, TimePeriod period)
+    public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition, TimePeriod period)
         where TEntity : class
         where TSearch : class
     {
@@ -632,7 +632,7 @@ public static class QueryConfigHelper
 
     #endregion
 
-    private static Dictionary<string, TimeSearch> AddTimeRange_GetTimeDict<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
+    private static Dictionary<string, TimeSearch> AddTimeRange_GetTimeDict<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -955,13 +955,13 @@ public static class QueryConfigHelper
     /// <summary>
     /// 实际翻译成in 还是 Euqal , 根据 split() 后的个数而定
     /// </summary>
-    /// <typeparam name="TEntity"></typeparam>
     /// <typeparam name="TSearch"></typeparam>
+    /// <typeparam name="TEntity"></typeparam>
     /// <param name="that"></param>
     /// <param name="propertyNames"></param>
     /// <returns></returns>
     /// <exception cref="FrameException"></exception>
-    public static List<Expression<Func<TEntity, bool>>> AddIn<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> propertyNames)
+    public static List<Expression<Func<TEntity, bool>>> AddIn<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> propertyNames)
         where TEntity : class
         where TSearch : class
     {
@@ -1244,7 +1244,7 @@ public static class QueryConfigHelper
 
     #region AddGt
 
-    public static List<Expression<Func<TEntity, bool>>> AddGt<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
+    public static List<Expression<Func<TEntity, bool>>> AddGt<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -1311,7 +1311,7 @@ public static class QueryConfigHelper
 
     #region AddGe
 
-    public static List<Expression<Func<TEntity, bool>>> AddGe<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
+    public static List<Expression<Func<TEntity, bool>>> AddGe<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -1377,7 +1377,7 @@ public static class QueryConfigHelper
 
     #region AddLt
 
-    public static List<Expression<Func<TEntity, bool>>> AddLt<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
+    public static List<Expression<Func<TEntity, bool>>> AddLt<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -1443,7 +1443,7 @@ public static class QueryConfigHelper
 
     #region AddLe
 
-    public static List<Expression<Func<TEntity, bool>>> AddLe<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, List<string> searchCondition)
+    public static List<Expression<Func<TEntity, bool>>> AddLe<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
         where TEntity : class
         where TSearch : class
     {
@@ -1604,7 +1604,7 @@ public static class QueryConfigHelper
 
     private static List<Expression<Func<TEntity, bool>>> Default<TEntity>() => new();
 
-    private static bool ContinueAdd<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, string prop, object value)
+    private static bool ContinueAdd<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, string prop, object value)
         where TEntity : class
         where TSearch : class
     {
@@ -1631,7 +1631,7 @@ public static class QueryConfigHelper
             }
         }
 
-        bool ExistsWhereIf<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, string propName)
+        bool ExistsWhereIf<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, string propName)
            where TEntity : class
            where TSearch : class
         {
@@ -1647,7 +1647,7 @@ public static class QueryConfigHelper
             return true;
         }
 
-        bool InvokeWhereIf<TEntity, TSearch>(QueryConfig<TEntity, TSearch> that, string propName)
+        bool InvokeWhereIf<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, string propName)
             where TEntity : class
             where TSearch : class
         {

@@ -17,7 +17,7 @@ public class QueryConfig_in
             Sex = "1",
         };
 
-        var whereLambda = new QueryConfig<Model_People, Model_in>(searchModel);
+        var whereLambda = searchModel.CreateQueryConfig(default(Model_People));
 
         whereLambda[SearchType.In] = new List<string>
         {
@@ -46,7 +46,7 @@ public class QueryConfig_in
             Id = 1
         };
 
-        var whereLambda = new QueryConfig<Model_People, Model_in2>(searchModel);
+        var whereLambda = searchModel.CreateQueryConfig(default(Model_People));
 
         whereLambda[SearchType.In] = new List<string>
         {

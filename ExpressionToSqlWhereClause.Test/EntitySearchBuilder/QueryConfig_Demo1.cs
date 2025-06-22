@@ -25,7 +25,7 @@ public class QueryConfig_Demo1
             DataCreatedAtEnd = time,
         };
 
-        var whereLambda = new QueryConfig<Model_People, Input_Demo>(searchModel);
+        var whereLambda = searchModel.CreateQueryConfig(default(Model_People));
 
         whereLambda[SearchType.Like] = new List<string>
         {
@@ -86,7 +86,7 @@ public class QueryConfig_Demo1
             Url = "123",
         };
 
-        var whereLambda = new QueryConfig<Model_People, Input_Demo>(searchModel);
+        var whereLambda = searchModel.CreateQueryConfig(default(Model_People));
 
         whereLambda[SearchType.Eq] = new List<string>
         {
@@ -182,7 +182,7 @@ public class QueryConfig_Demo1
             DataCreatedAtEnd = time,
         };
 
-        var whereLambda = new QueryConfig<Model_People, Input_Demo>(searchModel);
+        var whereLambda = searchModel.CreateQueryConfig(default(Model_People));
 
         whereLambda[SearchType.Like] = new List<string>
         {

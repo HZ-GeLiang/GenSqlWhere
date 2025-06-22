@@ -1,5 +1,6 @@
 ﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 using ExpressionToSqlWhereClause.ExtensionMethods;
+using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Inputs;
 using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq.Expressions;
@@ -40,7 +41,7 @@ public class QueryConfig_Demo2
         {
             Url = "123",
         };
-        var whereLambda = searchModel.CreateQueryConfig();
+        var whereLambda = searchModel.CreateQueryConfig(default(Input_like_Attr));
         var expression = whereLambda.ToExpression();
         var searchCondition = expression.ToWhereClause();
         Assert.AreEqual(searchCondition.WhereClause, "Url Like @Url");
@@ -59,7 +60,7 @@ public class QueryConfig_Demo2
         {
             Url = "123",
         };
-        var whereLambda = new QueryConfig<Model_like, Model_like>(searchModel);
+        var whereLambda = searchModel.CreateQueryConfig(default(Model_like));
 
         whereLambda[SearchType.Like] = new List<string>
         {
