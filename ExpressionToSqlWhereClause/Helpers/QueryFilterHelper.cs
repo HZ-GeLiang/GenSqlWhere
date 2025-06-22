@@ -16,16 +16,16 @@ public static class QueryConfigHelper
 {
     #region AddLike
 
-    public static List<Expression<Func<TEntity, bool>>> AddLike<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
-        where TEntity : class
+    public static List<Expression<Func<TDbEntity, bool>>> AddLike<TSearch, TDbEntity>(QueryConfig<TSearch, TDbEntity> that, List<string> searchCondition)
         where TSearch : class
+        where TDbEntity : class
     {
         if (!HaveCount(searchCondition))
         {
-            return Default<TEntity>();
+            return Default<TDbEntity>();
         }
 
-        List<Expression<Func<TEntity, bool>>> whereLambdas = new();
+        List<Expression<Func<TDbEntity, bool>>> whereLambdas = new();
         foreach (var prop in searchCondition)
         {
             var propertyValue = new PropertyValue<TSearch>(that.Search);
@@ -36,7 +36,7 @@ public static class QueryConfigHelper
             }
             if (value is string valueStr && !string.IsNullOrWhiteSpace(valueStr))
             {
-                var exp = QueryConfigHelper.GetExpression_Contains<TEntity>(prop, valueStr);
+                var exp = QueryConfigHelper.GetExpression_Contains<TDbEntity>(prop, valueStr);
                 if (exp != null)
                 {
                     whereLambdas.Add(exp);
@@ -47,10 +47,10 @@ public static class QueryConfigHelper
     }
 
     // t.SomeProperty.Contains("stringValue");
-    private static Expression<Func<TEntity, bool>> GetExpression_Contains<TEntity>(string propertyName, string propertyValue)
-        where TEntity : class
+    private static Expression<Func<TDbEntity, bool>> GetExpression_Contains<TDbEntity>(string propertyName, string propertyValue)
+        where TDbEntity : class
     {
-        var type_TEntity = typeof(TEntity);
+        var type_TEntity = typeof(TDbEntity);
         var prop_Info = type_TEntity.GetProperty(propertyName);
         if (prop_Info == null)
         {
@@ -62,23 +62,23 @@ public static class QueryConfigHelper
         var method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
         var someValue = Expression.Constant(propertyValue, typeof(string));
         var containsMethodExp = Expression.Call(propertyExp, method, someValue);//a.UserNickName.Contains(xx);
-        return Expression.Lambda<Func<TEntity, bool>>(containsMethodExp, parameterExp);
+        return Expression.Lambda<Func<TDbEntity, bool>>(containsMethodExp, parameterExp);
     }
 
     #endregion
 
     #region AddLikeLeft
 
-    public static List<Expression<Func<TEntity, bool>>> AddLikeLeft<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
-        where TEntity : class
+    public static List<Expression<Func<TDbEntity, bool>>> AddLikeLeft<TSearch, TDbEntity>(QueryConfig<TSearch, TDbEntity> that, List<string> searchCondition)
         where TSearch : class
+        where TDbEntity : class
     {
         if (!HaveCount(searchCondition))
         {
-            return Default<TEntity>();
+            return Default<TDbEntity>();
         }
 
-        List<Expression<Func<TEntity, bool>>> whereLambdas = new();
+        List<Expression<Func<TDbEntity, bool>>> whereLambdas = new();
         foreach (var prop in searchCondition)
         {
             var propertyValue = new PropertyValue<TSearch>(that.Search);
@@ -89,7 +89,7 @@ public static class QueryConfigHelper
             }
             if (value is string valueStr && !string.IsNullOrWhiteSpace(valueStr))
             {
-                var exp = QueryConfigHelper.GetExpression_StartsWith<TEntity>(prop, valueStr);
+                var exp = QueryConfigHelper.GetExpression_StartsWith<TDbEntity>(prop, valueStr);
                 if (exp != null)
                 {
                     whereLambdas.Add(exp);
@@ -100,9 +100,9 @@ public static class QueryConfigHelper
     }
 
     // t.SomeProperty.StartsWith("stringValue");
-    private static Expression<Func<TEntity, bool>> GetExpression_StartsWith<TEntity>(string propertyName, string propertyValue)
+    private static Expression<Func<TDbEntity, bool>> GetExpression_StartsWith<TDbEntity>(string propertyName, string propertyValue)
     {
-        var type_TEntity = typeof(TEntity);
+        var type_TEntity = typeof(TDbEntity);
         var prop_Info = type_TEntity.GetProperty(propertyName);
         if (prop_Info == null)
         {
@@ -114,7 +114,7 @@ public static class QueryConfigHelper
         var method = typeof(string).GetMethod("StartsWith", new[] { typeof(string) });
         var someValue = Expression.Constant(propertyValue, typeof(string));
         var containsMethodExp = Expression.Call(propertyExp, method, someValue);//a.UserNickName.StartsWith(xx);
-        return Expression.Lambda<Func<TEntity, bool>>(containsMethodExp, parameterExp);
+        return Expression.Lambda<Func<TDbEntity, bool>>(containsMethodExp, parameterExp);
     }
 
     #endregion
@@ -122,16 +122,16 @@ public static class QueryConfigHelper
     #region AddLikeRight
 
     ///
-    public static List<Expression<Func<TEntity, bool>>> AddLikeRight<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
-        where TEntity : class
+    public static List<Expression<Func<TDbEntity, bool>>> AddLikeRight<TSearch, TDbEntity>(QueryConfig<TSearch, TDbEntity> that, List<string> searchCondition)
         where TSearch : class
+        where TDbEntity : class
     {
         if (!HaveCount(searchCondition))
         {
-            return Default<TEntity>();
+            return Default<TDbEntity>();
         }
 
-        List<Expression<Func<TEntity, bool>>> whereLambdas = new();
+        List<Expression<Func<TDbEntity, bool>>> whereLambdas = new();
         foreach (var prop in searchCondition)
         {
             var propertyValue = new PropertyValue<TSearch>(that.Search);
@@ -142,7 +142,7 @@ public static class QueryConfigHelper
             }
             if (value is string valueStr && !string.IsNullOrWhiteSpace(valueStr))
             {
-                var exp = QueryConfigHelper.GetExpression_EndsWith<TEntity>(prop, valueStr);
+                var exp = QueryConfigHelper.GetExpression_EndsWith<TDbEntity>(prop, valueStr);
                 if (exp != null)
                 {
                     whereLambdas.Add(exp);
@@ -153,9 +153,9 @@ public static class QueryConfigHelper
     }
 
     // t.SomeProperty.EndsWith("stringValue");
-    private static Expression<Func<TEntity, bool>> GetExpression_EndsWith<TEntity>(string propertyName, string propertyValue)
+    private static Expression<Func<TDbEntity, bool>> GetExpression_EndsWith<TDbEntity>(string propertyName, string propertyValue)
     {
-        var type_TEntity = typeof(TEntity);
+        var type_TEntity = typeof(TDbEntity);
         var prop_Info = type_TEntity.GetProperty(propertyName);
         if (prop_Info == null)
         {
@@ -167,23 +167,23 @@ public static class QueryConfigHelper
         var method = typeof(string).GetMethod("EndsWith", new[] { typeof(string) });
         var someValue = Expression.Constant(propertyValue, typeof(string));
         var containsMethodExp = Expression.Call(propertyExp, method, someValue);//a.UserNickName.EndsWith(xx);
-        return Expression.Lambda<Func<TEntity, bool>>(containsMethodExp, parameterExp);
+        return Expression.Lambda<Func<TDbEntity, bool>>(containsMethodExp, parameterExp);
     }
 
     #endregion
 
     #region AddEqual版本2 : 根据: AddInOrEuqal 衍生出来的
 
-    public static List<Expression<Func<TEntity, bool>>> AddEqual<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
-        where TEntity : class
+    public static List<Expression<Func<TDbEntity, bool>>> AddEqual<TSearch, TDbEntity>(QueryConfig<TSearch, TDbEntity> that, List<string> searchCondition)
         where TSearch : class
+        where TDbEntity : class
     {
         if (!HaveCount(searchCondition))
         {
-            return Default<TEntity>();
+            return Default<TDbEntity>();
         }
 
-        List<Expression<Func<TEntity, bool>>> whereLambdas = new();
+        List<Expression<Func<TDbEntity, bool>>> whereLambdas = new();
         //todo:这里可以获得 TSearch 的属性的 Attribute
         foreach (var prop in searchCondition)
         {
@@ -194,22 +194,22 @@ public static class QueryConfigHelper
             {
                 continue;
             }
-            AddEqualCore<TSearch, TEntity>(prop, valuePropType, value, whereLambdas);
+            AddEqualCore<TSearch, TDbEntity>(prop, valuePropType, value, whereLambdas);
         }
 
         return whereLambdas;
     }
 
     //核心-equal
-    private static void AddEqualCore<TSearch, TEntity>(string propertyName, Type valuePropType, object propertyValue, List<Expression<Func<TEntity, bool>>> whereLambdas)
-        where TEntity : class
+    private static void AddEqualCore<TSearch, TDbEntity>(string propertyName, Type valuePropType, object propertyValue, List<Expression<Func<TDbEntity, bool>>> whereLambdas)
         where TSearch : class
+        where TDbEntity : class
     {
-        var type_TEntity = typeof(TEntity);
+        var type_TEntity = typeof(TDbEntity);
         var prop_Info = type_TEntity.GetProperty(propertyName);
         if (prop_Info == null)
         {
-            return;//TSearch 和 TEntity 都要有 相同的 propertyName
+            return;//TSearch 和 TDbEntity 都要有 相同的 propertyName
         }
 
         // AddEqual 的代码
@@ -242,7 +242,7 @@ public static class QueryConfigHelper
                 //https://docs.microsoft.com/zh-cn/sql/t-sql/functions/month-transact-sql?view=sql-server-2017
                 var right = Expression.Constant(Convert.ToInt32(propertyValue), typeof(int));
                 var body = Expression.Equal(left, right);
-                var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExpression);
+                var lambda = Expression.Lambda<Func<TDbEntity, bool>>(body, parameterExpression);
                 whereLambdas.Add(lambda);
             }
         }
@@ -264,7 +264,7 @@ public static class QueryConfigHelper
             var right = Expression.Constant(propertyValue, propType_TEntity);
 
             var body = Expression.Equal(left, right);
-            var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
+            var lambda = Expression.Lambda<Func<TDbEntity, bool>>(body, parameterExp);
             whereLambdas.Add(lambda);
         }
     }
@@ -273,16 +273,16 @@ public static class QueryConfigHelper
 
     #region AddNotEqual-基于Equal的版本2
 
-    public static List<Expression<Func<TEntity, bool>>> AddNotEqual<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
-        where TEntity : class
+    public static List<Expression<Func<TDbEntity, bool>>> AddNotEqual<TSearch, TDbEntity>(QueryConfig<TSearch, TDbEntity> that, List<string> searchCondition)
         where TSearch : class
+        where TDbEntity : class
     {
         if (!HaveCount(searchCondition))
         {
-            return Default<TEntity>();
+            return Default<TDbEntity>();
         }
 
-        List<Expression<Func<TEntity, bool>>> whereLambdas = new();
+        List<Expression<Func<TDbEntity, bool>>> whereLambdas = new();
         foreach (var prop in searchCondition)
         {
             var propertyValue = new PropertyValue<TSearch>(that.Search);
@@ -291,17 +291,17 @@ public static class QueryConfigHelper
             {
                 continue;
             }
-            AddNotEqualCore<TSearch, TEntity>(prop, valuePropType, value, whereLambdas);
+            AddNotEqualCore<TSearch, TDbEntity>(prop, valuePropType, value, whereLambdas);
         }
         return whereLambdas;
     }
 
     //核心
-    private static void AddNotEqualCore<TSearch, TEntity>(string propertyName, Type valuePropType, object propertyValue, List<Expression<Func<TEntity, bool>>> whereLambdas)
-        where TEntity : class
+    private static void AddNotEqualCore<TSearch, TDbEntity>(string propertyName, Type valuePropType, object propertyValue, List<Expression<Func<TDbEntity, bool>>> whereLambdas)
         where TSearch : class
+        where TDbEntity : class
     {
-        var type_TEntity = typeof(TEntity);
+        var type_TEntity = typeof(TDbEntity);
         var prop_Info = type_TEntity.GetProperty(propertyName);
         if (prop_Info == null)
         {
@@ -332,7 +332,7 @@ public static class QueryConfigHelper
                 //https://docs.microsoft.com/zh-cn/sql/t-sql/functions/month-transact-sql?view=sql-server-2017
                 var right = Expression.Constant(Convert.ToInt32(propertyValue), typeof(int));
                 var body = Expression.NotEqual(left, right);
-                var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExpression);
+                var lambda = Expression.Lambda<Func<TDbEntity, bool>>(body, parameterExpression);
                 whereLambdas.Add(lambda);
             }
         }
@@ -355,7 +355,7 @@ public static class QueryConfigHelper
             var right = Expression.Constant(propertyValue, propType_TEntity);
 
             var body = Expression.NotEqual(left, right);
-            var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
+            var lambda = Expression.Lambda<Func<TDbEntity, bool>>(body, parameterExp);
             whereLambdas.Add(lambda);
         }
     }
@@ -373,15 +373,15 @@ public static class QueryConfigHelper
         public bool? IsPair { get; set; }
     }
 
-    public static List<Expression<Func<TEntity, bool>>> AddNumberRange<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
-        where TEntity : class
+    public static List<Expression<Func<TDbEntity, bool>>> AddNumberRange<TSearch, TDbEntity>(QueryConfig<TSearch, TDbEntity> that, List<string> searchCondition)
         where TSearch : class
+        where TDbEntity : class
     {
         if (!HaveCount(searchCondition))
         {
-            return Default<TEntity>();
+            return Default<TDbEntity>();
         }
-        var type_TEntity = typeof(TEntity);
+        var type_TEntity = typeof(TDbEntity);
 
         //key : 字段 value : 开始值(包含), 结束值(包含)
         var numberDict = new Dictionary<string, NumberSearch>();
@@ -517,7 +517,7 @@ public static class QueryConfigHelper
         //true       有值(包含)     无值
         //true       无值          有值(含)
 
-        List<Expression<Func<TEntity, bool>>> whereLambdas = new();
+        List<Expression<Func<TDbEntity, bool>>> whereLambdas = new();
 
         foreach (var key in numberDict.Keys)
         {
@@ -558,7 +558,7 @@ public static class QueryConfigHelper
                     var left = Expression.Convert(propertyExp, propType_TEntity);
                     var right = Expression.Constant(numberDict[key].NumberRange[0], propType_TEntity);
                     var body = Expression.GreaterThanOrEqual(left, right);
-                    var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
+                    var lambda = Expression.Lambda<Func<TDbEntity, bool>>(body, parameterExp);
                     whereLambdas.Add(lambda);
                 }
             }
@@ -573,7 +573,7 @@ public static class QueryConfigHelper
                     var left = Expression.Convert(propertyExp, propType_TEntity);
                     var right = Expression.Constant(numberDict[key].NumberRange[1], propType_TEntity);
                     var body = Expression.LessThanOrEqual(left, right);
-                    var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
+                    var lambda = Expression.Lambda<Func<TDbEntity, bool>>(body, parameterExp);
                     whereLambdas.Add(lambda);
                 }
             }
@@ -585,20 +585,20 @@ public static class QueryConfigHelper
 
     #region AddTimeRange
 
-    public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
-        where TEntity : class
+    public static List<Expression<Func<TDbEntity, bool>>> AddTimeRange<TSearch, TDbEntity>(QueryConfig<TSearch, TDbEntity> that, List<string> searchCondition)
         where TSearch : class
+        where TDbEntity : class
     {
         if (!HaveCount(searchCondition))
         {
-            return Default<TEntity>();
+            return Default<TDbEntity>();
         }
 
         var timeDict = AddTimeRange_GetTimeDict(that, searchCondition);
 
         Get_TimePeriode(timeDict, null);
 
-        var whereLambdas = AddTimeRange_GetWhereLambdas<TEntity>(timeDict);
+        var whereLambdas = AddTimeRange_GetWhereLambdas<TDbEntity>(timeDict);
         return whereLambdas;
     }
 
@@ -608,33 +608,33 @@ public static class QueryConfigHelper
     ///
     /// </summary>
     /// <typeparam name="TSearch"></typeparam>
-    /// <typeparam name="TEntity"></typeparam>
+    /// <typeparam name="TDbEntity"></typeparam>
     /// <param name="that"></param>
     /// <param name="searchCondition"></param>
     /// <param name="period">当为秒的时候需要调用这个方法</param>
     /// <returns></returns>
-    public static List<Expression<Func<TEntity, bool>>> AddTimeRange<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition, TimePeriod period)
-        where TEntity : class
+    public static List<Expression<Func<TDbEntity, bool>>> AddTimeRange<TSearch, TDbEntity>(QueryConfig<TSearch, TDbEntity> that, List<string> searchCondition, TimePeriod period)
         where TSearch : class
+        where TDbEntity : class
     {
         if (!HaveCount(searchCondition))
         {
-            return Default<TEntity>();
+            return Default<TDbEntity>();
         }
 
         var timeDict = AddTimeRange_GetTimeDict(that, searchCondition);
 
         Get_TimePeriode(timeDict, () => period);
 
-        var whereLambdas = AddTimeRange_GetWhereLambdas<TEntity>(timeDict);
+        var whereLambdas = AddTimeRange_GetWhereLambdas<TDbEntity>(timeDict);
         return whereLambdas;
     }
 
     #endregion
 
-    private static Dictionary<string, TimeSearch> AddTimeRange_GetTimeDict<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
-        where TEntity : class
+    private static Dictionary<string, TimeSearch> AddTimeRange_GetTimeDict<TSearch, TDbEntity>(QueryConfig<TSearch, TDbEntity> that, List<string> searchCondition)
         where TSearch : class
+        where TDbEntity : class
     {
         //key : 字段 value : 开始时间(包含), 结束时间(不含)
         var timeDict = new Dictionary<string, TimeSearch>();
@@ -806,10 +806,10 @@ public static class QueryConfigHelper
         }
     }
 
-    private static List<Expression<Func<TEntity, bool>>> AddTimeRange_GetWhereLambdas<TEntity>(Dictionary<string, TimeSearch> timeDict)
-        where TEntity : class
+    private static List<Expression<Func<TDbEntity, bool>>> AddTimeRange_GetWhereLambdas<TDbEntity>(Dictionary<string, TimeSearch> timeDict)
+        where TDbEntity : class
     {
-        var type_TEntity = typeof(TEntity);
+        var type_TEntity = typeof(TDbEntity);
         //根据 TimePeriod 创建表达式(一共是下面4钟情况)
         //isPair值    开始         结束
         //false      有值(包含)     有值(不含)
@@ -817,7 +817,7 @@ public static class QueryConfigHelper
         //true       有值(包含)     无值
         //true       无值          有值(不含)
 
-        List<Expression<Func<TEntity, bool>>> whereLambdas = new();
+        List<Expression<Func<TDbEntity, bool>>> whereLambdas = new();
 
         foreach (var key in timeDict.Keys)
         {
@@ -857,7 +857,7 @@ public static class QueryConfigHelper
                     var left = Expression.Convert(propertyExp, typeof(DateTime));
                     var right = Expression.Constant(timeDict[key].StartAndEnd[0], typeof(DateTime));
                     var body = Expression.GreaterThanOrEqual(left, right);
-                    var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
+                    var lambda = Expression.Lambda<Func<TDbEntity, bool>>(body, parameterExp);
                     whereLambdas.Add(lambda);
                 }
             }
@@ -871,7 +871,7 @@ public static class QueryConfigHelper
                     var left = Expression.Convert(propertyExp, typeof(DateTime));
                     var right = Expression.Constant(timeDict[key].StartAndEnd[1], typeof(DateTime));
                     var body = Expression.LessThan(left, right);
-                    var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
+                    var lambda = Expression.Lambda<Func<TDbEntity, bool>>(body, parameterExp);
                     whereLambdas.Add(lambda);
                 }
             }
@@ -956,22 +956,22 @@ public static class QueryConfigHelper
     /// 实际翻译成in 还是 Euqal , 根据 split() 后的个数而定
     /// </summary>
     /// <typeparam name="TSearch"></typeparam>
-    /// <typeparam name="TEntity"></typeparam>
+    /// <typeparam name="TDbEntity"></typeparam>
     /// <param name="that"></param>
     /// <param name="propertyNames"></param>
     /// <returns></returns>
     /// <exception cref="FrameException"></exception>
-    public static List<Expression<Func<TEntity, bool>>> AddIn<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> propertyNames)
-        where TEntity : class
+    public static List<Expression<Func<TDbEntity, bool>>> AddIn<TSearch, TDbEntity>(QueryConfig<TSearch, TDbEntity> that, List<string> propertyNames)
         where TSearch : class
+        where TDbEntity : class
     {
         if (!HaveCount(propertyNames))
         {
-            return Default<TEntity>();
+            return Default<TDbEntity>();
         }
-        var type_TEntity = typeof(TEntity);
+        var type_TEntity = typeof(TDbEntity);
 
-        List<Expression<Func<TEntity, bool>>> whereLambdas = new();
+        List<Expression<Func<TDbEntity, bool>>> whereLambdas = new();
         foreach (var propertyName in propertyNames)
         {
             var propertyValue = new PropertyValue<TSearch>(that.Search);
@@ -1027,7 +1027,7 @@ public static class QueryConfigHelper
             //string    ushort    short    int    uint    char    float    double    long    ulong    decimal   datetime
             //1          1          1       1       1      1         1       1         1       1         1        0
 
-            Expression<Func<TEntity, bool>> lambda = null;
+            Expression<Func<TDbEntity, bool>> lambda = null;
             SqlFuncAttribute[] attr_SqlFuncArray = ReflectionHelper.GetAttributeForProperty<SqlFuncAttribute>(typeof(TSearch).GetProperty(propertyName), true);
             var haveAttr_SqlFunc = attr_SqlFuncArray.Length > 0;
             if (haveAttr_SqlFunc)
@@ -1069,7 +1069,7 @@ public static class QueryConfigHelper
 
                     var body = Expression.Equal(left, right);
 
-                    lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExpression);
+                    lambda = Expression.Lambda<Func<TDbEntity, bool>>(body, parameterExpression);
 
                     #endregion
                 }
@@ -1079,62 +1079,62 @@ public static class QueryConfigHelper
             {
                 if (propType_TEntity == typeof(string))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits);
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits);
                 }
 
                 #region 值类型
 
                 else if (propType_TEntity == typeof(bool))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToBool());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToBool());
                 }
                 else if (propType_TEntity == typeof(byte))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToInt8());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToInt8());
                 }
                 else if (propType_TEntity == typeof(sbyte))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToUInt8());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToUInt8());
                 }
                 else if (propType_TEntity == typeof(short))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToInt16());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToInt16());
                 }
                 else if (propType_TEntity == typeof(ushort))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToUInt16());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToUInt16());
                 }
                 else if (propType_TEntity == typeof(int))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToInt32());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToInt32());
                 }
                 else if (propType_TEntity == typeof(uint))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToUInt32());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToUInt32());
                 }
                 else if (propType_TEntity == typeof(long))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToInt64());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToInt64());
                 }
                 else if (propType_TEntity == typeof(ulong))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToUInt64());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToUInt64());
                 }
                 else if (propType_TEntity == typeof(float))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToFloat());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToFloat());
                 }
                 else if (propType_TEntity == typeof(double))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToDouble());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToDouble());
                 }
                 else if (propType_TEntity == typeof(decimal))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToDecimal());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToDecimal());
                 }
                 else if (propType_TEntity == typeof(char))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToChar());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToChar());
                 }
 
                 #endregion
@@ -1143,55 +1143,55 @@ public static class QueryConfigHelper
 
                 else if (propType_TEntity == typeof(bool?))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableBool());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToNullableBool());
                 }
                 else if (propType_TEntity == typeof(byte?))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableInt8());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToNullableInt8());
                 }
                 else if (propType_TEntity == typeof(sbyte?))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToUInt8());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToUInt8());
                 }
                 else if (propType_TEntity == typeof(short?))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableInt16());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToNullableInt16());
                 }
                 else if (propType_TEntity == typeof(ushort?))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableUInt16());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToNullableUInt16());
                 }
                 else if (propType_TEntity == typeof(int?))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableInt32());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToNullableInt32());
                 }
                 else if (propType_TEntity == typeof(uint?))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableUInt32());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToNullableUInt32());
                 }
                 else if (propType_TEntity == typeof(long?))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableInt64());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToNullableInt64());
                 }
                 else if (propType_TEntity == typeof(ulong?))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableUInt64());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToNullableUInt64());
                 }
                 else if (propType_TEntity == typeof(float?))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableFloat());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToNullableFloat());
                 }
                 else if (propType_TEntity == typeof(double?))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableDouble());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToNullableDouble());
                 }
                 else if (propType_TEntity == typeof(decimal?))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableDecimal());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToNullableDecimal());
                 }
                 else if (propType_TEntity == typeof(char?))
                 {
-                    lambda = GetExpression_In<TEntity>(parameterExp, propertyExp, splits.ToNullableChar());
+                    lambda = GetExpression_In<TDbEntity>(parameterExp, propertyExp, splits.ToNullableChar());
                 }
 
                 #endregion
@@ -1208,8 +1208,8 @@ public static class QueryConfigHelper
         return whereLambdas;
     }
 
-    private static Expression<Func<TEntity, bool>> GetExpression_In<TEntity>(ParameterExpression parameterExp, MemberExpression propertyExp, object listObj)
-        where TEntity : class
+    private static Expression<Func<TDbEntity, bool>> GetExpression_In<TDbEntity>(ParameterExpression parameterExp, MemberExpression propertyExp, object listObj)
+        where TDbEntity : class
     {
         //参考
         //https://stackoverflow.com/questions/18491610/dynamic-linq-expression-for-ienumerableint-containsmemberexpression
@@ -1234,9 +1234,9 @@ public static class QueryConfigHelper
         var call = Expression.Call(typeof(Enumerable), "Contains", new[] { propertyExp.Type }, someValue, propertyExp);
 
         //containsMethodExp
-        var lambda = Expression.Lambda<Func<TEntity, bool>>(call, parameterExp);
+        var lambda = Expression.Lambda<Func<TDbEntity, bool>>(call, parameterExp);
         //“动态不包含”为：
-        // var lambda = Expression.Lambda<Func<TEntity, bool>>(Expression.Not(call), pe);
+        // var lambda = Expression.Lambda<Func<TDbEntity, bool>>(Expression.Not(call), pe);
         return lambda;
     }
 
@@ -1244,18 +1244,18 @@ public static class QueryConfigHelper
 
     #region AddGt
 
-    public static List<Expression<Func<TEntity, bool>>> AddGt<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
-        where TEntity : class
+    public static List<Expression<Func<TDbEntity, bool>>> AddGt<TSearch, TDbEntity>(QueryConfig<TSearch, TDbEntity> that, List<string> searchCondition)
         where TSearch : class
+        where TDbEntity : class
     {
         if (!HaveCount(searchCondition))
         {
-            return Default<TEntity>();
+            return Default<TDbEntity>();
         }
 
-        List<Expression<Func<TEntity, bool>>> whereLambdas = new();
+        List<Expression<Func<TDbEntity, bool>>> whereLambdas = new();
 
-        var type_TEntity = typeof(TEntity);
+        var type_TEntity = typeof(TDbEntity);
         foreach (string prop in searchCondition)
         {
             var propertyValue = new PropertyValue<TSearch>(that.Search);
@@ -1266,7 +1266,7 @@ public static class QueryConfigHelper
             }
             if (!valuePropType.IsClass)
             {
-                var exp = QueryConfigHelper.GetExpression_gt<TEntity>(prop, value);
+                var exp = QueryConfigHelper.GetExpression_gt<TDbEntity>(prop, value);
                 if (exp != null)
                 {
                     whereLambdas.Add(exp);
@@ -1278,10 +1278,10 @@ public static class QueryConfigHelper
     }
 
     // t.SomeProperty > 5
-    private static Expression<Func<TEntity, bool>> GetExpression_gt<TEntity>(string propertyName, object propertyValue)
-        where TEntity : class
+    private static Expression<Func<TDbEntity, bool>> GetExpression_gt<TDbEntity>(string propertyName, object propertyValue)
+        where TDbEntity : class
     {
-        var type_TEntity = typeof(TEntity);
+        var type_TEntity = typeof(TDbEntity);
         var prop_Info = type_TEntity.GetProperty(propertyName);
         if (prop_Info == null)
         {
@@ -1303,7 +1303,7 @@ public static class QueryConfigHelper
 
         var right = Expression.Constant(propertyValue, propType_TEntity);
         var body = Expression.GreaterThan(left, right);
-        var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
+        var lambda = Expression.Lambda<Func<TDbEntity, bool>>(body, parameterExp);
         return lambda;
     }
 
@@ -1311,17 +1311,17 @@ public static class QueryConfigHelper
 
     #region AddGe
 
-    public static List<Expression<Func<TEntity, bool>>> AddGe<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
-        where TEntity : class
+    public static List<Expression<Func<TDbEntity, bool>>> AddGe<TSearch, TDbEntity>(QueryConfig<TSearch, TDbEntity> that, List<string> searchCondition)
+        where TDbEntity : class
         where TSearch : class
     {
         if (!HaveCount(searchCondition))
         {
-            return Default<TEntity>();
+            return Default<TDbEntity>();
         }
 
-        List<Expression<Func<TEntity, bool>>> whereLambdas = new();
-        var type_TEntity = typeof(TEntity);
+        List<Expression<Func<TDbEntity, bool>>> whereLambdas = new();
+        var type_TEntity = typeof(TDbEntity);
         foreach (string prop in searchCondition)
         {
             var propertyValue = new PropertyValue<TSearch>(that.Search);
@@ -1332,7 +1332,7 @@ public static class QueryConfigHelper
             }
             if (!valuePropType.IsClass)
             {
-                var exp = QueryConfigHelper.GetExpression_ge<TEntity>(prop, value);
+                var exp = QueryConfigHelper.GetExpression_ge<TDbEntity>(prop, value);
                 if (exp != null)
                 {
                     whereLambdas.Add(exp);
@@ -1344,10 +1344,10 @@ public static class QueryConfigHelper
     }
 
     // t.SomeProperty >= 5
-    private static Expression<Func<TEntity, bool>> GetExpression_ge<TEntity>(string propertyName, object propertyValue)
-        where TEntity : class
+    private static Expression<Func<TDbEntity, bool>> GetExpression_ge<TDbEntity>(string propertyName, object propertyValue)
+        where TDbEntity : class
     {
-        var type_TEntity = typeof(TEntity);
+        var type_TEntity = typeof(TDbEntity);
         var prop_Info = type_TEntity.GetProperty(propertyName);
         if (prop_Info == null)
         {
@@ -1369,7 +1369,7 @@ public static class QueryConfigHelper
 
         var right = Expression.Constant(propertyValue, propType_TEntity);
         var body = Expression.GreaterThanOrEqual(left, right);
-        var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
+        var lambda = Expression.Lambda<Func<TDbEntity, bool>>(body, parameterExp);
         return lambda;
     }
 
@@ -1377,17 +1377,17 @@ public static class QueryConfigHelper
 
     #region AddLt
 
-    public static List<Expression<Func<TEntity, bool>>> AddLt<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
-        where TEntity : class
+    public static List<Expression<Func<TDbEntity, bool>>> AddLt<TSearch, TDbEntity>(QueryConfig<TSearch, TDbEntity> that, List<string> searchCondition)
         where TSearch : class
+        where TDbEntity : class
     {
         if (!HaveCount(searchCondition))
         {
-            return Default<TEntity>();
+            return Default<TDbEntity>();
         }
 
-        List<Expression<Func<TEntity, bool>>> whereLambdas = new();
-        var type_TEntity = typeof(TEntity);
+        List<Expression<Func<TDbEntity, bool>>> whereLambdas = new();
+        var type_TEntity = typeof(TDbEntity);
         foreach (string prop in searchCondition)
         {
             var propertyValue = new PropertyValue<TSearch>(that.Search);
@@ -1398,7 +1398,7 @@ public static class QueryConfigHelper
             }
             if (!valuePropType.IsClass)
             {
-                var exp = QueryConfigHelper.GetExpression_lt<TEntity>(prop, value);
+                var exp = QueryConfigHelper.GetExpression_lt<TDbEntity>(prop, value);
                 if (exp != null)
                 {
                     whereLambdas.Add(exp);
@@ -1410,10 +1410,10 @@ public static class QueryConfigHelper
     }
 
     // t.SomeProperty < 5
-    private static Expression<Func<TEntity, bool>> GetExpression_lt<TEntity>(string propertyName, object propertyValue)
-        where TEntity : class
+    private static Expression<Func<TDbEntity, bool>> GetExpression_lt<TDbEntity>(string propertyName, object propertyValue)
+        where TDbEntity : class
     {
-        var type_TEntity = typeof(TEntity);
+        var type_TEntity = typeof(TDbEntity);
         var prop_Info = type_TEntity.GetProperty(propertyName);
         if (prop_Info == null)
         {
@@ -1435,7 +1435,7 @@ public static class QueryConfigHelper
 
         var right = Expression.Constant(propertyValue, propType_TEntity);
         var body = Expression.LessThan(left, right);
-        var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
+        var lambda = Expression.Lambda<Func<TDbEntity, bool>>(body, parameterExp);
         return lambda;
     }
 
@@ -1443,17 +1443,17 @@ public static class QueryConfigHelper
 
     #region AddLe
 
-    public static List<Expression<Func<TEntity, bool>>> AddLe<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, List<string> searchCondition)
-        where TEntity : class
+    public static List<Expression<Func<TDbEntity, bool>>> AddLe<TSearch, TDbEntity>(QueryConfig<TSearch, TDbEntity> that, List<string> searchCondition)
         where TSearch : class
+        where TDbEntity : class
     {
         if (!HaveCount(searchCondition))
         {
-            return Default<TEntity>();
+            return Default<TDbEntity>();
         }
 
-        List<Expression<Func<TEntity, bool>>> whereLambdas = new();
-        var type_TEntity = typeof(TEntity);
+        List<Expression<Func<TDbEntity, bool>>> whereLambdas = new();
+        var type_TEntity = typeof(TDbEntity);
         foreach (string prop in searchCondition)
         {
             var propertyValue = new PropertyValue<TSearch>(that.Search);
@@ -1464,7 +1464,7 @@ public static class QueryConfigHelper
             }
             if (!valuePropType.IsClass)
             {
-                var exp = QueryConfigHelper.GetExpression_le<TEntity>(prop, value);
+                var exp = QueryConfigHelper.GetExpression_le<TDbEntity>(prop, value);
                 if (exp != null)
                 {
                     whereLambdas.Add(exp);
@@ -1476,10 +1476,10 @@ public static class QueryConfigHelper
     }
 
     // t.SomeProperty <= 5
-    private static Expression<Func<TEntity, bool>> GetExpression_le<TEntity>(string propertyName, object propertyValue)
-        where TEntity : class
+    private static Expression<Func<TDbEntity, bool>> GetExpression_le<TDbEntity>(string propertyName, object propertyValue)
+        where TDbEntity : class
     {
-        var type_TEntity = typeof(TEntity);
+        var type_TEntity = typeof(TDbEntity);
         var prop_Info = type_TEntity.GetProperty(propertyName);
         if (prop_Info == null)
         {
@@ -1501,7 +1501,7 @@ public static class QueryConfigHelper
 
         var right = Expression.Constant(propertyValue, propType_TEntity);
         var body = Expression.LessThanOrEqual(left, right);
-        var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameterExp);
+        var lambda = Expression.Lambda<Func<TDbEntity, bool>>(body, parameterExp);
         return lambda;
     }
 
@@ -1512,23 +1512,23 @@ public static class QueryConfigHelper
     /// <summary>
     /// 当前字段有值, 字符串类型: IsNull(字段,"") != ""
     /// </summary>
-    /// <typeparam name="TEntity"></typeparam>
+    /// <typeparam name="TDbEntity"></typeparam>
     /// <param name="propertyName"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public static Expression<Func<TEntity, bool>> GetExpression_HasValue<TEntity>(string propertyName)
-           where TEntity : class
+    public static Expression<Func<TDbEntity, bool>> GetExpression_HasValue<TDbEntity>(string propertyName)
+        where TDbEntity : class
     {
-        var type_TEntity = typeof(TEntity);
+        var type_TEntity = typeof(TDbEntity);
         var prop_Info = type_TEntity.GetProperty(propertyName);
         if (prop_Info == null)
         {
-            throw new Exception($"{propertyName}不在{typeof(TEntity).FullName}类型中");
+            throw new Exception($"{propertyName}不在{typeof(TDbEntity).FullName}类型中");
         }
 
         if (prop_Info.PropertyType != typeof(string))
         {
-            throw new Exception($"{propertyName}不在{typeof(TEntity).FullName}类型中只能为string类型");
+            throw new Exception($"{propertyName}不在{typeof(TDbEntity).FullName}类型中只能为string类型");
         }
 
         var parameterExp = Expression.Parameter(type_TEntity, "a");
@@ -1543,29 +1543,29 @@ public static class QueryConfigHelper
         //,false
         //,typeof(string).GetMethod("op_Inequality")
         );
-        var lambda = Expression.Lambda<Func<TEntity, bool>>(left, parameterExp);
+        var lambda = Expression.Lambda<Func<TDbEntity, bool>>(left, parameterExp);
         return lambda;
     }
 
     /// <summary>
     /// 字符串类型: IsNull(字段,"") == ""
     /// </summary>
-    /// <typeparam name="TEntity"></typeparam>
+    /// <typeparam name="TDbEntity"></typeparam>
     /// <param name="propertyName"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public static Expression<Func<TEntity, bool>> GetExpression_NoValue<TEntity>(string propertyName)
-           where TEntity : class
+    public static Expression<Func<TDbEntity, bool>> GetExpression_NoValue<TDbEntity>(string propertyName)
+        where TDbEntity : class
     {
-        var type_TEntity = typeof(TEntity);
+        var type_TEntity = typeof(TDbEntity);
         var prop_Info = type_TEntity.GetProperty(propertyName);
         if (prop_Info == null)
         {
-            throw new Exception($"{propertyName}不在{typeof(TEntity).FullName}类型中");
+            throw new Exception($"{propertyName}不在{typeof(TDbEntity).FullName}类型中");
         }
         if (prop_Info.PropertyType != typeof(string))
         {
-            throw new Exception($"{propertyName}不在{typeof(TEntity).FullName}类型中只能为string类型");
+            throw new Exception($"{propertyName}不在{typeof(TDbEntity).FullName}类型中只能为string类型");
         }
 
         var parameterExp = Expression.Parameter(type_TEntity, "a");
@@ -1581,7 +1581,7 @@ public static class QueryConfigHelper
         //, false
         //, typeof(string).GetMethod("op_Equality")
         );
-        var lambda = Expression.Lambda<Func<TEntity, bool>>(left, parameterExp);
+        var lambda = Expression.Lambda<Func<TDbEntity, bool>>(left, parameterExp);
         return lambda;
     }
 
@@ -1589,8 +1589,8 @@ public static class QueryConfigHelper
 
     #region WhereNotDeleted
 
-    public static Expression<Func<TEntity, bool>> GetExpression_NotDeleted<TEntity>(string propertyName)
-           where TEntity : class
+    public static Expression<Func<TDbEntity, bool>> GetExpression_NotDeleted<TDbEntity>(string propertyName)
+        where TDbEntity : class
     {
         //todo:
         return null;
@@ -1602,11 +1602,11 @@ public static class QueryConfigHelper
 
     private static bool HaveCount(string[] searchCondition) => searchCondition != null && searchCondition.Length > 0;
 
-    private static List<Expression<Func<TEntity, bool>>> Default<TEntity>() => new();
+    private static List<Expression<Func<TDbEntity, bool>>> Default<TDbEntity>() => new();
 
-    private static bool ContinueAdd<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, string prop, object value)
-        where TEntity : class
+    private static bool ContinueAdd<TSearch, TDbEntity>(QueryConfig<TSearch, TDbEntity> that, string prop, object value)
         where TSearch : class
+        where TDbEntity : class
     {
         if (ExistsWhereIf(that, prop)) //有定义满足哪种情况下才算有值
         {
@@ -1631,9 +1631,9 @@ public static class QueryConfigHelper
             }
         }
 
-        bool ExistsWhereIf<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, string propName)
-           where TEntity : class
+        bool ExistsWhereIf<TSearch, TDbEntity>(QueryConfig<TSearch, TDbEntity> that, string propName)
            where TSearch : class
+           where TDbEntity : class
         {
             if (that == null ||
                 that.Search == null ||
@@ -1647,9 +1647,9 @@ public static class QueryConfigHelper
             return true;
         }
 
-        bool InvokeWhereIf<TSearch, TEntity>(QueryConfig<TSearch, TEntity> that, string propName)
-            where TEntity : class
+        bool InvokeWhereIf<TSearch, TDbEntity>(QueryConfig<TSearch, TDbEntity> that, string propName)
             where TSearch : class
+            where TDbEntity : class
         {
             Expression<Func<TSearch, bool>> exp = that.WhereIf[propName];
             var result = exp.Compile().Invoke(that.Search);
