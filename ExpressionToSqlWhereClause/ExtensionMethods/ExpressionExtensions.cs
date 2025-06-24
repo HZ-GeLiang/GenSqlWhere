@@ -66,7 +66,8 @@ public static class ExpressionExtensions
 
         #region 处理 parseResult 的  Adhesive  和 WhereClause
 
-        foreach (var key in parseResult.Adhesive.GetParameterKeys())
+        var parameterKeys = parseResult.Adhesive.GetParameterKeys();
+        foreach (var key in parameterKeys)
         {
             var para = parseResult.Adhesive.GetParameter(key);
             var val = para.Value;

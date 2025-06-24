@@ -123,12 +123,11 @@ public class DictionaryAssert
                 var value_type2 = value_2.GetType().FullName;
 
                 var isSameType = value_type1 == value_type2;
-                if (isSameType)
-                {
-                }
-                var istrue = object.Equals(value_1, value_2);
+                var isEquals = isSameType ? value_1.Equals(value_2) : object.Equals(value_1, value_2);
+
                 var msg = $"The expected value is {value_1} ({value_type1}), the actual value is {value_2} ({value_type2})";
-                Assert.IsTrue(istrue, msg);
+                Assert.IsTrue(isEquals, msg);
+
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 using ExpressionToSqlWhereClause.ExtensionMethods;
 using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Models;
+using Infra.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
@@ -28,14 +29,17 @@ public class QueryConfig_in
         var expression = whereLambda.ToExpression();
         var searchCondition = expression.ToWhereClause();
 
-        Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id) And Sex In (@Sex)");
+        Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id1, @Id2) And Sex In (@Sex1)");
         var dict = new Dictionary<string, object>
         {
             { "@Id", searchModel.Id},
-            { "@Sex", searchModel.Sex}
+            { "@Id1", 1}, // Model_People.Id 的类型是int
+            { "@Id2", 2}, // Model_People.Id 的类型是int
+            { "@Sex", searchModel.Sex}, // Model_People.Id 的类型是int
+            { "@Sex1", (sbyte)1 }
         };
 
-        CollectionAssert.AreEqual(searchCondition.Parameters, dict);
+        DictionaryAssert.AreEqual(searchCondition.Parameters, dict);
     }
 
     [TestMethod]
@@ -56,12 +60,13 @@ public class QueryConfig_in
         var expression = whereLambda.ToExpression();
         var searchCondition = expression.ToWhereClause();
 
-        Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id)");
+        Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id1)");
         var dict = new Dictionary<string, object>
         {
             { "@Id", "1"},//in 可以有多个值,所以这个值就是stirng类型的
+            { "@Id1",1}, // Model_People.Id 的类型是int
         };
 
-        CollectionAssert.AreEqual(searchCondition.Parameters, dict);
+        DictionaryAssert.AreEqual(searchCondition.Parameters, dict);
     }
 }

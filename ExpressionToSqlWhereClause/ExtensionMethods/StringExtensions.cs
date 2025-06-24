@@ -1,9 +1,17 @@
-﻿using System;
-
-namespace ExpressionToSqlWhereClause.ExtensionMethods;
+﻿namespace ExpressionToSqlWhereClause.ExtensionMethods;
 
 internal static class StringExtensions
 {
+    /// <summary>
+    /// 是否有值
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static bool HasValue(this string value)
+    {
+        return !string.IsNullOrEmpty(value);
+    }
+
     /// <summary>
     /// 移除String对象的最后面几个指定字符
     /// </summary>

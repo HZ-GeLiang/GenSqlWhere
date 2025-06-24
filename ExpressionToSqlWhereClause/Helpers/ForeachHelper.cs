@@ -10,12 +10,18 @@ internal sealed class ForeachHelper
     /// </summary>
     /// <param name="collection">可遍历的集合对象</param>
     /// <param name="action">object: 表示当前遍历对象 </param>
-    /// <returns></returns>
-    public static void Each(object collection, Action<object> action)
+    /// <returns>是否有遍历</returns>
+    public static bool Each(object collection, Action<object> action)
     {
         //注: 在这里没有判断 enumerableObj 是否为 IsObjectCollection(自己封装的)
         //原理: 参考fore的内部实现
-        if (action != null && GetEachContext(collection, out var itor, out var typeItor, out var moveNext))
+
+        if (action == null)
+        {
+            return false;
+        }
+
+        if (GetEachContext(collection, out var itor, out var typeItor, out var moveNext))
         {
             try
             {
@@ -35,7 +41,11 @@ internal sealed class ForeachHelper
             {
                 (itor as IDisposable)?.Dispose();   // 释放迭代器资源
             }
+
+            return true;
         }
+
+        return false;
     }
 
     /// <summary>

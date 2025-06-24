@@ -1,5 +1,6 @@
 ﻿using ExpressionToSqlWhereClause.Consts;
 using ExpressionToSqlWhereClause.ExtensionMethods;
+using ExpressionToSqlWhereClause.Helpers;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -126,15 +127,42 @@ public static class ConditionBuilder
         param.Symbol = symbol;
         param.Field = fieldName;
         param.Value = value;
-        param.SqlClause = $"{fieldName} {symbol} ({parametersKey})";
+
+        List<SqlClauseListParametersItem> valueCollection = new List<SqlClauseListParametersItem>();
+
+        var hasEach = ForeachHelper.Each(value, (itorValue) =>
+        {
+            //var parameterKey = $"{parameterName}_itor";
+            var parameterKey = $"{parameterName}";
+            var itor_parameterName = EnsureParameter(parameterKey, adhesive);
+            var itor_parametersKey = $"@{itor_parameterName}";
+            var itor_param = adhesive.GetParameter(itor_parametersKey);
+            itor_param.Value = itorValue;
+            valueCollection.Add(new SqlClauseListParametersItem(itor_param));
+        });
+        if (hasEach)
+        {
+            param.SqlClause = $"{fieldName} {symbol} ({valueCollection.AggregateToString(a => a.Key, ", ")})";
+        }
+        else
+        {
+            param.SqlClause = $"{fieldName} {symbol} ({parametersKey})";
+        }
+
         return param;
     }
 
+    /// <summary>
+    /// 确保参数名称正确
+    /// </summary>
+    /// <param name="fieldName"></param>
+    /// <param name="adhesive"></param>
+    /// <returns></returns>
     internal static string EnsureParameter(string fieldName, WhereClauseAdhesive adhesive)
     {
-        int seed = 1;
+        ushort seed = 1; //ushort.MaxValue   65535
         string tempKey = fieldName;
-        while (adhesive.ContainsParameter($"@{tempKey}"))
+        while (adhesive.ContainsParameter($"@{tempKey}")) //遍历到变量名不重名为止
         {
             tempKey = fieldName + seed;
             seed++;
