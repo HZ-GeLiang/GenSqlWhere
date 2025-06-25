@@ -20,7 +20,6 @@
 		<ProjectReference Include="..\ExpressionToSqlWhereClause.SqlServer\ExpressionToSqlWhereClause.SqlServer.csproj" />
 		<ProjectReference Include="..\ExpressionToSqlWhereClause\ExpressionToSqlWhereClause.csproj" />
 		<ProjectReference Include="..\UnitTestInfra\UnitTest.Infra.csproj" />
-		<ProjectReference Include="..\UnitTestInfra\UnitTestInfra.csproj" />
 	</ItemGroup>
 
 </Project>

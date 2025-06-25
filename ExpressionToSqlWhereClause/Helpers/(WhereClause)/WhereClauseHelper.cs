@@ -42,18 +42,48 @@ public sealed class WhereClauseHelper
 
     internal static string replace_whereClause(string whereClause, string sqlParameterName, string newValue)
     {
-        var key = sqlParameterName + space1;
-        if (whereClause.Contains(key))
+        string key;
+        //注: in参数的 处理必须要在 常规的参数的判断之前
+
         {
-            whereClause = whereClause.Replace(key, newValue + space1);
-            return whereClause;
+            //in的参数的前面几个
+            key = sqlParameterName + space1 + ",";
+            if (whereClause.Contains(key))
+            {
+                whereClause = whereClause.Replace(key, newValue + ",");
+                return whereClause;
+            }
         }
 
-        key = "(" + sqlParameterName + ")";
-        if (whereClause.Contains(key))
         {
-            whereClause = whereClause.Replace(key, "(" + newValue + ")");
-            return whereClause;
+            //in的参数的最后一个
+            key = sqlParameterName + space1 + ")";
+            if (whereClause.Contains(key))
+            {
+                whereClause = whereClause.Replace(key, newValue + ")");
+                return whereClause;
+            }
+        }
+
+
+        {
+            //常规的参数
+            key = sqlParameterName + space1;
+            if (whereClause.Contains(key))
+            {
+                whereClause = whereClause.Replace(key, newValue + space1);
+                return whereClause;
+            }
+        }
+
+        {
+            //
+            key = "(" + sqlParameterName + ")";
+            if (whereClause.Contains(key))
+            {
+                whereClause = whereClause.Replace(key, "(" + newValue + ")");
+                return whereClause;
+            }
         }
 
         return whereClause;

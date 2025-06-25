@@ -1,6 +1,6 @@
 ﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 
-namespace ExpressionToSqlWhereClause.ExtensionMethods;
+namespace ExpressionToSqlWhereClause;
 
 /// <summary>
 /// 扩展方法

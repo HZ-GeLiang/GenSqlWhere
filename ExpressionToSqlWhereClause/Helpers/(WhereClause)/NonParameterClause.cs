@@ -81,7 +81,7 @@ public class NonParameterClause
             {
                 throw new Exception($"参数对象'{nameof(Parameters)}'中不存在名为'{sqlParameterName}'的key值");
             }
-            var sqlParameterValue = Parameters[matches[i].Value];
+            var sqlParameterValue = Parameters[sqlParameterName];
 
             if (sqlParameterValue == null)
             {

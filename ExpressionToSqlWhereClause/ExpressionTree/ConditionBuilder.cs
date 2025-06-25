@@ -142,7 +142,10 @@ public static class ConditionBuilder
         });
         if (hasEach)
         {
-            param.SqlClause = $"{fieldName} {symbol} ({valueCollection.AggregateToString(a => a.Key, ", ")})";
+            //param.SqlClause = $"{fieldName} {symbol} ({valueCollection.AggregateToString(a => a.Key, ", ")})";
+
+            //WhereClauseHelper 需要替换变量
+            param.SqlClause = $"{fieldName} {symbol} ({valueCollection.AggregateToString(a => a.Key, " , ") + WhereClauseHelper.space1})";
         }
         else
         {

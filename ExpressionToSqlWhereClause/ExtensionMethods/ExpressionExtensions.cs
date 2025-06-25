@@ -5,7 +5,7 @@ using ExpressionToSqlWhereClause.Helpers;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
 
-namespace ExpressionToSqlWhereClause.ExtensionMethods;
+namespace ExpressionToSqlWhereClause;
 
 #region 操作Expression的扩展方法
 
