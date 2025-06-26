@@ -24,7 +24,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "id_short In (1,2) OR id_short IS NULL");
+            Assert.AreEqual(clause, "id_short In (1, 2) OR id_short IS NULL");
         }
 
         {
@@ -39,7 +39,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "id_short In (1,2)");
+            Assert.AreEqual(clause, "id_short In (1, 2)");
         }
 
         {
@@ -51,7 +51,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "id_short_nullable In (1,2) OR id_short_nullable IS NULL");
+            Assert.AreEqual(clause, "id_short_nullable In (1, 2) OR id_short_nullable IS NULL");
         }
 
         {
@@ -63,7 +63,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "id_short In (1,2)");
+            Assert.AreEqual(clause, "id_short In (1, 2)");
         }
 
         {
@@ -75,7 +75,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "Message In ('1','2')");
+            Assert.AreEqual(clause, "Message In ('1', '2')");
         }
 
         {
@@ -87,7 +87,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "UserId In (1,2,3) OR UserId IS NULL");
+            Assert.AreEqual(clause, "UserId In (1, 2, 3) OR UserId IS NULL");
             //WHERE[t].[OtherId] IN(1, 2, 3) OR(UserId IS NULL)
         }
 
@@ -100,11 +100,12 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
             {
                 var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-                Assert.AreEqual(clause, "MessageType In (1,2,3)");
+                Assert.AreEqual(clause, "MessageType In (1, 2, 3)");
             }
 
             {
                 var clause = searchCondition.WhereClause;
+                Assert.AreEqual(clause, "MessageType In (@MessageType1 , @MessageType2 , @MessageType3 )");
             }
         }
     }
@@ -121,7 +122,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "id_short In (1,2) OR id_short IS NULL");
+            Assert.AreEqual(clause, "id_short In (1, 2) OR id_short IS NULL");
         }
 
         {
@@ -136,7 +137,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "id_short In (1,2)");
+            Assert.AreEqual(clause, "id_short In (1, 2)");
         }
 
         {
@@ -148,7 +149,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "id_short_nullable In (1,2) OR id_short_nullable IS NULL");
+            Assert.AreEqual(clause, "id_short_nullable In (1, 2) OR id_short_nullable IS NULL");
         }
 
         {
@@ -160,7 +161,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "id_short In (1,2)");
+            Assert.AreEqual(clause, "id_short In (1, 2)");
         }
 
         {
@@ -172,7 +173,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "Message In ('1','2')");
+            Assert.AreEqual(clause, "Message In ('1', '2')");
         }
 
         {
@@ -184,7 +185,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "UserId In (1,2,3) OR UserId IS NULL");
+            Assert.AreEqual(clause, "UserId In (1, 2, 3) OR UserId IS NULL");
             //WHERE[t].[OtherId] IN(1, 2, 3) OR(UserId IS NULL)
         }
 
@@ -197,11 +198,12 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
             {
                 var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-                Assert.AreEqual(clause, "MessageType In (1,2,3)");
+                Assert.AreEqual(clause, "MessageType In (1, 2, 3)");
             }
 
             {
                 var clause = searchCondition.WhereClause;
+                Assert.AreEqual(clause, "MessageType In (@MessageType1 , @MessageType2 , @MessageType3 )");
             }
         }
     }

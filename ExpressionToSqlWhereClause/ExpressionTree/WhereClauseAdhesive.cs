@@ -38,6 +38,15 @@ public class WhereClauseAdhesive
         }
     }
 
+    public void RemoveParameter(SqlClauseParametersInfo param)
+    {
+        var key = param.Key;
+        if (this._parameters.ContainsKey(key))
+        {
+            this._parameters.Remove(key);
+        }
+    }
+
     /// <summary>
     /// sql 适配器,
     /// 目前是用来处理 属性名翻译为sql时的处理,

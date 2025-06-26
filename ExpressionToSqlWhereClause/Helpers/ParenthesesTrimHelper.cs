@@ -480,7 +480,6 @@ internal sealed class ParenthesesTrimHelper
     private static List<Position> GetPositions(string str)
     {
         //string str = "((A + B) * (C - D) + E) / F";
-
         List<Position> list = new List<Position>();
 
 #if DEBUG
@@ -545,7 +544,7 @@ internal sealed class ParenthesesTrimHelper
 
         if (unmatched.Any())
         {
-            var msg = "有未匹配的(): " + string.Join(", ", unmatched);
+            var msg = "检测到有()存在未匹配的(),未配对的()的Index为: " + string.Join(", ", unmatched);
             throw new Exception(msg);
         }
 

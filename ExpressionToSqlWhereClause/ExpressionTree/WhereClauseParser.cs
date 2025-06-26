@@ -187,6 +187,7 @@ internal static class WhereClauseParser
                     //如果是判断符号是 != 且类型是可空,  生成的语句中需要 IS NULL
                     if (param.Symbol == "<>")
                     {
+                        //m,clause解析_isnull
                         param.SqlClause += $" OR ({param.Field} IS NULL)";
                     }
                 }

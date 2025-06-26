@@ -716,10 +716,12 @@ public class ExpressionDemo
         List<string> values = new() { "a", "b" };
         Expression<Func<User, bool>> expression = u => values.Contains(u.Name);
         var searchCondition = expression.ToWhereClause(sqlAdapter: new TestSqlAdapter());
-        Assert.AreEqual(searchCondition.WhereClause, "Name In (@Name)");
+        Assert.AreEqual(searchCondition.WhereClause, "Name In (@Name1 , @Name2 )");
         Dictionary<string, object> expectedParameters = new()
         {
-            { "@Name", "'a','b'" }
+            //{ "@Name", "'a','b'" }
+            { "@Name1", "a" },
+            { "@Name2", "b" },
         };
         DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
     }
@@ -730,10 +732,12 @@ public class ExpressionDemo
         string[] values = new string[] { "a", "b" };
         Expression<Func<User, bool>> expression = u => values.Contains(u.Name);
         var searchCondition = expression.ToWhereClause(sqlAdapter: new TestSqlAdapter());
-        Assert.AreEqual(searchCondition.WhereClause, "Name In (@Name)");
+        Assert.AreEqual(searchCondition.WhereClause, "Name In (@Name1 , @Name2 )");
         Dictionary<string, object> expectedParameters = new()
         {
-            { "@Name", "'a','b'" }
+            //{ "@Name", "'a','b'" }
+            { "@Name1", "a" },
+            { "@Name2", "b" },
         };
         DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
     }

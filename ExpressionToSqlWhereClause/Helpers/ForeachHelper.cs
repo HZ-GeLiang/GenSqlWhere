@@ -34,7 +34,14 @@ internal sealed class ForeachHelper
                     {
                         break;
                     }
+                    //注: 如果遍历的对象是 List<int?> 且 GetValue() 的值不为null, 那么类型是 int
+#if DEBUG
+                    //4.获得下一个的值
+                    object currentItem = typeItor.GetProperty("Current").GetValue(itor);
+                    action.Invoke(currentItem);
+#else
                     action.Invoke(typeItor.GetProperty("Current").GetValue(itor));
+#endif
                 }
             }
             finally

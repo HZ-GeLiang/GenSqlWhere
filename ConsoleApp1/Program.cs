@@ -7,6 +7,12 @@ namespace ConsoleApp1
     {
         private static void Main(string[] args)
         {
+            List<int?> list = new List<int?>() { null, 12, 3, 4 };
+            foreach (dynamic item in list)
+            {
+                Console.WriteLine(item.GetType());
+            }
+
             Expression<Func<peo, bool>> exp = a => (a.Name ?? "") != "";
             var exp2 = QueryConfigHelper.GetExpression_HasValue<peo>("Name");
 

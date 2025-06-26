@@ -56,9 +56,9 @@ public class QueryConfig_dynamic
     }
 
     [TestMethod]
-    public void le_dynamic_bool和int()
+    public void le_dynamic_bool()
     {
-        //int to bool  取决于 Convert.ChangeType(propertyValue, bool );
+        //int to bool  取决于 Convert.ChangeType(propertyValue, bool);
 
         {
             var searchModel = new
@@ -81,6 +81,13 @@ public class QueryConfig_dynamic
             };
             CollectionAssert.AreEqual(searchCondition.Parameters, dict);
         }
+    }
+
+    [TestMethod]
+    public void le_dynamic_int()
+    {
+        //int to bool  取决于 Convert.ChangeType(propertyValue, bool);
+
         {
             var searchModel = new
             {

@@ -1,5 +1,4 @@
-﻿using ExpressionToSqlWhereClause.ExtensionMethods;
-using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Inputs;
+﻿using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Inputs;
 using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Models;
 using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Modlesl;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -109,7 +108,7 @@ public class QueryConfig_Attr
     }
 
     [TestMethod]
-    public void in_Attr()
+    public void in_Attr_string_type()
     {
         var searchModel = new Input_in_Attr()
         {
@@ -120,18 +119,19 @@ public class QueryConfig_Attr
         var whereLambda = searchModel.CreateQueryConfig(default(Model_in));
         var expression = whereLambda.ToExpression();
         var searchCondition = expression.ToWhereClause();
-        Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id) And Sex In (@Sex)");
+        Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id1 , @Id2 ) And Sex In (@Sex1 )");
         var dict = new Dictionary<string, object>
         {
-            { "@Id", "'1','2'"},
-            { "@Sex", "'1'"}
+            { "@Id1", "1"}, //因为 typeof(Model_in.Id) 是stirng 类型的
+            { "@Id2", "2"}, //因为 typeof(Model_in.Id) 是stirng 类型的
+            { "@Sex1", "1"} //因为 typeof(Model_in.Sex) 是stirng 类型的
         };
 
         CollectionAssert.AreEqual(searchCondition.Parameters, dict);
     }
 
     [TestMethod]
-    public void in2_Attr()
+    public void in2_Attr_nullable_type()
     {
         var searchModel = new Input_in2_Attr()
         {
@@ -140,13 +140,15 @@ public class QueryConfig_Attr
         var whereLambda = searchModel.CreateQueryConfig(default(Model_in2));
         var expression = whereLambda.ToExpression();
         var searchCondition = expression.ToWhereClause();
-        Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id)");
+        Assert.AreEqual(searchCondition.WhereClause, "Id In (@Id1 )");
         var dict = new Dictionary<string, object>
         {
-            { "@Id", "1"},//in 可以有多个值,所以这个值就是stirng类型的
+            //{ "@Id", "1"},//in 可以有多个值,所以这个值就是stirng类型的   //  这个变量被移除了, 因为 WhereClause 没有这个变量了
+            { "@Id1", (int) 1 }, //因为实体模型是int? 如果nullable 有值,  那么类型肯定是 int
         };
 
         CollectionAssert.AreEqual(searchCondition.Parameters, dict);
+        Assert.AreEqual(searchCondition.Parameters["@Id1"].GetType(), typeof(int));
     }
 
     [TestMethod]

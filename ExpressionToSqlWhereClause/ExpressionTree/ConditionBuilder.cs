@@ -123,29 +123,51 @@ public static class ConditionBuilder
         object value = ConstantExtractor.ParseConstant(valueExpression);
         var parametersKey = $"@{parameterName}";
         var symbol = SqlKeys.@in;
-        var param = adhesive.GetParameter(parametersKey);
+        SqlClauseParametersInfo param = adhesive.GetParameter(parametersKey);
         param.Symbol = symbol;
         param.Field = fieldName;
         param.Value = value;
 
         List<SqlClauseListParametersItem> valueCollection = new List<SqlClauseListParametersItem>();
 
+        bool hasNullValue = false;
+
         var hasEach = ForeachHelper.Each(value, (itorValue) =>
         {
-            //var parameterKey = $"{parameterName}_itor";
-            var parameterKey = $"{parameterName}";
-            var itor_parameterName = EnsureParameter(parameterKey, adhesive);
-            var itor_parametersKey = $"@{itor_parameterName}";
-            var itor_param = adhesive.GetParameter(itor_parametersKey);
-            itor_param.Value = itorValue;
-            valueCollection.Add(new SqlClauseListParametersItem(itor_param));
+            //m,条件处理_in
+            if (itorValue == null)
+            {
+                hasNullValue = true;
+            }
+            else
+            {
+                //关于 itorValue 的类型说明: 如果遍历的对象是 List<int?> 且 itorValue 值不为null, 那么类型就是 int, 其他可空类型同理
+
+                //var parameterKey = $"{parameterName}_itor";
+                var parameterKey = $"{parameterName}";
+                var itor_parameterName = EnsureParameter(parameterKey, adhesive);
+                var itor_parametersKey = $"@{itor_parameterName}";
+                var itor_param = adhesive.GetParameter(itor_parametersKey);
+                itor_param.Value = itorValue;
+                valueCollection.Add(new SqlClauseListParametersItem(itor_param));
+            }
         });
         if (hasEach)
         {
             //param.SqlClause = $"{fieldName} {symbol} ({valueCollection.AggregateToString(a => a.Key, ", ")})";
 
             //WhereClauseHelper 需要替换变量
-            param.SqlClause = $"{fieldName} {symbol} ({valueCollection.AggregateToString(a => a.Key, " , ") + WhereClauseHelper.space1})";
+            var inStr = valueCollection.AggregateToString(a => a.Key, " , ") + WhereClauseHelper.space1;
+            if (hasNullValue)
+            {
+                param.SqlClause = $"({fieldName} {symbol} ({inStr}) OR {fieldName} IS NULL)";
+            }
+            else
+            {
+                param.SqlClause = $"{fieldName} {symbol} ({inStr})";
+            }
+            //移除 SqlClause 中未使用到的变量
+            adhesive.RemoveParameter(parametersKey);
         }
         else
         {

@@ -65,7 +65,6 @@ public sealed class WhereClauseHelper
             }
         }
 
-
         {
             //常规的参数
             key = sqlParameterName + space1;
@@ -149,10 +148,13 @@ public sealed class WhereClauseHelper
         {
             foreach (var parameter in parameters)
             {
-                var type = parameter.Value.GetType();
-                if (type == typeof(DateTime) || type == typeof(DateTime?))
+                if (parameter.Value != null)
                 {
-                    formatDateTime.Add(parameter.Key, format);
+                    var type = parameter.Value.GetType();
+                    if (type == typeof(DateTime) || type == typeof(DateTime?))
+                    {
+                        formatDateTime.Add(parameter.Key, format);
+                    }
                 }
             }
         }
