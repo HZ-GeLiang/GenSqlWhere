@@ -25,4 +25,7 @@ internal class ExpressionFullNameSpaceConst
     /// 比如??运算符
     /// </summary>
     public const string SimpleBinary = "System.Linq.Expressions.SimpleBinaryExpression";
+
+
+    public const string NewArrayInit = "System.Linq.Expressions.NewArrayInitExpression";
 }

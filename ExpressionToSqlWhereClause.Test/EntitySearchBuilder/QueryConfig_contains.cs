@@ -9,6 +9,28 @@ namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
 [TestClass]
 public class QueryConfig_contains
 {
+
+    [TestMethod]
+    public void list_contains_NewArrayInit()
+    {
+        var obj = new { DutyID = "123" };
+        var test = obj.DutyID.SplitToArray(',');
+
+        var expression =
+            default(Expression<Func<Model_contians, bool>>)
+            .WhereIf(true, a => obj.DutyID.SplitToArray(',').Contains(a.DutyID))
+            ;
+
+        var searchCondition = expression.ToWhereClause();
+        Assert.AreEqual(searchCondition.WhereClause, "DutyID In (@DutyID1 )");
+
+        Dictionary<string, object> expectedParameters = new()
+        {
+            { "@DutyID1", "123" },
+        };
+        DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
+    }
+
     [TestMethod]
     public void list_contains_变量在链式编程中()
     {

@@ -352,6 +352,11 @@ public static class ConstantExtractor
 #endif
                     throw new NotSupportedException($"Unknow expression {expression.GetType()}");
                 }
+                else if (fullName == ExpressionFullNameSpaceConst.NewArrayInit) //is 的方式无法通过
+                {
+                    var val = Expression.Lambda(expression).Compile().DynamicInvoke();
+                    return val;
+                }
                 else if (expression is ConstantExpression)
                 {
                     arguments[i] = ConstantExtractor.ParseConstant(expression);
