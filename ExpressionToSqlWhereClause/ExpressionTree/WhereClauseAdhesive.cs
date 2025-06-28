@@ -1,4 +1,5 @@
 ﻿using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
+using System.Diagnostics;
 
 namespace ExpressionToSqlWhereClause.ExpressionTree;
 
@@ -14,6 +15,7 @@ public class WhereClauseAdhesive
 
     /// <summary>
     /// 参数化查询的值, 参数名-参数值
+    /// 注: 不保证插入的顺序
     /// </summary>
     private Dictionary<string, SqlClauseParametersInfo> _parameters = new();
 
@@ -23,6 +25,12 @@ public class WhereClauseAdhesive
     {
         if (!this._parameters.ContainsKey(key))
         {
+#if DEBUG
+            if (key.Contains("@DataCreatedAt"))
+            {
+                //Debugger.Break();
+            }
+#endif
             this._parameters.Add(key, new() { Key = key });
         }
         return this._parameters[key];

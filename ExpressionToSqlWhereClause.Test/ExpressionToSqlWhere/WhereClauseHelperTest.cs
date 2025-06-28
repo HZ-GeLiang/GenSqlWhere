@@ -295,7 +295,7 @@ public class WhereClauseHelperTest
 
         var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
 
-        Assert.AreEqual(clause, "Message In ('1','2')");
+        Assert.AreEqual(clause, "Message In ('1', '2')");
     }
 
     [TestMethod]

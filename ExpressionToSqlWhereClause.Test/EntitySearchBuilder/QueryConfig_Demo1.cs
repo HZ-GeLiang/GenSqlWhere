@@ -2,6 +2,7 @@
 using ExpressionToSqlWhereClause.ExtensionMethods;
 using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Inputs;
 using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Models;
+using Infra.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq.Expressions;
 
@@ -26,6 +27,7 @@ public class QueryConfig_Demo1
         };
 
         var whereLambda = searchModel.CreateQueryConfig(default(Model_People));
+        #region whereLambda 的配置
 
         whereLambda[SearchType.Like] = new List<string>
         {
@@ -55,6 +57,8 @@ public class QueryConfig_Demo1
         {
         };
 
+        #endregion
+
         //List<Expression<Func<Route, bool>>> listExp = whereLambda.ToExpressionList(); //可以给ef用
         Expression<Func<Model_People, bool>> exp = whereLambda.ToExpression();
         //等价
@@ -63,18 +67,22 @@ public class QueryConfig_Demo1
 
         var searchCondition = exp.ToWhereClause();
 
-        Assert.AreEqual(searchCondition.WhereClause, "IsDel = @IsDel And Id In (@Id) And Sex In (@Sex) And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
+        Assert.AreEqual(searchCondition.WhereClause, "IsDel = @IsDel And Id In (@Id1 , @Id2 ) And Sex In (@Sex1 ) And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
+
+        var order_Parameters = searchCondition.Parameters.OrderBy(a => a.Key).ToDictionary(a => a.Key, a => a.Value);
+
         var dict = new Dictionary<string, object>
         {
-            { "@IsDel", searchModel.IsDel },
-            { "@Id", "1,2"},
-            { "@Sex", searchModel.Sex },
             { "@DataCreatedAt", searchModel.DataCreatedAtStart },
             { "@DataCreatedAt1", searchModel.DataCreatedAtEnd?.AddDays(1) },
+            { "@Id1", 1}, //Model_People.Id 是int 类型
+            { "@Id2", 2}, //Model_People.Id 是int 类型
+            { "@IsDel", searchModel.IsDel },
+            { "@Sex1", (sbyte)1},
             { "@Url", $@"%{searchModel.Url}%" },
         };
 
-        CollectionAssert.AreEqual(searchCondition.Parameters, dict);
+        DictionaryAssert.AreEqual(order_Parameters, dict);
     }
 
     [TestMethod]
@@ -145,7 +153,7 @@ public class QueryConfig_Demo1
 
         var searchCondition = whereLambda.ToExpression().ToWhereClause();
 
-        Assert.AreEqual(searchCondition.WhereClause, "IsDel = @IsDel And Id In (@Id) And Sex In (@Sex) And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
+        Assert.AreEqual(searchCondition.WhereClause, "IsDel = @IsDel And Id In (@Id1 , @Id2 ) And Sex In (@Sex1 ) And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
     }
 
     [TestMethod]

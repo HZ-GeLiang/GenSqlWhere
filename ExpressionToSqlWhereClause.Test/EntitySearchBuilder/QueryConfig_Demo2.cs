@@ -31,7 +31,7 @@ public class QueryConfig_Demo2
 
         var searchCondition = exp.ToWhereClause();
 
-        Assert.AreEqual(searchCondition.WhereClause, "IsDel = @IsDel And Id In (@Id) And Sex In (@Sex) And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
+        Assert.AreEqual(searchCondition.WhereClause, "IsDel = @IsDel And Id In (@Id1 , @Id2 ) And Sex In (@Sex1 ) And DataCreatedAt >= @DataCreatedAt And DataCreatedAt < @DataCreatedAt1 And Url Like @Url");
     }
 
     [TestMethod]

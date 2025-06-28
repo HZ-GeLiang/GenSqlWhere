@@ -31,6 +31,7 @@ internal static class WhereClauseParser
                 Adhesive = adhesive
             };
         }
+
         if (body is MethodCallExpression methodCallExpression)
         {
             var whereClause = ParseMethodCallExpression(adhesive, methodCallExpression);

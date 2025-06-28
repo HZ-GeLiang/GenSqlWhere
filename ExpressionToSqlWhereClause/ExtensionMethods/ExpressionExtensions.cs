@@ -61,8 +61,8 @@ public static class ExpressionExtensions
 
         #endregion
 
-        var body = expression.Body;
-        ClauseParserResult parseResult = WhereClauseParser.Parse(body, aliasDict, sqlAdapter);
+        //m,获得parse结果
+        var parseResult = WhereClauseParser.Parse(expression.Body, aliasDict, sqlAdapter);
 
         #region 处理 parseResult 的  Adhesive  和 WhereClause
 
