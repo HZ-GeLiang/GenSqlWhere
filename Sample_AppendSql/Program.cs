@@ -14,7 +14,7 @@ var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
 
 {
     //表达式 + 拼接, 生成sql语句
-    SearchCondition searchCondition = expression.ToWhereClause();
+    var searchCondition = expression.ToWhereClause();
     string? clause_FormattableString = WhereClauseHelper.GetFormattableStringClause(searchCondition);
     string sql_str = $@"select * from ExpressionSqlTest where {clause_FormattableString}";
     var pms = searchCondition.Parameters.Values.ToArray();
@@ -28,7 +28,7 @@ var expression = default(Expression<Func<ExpressionSqlTest, bool>>)
 
 {
     //分页
-    SearchCondition searchCondition = expression.ToWhereClause();
+    var searchCondition = expression.ToWhereClause();
     var clause = searchCondition.WhereClause;
     var param = searchCondition.Parameters;
     var sql_count_str = $"select count(*) from V_CRM_Contacts where {clause}";

@@ -33,7 +33,7 @@ public class SearchCondition
     public string WhereClause { get; private set; } = "";
 
     /// <summary>
-    /// 查询参数
+    /// where子句的参数值
     /// </summary>
     public Dictionary<string, object> Parameters { get; private set; } = new Dictionary<string, object>();
 
@@ -65,5 +65,14 @@ public class SearchCondition
             var str = ParenthesesTrimHelper.ParseTrimAll(WhereClause);
             return str;
         }
+    }
+
+    public override string ToString()
+    {
+        if (this == null)
+        {
+            return base.ToString();
+        }
+        return this.WhereClause;
     }
 }

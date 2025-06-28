@@ -291,7 +291,7 @@ public class WhereClauseHelperTest
         var list = new List<string>() { "1", "2" };
         var expression = default(Expression<Func<Test_001, bool>>).WhereIf(true, a => list.Contains(a.Message));
 
-        SearchCondition searchCondition = expression.ToWhereClause();
+        var searchCondition = expression.ToWhereClause();
 
         var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
 

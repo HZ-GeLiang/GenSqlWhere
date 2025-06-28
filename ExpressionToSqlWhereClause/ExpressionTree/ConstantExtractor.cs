@@ -315,70 +315,110 @@ public static class ConstantExtractor
 
             //target = EvaluateExpression(methodCallExpression.Object);
         }
-        // 解析方法参数
-        object[] arguments;
+
         if (methodCallExpression.Arguments == null)
         {
-            arguments = null;
+            return methodInfo.Invoke(target, null);
+        }
+
+        // 解析方法参数
+
+        var argsCount = methodCallExpression.Arguments.Count;
+        if (argsCount <= 1)
+        {
+            var i = 0;
+            Expression expression = methodCallExpression.Arguments[i];
+            return GetExpressionValue(target, methodInfo, expression, argsCount);
         }
         else
         {
-            arguments = new object[methodCallExpression.Arguments.Count];
+            object[] arguments = new object[methodCallExpression.Arguments.Count];
             for (int i = 0; i < methodCallExpression.Arguments.Count; i++)
             {
                 Expression expression = methodCallExpression.Arguments[i];
-                var fullName = expression.GetType().FullName;
-                if (fullName == ExpressionFullNameSpaceConst.Property) //is 的方式无法通过
-                {
-                    var nodeType = (ExpressionType)(((dynamic)expression).Expression.NodeType);
 
-                    if (nodeType == ExpressionType.Parameter)
-                    {
-                        return expression.ToString(); //u.CreateAt
-                    }
-                    else if (nodeType == ExpressionType.MemberAccess)
-                    {
-                        arguments[i] = ConstantExtractor.ParseConstant(expression);//GetInt(userFilter.Internal.Age);
-                    }
-                }
-                else if (fullName == ExpressionFullNameSpaceConst.Field) //is 的方式无法通过
+                arguments[i] = GetExpressionValue(target, methodInfo, expression, argsCount);
+            }
+            return methodInfo.Invoke(target, arguments);
+        }
+    }
+
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="target"></param>
+    /// <param name="methodInfo"></param>
+    /// <param name="expression"></param>
+    /// <param name="argsCount">如果大于1, 那么返回的是 arguments[i] 的值 </param>
+    /// <returns></returns>
+    /// <exception cref="NotSupportedException"></exception>
+    /// <exception cref="NotImplementedException"></exception>
+    private static object GetExpressionValue(object target, MethodInfo methodInfo, Expression expression, int argsCount)
+    {
+        var fullName = expression.GetType().FullName;
+        if (fullName == ExpressionFullNameSpaceConst.Property) //is 的方式无法通过
+        {
+            var nodeType = (ExpressionType)(((dynamic)expression).Expression.NodeType);
+
+            if (nodeType == ExpressionType.Parameter)
+            {
+                return expression.ToString(); //u.CreateAt
+            }
+
+            if (nodeType == ExpressionType.MemberAccess)
+            {
+                var val = ConstantExtractor.ParseConstant(expression); //GetInt(userFilter.Internal.Age);
+                if (argsCount > 1)
                 {
-                    arguments[i] = ConstantExtractor.ParseConstant(expression);
-                }
-                else if (fullName == ExpressionFullNameSpaceConst.TypedParameter)
-                {
-#if DEBUG
-                    Debugger.Break();
-#endif
-                    throw new NotSupportedException($"Unknow expression {expression.GetType()}");
-                }
-                else if (fullName == ExpressionFullNameSpaceConst.NewArrayInit) //is 的方式无法通过
-                {
-                    var val = Expression.Lambda(expression).Compile().DynamicInvoke();
-                    return val;
-                }
-                else if (expression is ConstantExpression)
-                {
-                    arguments[i] = ConstantExtractor.ParseConstant(expression);
-                }
-                else if (expression is MethodCallExpression)
-                {
-                    var val = Expression.Lambda(expression).Compile().DynamicInvoke();
                     return val;
                 }
                 else
                 {
-                    //其他方法调用通过编译执行
-                    //var compiledExpression = Expression.Lambda(methodCallExpression).Compile();
-                    //return compiledExpression.DynamicInvoke();
-
-                    throw new NotImplementedException($"ParseMethodCallConstantExpression of type {expression.GetType()}");
+                    return methodInfo.Invoke(target, new object[1] { val }); // 使用反射调用方法并返回结果
                 }
             }
         }
+        else if (fullName == ExpressionFullNameSpaceConst.Field) //is 的方式无法通过
+        {
+            var val = ConstantExtractor.ParseConstant(expression);
 
-        // 使用反射调用方法并返回结果
-        return methodInfo.Invoke(target, arguments);
+            if (argsCount > 1)
+            {
+                return val;
+            }
+            else
+            {
+                return methodInfo.Invoke(target, new object[1] { val }); // 使用反射调用方法并返回结果
+            }
+        }
+        else if (fullName == ExpressionFullNameSpaceConst.TypedParameter)
+        {
+#if DEBUG
+            Debugger.Break();
+#endif
+            throw new NotSupportedException($"Unsupported lambda expression {expression.GetType()}");
+        }
+        else if (fullName == ExpressionFullNameSpaceConst.NewArrayInit) //is 的方式无法通过
+        {
+            return Expression.Lambda(expression).Compile().DynamicInvoke(); //调用通过编译执行
+        }
+        else if (expression is ConstantExpression)
+        {
+            var val = ConstantExtractor.ParseConstant(expression);
+            if (argsCount > 1)
+            {
+                return val;
+            }
+            else
+            {
+                return methodInfo.Invoke(target, new object[1] { val }); // 使用反射调用方法并返回结果
+            }
+        }
+        else if (expression is MethodCallExpression)
+        {
+            return Expression.Lambda(expression).Compile().DynamicInvoke(); //调用通过编译执行
+        }
+        throw new NotImplementedException($"GetExpressionValue: expression type: {expression.GetType()}");
     }
 
     // 辅助方法：递归求值表达式

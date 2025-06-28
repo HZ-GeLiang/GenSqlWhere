@@ -25,6 +25,7 @@ public class WhereClauseAdhesive
     {
         if (!this._parameters.ContainsKey(key))
         {
+            //m,添加参数
 #if DEBUG
             if (key.Contains("@DataCreatedAt"))
             {
