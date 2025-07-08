@@ -168,7 +168,7 @@ public sealed class WhereClauseHelper
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="parameters"></param>
-    /// <param name="convertFunc">Func的参数:  string key  , object value , T 返回对象 </param>
+    /// <param name="convertFunc">Func的参数:string key, object value , T 返回对象。注：key 以@开头 </param>
     /// <returns></returns>
     public static T[] ConvertParameters<T>(Dictionary<string, object> parameters, Func<string, object, T> convertFunc)
     {
@@ -182,6 +182,8 @@ public sealed class WhereClauseHelper
         int i = 0;
         foreach (var key in parameters.Keys)
         {
+            //key: @Id
+
             tArray[i] = convertFunc.Invoke(key, parameters[key]);
             i++;
         }
