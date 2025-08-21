@@ -13,6 +13,7 @@
     <Rule Id="CS1717" Action="Error" />
 	<Rule Id="CS1998" Action="Error" />
 	<Rule Id="CS0105" Action="Error" />
+	<Rule Id="CS1717" Action="Error" />
 
     <!-- 必须删除重复的/未使用的命名空间 -->
 	<!-- <Rule Id="IDE0005" Action="Error" /> -->
