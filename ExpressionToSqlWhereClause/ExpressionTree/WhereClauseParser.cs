@@ -189,7 +189,7 @@ internal static class WhereClauseParser
                     if (param.Symbol == "<>")
                     {
                         //m,clause解析_isnull
-                        param.SqlClause += $" OR ({param.Field} IS NULL)";
+                        param.SqlClause += $" {SqlKeys.LogicSymbolOr} ({param.Field} IS NULL)";
                     }
                 }
             }

@@ -24,7 +24,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "id_short In (1, 2) OR id_short IS NULL");
+            Assert.AreEqual(clause, "id_short In (1, 2) Or id_short IS NULL");
         }
 
         {
@@ -51,7 +51,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "id_short_nullable In (1, 2) OR id_short_nullable IS NULL");
+            Assert.AreEqual(clause, "id_short_nullable In (1, 2) Or id_short_nullable IS NULL");
         }
 
         {
@@ -87,8 +87,8 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "UserId In (1, 2, 3) OR UserId IS NULL");
-            //WHERE[t].[OtherId] IN(1, 2, 3) OR(UserId IS NULL)
+            Assert.AreEqual(clause, "UserId In (1, 2, 3) Or UserId IS NULL");
+            //WHERE[t].[OtherId] IN(1, 2, 3) Or(UserId IS NULL)
         }
 
         {
@@ -122,7 +122,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "id_short In (1, 2) OR id_short IS NULL");
+            Assert.AreEqual(clause, "id_short In (1, 2) Or id_short IS NULL");
         }
 
         {
@@ -149,7 +149,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "id_short_nullable In (1, 2) OR id_short_nullable IS NULL");
+            Assert.AreEqual(clause, "id_short_nullable In (1, 2) Or id_short_nullable IS NULL");
         }
 
         {
@@ -185,8 +185,8 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "UserId In (1, 2, 3) OR UserId IS NULL");
-            //WHERE[t].[OtherId] IN(1, 2, 3) OR(UserId IS NULL)
+            Assert.AreEqual(clause, "UserId In (1, 2, 3) Or UserId IS NULL");
+            //WHERE[t].[OtherId] IN(1, 2, 3) Or(UserId IS NULL)
         }
 
         {
@@ -231,7 +231,7 @@ public class WhereClauseHelperTest
             var expression = default(Expression<Func<Test_001, bool>>).WhereIf(true, a => a.IsDel2 != true);
             var searchCondition = expression.ToWhereClause();
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "IsDel2 <> 1 OR IsDel2 IS NULL");
+            Assert.AreEqual(clause, "IsDel2 <> 1 Or IsDel2 IS NULL");
         }
 
         {

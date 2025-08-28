@@ -3,7 +3,7 @@
 /// <summary>
 /// SQL查询中使用的关键字和符号常量类
 /// </summary>
-internal class SqlKeys
+public class SqlKeys
 {
     #region 逻辑运算符
     /// <summary>
@@ -21,12 +21,12 @@ internal class SqlKeys
     /// <summary>
     /// SQL语句中的AND连接符
     /// </summary>
-    public const string And = " And ";
+    public const string And = $" {LogicSymbolAnd} ";
 
     /// <summary>
     /// SQL语句中的OR连接符
     /// </summary>
-    public const string Or = " Or ";
+    public const string Or = $" {LogicSymbolOr} ";
     #endregion
 
     #region 比较运算符

@@ -115,7 +115,7 @@ public static class ExpressionExtensions
                 para.Value = parseValue;
                 if (hasNullItem)
                 {
-                    para.SqlClause += $" OR ({para.Field} IS NULL)";
+                    para.SqlClause += $" {SqlKeys.LogicSymbolOr} ({para.Field} IS NULL)";
                     parseResult.WhereClause = para.SqlClause;
                 }
                 continue;

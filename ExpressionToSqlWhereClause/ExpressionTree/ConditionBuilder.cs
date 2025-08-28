@@ -160,7 +160,7 @@ public static class ConditionBuilder
             var inStr = valueCollection.AggregateToString(a => a.Key, " , ") + WhereClauseHelper.space1;
             if (hasNullValue)
             {
-                param.SqlClause = $"({fieldName} {symbol} ({inStr}) OR {fieldName} IS NULL)";
+                param.SqlClause = $"({fieldName} {symbol} ({inStr}) {SqlKeys.LogicSymbolOr} {fieldName} IS NULL)";
             }
             else
             {

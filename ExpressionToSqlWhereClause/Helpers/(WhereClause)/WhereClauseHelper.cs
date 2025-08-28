@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using ExpressionToSqlWhereClause.ExpressionTree;
+using System.Runtime.CompilerServices;
 
 namespace ExpressionToSqlWhereClause;
 
@@ -94,10 +95,10 @@ public sealed class WhereClauseHelper
         {
             //场景:常规条件Or一个特定的操作, 单元测试: 常规条件Or一个特定的操作
 
-            var key = sqlParameterName + ") Or ";
+            var key = $"{sqlParameterName}) {SqlKeys.LogicSymbolOr} ";
             if (whereClause.Contains(key))
             {
-                whereClause = whereClause.Replace(key, newValue + ") Or ");
+                whereClause = whereClause.Replace(key, $"{newValue}) {SqlKeys.LogicSymbolOr} ");
                 return whereClause;
             }
         }
