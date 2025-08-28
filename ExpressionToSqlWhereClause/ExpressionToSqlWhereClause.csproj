@@ -1,44 +1,44 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFrameworks>
-			netstandard2.0;
-			<!--net6.0;-->
-		</TargetFrameworks>
-		<DefineConstants>DEBUG;TRACE</DefineConstants>
-		<!--<NoWarn>1701;1702;1591;</NoWarn>-->
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-		<PackageId>ExpressionToSqlWhereClause</PackageId>
-		<Authors>GeLiang</Authors>
-		<Company>GeLiang</Company>
-		<Copyright>Copyright (c) GeLiang</Copyright>
-		<Description>convert expression to sql where clause</Description>
-		<PackageProjectUrl>https://gitee.com/hzgel/GenSqlWhere</PackageProjectUrl>
-		<!--<PackageLicenseUrl>https://gitee.com/hzgel/EpplusHelper/blob/master/LICENSE</PackageLicenseUrl>-->
-		<PackageTags>sql,whereclause,expression,expression2sql,convert2sql</PackageTags>
-		<PackageReleaseNotes></PackageReleaseNotes>
-		<RepositoryType>gitee</RepositoryType>
-		<PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
-		<Version>1.8.2.5</Version>
-		<LangVersion>10</LangVersion>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFrameworks>
+      netstandard2.0;
+      <!--net6.0;-->
+    </TargetFrameworks>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <!--<NoWarn>1701;1702;1591;</NoWarn>-->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageId>ExpressionToSqlWhereClause</PackageId>
+    <Authors>GeLiang</Authors>
+    <Company>GeLiang</Company>
+    <Copyright>Copyright (c) GeLiang</Copyright>
+    <Description>convert expression to sql where clause</Description>
+    <PackageProjectUrl>https://gitee.com/hzgel/GenSqlWhere</PackageProjectUrl>
+    <!--<PackageLicenseUrl>https://gitee.com/hzgel/EpplusHelper/blob/master/LICENSE</PackageLicenseUrl>-->
+    <PackageTags>sql,whereclause,expression,expression2sql,convert2sql</PackageTags>
+    <PackageReleaseNotes></PackageReleaseNotes>
+    <RepositoryType>gitee</RepositoryType>
+    <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
+    <Version>1.8.2.6</Version>
+    <LangVersion>10</LangVersion>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<Compile Remove="EntitySearchBuilder\FilterStrategy\StringFilterStrategy.cs" />
-	</ItemGroup>
+  <ItemGroup>
+    <Compile Remove="EntitySearchBuilder\FilterStrategy\StringFilterStrategy.cs" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+  </ItemGroup>
 
-	<!--分析器Analyzer start-->
-	<ItemGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<PackageReference Include="Meziantou.Analyzer" Version="2.0.152">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-	</ItemGroup>
-	<!--分析器Analyzer end-->
+  <!--分析器Analyzer start-->
+  <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PackageReference Include="Meziantou.Analyzer" Version="2.0.152">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <!--分析器Analyzer end-->
 </Project>
