@@ -40,14 +40,20 @@ public sealed class WhereClauseHelper
         return whereCaluse;
     }
 
-    internal static string replace_whereClause(string whereClause, string sqlParameterName, string newValue)
+    /// <summary>
+    /// 替换WhereClause中的参数为具体的值
+    /// </summary>
+    /// <param name="whereClause">where条件语句</param>
+    /// <param name="sqlParameterName"></param>
+    /// <param name="newValue"></param>
+    /// <returns></returns>
+    internal static string Replace_WhereClause(string whereClause, string sqlParameterName, string newValue)
     {
-        string key;
         //注: in参数的 处理必须要在 常规的参数的判断之前
 
         {
             //in的参数的前面几个
-            key = sqlParameterName + space1 + ",";
+            var key = sqlParameterName + space1 + ",";
             if (whereClause.Contains(key))
             {
                 whereClause = whereClause.Replace(key, newValue + ",");
@@ -57,7 +63,7 @@ public sealed class WhereClauseHelper
 
         {
             //in的参数的最后一个
-            key = sqlParameterName + space1 + ")";
+            var key = sqlParameterName + space1 + ")";
             if (whereClause.Contains(key))
             {
                 whereClause = whereClause.Replace(key, newValue + ")");
@@ -67,7 +73,7 @@ public sealed class WhereClauseHelper
 
         {
             //常规的参数
-            key = sqlParameterName + space1;
+            var key = sqlParameterName + space1;
             if (whereClause.Contains(key))
             {
                 whereClause = whereClause.Replace(key, newValue + space1);
@@ -76,11 +82,22 @@ public sealed class WhereClauseHelper
         }
 
         {
-            //
-            key = "(" + sqlParameterName + ")";
+            //场景??
+            var key = "(" + sqlParameterName + ")";
             if (whereClause.Contains(key))
             {
                 whereClause = whereClause.Replace(key, "(" + newValue + ")");
+                return whereClause;
+            }
+        }
+
+        {
+            //场景:常规条件Or一个特定的操作, 单元测试: 常规条件Or一个特定的操作
+
+            var key = sqlParameterName + ") Or ";
+            if (whereClause.Contains(key))
+            {
+                whereClause = whereClause.Replace(key, newValue + ") Or ");
                 return whereClause;
             }
         }

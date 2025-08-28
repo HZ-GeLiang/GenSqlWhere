@@ -50,6 +50,10 @@ public class QueryConfig_contains
             { "@DutyID2", "23" },
         };
         DictionaryAssert.AreEqual(expectedParameters, searchCondition.Parameters);
+
+        var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+
+        Assert.AreEqual(clause, "DutyID In ('12', '23')");
     }
 
     [TestMethod]

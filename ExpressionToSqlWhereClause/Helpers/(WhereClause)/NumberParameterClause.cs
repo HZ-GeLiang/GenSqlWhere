@@ -31,7 +31,7 @@ public class NumberParameterClause
         //要倒序替换
         for (int i = matches.Count - 1; i >= 0; i--)
         {
-            WhereClause = WhereClauseHelper.replace_whereClause(WhereClause, matches[i].Value, "@" + i);
+            WhereClause = WhereClauseHelper.Replace_WhereClause(WhereClause, matches[i].Value, "@" + i);
         }
         return WhereClause.TrimEnd();
     }

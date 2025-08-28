@@ -63,7 +63,8 @@ public class NonParameterClause
             return "";
         }
 
-        WhereClause += WhereClauseHelper.space1;//为了解决替换时出现的 属性名存在包含关系, 示例: ExpressionDemo_属性名存在包含关系.cs
+        WhereClause += WhereClauseHelper.space1;//为了解决替换时出现的 属性名存在包含关系, 示例: 单元测试 : 属性名存在包含关系
+
         var default_formatDateTime = WhereClauseHelper.GetDefaultFormatDateTime(Parameters);
 
         string pattern = "@[a-zA-Z0-9_]*";
@@ -85,7 +86,7 @@ public class NonParameterClause
 
             if (sqlParameterValue == null)
             {
-                WhereClause = WhereClauseHelper.replace_whereClause(WhereClause, sqlParameterName, "Null");
+                WhereClause = WhereClauseHelper.Replace_WhereClause(WhereClause, sqlParameterName, "Null");
             }
             else
             {
@@ -95,7 +96,7 @@ public class NonParameterClause
                     //m,[fn],类型_string
                     string sqlParameterValue_str = Get_sqlParameterValue_str(sqlParameterName, (string)sqlParameterValue);
 
-                    WhereClause = WhereClauseHelper.replace_whereClause(WhereClause, sqlParameterName, sqlParameterValue_str);
+                    WhereClause = WhereClauseHelper.Replace_WhereClause(WhereClause, sqlParameterName, sqlParameterValue_str);
                 }
                 else if (sqlParameterValueType == typeof(DateTime) || sqlParameterValueType == typeof(DateTime?))
                 {
@@ -112,26 +113,26 @@ public class NonParameterClause
                     if (!string.IsNullOrWhiteSpace(format))
                     {
                         var newVal = $"'{((DateTime)sqlParameterValue).ToString(format)}'";
-                        WhereClause = WhereClauseHelper.replace_whereClause(WhereClause, sqlParameterName, newVal);
+                        WhereClause = WhereClauseHelper.Replace_WhereClause(WhereClause, sqlParameterName, newVal);
                     }
                     else
                     {
-                        WhereClause = WhereClauseHelper.replace_whereClause(WhereClause, sqlParameterName, $"'{sqlParameterValue}'");
+                        WhereClause = WhereClauseHelper.Replace_WhereClause(WhereClause, sqlParameterName, $"'{sqlParameterValue}'");
                     }
                 }
                 else if (sqlParameterValueType == typeof(Guid) || sqlParameterValueType == typeof(Guid?))
                 {
                     //m,[fn],类型_guid
-                    WhereClause = WhereClauseHelper.replace_whereClause(WhereClause, sqlParameterName, $"'{sqlParameterValue}'");
+                    WhereClause = WhereClauseHelper.Replace_WhereClause(WhereClause, sqlParameterName, $"'{sqlParameterValue}'");
                 }
                 else if (sqlParameterValueType == typeof(bool) || sqlParameterValueType == typeof(bool?))
                 {
                     //m,[fn],类型_bool
-                    WhereClause = WhereClauseHelper.replace_whereClause(WhereClause, sqlParameterName, $"{(object.Equals(sqlParameterValue, true) == true ? 1 : 0)}");
+                    WhereClause = WhereClauseHelper.Replace_WhereClause(WhereClause, sqlParameterName, $"{(object.Equals(sqlParameterValue, true) == true ? 1 : 0)}");
                 }
                 else
                 {
-                    WhereClause = WhereClauseHelper.replace_whereClause(WhereClause, sqlParameterName, $"{sqlParameterValue}");
+                    WhereClause = WhereClauseHelper.Replace_WhereClause(WhereClause, sqlParameterName, $"{sqlParameterValue}");
                 }
             }
         }

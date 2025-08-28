@@ -1,5 +1,4 @@
 ﻿using ExpressionToSqlWhereClaus.Test;
-using ExpressionToSqlWhereClause.ExtensionMethods;
 using Infra.ExtensionMethods;
 using Infra.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -11,6 +10,38 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause;
 [TestClass]
 public class ExpressionDemo
 {
+
+    [TestMethod]
+    public void 常规条件Or一个特定的操作()
+    {
+        var input = new Sample250828Input()
+        {
+            Id = 1,
+            Production = "aa",
+            Unit_Name = "bb",
+            Remarks = "cc",
+        };
+
+        //常规条件
+        var expression = default(Expression<Func<Sample250828Input, bool>>)
+           .WhereIf(!string.IsNullOrEmpty(input.Production), a => a.Production.Contains(input.Production))
+           .WhereIf(!string.IsNullOrEmpty(input.Unit_Name), a => a.Unit_Name.Contains(input.Unit_Name))
+           .WhereIf(!string.IsNullOrEmpty(input.Remarks), a => a.Remarks.Contains(input.Remarks))
+           ;
+
+        //一个特定的操作
+        if (input.Id > 0)
+        {
+            expression = expression.Or(a => a.Id == 1);
+        }
+
+        var searchCondition = expression.ToWhereClause();
+        var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+
+        Assert.AreEqual(clause, "(Production Like '%aa%' And Unit_Name Like '%bb%' And Remarks Like '%cc%') Or Id = 1");
+    }
+
+
     [TestMethod]
     public void IsNull的生成()
     {
@@ -981,4 +1012,16 @@ public class ShopInfoInput
 
     public string Remarks { get; set; }
     public long? CreateUserID { get; set; }
+}
+
+
+public class Sample250828Input
+{
+    public int Id { get; set; }
+
+    public string Production { get; set; }
+
+    public string Unit_Name { get; set; }
+    public string Remarks { get; set; }
+
 }

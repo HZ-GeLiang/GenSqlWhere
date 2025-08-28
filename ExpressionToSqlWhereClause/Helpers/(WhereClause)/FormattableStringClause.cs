@@ -31,7 +31,7 @@ public class FormattableStringClause
         for (int i = matches.Count - 1; i >= 0; i--) //要倒序替换
         {
             var sqlParameterName = matches[i].Value;
-            WhereClause = WhereClauseHelper.replace_whereClause(WhereClause, sqlParameterName, "{" + i + "}");
+            WhereClause = WhereClauseHelper.Replace_WhereClause(WhereClause, sqlParameterName, "{" + i + "}");
         }
 
         return WhereClause.TrimEnd();
