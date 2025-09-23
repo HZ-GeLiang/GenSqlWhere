@@ -80,7 +80,21 @@ public sealed class WhereClauseHelper
                 whereClause = whereClause.Replace(key, newValue + space1);
                 return whereClause;
             }
+
+            //key = sqlParameterName + ")";
+            //var index = whereClause.IndexOf(key);
+            //if (index != -1)
+            //{
+            //    whereClause.Length > index + key.Length
+
+            //}
+            //if (whereClause.Contains(key))
+            //{
+            //    whereClause = whereClause.Replace(key, newValue + ")");
+            //    return whereClause;
+            //}
         }
+
 
         {
             //场景??
@@ -93,14 +107,31 @@ public sealed class WhereClauseHelper
         }
 
         {
-            //场景:常规条件Or一个特定的操作, 单元测试: 常规条件Or一个特定的操作
+            //场景:常规条件Or一个特定的操作,
 
-            var key = $"{sqlParameterName}) {SqlKeys.LogicSymbolOr} ";
-            if (whereClause.Contains(key))
             {
-                whereClause = whereClause.Replace(key, $"{newValue}) {SqlKeys.LogicSymbolOr} ");
-                return whereClause;
+                //单元测试: 常规条件Or一个特定的操作
+
+                var key = $"{sqlParameterName}) {SqlKeys.LogicSymbolOr} ";  // 「@Id) Or 」
+                if (whereClause.Contains(key))
+                {
+                    whereClause = whereClause.Replace(key, $"{newValue}) {SqlKeys.LogicSymbolOr} ");
+                    return whereClause;
+                }
             }
+
+            {
+                //单元测试: Or操作未翻译
+
+                var key = $"{sqlParameterName}) ";  // 「@Id) 」
+                if (whereClause.EndsWith(key))
+                {
+                    whereClause = whereClause.Replace(key, $"{newValue}) ");
+                    return whereClause;
+                }
+            }
+
+
         }
 
         return whereClause;

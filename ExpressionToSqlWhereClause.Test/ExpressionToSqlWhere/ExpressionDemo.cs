@@ -11,6 +11,53 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause;
 public class ExpressionDemo
 {
     [TestMethod]
+    public void Or操作未翻译_超过2个值()
+    {
+        var input = new Sample250923Input() { Id = 1, };
+
+        //常规条件
+        var expression = default(Expression<Func<Sample250923Input, bool>>)
+           .WhereIf(true, a => a.IsDel == false)
+           .WhereIf(true, a => a.Id == input.Id)
+           .WhereIf(true, a => a.Name == "123")
+           ;
+
+        //一个特定的操作
+        if (input.Id > 0)
+        {
+            expression = expression.Or(a => a.IsDel == false && a.Id == input.Id && a.Name == "123");
+        }
+
+        var searchCondition = expression.ToWhereClause();
+        var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+
+        Assert.AreEqual(clause, "(IsDel = 0 And Id = 1 And Name = '123') Or (IsDel = 0 And Id = 1 And Name = '123')");
+    }
+
+
+    [TestMethod]
+    public void Or操作未翻译()
+    {
+        var input = new Sample250923Input() { Id = 1, };
+
+        //常规条件
+        var expression = default(Expression<Func<Sample250923Input, bool>>)
+           .WhereIf(true, a => a.IsDel == false)
+           .WhereIf(true, a => a.Id == input.Id)
+           ;
+
+        //一个特定的操作
+        if (input.Id > 0)
+        {
+            expression = expression.Or(a => a.IsDel == false && a.Id == input.Id);
+        }
+
+        var searchCondition = expression.ToWhereClause();
+        var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+
+        Assert.AreEqual(clause, "(IsDel = 0 And Id = 1) Or (IsDel = 0 And Id = 1)");
+    }
+
     public void 一元表达式_AndAlsoTest()
     {
         {
@@ -1053,6 +1100,15 @@ public class Sample250828Input
     public string Unit_Name { get; set; }
     public string Remarks { get; set; }
 }
+
+}
+
+
+public class Sample250923Input
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public bool IsDel { get; set; }
 
 public class AndAlsoInput
 {
