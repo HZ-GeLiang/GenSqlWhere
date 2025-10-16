@@ -51,8 +51,9 @@ internal static class WhereClauseParser
                     //not 只支持 bool 类型
                     if (unaryExpression.Type == typeof(bool))
                     {
-                        if (unaryExpression.Operand is MemberExpression operandMemberExpression ||
-                            unaryExpression.Operand.GetType().Name == "LogicalBinaryExpression")
+                        if (unaryExpression.Operand.GetType().Name == "LogicalBinaryExpression" ||
+                            unaryExpression.Operand is MemberExpression operandMemberExpression
+                            )
                         {
                             var val = ConstantExtractor.ParseConstant(unaryExpression.Operand);
                             pageResult.SqlClauseParametersInfo.Value = !Convert.ToBoolean(val);
@@ -207,24 +208,25 @@ internal static class WhereClauseParser
         {
             if (unaryExpression.NodeType == ExpressionType.Not)
             {
-                if (unaryExpression.Operand is MemberExpression operandMemberExpression)
+                if (unaryExpression.Operand.GetType().Name == "PropertyExpression")
                 {
-                    if (unaryExpression.Type == typeof(bool))
+                    // 递归解析整个二元表达式（包含 Left、Right 和运算符）
+                    var propExpr = unaryExpression.Operand as dynamic; // 假设PropertyExpression有Member属性
+                    var member = propExpr.Member;
+                    var param = ConditionBuilder.BuildCondition(
+                        propExpr as MemberExpression,
+                        member,
+                        adhesive,
+                        ExpressionType.NotEqual); //NOT关键字
+
+                    return new ParseResult
                     {
-                        SqlClauseParametersInfo param = ConditionBuilder.BuildCondition(
-                            operandMemberExpression,
-                            operandMemberExpression.Member,
-                            adhesive,
-                            comparison);
-                        return new ParseResult()
-                        {
-                            WhereClause = new StringBuilder(param.SqlClause),
-                            SqlClauseParametersInfo = param,
-                            NeedAddPara = true,
-                            MemberExpression = null,
-                            MemberInfo = operandMemberExpression.Member
-                        };
-                    }
+                        WhereClause = new StringBuilder(param.SqlClause),
+                        SqlClauseParametersInfo = param,
+                        NeedAddPara = true,
+                        MemberExpression = propExpr as MemberExpression,
+                        MemberInfo = member
+                    };
                 }
                 else if (unaryExpression.Operand.GetType().Name == "LogicalBinaryExpression")
                 {
@@ -244,6 +246,26 @@ internal static class WhereClauseParser
                         MemberInfo = member
                     };
                 }
+                else if (unaryExpression.Operand is MemberExpression operandMemberExpression)
+                {
+                    if (unaryExpression.Type == typeof(bool))
+                    {
+                        SqlClauseParametersInfo param = ConditionBuilder.BuildCondition(
+                            operandMemberExpression,
+                            operandMemberExpression.Member,
+                            adhesive,
+                            comparison);
+                        return new ParseResult()
+                        {
+                            WhereClause = new StringBuilder(param.SqlClause),
+                            SqlClauseParametersInfo = param,
+                            NeedAddPara = true,
+                            MemberExpression = null,
+                            MemberInfo = operandMemberExpression.Member
+                        };
+                    }
+                }
+
             }
             else if (unaryExpression.NodeType == ExpressionType.Convert)
             {

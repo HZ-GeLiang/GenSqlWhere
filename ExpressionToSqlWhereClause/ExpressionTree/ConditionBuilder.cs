@@ -241,8 +241,8 @@ public static class ConditionBuilder
             ExpressionType.GreaterThanOrEqual => SqlKeys.GreaterThanOrEqual,
             ExpressionType.LessThanOrEqual => SqlKeys.LessThanOrEqual,
             ExpressionType.NotEqual => SqlKeys.NotEqual,
-            //case ExpressionType.AndAlso:
-            //    throw new ExpressionToSqlWhereClauseException("***");
+            //ExpressionType.AndAlso => SqlKeys.LogicSymbolAnd,
+            ExpressionType.AndAlso => throw new NotSupportedException($"Unknown ExpressionType {expressionType},如果是Bool值的比较,请使用比较运算符(也就是a.XX == true|false 的方式)"),
             _ => throw new NotSupportedException($"Unknown ExpressionType {expressionType}")
         };
         return symbol;

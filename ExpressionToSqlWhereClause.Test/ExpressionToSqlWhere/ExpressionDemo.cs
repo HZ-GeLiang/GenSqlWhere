@@ -10,6 +10,37 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause;
 [TestClass]
 public class ExpressionDemo
 {
+    [TestMethod]
+    public void 一元表达式_AndAlsoTest()
+    {
+        {
+            //新增支持;一元表达式
+            var expression =
+            default(Expression<Func<AndAlsoInput, bool>>)
+            .WhereIf(true, a => !a.IsDept && a.IsAudit)
+            //.WhereIf(true, a => a.IsDel != true)
+            ;
+            var searchCondition = expression.ToWhereClause();
+            var sql = searchCondition.WhereClause;
+
+            Assert.AreEqual(sql, "IsDept <> @IsDept And IsAudit = @IsAudit");
+            Assert.AreEqual(searchCondition.Parameters["@IsDept"], true);
+            Assert.AreEqual(searchCondition.Parameters["@IsAudit"], true);
+        }
+
+        {
+            //目前支持
+            var expression =
+              default(Expression<Func<AndAlsoInput, bool>>)
+              .WhereIf(true, a => a.IsDept == false && a.IsAudit == true);
+            var searchCondition = expression.ToWhereClause();
+            var sql = searchCondition.WhereClause;
+
+            Assert.AreEqual(sql, "IsDept = @IsDept And IsAudit = @IsAudit");
+            Assert.AreEqual(searchCondition.Parameters["@IsDept"], false);
+            Assert.AreEqual(searchCondition.Parameters["@IsAudit"], true);
+        }
+    }
 
     [TestMethod]
     public void 常规条件Or一个特定的操作()
@@ -40,7 +71,6 @@ public class ExpressionDemo
 
         Assert.AreEqual(clause, "(Production Like '%aa%' And Unit_Name Like '%bb%' And Remarks Like '%cc%') Or Id = 1");
     }
-
 
     [TestMethod]
     public void IsNull的生成()
@@ -1014,7 +1044,6 @@ public class ShopInfoInput
     public long? CreateUserID { get; set; }
 }
 
-
 public class Sample250828Input
 {
     public int Id { get; set; }
@@ -1023,5 +1052,11 @@ public class Sample250828Input
 
     public string Unit_Name { get; set; }
     public string Remarks { get; set; }
+}
 
+public class AndAlsoInput
+{
+    public bool IsDept { get; set; }
+    public bool IsAudit { get; set; }
+    public bool IsDel { get; set; }
 }
