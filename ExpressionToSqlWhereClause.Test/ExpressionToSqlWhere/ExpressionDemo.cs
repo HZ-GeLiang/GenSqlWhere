@@ -1101,7 +1101,6 @@ public class Sample250828Input
     public string Remarks { get; set; }
 }
 
-}
 
 
 public class Sample250923Input
@@ -1109,6 +1108,7 @@ public class Sample250923Input
     public int Id { get; set; }
     public string Name { get; set; }
     public bool IsDel { get; set; }
+}
 
 public class AndAlsoInput
 {
