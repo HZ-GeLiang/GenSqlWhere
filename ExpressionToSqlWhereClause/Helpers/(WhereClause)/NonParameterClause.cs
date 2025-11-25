@@ -22,7 +22,7 @@ public class NonParameterClause
     {
         WhereClause = searchCondition.WhereClause;
         Parameters = searchCondition.Parameters;
-        Adhesive = searchCondition.ParseResult.Adhesive;
+        Adhesive = searchCondition.ParseResult?.Adhesive;
         if (formatDateTime == null)
         {
             FormatDateTime = WhereClauseHelper.GetDefaultFormatDateTime(searchCondition.Parameters);

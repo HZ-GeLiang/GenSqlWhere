@@ -11,6 +11,19 @@ namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause;
 public class ExpressionDemo
 {
     [TestMethod]
+    public void 测试null值()
+    {
+        //常规条件
+        Expression<Func<Sample250923Input, bool>> expression = default(Expression<Func<Sample250923Input, bool>>);
+        var searchCondition = expression.ToWhereClause();
+        var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+
+        Assert.AreEqual(clause, "");
+
+    }
+
+
+    [TestMethod]
     public void Or操作未翻译_超过2个值()
     {
         var input = new Sample250923Input() { Id = 1, };
