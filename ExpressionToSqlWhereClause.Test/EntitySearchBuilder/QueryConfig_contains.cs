@@ -53,7 +53,7 @@ public class QueryConfig_contains
 
         var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
 
-        Assert.AreEqual(clause, "DutyID In ('12', '23')");
+        Assert.AreEqual(clause, "DutyID In ('12' , '23' )");
     }
 
     [TestMethod]

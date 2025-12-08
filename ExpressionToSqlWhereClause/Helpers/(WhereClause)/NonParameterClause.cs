@@ -75,6 +75,9 @@ public class NonParameterClause
             throw new ArgumentNullException(nameof(Parameters));
         }
 
+        Dictionary<string, string> parameters = new Dictionary<string, string>();
+
+
         for (int i = matches.Count - 1; i >= 0; i--) //要倒序替换
         {
             string sqlParameterName = matches[i].Value;
@@ -83,61 +86,83 @@ public class NonParameterClause
                 throw new Exception($"参数对象'{nameof(Parameters)}'中不存在名为'{sqlParameterName}'的key值");
             }
             var sqlParameterValue = Parameters[sqlParameterName];
+            string sqlParameterValue_str;
 
             if (sqlParameterValue == null)
             {
-                WhereClause = WhereClauseHelper.Replace_WhereClause(WhereClause, sqlParameterName, "Null");
+                sqlParameterValue_str = "Null";
+                //WhereClause = WhereClauseHelper.Replace_WhereClause(WhereClause, sqlParameterName, sqlParameterValue_str);
+                parameters[sqlParameterName] = sqlParameterValue_str;
+                continue;
             }
-            else
+
+            // else sqlParameterValue != null
+            var sqlParameterValueType = sqlParameterValue.GetType();
+            if (sqlParameterValueType == typeof(string))
             {
-                var sqlParameterValueType = sqlParameterValue.GetType();
-                if (sqlParameterValueType == typeof(string))
+                //m,[fn],类型_string
+                sqlParameterValue_str = Get_sqlParameterValue_str(sqlParameterName, (string)sqlParameterValue);
+            }
+            else if (sqlParameterValueType == typeof(DateTime) || sqlParameterValueType == typeof(DateTime?))
+            {
+                string format = null;
+                if (FormatDateTime != null && FormatDateTime.ContainsKey(sqlParameterName))
                 {
-                    //m,[fn],类型_string
-                    string sqlParameterValue_str = Get_sqlParameterValue_str(sqlParameterName, (string)sqlParameterValue);
+                    format = FormatDateTime[sqlParameterName]; //取用户配置的
+                }
+                else if (default_formatDateTime.ContainsKey(sqlParameterName))
+                {
+                    format = default_formatDateTime[sqlParameterName];//取默认配置
+                }
 
-                    WhereClause = WhereClauseHelper.Replace_WhereClause(WhereClause, sqlParameterName, sqlParameterValue_str);
-                }
-                else if (sqlParameterValueType == typeof(DateTime) || sqlParameterValueType == typeof(DateTime?))
+                if (!string.IsNullOrWhiteSpace(format))
                 {
-                    string format = null;
-                    if (FormatDateTime != null && FormatDateTime.ContainsKey(sqlParameterName))
-                    {
-                        format = FormatDateTime[sqlParameterName]; //取用户配置的
-                    }
-                    else if (default_formatDateTime.ContainsKey(sqlParameterName))
-                    {
-                        format = default_formatDateTime[sqlParameterName];//取默认配置
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(format))
-                    {
-                        var newVal = $"'{((DateTime)sqlParameterValue).ToString(format)}'";
-                        WhereClause = WhereClauseHelper.Replace_WhereClause(WhereClause, sqlParameterName, newVal);
-                    }
-                    else
-                    {
-                        WhereClause = WhereClauseHelper.Replace_WhereClause(WhereClause, sqlParameterName, $"'{sqlParameterValue}'");
-                    }
-                }
-                else if (sqlParameterValueType == typeof(Guid) || sqlParameterValueType == typeof(Guid?))
-                {
-                    //m,[fn],类型_guid
-                    WhereClause = WhereClauseHelper.Replace_WhereClause(WhereClause, sqlParameterName, $"'{sqlParameterValue}'");
-                }
-                else if (sqlParameterValueType == typeof(bool) || sqlParameterValueType == typeof(bool?))
-                {
-                    //m,[fn],类型_bool
-                    WhereClause = WhereClauseHelper.Replace_WhereClause(WhereClause, sqlParameterName, $"{(object.Equals(sqlParameterValue, true) == true ? 1 : 0)}");
+                    sqlParameterValue_str = $"'{((DateTime)sqlParameterValue).ToString(format)}'";
                 }
                 else
                 {
-                    WhereClause = WhereClauseHelper.Replace_WhereClause(WhereClause, sqlParameterName, $"{sqlParameterValue}");
+                    sqlParameterValue_str = $"'{sqlParameterValue}'";
                 }
             }
+            else if (sqlParameterValueType == typeof(Guid) || sqlParameterValueType == typeof(Guid?))
+            {
+                //m,[fn],类型_guid
+                sqlParameterValue_str = $"'{sqlParameterValue}'";
+            }
+            else if (sqlParameterValueType == typeof(bool) || sqlParameterValueType == typeof(bool?))
+            {
+                //m,[fn],类型_bool
+                sqlParameterValue_str = $"{(object.Equals(sqlParameterValue, true) == true ? 1 : 0)}";
+            }
+            else
+            {
+                sqlParameterValue_str = $"{sqlParameterValue}";
+            }
+
+            //WhereClause = WhereClauseHelper.Replace_WhereClause(WhereClause, sqlParameterName, sqlParameterValue_str);
+            parameters[sqlParameterName] = sqlParameterValue_str;
         }
-        return WhereClause.TrimEnd();
+
+        var result = ReplaceSqlParametersWithRegex(WhereClause, parameters)?.TrimEnd();
+        return result;
     }
+
+    public static string ReplaceSqlParametersWithRegex(string clause, Dictionary<string, string> parameters)
+    {
+        string pattern = @"@(\w+)";
+        return Regex.Replace(clause, pattern, match =>
+        {
+            string paramName = match.Groups[1].Value;
+
+            if (parameters.TryGetValue("@" + paramName, out string value))
+            {
+                return value;
+            }
+            // 如果没有找到参数，保持原样
+            return match.Value;
+        });
+    }
+
 
     private string Get_sqlParameterValue_str(string sqlParameterName, string sqlParameterValue_str)
     {

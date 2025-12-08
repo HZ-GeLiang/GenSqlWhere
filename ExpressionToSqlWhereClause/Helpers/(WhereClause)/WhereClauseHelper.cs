@@ -1,5 +1,6 @@
 ﻿using ExpressionToSqlWhereClause.ExpressionTree;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 
 namespace ExpressionToSqlWhereClause;
 
@@ -86,8 +87,8 @@ public sealed class WhereClauseHelper
             //if (index != -1)
             //{
             //    whereClause.Length > index + key.Length
-
             //}
+
             //if (whereClause.Contains(key))
             //{
             //    whereClause = whereClause.Replace(key, newValue + ")");

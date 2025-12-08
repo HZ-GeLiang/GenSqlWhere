@@ -24,7 +24,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "id_short In (1, 2) Or id_short IS NULL");
+            Assert.AreEqual(clause, "id_short In (1 , 2 ) Or id_short IS NULL");
         }
 
         {
@@ -39,7 +39,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "id_short In (1, 2)");
+            Assert.AreEqual(clause, "id_short In (1 , 2 )");
         }
 
         {
@@ -51,7 +51,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "id_short_nullable In (1, 2) Or id_short_nullable IS NULL");
+            Assert.AreEqual(clause, "id_short_nullable In (1 , 2 ) Or id_short_nullable IS NULL");
         }
 
         {
@@ -63,7 +63,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "id_short In (1, 2)");
+            Assert.AreEqual(clause, "id_short In (1 , 2 )");
         }
 
         {
@@ -75,7 +75,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "Message In ('1', '2')");
+            Assert.AreEqual(clause, "Message In ('1' , '2' )");
         }
 
         {
@@ -87,7 +87,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "UserId In (1, 2, 3) Or UserId IS NULL");
+            Assert.AreEqual(clause, "UserId In (1 , 2 , 3 ) Or UserId IS NULL");
             //WHERE[t].[OtherId] IN(1, 2, 3) Or(UserId IS NULL)
         }
 
@@ -100,7 +100,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
             {
                 var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-                Assert.AreEqual(clause, "MessageType In (1, 2, 3)");
+                Assert.AreEqual(clause, "MessageType In (1 , 2 , 3 )");
             }
 
             {
@@ -122,7 +122,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "id_short In (1, 2) Or id_short IS NULL");
+            Assert.AreEqual(clause, "id_short In (1 , 2 ) Or id_short IS NULL");
         }
 
         {
@@ -137,7 +137,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "id_short In (1, 2)");
+            Assert.AreEqual(clause, "id_short In (1 , 2 )");
         }
 
         {
@@ -149,7 +149,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "id_short_nullable In (1, 2) Or id_short_nullable IS NULL");
+            Assert.AreEqual(clause, "id_short_nullable In (1 , 2 ) Or id_short_nullable IS NULL");
         }
 
         {
@@ -161,7 +161,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "id_short In (1, 2)");
+            Assert.AreEqual(clause, "id_short In (1 , 2 )");
         }
 
         {
@@ -173,7 +173,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "Message In ('1', '2')");
+            Assert.AreEqual(clause, "Message In ('1' , '2' )");
         }
 
         {
@@ -185,7 +185,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
 
             var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-            Assert.AreEqual(clause, "UserId In (1, 2, 3) Or UserId IS NULL");
+            Assert.AreEqual(clause, "UserId In (1 , 2 , 3 ) Or UserId IS NULL");
             //WHERE[t].[OtherId] IN(1, 2, 3) Or(UserId IS NULL)
         }
 
@@ -198,7 +198,7 @@ public class WhereClauseHelperTest
             var searchCondition = expression.ToWhereClause();
             {
                 var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
-                Assert.AreEqual(clause, "MessageType In (1, 2, 3)");
+                Assert.AreEqual(clause, "MessageType In (1 , 2 , 3 )");
             }
 
             {
@@ -289,13 +289,15 @@ public class WhereClauseHelperTest
     public void NonParameterClause优化_list()
     {
         var list = new List<string>() { "1", "2" };
-        var expression = default(Expression<Func<Test_001, bool>>).WhereIf(true, a => list.Contains(a.Message));
+        var expression =
+            default(Expression<Func<Test_001, bool>>)
+            .WhereIf(true, a => list.Contains(a.Message));
 
         var searchCondition = expression.ToWhereClause();
 
         var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
 
-        Assert.AreEqual(clause, "Message In ('1', '2')");
+        Assert.AreEqual(clause, "Message In ('1' , '2' )");
     }
 
     [TestMethod]
@@ -356,6 +358,31 @@ public class WhereClauseHelperTest
                 Assert.AreEqual(clause, "IsDel2 = 0");
             }
         }
+    }
+
+    [TestMethod]
+    public void NonParameterClause_参数未翻译()
+    {
+        var V_Content = "123";
+        var expression =
+            default(Expression<Func<Test_002, bool>>)
+            .Where(a =>
+                (a.MessageType > 1000 && (
+                        (a.Title != null && a.Title.Contains(V_Content)) ||
+                        (a.Message != null && a.Message.Contains(V_Content)))
+                ) ||
+                (a.MessageType < 1000 && (
+                        (a.Title != null && a.Title.Contains(V_Content)) ||
+                        (a.SubTitle != null && a.SubTitle.Contains(V_Content)))
+                )
+            );
+
+        var searchCondition = expression.ToWhereClause();
+        var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+
+        var actual = $@"(MessageType > 1000 And ((Title Is Not Null And Title Like '%123%') Or (Message Is Not Null And Message Like '%123%'))) Or (MessageType < 1000 And ((Title Is Not Null And Title Like '%123%') Or (SubTitle Is Not Null And SubTitle Like '%123%')))";
+
+        Assert.AreEqual(actual, clause);
     }
 
     #endregion
@@ -504,4 +531,71 @@ internal class Student
     public bool? IsDeleted4 { get; set; }
     public short IsDeleted5 { get; set; }
     public short? IsDeleted6 { get; set; }
+}
+
+internal class Test_002
+{
+
+
+    /// <summary>
+    /// 发送人id
+    /// </summary>
+    public int FromUserID { get; set; }
+
+    /// <summary>
+    /// 收件人id
+    /// </summary>
+    public int ToUserID { get; set; }
+
+    /// <summary>
+    /// 主题
+    /// </summary>
+    public string Title { get; set; }
+
+    /// <summary>
+    /// 副标题
+    /// </summary>
+    public string SubTitle { get; set; }
+
+    /// <summary>
+    /// 消息内容
+    /// </summary>
+    public string Message { get; set; }
+
+    /// <summary>
+    /// 备注
+    /// </summary>
+    public string Remark { get; set; }
+
+    /// <summary>
+    /// 消息类型
+    /// <see cref="HR.CRM.Core.Enums.MessageTypeEnum"/>
+    /// </summary>
+    public int MessageType { get; set; }
+
+    /// <summary>
+    /// 关联id
+    /// </summary>
+    public int RelateId { get; set; }
+
+    /// <summary>
+    /// 已读
+    /// </summary>
+    public bool IsRead { get; set; }
+
+
+    /// <summary>
+    /// 回复id
+    /// </summary>
+    public int FromMessageId { get; set; }
+
+    /// <summary>
+    /// 不能回复
+    /// </summary>
+    public bool IsRefuseReply { get; set; }
+
+    /// <summary>
+    /// 已回复
+    /// </summary>
+    public bool IsReplyed { get; set; }
 }
