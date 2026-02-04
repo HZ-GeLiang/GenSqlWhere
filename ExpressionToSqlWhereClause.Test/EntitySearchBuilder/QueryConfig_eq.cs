@@ -1,5 +1,4 @@
 ﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
-using ExpressionToSqlWhereClause.ExtensionMethods;
 using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Inputs;
 using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Models;
 using Infra.ExtensionMethods;
@@ -12,6 +11,41 @@ namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
 [TestClass]
 public class QueryConfig_eq
 {
+    [TestMethod]
+    public void eq_checkvalue()
+    {
+        {
+            var searchModel = new Input_eq()
+            {
+                IsDel = false,
+            };
+            var expression = default(Expression<Func<Input_eq, bool>>).Where(a => a.IsDel == searchModel.IsDel);
+
+            SearchCondition searchCondition = expression.ToWhereClause();
+            var clause = searchCondition.WhereClause;
+            var sqlParams = searchCondition.Parameters;
+
+            var value = Convert.ToBoolean(sqlParams["@IsDel"]);
+            Assert.AreEqual(clause, "IsDel = @IsDel");
+            Assert.AreEqual(value, false);
+        }
+        {
+            var searchModel = new Input_eq()
+            {
+                IsDel = true,
+            };
+            var expression = default(Expression<Func<Input_eq, bool>>).Where(a => a.IsDel == searchModel.IsDel);
+
+            SearchCondition searchCondition = expression.ToWhereClause();
+            var clause = searchCondition.WhereClause;
+            var sqlParams = searchCondition.Parameters;
+
+            var value = Convert.ToBoolean(sqlParams["@IsDel"]);
+            Assert.AreEqual(clause, "IsDel = @IsDel");
+            Assert.AreEqual(value, true);
+        }
+    }
+
     [TestMethod]
     public void eq()
     {

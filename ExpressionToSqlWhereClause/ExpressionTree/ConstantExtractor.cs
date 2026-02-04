@@ -232,7 +232,29 @@ public static class ConstantExtractor
         {
             if (memberExpression.Member is PropertyInfo pi && pi.PropertyType == typeof(bool))
             {
-                return true;
+                Expression expression = memberExpression.Expression;
+                var type_fullName = expression.GetType().FullName;
+                if (type_fullName == "System.Linq.Expressions.TypedParameterExpression")
+                {
+                    //没有固定值可以被解析,示例:boolean值的写法1
+                    return true;//EF框架中是解析为true的
+                }
+                else if (type_fullName == "System.Linq.Expressions.FieldExpression")
+                {
+                    //等价于
+                    //expression is MemberExpression memberExpression2 &&  memberExpression2.Member.MemberType  ==  System.Reflection.MemberTypes
+
+                    object tagetObj222 = ParseConstant(expression);// 上层表达式对象（x.Team）
+
+                    object tagetObj = ParseConstant(expression);// 上层表达式对象（x.Team）
+                    var pi2 = tagetObj.GetType().GetProperty(memberExpression.Member.Name);
+                    var field_value = pi2.GetValue(tagetObj);
+                    return field_value;
+                }
+                else
+                {
+                    throw new NotSupportedException($"Unknow Member type {memberExpression.Member.MemberType}");
+                }
             }
         }
 
