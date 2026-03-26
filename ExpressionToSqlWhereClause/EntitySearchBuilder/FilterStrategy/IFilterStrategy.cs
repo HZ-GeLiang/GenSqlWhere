@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using System.Reflection;
 
 namespace ExpressionToSqlWhereClause.EntitySearchBuilder
 {
@@ -18,13 +17,13 @@ namespace ExpressionToSqlWhereClause.EntitySearchBuilder
         /// <summary>
         /// 查询的条件
         /// </summary>
-        public string FilterType { get; set; }
+        public FilterOperator FilterType { get; set; }
 
         /// <summary>
-        ///
+        /// 应用过滤
         /// </summary>
-        /// <param name="propertySelector">数据实体的属性对象</param>
-        /// <returns></returns>
+        /// <param name="propertySelector">实体属性选择表达式</param>
+        /// <returns>过滤表达式</returns>
         Expression<Func<TDbEntity, bool>> ApplyFilter(Expression<Func<TDbEntity, TDbEntityValue>> propertySelector);
 
         //Expression<Func<T, bool>> ApplyFilter(Expression<Func<T, TValue>> propertySelector, TValue value);

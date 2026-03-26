@@ -1,41 +1,45 @@
 ﻿using System.Linq.Expressions;
-using System.Reflection;
 
 namespace ExpressionToSqlWhereClause.EntitySearchBuilder
 {
     /// <summary>
     /// 数值过滤策略实现
     /// </summary>
-    /// <typeparam name="T">数据实体</typeparam>
-    /// <typeparam name="TValue">数据实体的属性值</typeparam>
-    public class NumericFilterStrategy<T, TValue> : IFilterStrategy<T, TValue>
-            where T : class
-        //where T : class where TValue : struct
+    /// <typeparam name="TDbEntity">数据实体</typeparam>
+    /// <typeparam name="TDbEntityValue">数据实体的属性值</typeparam>
+    public class NumericFilterStrategy<TDbEntity, TDbEntityValue> : IFilterStrategy<TDbEntity, TDbEntityValue>
+          where TDbEntity : class
+        //where TDbEntityValue : struct
     {
-        private string _filterType;
-        private TValue _value;
 
-        public NumericFilterStrategy(TValue value, string filterType)
+        #region 接口属性
+
+        /// <summary>
+        /// 查询的值
+        /// </summary>
+        public TDbEntityValue Value { get; set; }
+
+        /// <summary>
+        /// 查询的条件
+        /// </summary>
+        public FilterOperator FilterType { get; set; }
+
+        #endregion
+
+        public NumericFilterStrategy(TDbEntityValue value, string filterType)
         {
-            _filterType = filterType;
-            _value = value;
+            this.Value = value;
+            this.FilterType = FilterTypeParse.ParseFilterOperator(filterType);
         }
 
-        public TValue Value { get => _value; set => _value = value; }
-        public string FilterType { get => _filterType; set => _filterType = value; }
-
-        //private bool IsNullableType(Type type) => type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
-
-        //public static Type GetNullableTType(Type type) => type.GetProperty("Value").PropertyType;
-
-        public Expression<Func<T, bool>> ApplyFilter(Expression<Func<T, TValue>> propertySelector)
+        public Expression<Func<TDbEntity, bool>> ApplyFilter(Expression<Func<TDbEntity, TDbEntityValue>> propertySelector)
         {
-            if (_value == null)   //存在 where TValue : struct 时, 这里报错
+            if (Value == null)   //存在 where TDbEntityValue : struct 时, 这里编译会报错
             {
                 return null;
             }
 
-            //var isNullableType = IsNullableType(typeof(TValue));
+            //var isNullableType = IsNullableType(typeof(TDbEntityValue));
             //if (isNullableType && object.Equals(_value, null))
             //{
             //    return null;
@@ -44,36 +48,35 @@ namespace ExpressionToSqlWhereClause.EntitySearchBuilder
             var parameter = propertySelector.Parameters[0];
             var property = propertySelector.Body;
             //var constant = isNullableType
-            //    ? Expression.Constant(_value, typeof(TValue))
-            //    : Expression.Constant(_value);
+            //    ? Expression.Constant(this.Value, typeof(TDbEntityValue))
+            //    : Expression.Constant(this.Value);
 
-            var constant = Expression.Constant(_value, typeof(TValue));//如果是nullable类型, 需要指定第二个参数
+            var constant = Expression.Constant(this.Value, typeof(TDbEntityValue));//如果是nullable类型, 需要指定第二个参数
 
             Expression condition = null;
-            switch (_filterType)
+            switch (this.FilterType)
             {
-                case "=":
+                case FilterOperator.Equal:
                     condition = Expression.Equal(property, constant);
                     break;
 
-                case "<>":
-                case "!=":
+                case FilterOperator.NotEqual:
                     condition = Expression.NotEqual(property, constant);
                     break;
 
-                case ">":
+                case FilterOperator.GreaterThan:
                     condition = Expression.GreaterThan(property, constant);
                     break;
 
-                case ">=":
+                case FilterOperator.GreaterThanOrEqual:
                     condition = Expression.GreaterThanOrEqual(property, constant);
                     break;
 
-                case "<":
+                case FilterOperator.LessThan:
                     condition = Expression.LessThan(property, constant);
                     break;
 
-                case "<=":
+                case FilterOperator.LessThanOrEqual:
                     condition = Expression.LessThanOrEqual(property, constant);
                     break;
 
@@ -82,7 +85,7 @@ namespace ExpressionToSqlWhereClause.EntitySearchBuilder
             }
 
             return condition != null
-                ? Expression.Lambda<Func<T, bool>>(condition, parameter)
+                ? Expression.Lambda<Func<TDbEntity, bool>>(condition, parameter)
                 : null;
         }
     }
