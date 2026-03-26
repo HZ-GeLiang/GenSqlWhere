@@ -9,5 +9,11 @@
         LessThan,
         LessThanOrEqual,
 
+
+        /// <summary>
+        /// 日期比较
+        /// </summary>
+        Between
+
     }
 }

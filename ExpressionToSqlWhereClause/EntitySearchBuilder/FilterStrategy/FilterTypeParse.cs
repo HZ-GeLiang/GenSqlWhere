@@ -1,11 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ExpressionToSqlWhereClause.EntitySearchBuilder
+﻿namespace ExpressionToSqlWhereClause.EntitySearchBuilder
 {
     internal class FilterTypeParse
     {
+        private static readonly Dictionary<string, FilterOperator> _map = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["="] = FilterOperator.Equal,
+            ["=="] = FilterOperator.Equal,
+            ["==="] = FilterOperator.Equal,
+            ["eq"] = FilterOperator.Equal,
+
+            ["!="] = FilterOperator.NotEqual,
+            ["<>"] = FilterOperator.NotEqual,
+            ["ne"] = FilterOperator.NotEqual,
+
+            [">"] = FilterOperator.GreaterThan,
+            ["gt"] = FilterOperator.GreaterThan,
+
+            [">="] = FilterOperator.GreaterThanOrEqual,
+            ["gte"] = FilterOperator.GreaterThanOrEqual,
+
+            ["<"] = FilterOperator.LessThan,
+            ["lt"] = FilterOperator.LessThan,
+
+            ["<="] = FilterOperator.LessThanOrEqual,
+            ["lte"] = FilterOperator.LessThanOrEqual,
+
+            ["between"] = FilterOperator.Between
+        };
+
         public static FilterOperator ParseFilterOperator(string filterType)
         {
             if (string.IsNullOrWhiteSpace(filterType))
@@ -13,43 +35,14 @@ namespace ExpressionToSqlWhereClause.EntitySearchBuilder
                 throw new ArgumentException("FilterType 不能为空");
             }
 
-            switch (filterType.Trim().ToLower())
+            var key = filterType.Trim();
+
+            if (_map.TryGetValue(key, out var op))
             {
-                case "=":
-                case "==":
-                case "eq":
-                    return FilterOperator.Equal;
-
-                case "!=":
-                case "<>":
-                case "ne":
-                    return FilterOperator.NotEqual;
-
-                case ">":
-                case "gt":
-                    return FilterOperator.GreaterThan;
-
-                case ">=":
-                case "gte":
-                    return FilterOperator.GreaterThanOrEqual;
-
-                case "<":
-                case "lt":
-                    return FilterOperator.LessThan;
-
-                case "<=":
-                case "lte":
-                    return FilterOperator.LessThanOrEqual;
-
-                //case "between":
-                //    return FilterOperator.Between;
-
-                //case "date":
-                //    return FilterOperator.Date;
-
-                default:
-                    throw new NotSupportedException($"不支持的 FilterType: {filterType}");
+                return op;
             }
+
+            throw new NotSupportedException($"不支持的 FilterType: {filterType}");
         }
     }
 }

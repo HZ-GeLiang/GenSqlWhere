@@ -13,6 +13,7 @@ public class QueryConfig_FilterStrategy_Numeric
     [TestMethod]
     public void NumericFilterStrategy()
     {
+
         var input = new Model_FilterStrategyInput() { GetSum = 5 };
 
         {
@@ -20,7 +21,7 @@ public class QueryConfig_FilterStrategy_Numeric
             var searchCondition = GetSearchCondition(input);
             Assert.AreEqual(searchCondition.WhereClause, "IsDeleted = @IsDeleted And GetSum = @GetSum And Id > @Id");
             Assert.AreEqual(searchCondition.Parameters["@IsDeleted"], false);
-            Assert.AreEqual(searchCondition.Parameters["@GetSum"], 5m);
+            Assert.AreEqual(searchCondition.Parameters["@GetSum"], input.GetSum);
             Assert.AreEqual(searchCondition.Parameters["@Id"], 0);
         }
 
@@ -29,7 +30,7 @@ public class QueryConfig_FilterStrategy_Numeric
             var searchCondition = GetSearchCondition(input);
             Assert.AreEqual(searchCondition.WhereClause, "IsDeleted = @IsDeleted And GetSum <> @GetSum And Id > @Id");
             Assert.AreEqual(searchCondition.Parameters["@IsDeleted"], false);
-            Assert.AreEqual(searchCondition.Parameters["@GetSum"], 5m);
+            Assert.AreEqual(searchCondition.Parameters["@GetSum"], input.GetSum);
             Assert.AreEqual(searchCondition.Parameters["@Id"], 0);
         }
 
@@ -38,7 +39,7 @@ public class QueryConfig_FilterStrategy_Numeric
             var searchCondition = GetSearchCondition(input);
             Assert.AreEqual(searchCondition.WhereClause, "IsDeleted = @IsDeleted And GetSum > @GetSum And Id > @Id");
             Assert.AreEqual(searchCondition.Parameters["@IsDeleted"], false);
-            Assert.AreEqual(searchCondition.Parameters["@GetSum"], 5m);
+            Assert.AreEqual(searchCondition.Parameters["@GetSum"], input.GetSum);
             Assert.AreEqual(searchCondition.Parameters["@Id"], 0);
         }
 
@@ -47,7 +48,7 @@ public class QueryConfig_FilterStrategy_Numeric
             var searchCondition = GetSearchCondition(input);
             Assert.AreEqual(searchCondition.WhereClause, "IsDeleted = @IsDeleted And GetSum >= @GetSum And Id > @Id");
             Assert.AreEqual(searchCondition.Parameters["@IsDeleted"], false);
-            Assert.AreEqual(searchCondition.Parameters["@GetSum"], 5m);
+            Assert.AreEqual(searchCondition.Parameters["@GetSum"], input.GetSum);
             Assert.AreEqual(searchCondition.Parameters["@Id"], 0);
         }
 
@@ -57,7 +58,7 @@ public class QueryConfig_FilterStrategy_Numeric
             var searchCondition = GetSearchCondition(input);
             Assert.AreEqual(searchCondition.WhereClause, "IsDeleted = @IsDeleted And GetSum < @GetSum And Id > @Id");
             Assert.AreEqual(searchCondition.Parameters["@IsDeleted"], false);
-            Assert.AreEqual(searchCondition.Parameters["@GetSum"], 5m);
+            Assert.AreEqual(searchCondition.Parameters["@GetSum"], input.GetSum);
             Assert.AreEqual(searchCondition.Parameters["@Id"], 0);
         }
 
@@ -66,7 +67,7 @@ public class QueryConfig_FilterStrategy_Numeric
             var searchCondition = GetSearchCondition(input);
             Assert.AreEqual(searchCondition.WhereClause, "IsDeleted = @IsDeleted And GetSum <= @GetSum And Id > @Id");
             Assert.AreEqual(searchCondition.Parameters["@IsDeleted"], false);
-            Assert.AreEqual(searchCondition.Parameters["@GetSum"], 5m);
+            Assert.AreEqual(searchCondition.Parameters["@GetSum"], input.GetSum);
             Assert.AreEqual(searchCondition.Parameters["@Id"], 0);
         }
 
