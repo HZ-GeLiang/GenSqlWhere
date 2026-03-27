@@ -1,8 +1,8 @@
 ﻿namespace ExpressionToSqlWhereClause.EntitySearchBuilder
 {
-    internal class FilterTypeParse
+    public class FilterTypeParse
     {
-        private static readonly Dictionary<string, FilterOperator> _map = new(StringComparer.OrdinalIgnoreCase)
+        public static readonly Dictionary<string, FilterOperator> _map = new(StringComparer.OrdinalIgnoreCase)
         {
             ["="] = FilterOperator.Equal,
             ["=="] = FilterOperator.Equal,

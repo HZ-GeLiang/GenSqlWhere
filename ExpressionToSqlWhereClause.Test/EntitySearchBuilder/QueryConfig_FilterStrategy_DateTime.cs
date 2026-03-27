@@ -101,5 +101,38 @@ public class QueryConfig_FilterStrategy_DateTime
 
     }
 
+    [TestMethod]
+    public void DateTimeFilterStrategy_EF示例()
+    {
+
+        /*
+         * 1. 给视图对象配置时间精度(若类型为DateTime)
+ public class v_User_Config : IEntityTypeConfiguration<v_User_Account>
+ {
+     public void Configure(EntityTypeBuilder<v_User_Account> builder)
+     {
+         builder.Property(x => x.CreateDate).HasPrecision(3);
+     }
+ }
+
+ */
+
+        /*
+         * 2.设置日期的Kind属性 为Unspecified
+            Kind        EF 处理
+            Local       转成 datetimeoffset(+08:00)    '2026-03-21T00:00:00.0000000+08:00'
+            Utc         转成 +00:00                    '2026-03-21T00:00:00.0000000Z'
+            Unspecified 当普通 datetime                '2026-03-21T00:00:00.0000000'
+        */
+        var fiveDayAgo = DateTime.Now.Date.AddDays(-1 * 5);
+        fiveDayAgo = DateTime.SpecifyKind(fiveDayAgo, DateTimeKind.Unspecified);
+        var daysFilter = "=";
+        var exp = default(Expression<Func<Model_FilterStrategy, bool>>)
+            .DateTimeFilterStrategy(fiveDayAgo, daysFilter)
+            .ApplyFilter(a => a.CreateDate);
+
+        //var query = query.WhereIf(exp != null, exp);
+
+    }
 
 }
