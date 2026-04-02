@@ -1,6 +1,5 @@
 ﻿using ExpressionToSqlWhereClause.ExpressionTree;
 using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
 
 namespace ExpressionToSqlWhereClause;
 
@@ -13,6 +12,11 @@ public sealed class WhereClauseHelper
 
     #region Clause_NonParameter
 
+    /// <summary>
+    /// 生成不带参数的纯 SQL WHERE 子句
+    /// </summary>
+    /// <param name="searchCondition"></param>
+    /// <returns></returns>
     public static string GetNonParameterClause(SearchCondition searchCondition)
     {
         Dictionary<string, string> formatDateTime = GetDefaultFormatDateTime(searchCondition.Parameters);
@@ -21,6 +25,10 @@ public sealed class WhereClauseHelper
         return whereCaluse;
     }
 
+    /// <summary>
+    /// <inheritdoc cref="GetNonParameterClause(SearchCondition)" path="/summary"/>
+    /// </summary>
+    /// <returns></returns>
     public static string GetNonParameterClause(SearchCondition searchCondition, Dictionary<string, string> formatDateTime)
     {
         var clause = new NonParameterClause(searchCondition, formatDateTime);
@@ -28,6 +36,10 @@ public sealed class WhereClauseHelper
         return whereCaluse;
     }
 
+    /// <summary>
+    /// <inheritdoc cref="GetNonParameterClause(SearchCondition)" path="/summary"/>
+    /// </summary>
+    /// <returns></returns>
     public static string GetNonParameterClause(string whereClause, Dictionary<string, object> parameters)
     {
         var clause = new NonParameterClause(whereClause, parameters);
@@ -35,6 +47,10 @@ public sealed class WhereClauseHelper
         return whereCaluse;
     }
 
+    /// <summary>
+    /// <inheritdoc cref="GetNonParameterClause(SearchCondition)" path="/summary"/>
+    /// </summary>
+    /// <returns></returns>
     public static string GetNonParameterClause(string whereClause, Dictionary<string, object> parameters, Dictionary<string, string> formatDateTime)
     {
         var clause = new NonParameterClause(whereClause, parameters, formatDateTime);
@@ -142,12 +158,20 @@ public sealed class WhereClauseHelper
 
     #region Clause_NumberParameter
 
+    /// <summary>
+    /// 生成带有数字占位符参数的 SQL WHERE 子句
+    /// </summary>
+    /// <param name="searchCondition"></param>
+    /// <returns></returns>
     public static string GetNumberParameterClause(SearchCondition searchCondition)
     {
         var clause = new NumberParameterClause(searchCondition.WhereClause).GetNumberParameterClause();
         return clause;
     }
 
+    /// <summary>
+    /// <inheritdoc cref="GetNumberParameterClause(SearchCondition)" path="/summary"/>
+    /// </summary>
     /// <returns></returns>
     public static string GetNumberParameterClause(string whereClause)
     {
@@ -159,6 +183,11 @@ public sealed class WhereClauseHelper
 
     #region Clause_FormattableString
 
+    /// <summary>
+    /// 生成 FormattableString 类型的 的 SQL WHERE 子句
+    /// </summary>
+    /// <param name="searchCondition"></param>
+    /// <returns></returns>
     public static string GetFormattableStringClause(SearchCondition searchCondition)
     {
         var clause = new FormattableStringClause(searchCondition.WhereClause).GetNumberParameterClause();
@@ -167,9 +196,15 @@ public sealed class WhereClauseHelper
 
     #endregion
 
+    /// <summary>
+    /// 生成 FormattableString 类型的 的 SQL WHERE 子句
+    /// </summary>
+    /// <param name="querySql"></param>
+    /// <param name="FormattableParameters"></param>
+    /// <returns></returns>
     public static FormattableString CreateFormattableString(string querySql, object[] FormattableParameters)
     {
-        var formattableStr = FormattableStringFactory.Create(querySql, FormattableParameters);
+        FormattableString formattableStr = FormattableStringFactory.Create(querySql, FormattableParameters);
         return formattableStr;
     }
 
