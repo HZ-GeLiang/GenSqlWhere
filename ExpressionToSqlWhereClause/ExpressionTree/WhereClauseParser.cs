@@ -347,7 +347,7 @@ internal static class WhereClauseParser
             if (method.Name == "IsNullOrEmpty")
             {
                 var exp = methodCallExpression.Arguments.First();
-                string msg = $"Please use ({exp} ?? \"\") != \"\" replace string.IsNullOrEmpty({exp}).";
+                string msg = $"Please use ({exp} ?? \"\") != \"\" instead of string.IsNullOrEmpty({exp}).";
                 throw new Exception(msg);
             }
         }

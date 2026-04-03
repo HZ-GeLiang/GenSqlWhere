@@ -147,7 +147,7 @@ public class ExpressionDemo
             }
             catch (Exception ex)
             {
-                var exMsg = "Please use (a.Production ?? \"\") != \"\" replace string.IsNullOrEmpty(a.Production).";
+                var exMsg = "Please use (a.Production ?? \"\") != \"\" instead of string.IsNullOrEmpty(a.Production).";
                 Assert.AreEqual(ex.Message, exMsg);
             }
         }
