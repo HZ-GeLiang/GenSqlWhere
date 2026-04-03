@@ -75,15 +75,30 @@ public class QueryConfig_FilterStrategy_Numeric
 
     private SearchCondition GetSearchCondition(Model_FilterStrategyInput input)
     {
-        Expression<Func<Model_FilterStrategy, bool>> expression =
-           default(Expression<Func<Model_FilterStrategy, bool>>)
-           .WhereIf(true, a => a.IsDeleted == false)
-           .WhereIfFilterStrategy(input.GetSum > 0 && input.GetSumFilter != null,
-                                       a => a.GetSum, b => b.NumericFilterStrategy(input.GetSum, input.GetSumFilter))
-           .WhereIf(true, a => a.Id > 0)
-           ;
 
-        SearchCondition searchCondition = expression.ToWhereClause();
+        SearchCondition searchCondition = null;
+
+        {
+            //旧写法
+            var expression = default(Expression<Func<Model_FilterStrategy, bool>>)
+                .WhereIf(true, a => a.IsDeleted == false)
+                .WhereIfFilterStrategy(input.GetSum != null && input.GetSumFilter != null,
+                    a => a.GetSum, b => b.NumericFilterStrategy(input.GetSum, input.GetSumFilter))
+                .WhereIf(true, a => a.Id > 0);
+
+            searchCondition = expression.ToWhereClause();
+        }
+
+        {
+            //新写法
+            var expression = default(Expression<Func<Model_FilterStrategy, bool>>)
+                .WhereIf(true, a => a.IsDeleted == false)
+                .WhereIfNumericFilterStrategy(input.GetSum, input.GetSumFilter, a => a.GetSum)
+                .WhereIf(true, a => a.Id > 0);
+
+            searchCondition = expression.ToWhereClause();
+        }
+
         return searchCondition;
 
     }
@@ -106,11 +121,23 @@ public class QueryConfig_FilterStrategy_Numeric
         };
 
         //注: QueryConfig 中的排序顺序 在这里不会被影响到.
-        var expression =
-            whereLambda.ToExpression()
-            .WhereIf(true, a => a.IsDeleted == false)
-            .WhereIfFilterStrategy(input.GetSum > 0 && input.GetSumFilter != null,
-                                    a => a.GetSum, b => b.NumericFilterStrategy(input.GetSum, input.GetSumFilter));
+        Expression<Func<Model_FilterStrategy, bool>> expression;
+
+        {
+
+            //旧写法
+            expression = whereLambda.ToExpression()
+                .WhereIf(true, a => a.IsDeleted == false)
+                .WhereIfFilterStrategy(input.GetSum != null && input.GetSumFilter != null,
+                    a => a.GetSum, b => b.NumericFilterStrategy(input.GetSum, input.GetSumFilter));
+        }
+
+        {
+            //新写法
+            expression = whereLambda.ToExpression()
+                 .WhereIf(true, a => a.IsDeleted == false)
+                 .WhereIfNumericFilterStrategy(input.GetSum, input.GetSumFilter, a => a.GetSum);
+        }
 
         var searchCondition = expression.ToWhereClause();
 

@@ -1,4 +1,5 @@
-﻿using ExpressionToSqlWhereClause.Exceptions;
+﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
+using ExpressionToSqlWhereClause.Exceptions;
 using ExpressionToSqlWhereClause.ExpressionTree;
 using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
 using ExpressionToSqlWhereClause.Helpers;
@@ -130,7 +131,7 @@ public static class ExpressionExtensions
 
     #endregion
 
-    #region 拼接操作
+    #region 拼接Expression
 
     internal static Expression<Func<T, bool>> WhereIf<T>(this Expression<Func<T, bool>> first, bool condition, Expression<Func<T, bool>> second)
     {
@@ -303,6 +304,38 @@ public static class ExpressionExtensions
         var body = merge(first.Body, secondBody);
         return Expression.Lambda<T>(body, first.Parameters);
     }
+
+    #endregion
+
+    #region 二次封装具体的FilterStrategy
+
+    /// <summary>
+    /// 自动判断：数值不为null + 过滤字符串不为null
+    /// 自动拼接：NumericFilterStrategy
+    /// </summary>
+    public static Expression<Func<T, bool>> WhereIfNumericFilterStrategy<T, TValue>(
+        this Expression<Func<T, bool>> expression,
+        TValue? filterValue,          // value (可空数值)
+        string filterFilter,          // valueFilter (string)
+        Expression<Func<T, TValue>> propertySelector) // a => a.GetSum
+        where T : class
+        where TValue : struct, IComparable
+    {
+        bool condition = filterValue.HasValue && !string.IsNullOrWhiteSpace(filterFilter);
+
+        if (!condition)
+        {
+            return expression;
+        }
+
+        // 完全还原你原来的调用逻辑，类型100%匹配
+        return expression.WhereIfFilterStrategy(
+            condition: true,
+            propertySelector,
+            strategy: b => b.NumericFilterStrategy(filterValue.Value, filterFilter)
+        );
+    }
+
 
     #endregion
 }
