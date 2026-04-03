@@ -93,7 +93,7 @@ public class QueryConfig_FilterStrategy_Numeric
             //新写法
             var expression = default(Expression<Func<Model_FilterStrategy, bool>>)
                 .WhereIf(true, a => a.IsDeleted == false)
-                .WhereIfNumericFilterStrategy(input.GetSum, input.GetSumFilter, a => a.GetSum)
+                .WhereIfNumericFilterStrategy(input.GetSumFilter, input.GetSum, a => a.GetSum)
                 .WhereIf(true, a => a.Id > 0);
 
             searchCondition = expression.ToWhereClause();
@@ -124,7 +124,6 @@ public class QueryConfig_FilterStrategy_Numeric
         Expression<Func<Model_FilterStrategy, bool>> expression;
 
         {
-
             //旧写法
             expression = whereLambda.ToExpression()
                 .WhereIf(true, a => a.IsDeleted == false)
@@ -136,7 +135,7 @@ public class QueryConfig_FilterStrategy_Numeric
             //新写法
             expression = whereLambda.ToExpression()
                  .WhereIf(true, a => a.IsDeleted == false)
-                 .WhereIfNumericFilterStrategy(input.GetSum, input.GetSumFilter, a => a.GetSum);
+                 .WhereIfNumericFilterStrategy(input.GetSumFilter, input.GetSum, a => a.GetSum);
         }
 
         var searchCondition = expression.ToWhereClause();

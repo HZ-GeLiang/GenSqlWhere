@@ -84,17 +84,31 @@ public class QueryConfig_FilterStrategy_DateTime
 
     private SearchCondition GetSearchCondition(Model_FilterStrategyInput input)
     {
-        Expression<Func<Model_FilterStrategy, bool>> expression =
-           default(Expression<Func<Model_FilterStrategy, bool>>)
-           .WhereIf(true, a => a.IsDeleted == false)
-           .WhereIfFilterStrategy(
-               input.CreateDate != null && input.CreateDateFilter != null && input.CreateDate2 == null,
-                a => a.CreateDate, b => b.DateTimeFilterStrategy(input.CreateDate, input.CreateDateFilter))
-           .WhereIfFilterStrategy(
-               input.CreateDate != null && input.CreateDateFilter != null && input.CreateDate2 != null,
-                a => a.CreateDate, b => b.DateTimeFilterStrategy(input.CreateDate, input.CreateDateFilter, input.CreateDate2))
-           .WhereIf(true, a => a.Id > 0)
-           ;
+        Expression<Func<Model_FilterStrategy, bool>> expression;
+
+        {
+            //旧写法
+            expression = default(Expression<Func<Model_FilterStrategy, bool>>)
+                .WhereIf(true, a => a.IsDeleted == false)
+                //单日期
+                .WhereIfFilterStrategy(
+                    input.CreateDate != null && input.CreateDateFilter != null && input.CreateDate2 == null,
+                    a => a.CreateDate, b => b.DateTimeFilterStrategy(input.CreateDate, input.CreateDateFilter))
+                //双日期
+                .WhereIfFilterStrategy(
+                    input.CreateDate != null && input.CreateDateFilter != null && input.CreateDate2 != null,
+                    a => a.CreateDate, b => b.DateTimeFilterStrategy(input.CreateDate, input.CreateDateFilter, input.CreateDate2))
+                .WhereIf(true, a => a.Id > 0);
+        }
+
+        {
+            //新写法
+            expression = default(Expression<Func<Model_FilterStrategy, bool>>)
+                .WhereIf(true, a => a.IsDeleted == false)
+                //单/双日期
+                .WhereIfDateTimeFilterStrategy(input.CreateDateFilter, input.CreateDate, input.CreateDate2, a => a.CreateDate)
+                .WhereIf(true, a => a.Id > 0);
+        }
 
         SearchCondition searchCondition = expression.ToWhereClause();
         return searchCondition;
@@ -132,6 +146,11 @@ public class QueryConfig_FilterStrategy_DateTime
             .ApplyFilter(a => a.CreateDate);
 
         //var query = query.WhereIf(exp != null, exp);
+
+
+        //var searchCondition = exp.ToWhereClause();
+        //var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
+        //strWhere += $" and {clause} ";
 
     }
 

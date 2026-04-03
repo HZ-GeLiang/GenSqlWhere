@@ -315,27 +315,177 @@ public static class ExpressionExtensions
     /// </summary>
     public static Expression<Func<T, bool>> WhereIfNumericFilterStrategy<T, TValue>(
         this Expression<Func<T, bool>> expression,
-        TValue? filterValue,          // value (可空数值)
         string filterFilter,          // valueFilter (string)
+        TValue? filterValue,          // value (可空数值)
         Expression<Func<T, TValue>> propertySelector) // a => a.GetSum
         where T : class
         where TValue : struct, IComparable
     {
-        bool condition = filterValue.HasValue && !string.IsNullOrWhiteSpace(filterFilter);
-
-        if (!condition)
+        if (filterValue.HasValue && !string.IsNullOrWhiteSpace(filterFilter))
         {
-            return expression;
+            expression = expression.WhereIfFilterStrategy(
+                condition: true,
+                propertySelector,
+                strategy: b => b.NumericFilterStrategy(filterValue.Value, filterFilter)
+            );
         }
 
-        // 完全还原你原来的调用逻辑，类型100%匹配
-        return expression.WhereIfFilterStrategy(
-            condition: true,
-            propertySelector,
-            strategy: b => b.NumericFilterStrategy(filterValue.Value, filterFilter)
-        );
+        return expression;
     }
 
+
+    /// <summary>
+    /// 智能日期过滤（自动区分：单日期 / 双日期范围）
+    /// 严格匹配业务规则：
+    /// 1. 单日期：开始日期+过滤类型有值，结束日期 = null
+    /// 2. 双日期：开始日期+过滤类型有值，结束日期 有值
+    /// 3. 不满足则不拼接条件
+    /// </summary>
+    public static Expression<Func<T, bool>> WhereIfDateTimeFilterStrategy<T, TValue>(
+        this Expression<Func<T, bool>> expression,
+        string filterType,
+        TValue? startDate,
+        TValue? endDate,
+        Expression<Func<T, TValue>> propertySelector)
+        where T : class
+        where TValue : struct, IComparable
+    {
+        if (startDate.HasValue && !string.IsNullOrWhiteSpace(filterType))
+        {
+            if (endDate.HasValue)// 双日期
+            {
+                expression = expression.WhereIfFilterStrategy(
+                   condition: true,
+                   propertySelector,
+                   strategy: b => b.DateTimeFilterStrategy(startDate.Value, filterType, endDate.Value)
+                );
+
+            }
+            else
+            {
+                expression = expression.WhereIfFilterStrategy(
+                    condition: true,
+                    propertySelector,
+                    strategy: b => b.DateTimeFilterStrategy(startDate.Value, filterType)
+                );
+            }
+        }
+        return expression;
+    }
+
+    #endregion
+
+    #region 常规封装
+
+
+    /// <summary>
+    /// 追加时间范围的条件
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="query"></param>
+    /// <param name="fieldSelector">字段选择</param>
+    /// <param name="startTime">开始日期(含)</param>
+    /// <param name="endTime">结束日期(含)</param>
+    /// <param name="isFieldDateWithTime">数据库字段值含有时分秒信息</param>
+    /// <returns></returns>
+    public static IQueryable<T> WhereIfDateRange<T>(
+        this IQueryable<T> query,
+        Expression<Func<T, DateTime?>> fieldSelector,
+        DateTime? startTime,
+        DateTime? endTime,
+        bool isFieldDateWithTime)
+    {
+        var predicate = BuildDateRange(fieldSelector, startTime, endTime, isFieldDateWithTime);
+        if (predicate != null)
+        {
+            query = query.Where(predicate);
+        }
+
+        return query;
+    }
+
+
+    /// <summary>
+    /// 追加时间范围的条件
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    /// <param name="expression"></param>
+    /// <param name="fieldSelector"></param>
+    /// <param name="startTime">开始日期(含)</param>
+    /// <param name="endTime">结束日期(含)</param>
+    /// <param name="isFieldDateWithTime">数据库字段值含有时分秒信息</param>
+    /// <returns></returns>
+    public static Expression<Func<T, bool>> WhereIfDateRange<T, TValue>(
+        this Expression<Func<T, bool>> expression,
+        Expression<Func<T, DateTime?>> fieldSelector,
+        DateTime? startTime,
+        DateTime? endTime,
+        bool isFieldDateWithTime)
+    {
+        var exp = BuildDateRange(fieldSelector, startTime, endTime, isFieldDateWithTime);
+        if (exp != null)
+        {
+            expression = expression.WhereIf(true, exp);
+        }
+        return expression;
+    }
+
+    /// <summary>
+    /// 构建时间范围表达式
+    /// </summary>
+    /// <typeparam name="T">实体类</typeparam>
+    /// <param name="fieldSelector">字段选择：x => x.CreateDate</param>
+    /// <param name="startTime">开始日期(含)</param>
+    /// <param name="endTime">结束日期(含)</param>
+    /// <param name="isFieldDateWithTime">数据库字段值含有时分秒信息:若值true, endTime 的值为 yyyy-MM-dd 时，结束日期自动增加1天</param>
+    /// <returns>组合好的表达式</returns>
+    public static Expression<Func<T, bool>> BuildDateRange<T>(
+        Expression<Func<T, DateTime?>> fieldSelector,
+        DateTime? startTime,
+        DateTime? endTime,
+        bool isFieldDateWithTime)
+    {
+        var parameter = fieldSelector.Parameters[0];
+        var member = fieldSelector.Body;
+        Expression? exp = null;
+
+        if (startTime.HasValue)
+        {
+            //var value = DateTime.SpecifyKind(startTime.Value, DateTimeKind.Unspecified);
+            var value = startTime.Value;
+            var startValue = Expression.Constant(value, typeof(DateTime?));
+            exp = Expression.GreaterThanOrEqual(member, startValue);
+        }
+
+        if (endTime.HasValue)
+        {
+            //数据库字段值含有时分秒信息 + 当结束日期(endTime)只有年月日 , 自动给结束日期 + 1 天
+            if (isFieldDateWithTime && endTime.Value.TimeOfDay == TimeSpan.Zero)
+            {
+                endTime = endTime.Value.AddDays(1);
+            }
+
+            //var value = DateTime.SpecifyKind(endTime.Value, DateTimeKind.Unspecified);
+            var value = endTime.Value;
+            var endValue = Expression.Constant(value, typeof(DateTime?));
+            if (exp == null)
+            {
+                exp = Expression.LessThanOrEqual(member, endValue);
+            }
+            else
+            {
+                exp = Expression.AndAlso(exp, Expression.LessThanOrEqual(member, endValue));
+            }
+        }
+
+        if (exp != null)
+        {
+            return Expression.Lambda<Func<T, bool>>(exp, parameter);
+        }
+
+        return null;
+    }
 
     #endregion
 }
