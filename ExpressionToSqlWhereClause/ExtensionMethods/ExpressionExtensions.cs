@@ -383,19 +383,19 @@ public static class ExpressionExtensions
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="query"></param>
-    /// <param name="fieldSelector">字段选择</param>
+    /// <param name="fieldSelector">字段选择：a => a.CreateDate</param>
     /// <param name="startTime">开始日期(含)</param>
     /// <param name="endTime">结束日期(含)</param>
     /// <param name="isFieldDateWithTime">数据库字段值含有时分秒信息</param>
     /// <returns></returns>
-    public static IQueryable<T> WhereIfDateRange<T>(
+    public static IQueryable<T> WhereIfBetweenDates<T>(
         this IQueryable<T> query,
         Expression<Func<T, DateTime?>> fieldSelector,
         DateTime? startTime,
         DateTime? endTime,
         bool isFieldDateWithTime)
     {
-        var predicate = BuildDateRange(fieldSelector, startTime, endTime, isFieldDateWithTime);
+        var predicate = WhereIfBetweenDates(fieldSelector, startTime, endTime, isFieldDateWithTime);
         if (predicate != null)
         {
             query = query.Where(predicate);
@@ -409,21 +409,20 @@ public static class ExpressionExtensions
     /// 追加时间范围的条件
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <typeparam name="TValue"></typeparam>
     /// <param name="expression"></param>
-    /// <param name="fieldSelector"></param>
+    /// <param name="fieldSelector">字段选择：a => a.CreateDate</param>
     /// <param name="startTime">开始日期(含)</param>
     /// <param name="endTime">结束日期(含)</param>
     /// <param name="isFieldDateWithTime">数据库字段值含有时分秒信息</param>
     /// <returns></returns>
-    public static Expression<Func<T, bool>> WhereIfDateRange<T, TValue>(
+    public static Expression<Func<T, bool>> WhereIfBetweenDates<T>(
         this Expression<Func<T, bool>> expression,
         Expression<Func<T, DateTime?>> fieldSelector,
         DateTime? startTime,
         DateTime? endTime,
         bool isFieldDateWithTime)
     {
-        var exp = BuildDateRange(fieldSelector, startTime, endTime, isFieldDateWithTime);
+        var exp = WhereIfBetweenDates(fieldSelector, startTime, endTime, isFieldDateWithTime);
         if (exp != null)
         {
             expression = expression.WhereIf(true, exp);
@@ -435,12 +434,12 @@ public static class ExpressionExtensions
     /// 构建时间范围表达式
     /// </summary>
     /// <typeparam name="T">实体类</typeparam>
-    /// <param name="fieldSelector">字段选择：x => x.CreateDate</param>
+    /// <param name="fieldSelector">字段选择：a => a.CreateDate</param>
     /// <param name="startTime">开始日期(含)</param>
     /// <param name="endTime">结束日期(含)</param>
     /// <param name="isFieldDateWithTime">数据库字段值含有时分秒信息:若值true, endTime 的值为 yyyy-MM-dd 时，结束日期自动增加1天</param>
     /// <returns>组合好的表达式</returns>
-    public static Expression<Func<T, bool>> BuildDateRange<T>(
+    public static Expression<Func<T, bool>> WhereIfBetweenDates<T>(
         Expression<Func<T, DateTime?>> fieldSelector,
         DateTime? startTime,
         DateTime? endTime,
