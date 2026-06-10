@@ -108,4 +108,26 @@ public class ToWhereClauseDemo_alias
         };
         CollectionAssert.AreEqual(searchCondition.Parameters, para);
     }
+
+    [TestMethod]
+    public void 别名_全局统一添加对象()
+    {
+        Expression<Func<Student, bool>> expOr = a => a.Id == 1 && a.IsDel;
+
+        var dict = new Dictionary<string, string>()
+        {
+            { "Id", "RouteId" },
+            { "IsDel", "b.IsDeleted" },
+        };
+        var searchCondition = expOr.ToWhereClause("t", dict, null);
+
+        Assert.AreEqual(searchCondition.WhereClause, "t.RouteId = @Id And b.IsDeleted = @IsDel");
+
+        var para = new Dictionary<string, object>()
+        {
+            {"@Id", 1},
+            {"@IsDel", true},
+        };
+        CollectionAssert.AreEqual(searchCondition.Parameters, para);
+    }
 }

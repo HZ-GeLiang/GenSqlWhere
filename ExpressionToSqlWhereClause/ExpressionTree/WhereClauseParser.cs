@@ -17,7 +17,7 @@ internal static class WhereClauseParser
     internal static ClauseParserResult Parse(
         Expression body,
         Dictionary<string, string> aliasDict,
-        ISqlAdapter sqlAdapter = default)
+        ISqlAdapter sqlAdapter)
     {
         var adhesive = new WhereClauseAdhesive(sqlAdapter);
 

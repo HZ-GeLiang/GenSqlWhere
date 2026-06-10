@@ -2,6 +2,7 @@
 using ExpressionToSqlWhereClause.Exceptions;
 using ExpressionToSqlWhereClause.ExpressionTree;
 using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
+using ExpressionToSqlWhereClause.ExtensionMethods;
 using ExpressionToSqlWhereClause.Helpers;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
@@ -24,18 +25,41 @@ public static class ExpressionExtensions
 {
     #region ToWhereClause
 
+    public static SearchCondition ToWhereClause<T>(this Expression<Func<T, bool>> expression) where T : class
+    {
+        return ToWhereClause(expression, null, null, null);
+    }
+
+    public static SearchCondition ToWhereClause<T>(this Expression<Func<T, bool>> expression,
+       string tableAlias) where T : class
+    {
+        return ToWhereClause(expression, tableAlias, null, null);
+    }
+
+
+    public static SearchCondition ToWhereClause<T>(this Expression<Func<T, bool>> expression,
+       Dictionary<string, string> aliasDict) where T : class
+    {
+        return ToWhereClause(expression, null, aliasDict, null);
+    }
+
+    public static SearchCondition ToWhereClause<T>(this Expression<Func<T, bool>> expression,
+     ISqlAdapter sqlAdapter) where T : class
+    {
+        return ToWhereClause(expression, null, null, sqlAdapter);
+    }
+
     /// <summary>
     /// 转换为Where子句
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="expression">表达式</param>
-    /// <param name="aliasDict">别名</param>
+    /// <param name="tableAlias">字段的对应的表别名</param>
+    /// <param name="aliasDict">字段别名</param>
     /// <param name="sqlAdapter">适配器</param>
     /// <returns></returns>
-    public static SearchCondition ToWhereClause<T>(
-        this Expression<Func<T, bool>> expression,
-        Dictionary<string, string> aliasDict = null,
-        ISqlAdapter sqlAdapter = default) where T : class
+    public static SearchCondition ToWhereClause<T>(this Expression<Func<T, bool>> expression,
+        string tableAlias, Dictionary<string, string> aliasDict, ISqlAdapter sqlAdapter) where T : class
     {
         if (expression == null)
         {
@@ -51,12 +75,28 @@ public static class ExpressionExtensions
             //优先级: 方法参数的 alias > Column
             if (aliasDict.ContainsKey(propertyInfo.Name))
             {
+                if (tableAlias.HasValue())
+                {
+                    var val = aliasDict[propertyInfo.Name];
+                    if (val.HasValue() && val.Contains(".") == false)
+                    {
+                        aliasDict[propertyInfo.Name] = tableAlias + "." + aliasDict[propertyInfo.Name];
+                    }
+                }
                 continue;
             }
+
             var attrs = ReflectionHelper.GetAttributeForProperty<ColumnAttribute>(propertyInfo, true);
             if (attrs.Length == 1 && string.IsNullOrWhiteSpace(attrs[0].Name) == false) // attrs[0].Name 不为空
             {
-                aliasDict[propertyInfo.Name] = attrs[0].Name;
+                if (tableAlias.HasValue())
+                {
+                    aliasDict[propertyInfo.Name] = tableAlias + "." + attrs[0].Name;
+                }
+                else
+                {
+                    aliasDict[propertyInfo.Name] = attrs[0].Name;
+                }
             }
         }
 

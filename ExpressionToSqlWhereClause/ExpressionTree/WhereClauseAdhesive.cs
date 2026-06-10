@@ -8,6 +8,14 @@ namespace ExpressionToSqlWhereClause.ExpressionTree;
 /// </summary>
 public class WhereClauseAdhesive
 {
+    /// <summary>
+    /// sql 适配器,
+    /// 目前是用来处理 属性名翻译为sql时的处理,
+    /// 如mysql 可以翻译为 `Name`  , mssql 可以翻译为 [Name]  等等,
+    /// 我这里的 处理目前是什么都没做, 直接翻译为 Name
+    /// </summary>
+    public ISqlAdapter SqlAdapter { get; }
+
     public WhereClauseAdhesive(ISqlAdapter sqlAdapter)
     {
         this.SqlAdapter = sqlAdapter ?? new DefaultSqlAdapter();
@@ -56,11 +64,4 @@ public class WhereClauseAdhesive
         }
     }
 
-    /// <summary>
-    /// sql 适配器,
-    /// 目前是用来处理 属性名翻译为sql时的处理,
-    /// 如mysql 可以翻译为 `Name`  , mssql 可以翻译为 [Name]  等等,
-    /// 我这里的 处理目前是什么都没做, 直接翻译为 Name
-    /// </summary>
-    public ISqlAdapter SqlAdapter { get; }
 }
