@@ -1,7 +1,5 @@
 ﻿#pragma warning disable IDE0130
 
-using System.Data;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Infra.ExtensionMethods

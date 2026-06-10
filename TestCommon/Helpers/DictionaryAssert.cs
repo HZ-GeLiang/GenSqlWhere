@@ -127,7 +127,6 @@ public class DictionaryAssert
 
                 var msg = $"The expected value is {value_1} ({value_type1}), the actual value is {value_2} ({value_type2})";
                 Assert.IsTrue(isEquals, msg);
-
             }
         }
     }

@@ -1,11 +1,4 @@
-﻿using ExpressionToSqlWhereClause.ExtensionMethods;
-using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Inputs;
-using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Models;
-using Infra.ExtensionMethods;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq.Expressions;
-
-namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
+﻿namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
 
 [TestClass]
 public class QueryConfig_Nulable

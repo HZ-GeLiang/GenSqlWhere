@@ -1,12 +1,7 @@
-﻿using ExpressionToSqlWhereClause.ExtensionMethods;
-using Infra.ExtensionMethods;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq.Expressions;
-
-namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause;
+﻿namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause;
 
 [TestClass]
-public class IssusDemo
+public class ToWhereClauseDemo_IssusDemo
 {
     class TypeConvert
     {

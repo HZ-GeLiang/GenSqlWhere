@@ -1,6 +1,6 @@
 ﻿using ExpressionToSqlWhereClause.ExpressionTree.Adapter;
 
-namespace ExpressionToSqlWhereClaus.Test;
+namespace ExpressionToSqlWhereClauseTest;
 
 public class ToLowerSqlAdapter : DefaultSqlAdapter
 {

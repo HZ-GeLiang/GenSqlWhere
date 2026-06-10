@@ -1,7 +1,6 @@
 ﻿#pragma warning disable IDE0130
 
 using ExpressionToSqlWhereClause.Helpers;
-using System.Linq.Expressions;
 
 namespace ExpressionToSqlWhereClause.Test.ExtensionMethods
 {

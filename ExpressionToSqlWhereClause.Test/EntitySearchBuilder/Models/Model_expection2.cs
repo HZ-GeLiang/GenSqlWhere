@@ -1,4 +1,4 @@
-﻿namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Models;
+﻿namespace ExpressionToSqlWhereClauseTest;
 
 public class Model_expection2
 {

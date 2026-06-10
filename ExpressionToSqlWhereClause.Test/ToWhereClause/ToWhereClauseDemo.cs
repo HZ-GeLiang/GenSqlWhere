@@ -1,14 +1,9 @@
-﻿using ExpressionToSqlWhereClaus.Test;
-using Infra.ExtensionMethods;
-using Infra.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq.Expressions;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause;
 
 [TestClass]
-public class ExpressionDemo
+public class ToWhereClauseDemo
 {
     [TestMethod]
     public void 测试null值()
@@ -19,9 +14,7 @@ public class ExpressionDemo
         var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
 
         Assert.AreEqual(clause, "");
-
     }
-
 
     [TestMethod]
     public void Or操作未翻译_超过2个值()
@@ -46,7 +39,6 @@ public class ExpressionDemo
 
         Assert.AreEqual(clause, "(IsDel = 0 And Id = 1 And Name = '123') Or (IsDel = 0 And Id = 1 And Name = '123')");
     }
-
 
     [TestMethod]
     public void Or操作未翻译()
@@ -1113,8 +1105,6 @@ public class Sample250828Input
     public string Unit_Name { get; set; }
     public string Remarks { get; set; }
 }
-
-
 
 public class Sample250923Input
 {

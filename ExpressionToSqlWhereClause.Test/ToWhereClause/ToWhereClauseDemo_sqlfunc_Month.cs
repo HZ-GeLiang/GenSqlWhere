@@ -1,13 +1,9 @@
 ﻿using ExpressionToSqlWhereClause.SqlFunc;
-using Infra.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq.Expressions;
-using ExpressionToSqlWhereClause.ExtensionMethods;
 
 namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause;
 
 [TestClass]
-public class ExpressionDemo_sqlfunc_Month
+public class ToWhereClauseDemo_sqlfunc_Month
 {
     public void Expression_compile()
     {

@@ -1,10 +1,4 @@
-﻿using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Models;
-using Infra.ExtensionMethods;
-using Infra.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq.Expressions;
-
-namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
+﻿namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
 
 [TestClass]
 public class QueryConfig_contains

@@ -1,9 +1,4 @@
-﻿using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Models;
-using Infra.ExtensionMethods;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq.Expressions;
-
-namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
+﻿namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
 
 [TestClass]
 public class QueryConfig_FilterStrategy_DateTime
@@ -50,7 +45,6 @@ public class QueryConfig_FilterStrategy_DateTime
             Assert.AreEqual(searchCondition.Parameters["@Id"], 0);
         }
 
-
         {
             input.CreateDateFilter = "<";
             var searchCondition = GetSearchCondition(input);
@@ -79,7 +73,6 @@ public class QueryConfig_FilterStrategy_DateTime
             Assert.AreEqual(searchCondition.Parameters["@CreateDate1"], input.CreateDate2);
             Assert.AreEqual(searchCondition.Parameters["@Id"], 0);
         }
-
     }
 
     private SearchCondition GetSearchCondition(Model_FilterStrategyInput input)
@@ -112,13 +105,11 @@ public class QueryConfig_FilterStrategy_DateTime
 
         SearchCondition searchCondition = expression.ToWhereClause();
         return searchCondition;
-
     }
 
     [TestMethod]
     public void DateTimeFilterStrategy_EF示例()
     {
-
         /*
          * 1. 给视图对象配置时间精度(若类型为DateTime)
  public class v_User_Config : IEntityTypeConfiguration<v_User_Account>
@@ -147,11 +138,8 @@ public class QueryConfig_FilterStrategy_DateTime
 
         //var query = query.WhereIf(exp != null, exp);
 
-
         //var searchCondition = exp.ToWhereClause();
         //var clause = WhereClauseHelper.GetNonParameterClause(searchCondition);
         //strWhere += $" and {clause} ";
-
     }
-
 }

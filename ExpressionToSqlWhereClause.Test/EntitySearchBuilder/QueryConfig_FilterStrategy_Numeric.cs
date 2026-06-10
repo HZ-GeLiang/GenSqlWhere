@@ -1,9 +1,4 @@
 ﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
-using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Inputs;
-using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Models;
-using Infra.ExtensionMethods;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq.Expressions;
 
 namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
 
@@ -13,7 +8,6 @@ public class QueryConfig_FilterStrategy_Numeric
     [TestMethod]
     public void NumericFilterStrategy()
     {
-
         var input = new Model_FilterStrategyInput() { GetSum = 5 };
 
         {
@@ -52,7 +46,6 @@ public class QueryConfig_FilterStrategy_Numeric
             Assert.AreEqual(searchCondition.Parameters["@Id"], 0);
         }
 
-
         {
             input.GetSumFilter = "<";
             var searchCondition = GetSearchCondition(input);
@@ -70,12 +63,10 @@ public class QueryConfig_FilterStrategy_Numeric
             Assert.AreEqual(searchCondition.Parameters["@GetSum"], input.GetSum);
             Assert.AreEqual(searchCondition.Parameters["@Id"], 0);
         }
-
     }
 
     private SearchCondition GetSearchCondition(Model_FilterStrategyInput input)
     {
-
         SearchCondition searchCondition = null;
 
         {
@@ -100,9 +91,7 @@ public class QueryConfig_FilterStrategy_Numeric
         }
 
         return searchCondition;
-
     }
-
 
     [TestMethod]
     public void NumericFilterStrategy_结合配置的示例()

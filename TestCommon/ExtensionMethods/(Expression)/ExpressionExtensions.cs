@@ -1,6 +1,5 @@
 ﻿#pragma warning disable IDE0130
 
-using Infra.ExtensionMethods;
 using System.Linq.Expressions;
 
 namespace Infra.ExtensionMethods
@@ -224,6 +223,7 @@ namespace Infra.ExtensionMethods
     #endregion
 
     /*
+
     #region 创建默认实体对象
 
     public static class ExpressionExtensions
@@ -373,7 +373,9 @@ namespace Infra.ExtensionMethods
             }
         }
     }
+
     #endregion
+
     */
 }
 

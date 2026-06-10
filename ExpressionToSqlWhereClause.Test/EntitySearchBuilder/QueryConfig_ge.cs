@@ -1,8 +1,6 @@
 ﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
-using ExpressionToSqlWhereClause.ExtensionMethods;
-using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Models;
+
 using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Modlesl;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
 

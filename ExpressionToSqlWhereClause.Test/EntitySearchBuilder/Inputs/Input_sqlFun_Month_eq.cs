@@ -1,7 +1,7 @@
 ﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 using ExpressionToSqlWhereClause.SqlFunc.EntityConfig;
 
-namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Inputs;
+namespace ExpressionToSqlWhereClauseTest;
 
 public class Input_sqlFun_Month_eq
 {

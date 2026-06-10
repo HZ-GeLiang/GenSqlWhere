@@ -1,9 +1,4 @@
 ﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
-using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Inputs;
-using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Models;
-using Infra.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq.Expressions;
 
 namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder;
 
@@ -26,6 +21,7 @@ public class QueryConfig_Demo1
         };
 
         var whereLambda = searchModel.CreateQueryConfig(default(Model_People));
+
         #region whereLambda 的配置
 
         whereLambda[SearchType.Like] = new List<string>

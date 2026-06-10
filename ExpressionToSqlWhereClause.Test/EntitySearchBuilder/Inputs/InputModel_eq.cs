@@ -1,4 +1,4 @@
-﻿namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Inputs;
+﻿namespace ExpressionToSqlWhereClauseTest;
 
 public class InputModel_eq
 {

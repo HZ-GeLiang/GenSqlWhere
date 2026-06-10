@@ -1,11 +1,7 @@
 ﻿using ExpressionToSqlWhereClause.ExtensionMethods;
 using ExpressionToSqlWhereClause.Helpers;
-using ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Inputs;
+
 using ExpressionToSqlWhereClause.Test.ExtensionMethods;
-using Infra.ExtensionMethods;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq.Expressions;
-using System.Text;
 
 namespace ExpressionToSqlWhereClause.Test.ExpressionToSqlWhere;
 
@@ -535,8 +531,6 @@ internal class Student
 
 internal class Test_002
 {
-
-
     /// <summary>
     /// 发送人id
     /// </summary>
@@ -582,7 +576,6 @@ internal class Test_002
     /// 已读
     /// </summary>
     public bool IsRead { get; set; }
-
 
     /// <summary>
     /// 回复id

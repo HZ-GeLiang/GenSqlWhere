@@ -1,5 +1,4 @@
-﻿namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Models;
-
+﻿namespace ExpressionToSqlWhereClauseTest;
 
 public class Model_FilterStrategyInput
 {
@@ -27,5 +26,4 @@ public class Model_FilterStrategyInput
     public string CreateDateFilter { get; set; }
 
     #endregion
-
 }

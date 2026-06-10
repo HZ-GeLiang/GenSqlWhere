@@ -1,6 +1,6 @@
 ﻿using ExpressionToSqlWhereClause.EntitySearchBuilder;
 
-namespace ExpressionToSqlWhereClause.Test.EntitySearchBuilder.Inputs;
+namespace ExpressionToSqlWhereClauseTest;
 
 public class Input_ge_Attr
 {

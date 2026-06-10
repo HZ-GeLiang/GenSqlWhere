@@ -1,11 +1,7 @@
-﻿using ExpressionToSqlWhereClause.ExtensionMethods;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq.Expressions;
-
-namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause;
+﻿namespace ExpressionToSqlWhereClause.Test.EntityConfigToWhereClause;
 
 [TestClass]
-public class ExpressionDemo_值测试
+public class ToWhereClauseDemo_值测试
 {
     [TestMethod]
     public void eq_string为null值()
